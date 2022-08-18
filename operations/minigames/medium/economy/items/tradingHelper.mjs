@@ -1,7 +1,8 @@
 import { KEY_MESSAGES, RAW_EMOJIS } from "../../../../../organisation/config.mjs";
 import { ITEMS, USABLE, USERS, CHANNELS, REACTIONS, CHICKEN } from "../../../../../organisation/coop.mjs";
-import DatabaseHelper from "../../../../databaseHelper.mjs";
-import Database from "../../../../../organisation/setup/database.mjs";
+
+import Database from "coop-shared/setup/database.mjs";
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
 
 // TODO: Rename file.

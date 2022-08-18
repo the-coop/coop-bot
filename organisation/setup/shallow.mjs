@@ -27,7 +27,9 @@ import ElectionHelper from '../../operations/members/hierarchy/election/election
 import CompetitionHelper, { COMPETITION_DUR } from '../../operations/social/competitionHelper.mjs';
 import EventsHelper from '../../operations/eventsHelper.mjs';
 import EconomyHelper from '../../operations/minigames/medium/economy/economyHelper.mjs';
-import DatabaseHelper from '../../operations/databaseHelper.mjs';
+
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
+
 import CratedropMinigame from '../../operations/minigames/small/cratedrop.mjs';
 import DropTable from '../../operations/minigames/medium/economy/items/droptable.mjs';
 import AdvertsHelper from '../../operations/marketing/adverts/advertsHelper.mjs';

@@ -4,8 +4,10 @@ import Chicken from "../../../chicken.mjs";
 
 import { CHANNELS, SERVER, MESSAGES, ROLES, USERS, ITEMS, TIME, STATE } from '../../../../organisation/coop.mjs';
 
-import DatabaseHelper from '../../../databaseHelper.mjs';
-import Database from '../../../../organisation/setup/database.mjs';
+import Database from "coop-shared/setup/database.mjs";
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
+
+
 import VotingHelper from '../../../activity/redemption/votingHelper.mjs';
 import EventsHelper from '../../../eventsHelper.mjs';
 

@@ -1,6 +1,7 @@
 import { TIME } from "../../../../organisation/coop.mjs";
-import Database from "../../../../organisation/setup/database.mjs";
-import DatabaseHelper from "../../../databaseHelper.mjs";
+
+import Database from "coop-shared/setup/database.mjs";
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
 export default class BaseHelper {
 

@@ -1,8 +1,9 @@
 import { Permissions, MessageMentions } from "discord.js";
 import { EMOJIS, CATEGORIES } from "../../../organisation/config.mjs";
 import { CHANNELS, MESSAGES, TIME, USERS } from "../../../organisation/coop.mjs";
-import Database from "../../../organisation/setup/database.mjs";
-import DatabaseHelper from "../../databaseHelper.mjs";
+
+import Database from "coop-shared/setup/database.mjs";
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
    
 // Show the user's projects on the website.
 // Should add support for contributors so it can show up on their coop website profile.

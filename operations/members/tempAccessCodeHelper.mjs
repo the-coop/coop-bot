@@ -1,6 +1,7 @@
 import { TIME, CHANCE } from "../../organisation/coop.mjs";
-import Database from "../../organisation/setup/database.mjs";
-import DatabaseHelper from "../databaseHelper.mjs";
+
+import Database from "coop-shared/setup/database.mjs";
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
 // TODO: Make sure they are deleted with interval (do it from worker).
 export default class TempAccessCodeHelper {

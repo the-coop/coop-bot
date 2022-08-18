@@ -2,8 +2,9 @@ import EmojiHelper from "./emojiHelper.mjs";
 
 import COOP, { USABLE, SERVER, TIME, STATE } from "../../../../../organisation/coop.mjs";
 import { EMOJIS, RAW_EMOJIS } from '../../../../../organisation/config.mjs';
-import DatabaseHelper from "../../../../databaseHelper.mjs";
-import Database from '../../../../../organisation/setup/database.mjs';
+
+import Database from "coop-shared/setup/database.mjs";
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
 
 export default class ItemsHelper {

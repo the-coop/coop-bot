@@ -1,6 +1,6 @@
-import Database from "../organisation/setup/database.mjs";
+import Database from "coop-shared/setup/database.mjs";
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 import STATE from "../organisation/state.mjs";
-import DatabaseHelper from "./databaseHelper.mjs";
 
 
 const numberEnding = number => (number > 1) ? 's' : '';

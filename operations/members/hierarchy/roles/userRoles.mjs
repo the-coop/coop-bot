@@ -1,4 +1,4 @@
-import DatabaseHelper from '../../..//databaseHelper.mjs';
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
 export default class UserRoles {
 
