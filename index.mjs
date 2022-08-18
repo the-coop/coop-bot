@@ -6,7 +6,7 @@ import registerLogging from './organisation/setup/logging.mjs';
 
 import eventsManifest from './operations/manifest.mjs';
 
-import express from 'express';
+// import express from 'express';
 import secrets from './organisation/setup/secrets.mjs';
 
 import * as Sentry from '@sentry/node';
@@ -46,13 +46,13 @@ export default async function bot() {
     botClient.user.setActivity(`We need /help`, { type: 'WATCHING' });
 
     // Make internal router work for accessing Discord server via API
-    const app = express();
+    // const app = express();
 
-    app.get('/', (req, res) => {
-        res.send('OK');
-    });
+    // app.get('/', (req, res) => {
+    //     res.send('OK');
+    // });
 
-    app.listen(5000);
+    // app.listen(5000);
 
     // Make load balancer work lol
 }

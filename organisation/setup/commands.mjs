@@ -7,10 +7,13 @@ export default async function setupCommands(client) {
     // Start locally loading the commands.
     client.commands = new Collection();
 
-    // Seems like Sapphire is trying to load from commands folder (?)
+    // Resolve commands path.
+    const pathParts = import.meta.url.split('/');
+    const trimOne = pathParts.slice(2, pathParts.length);
+    const trimTwo = trimOne.slice(0, trimOne.length - 3);
+    const commandsDir = trimTwo.join('/') + '/commands';
     
-    // Parse throuh the command files
-    const commandsDir = path.resolve('./commands/');
+    // Parse through the command files
     const commandFolders = fs.readdirSync(commandsDir,  { withFileTypes: true }).filter(de => de.isDirectory());
     commandFolders.map(async f => {
         const cmdFolderPath = commandsDir + '/' + f.name + '/';
@@ -24,6 +27,9 @@ export default async function setupCommands(client) {
             client.commands.set(command.name, command);
         }
     });
+
+    // Could also handle another kind of command here based on text.
+    // µµ
 
     // Dynamically load and execute the command based on the interaction command name/key.
     client.on('interactionCreate', async interaction => {
