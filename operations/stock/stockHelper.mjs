@@ -16,7 +16,7 @@ export default class StockHelper {
     static US_OPEN = false;
 
     static async update() {
-        console.log('stockhelper update');
+        // console.log('stockhelper update');
         const now = new Date;
 
         now.setTime(now.getTime() + now.getTimezoneOffset() * 60 * 1000);
@@ -31,10 +31,10 @@ export default class StockHelper {
         const afterOpen = (estDate.getHours() === 9 && estDate.getMinutes() >= 30) || estDate.getHours() > 10;
         const beforeClose = estDate.getHours() < 4;
 
-        console.log('isESTWeekday', isESTWeekday);
-        console.log('afterOpen', afterOpen);
-        console.log('beforeClose', beforeClose);
-        console.log('US_OPEN', this.US_OPEN);
+        // console.log('isESTWeekday', isESTWeekday);
+        // console.log('afterOpen', afterOpen);
+        // console.log('beforeClose', beforeClose);
+        // console.log('US_OPEN', this.US_OPEN);
 
         if (isESTWeekday) {
 
