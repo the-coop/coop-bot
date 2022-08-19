@@ -1,5 +1,5 @@
-import { STATE } from './coop.mjs';
 import Database from 'coop-shared/setup/database.mjs';
+import { STATE } from './coop.mjs';
 
 import client from './setup/client.mjs';
 import registerLogging from './setup/logging.mjs';
