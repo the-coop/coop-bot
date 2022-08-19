@@ -129,7 +129,8 @@ export default function eventsManifest() {
   EventsHelper.chanceRunInterval(() => ProspectHelper.randomReady(), 20, baseTickDur * 14);
 
   // Social
-  EventsHelper.chanceRunInterval(() => NewsHelper.mailboy(), 10, baseTickDur * 8);
+  // Pause temporarily
+  // EventsHelper.chanceRunInterval(() => NewsHelper.mailboy(), 10, baseTickDur * 8);
 
   // Ensure website rebuilt every week.
   EventsHelper.runInterval(() => SERVER.webRebuildHandler(), baseTickDur * 8);

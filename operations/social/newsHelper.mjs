@@ -11,7 +11,6 @@ export default class NewsHelper {
         return result;
     }
 
-
     static async mailboy() {
         let query;
         let channelCode;
