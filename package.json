@@ -1,5 +1,5 @@
 {
-  "name": "coop-bot",
+  "name": "bot",
   "version": "1.0.2",
   "description": "Single server community bot",
   "type": "module",
@@ -7,7 +7,7 @@
     "start": "pm2 kill && pm2 start ./index.mjs",
     "dev": "nodemon ./index.mjs"
   },
-  "author": "lmf-git",
+  "author": "the-coop",
   "engines": {
     "node": "16.x"
   },
@@ -21,7 +21,7 @@
     "algosdk": "^1.19",
     "axios": "^0.21.2",
     "chance": "^1.1.7",
-    "coop-shared": "https://github.com/the-coop/coop-shared.git#ccaf3b8",
+    "coop-shared": "git+https://github.com/the-coop/coop-shared.git#master",
     "discord.js": "^13.8.1",
     "emoji-regex": "^9.2.0",
     "ffmpeg-static": "^5.0.2",
@@ -38,5 +38,14 @@
     "eslint": "^7.24.0",
     "nodemon": "^2.0.7"
   },
-  "homepage": "https://thecoop.group"
+  "homepage": "https://thecoop.group",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmf-git/coop-bot.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lmf-git/coop-bot/issues"
+  }
 }
