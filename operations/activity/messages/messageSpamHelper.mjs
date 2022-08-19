@@ -1,4 +1,4 @@
-import { USERS, MESSAGES } from "../../../organisation/coop.mjs";
+import { USERS, MESSAGES } from "../../../coop.mjs";
 
 export default class MessageSpamHelper {
 

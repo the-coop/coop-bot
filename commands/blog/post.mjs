@@ -1,10 +1,12 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
 import { MessageActionRow, MessageButton } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
+
+import { EMOJIS, RAW_EMOJIS } from 'coop-shared/config.mjs';
+import Database from "coop-shared/setup/database.mjs";
+
 import BlogHelper from "../../operations/marketing/blog/blogHelper.mjs";
 
-import { EMOJIS, RAW_EMOJIS } from '../../organisation/config.mjs';
-import { MESSAGES, TIME, ITEMS, CHANNELS, USABLE } from '../../organisation/coop.mjs';
-import Database from "../../organisation/setup/database.mjs";
+import { MESSAGES, TIME, ITEMS, CHANNELS, USABLE } from '../../coop.mjs';
 
 export const name = 'post';
 

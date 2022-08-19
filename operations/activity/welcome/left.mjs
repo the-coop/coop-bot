@@ -1,4 +1,4 @@
-import { USERS, CHANNELS, SERVER, STATE } from '../../../organisation/coop.mjs';
+import { USERS, CHANNELS, SERVER, STATE } from '../../../coop.mjs';
 
 
 export default async function memberLeft(member) {

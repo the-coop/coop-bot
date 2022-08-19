@@ -1,4 +1,4 @@
-import { CHANNELS, USERS } from "../../../../organisation/coop.mjs";
+import { CHANNELS, USERS } from "../../../../coop.mjs";
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";

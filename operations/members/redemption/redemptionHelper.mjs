@@ -1,7 +1,7 @@
 import VotingHelper from "../../activity/redemption/votingHelper.mjs";
 
-import COOP, { STATE, CHANNELS, MESSAGES } from "../../../organisation/coop.mjs";
-import { RAW_EMOJIS, ROLES, CHANNELS as CHANNELS_CONFIG } from '../../../organisation/config.mjs';
+import COOP, { STATE, CHANNELS, MESSAGES } from "../../../coop.mjs";
+import { RAW_EMOJIS, ROLES, CHANNELS as CHANNELS_CONFIG } from 'coop-shared/config.mjs';
 
 
 export const STARTING_ROLES = [

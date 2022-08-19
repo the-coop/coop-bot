@@ -1,4 +1,4 @@
-import { MESSAGES, USERS, SERVER, ITEMS, USABLE } from '../../../../organisation/coop.mjs';
+import { MESSAGES, USERS, SERVER, ITEMS, USABLE } from '../../../../coop.mjs';
 
 
 export async function isRegisteredUserGuard(msgRef, user, silent = false) {

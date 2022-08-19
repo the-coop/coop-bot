@@ -1,4 +1,4 @@
-import { RAW_EMOJIS } from '../../../../../organisation/config.mjs';
+import { RAW_EMOJIS } from 'coop-shared/config.mjs';
 
 export default class EmojiHelper {
 

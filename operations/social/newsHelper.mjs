@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { STATE, CHANNELS } from "../../organisation/coop.mjs";
+import { STATE, CHANNELS } from "../../coop.mjs";
 
 export default class NewsHelper {
 

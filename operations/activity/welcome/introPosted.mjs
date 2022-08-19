@@ -1,7 +1,7 @@
 import { Permissions } from 'discord.js';
 
-import { USERS, MESSAGES, ROLES, CHANNELS, TIME } from '../../../organisation/coop.mjs';
-import { RAW_EMOJIS, ROLES as ROLES_CONFIG, CHANNELS as CHANNEL_CONFIG } from '../../../organisation/config.mjs';
+import { USERS, MESSAGES, ROLES, CHANNELS, TIME } from '../../../coop.mjs';
+import { RAW_EMOJIS, ROLES as ROLES_CONFIG, CHANNELS as CHANNEL_CONFIG } from 'coop-shared/config.mjs';
 
 export default async (msg) => {
     try {

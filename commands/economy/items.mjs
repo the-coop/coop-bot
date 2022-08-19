@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import COOP, { USABLE } from '../../organisation/coop.mjs';
-import { EMOJIS } from '../../organisation/config.mjs';
+import COOP, { USABLE } from '../../coop.mjs';
+import { EMOJIS } from 'coop-shared/config.mjs';
 
 export const name = 'items';
 

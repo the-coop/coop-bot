@@ -19,7 +19,7 @@ import EconomyHelper from "./minigames/medium/economy/economyHelper.mjs";
 import ElectionHelper from "./members/hierarchy/election/electionHelper.mjs";
 
 
-import COOP, { SERVER, USERS } from "../organisation/coop.mjs";
+import COOP, { SERVER, USERS } from "../coop.mjs";
 
 import ProspectHelper from "./members/redemption/prospectHelper.mjs";
 import serverTick from "./serverTick.mjs";

@@ -2,8 +2,8 @@ import { EGG_DATA } from '../../../../small/egghunt.mjs';
 
 import UsableItemHelper from "../usableItemHelper.mjs";
 
-import { EMOJIS } from "../../../../../../organisation/config.mjs";
-import COOP, { STATE, REACTIONS, ITEMS } from "../../../../../../organisation/coop.mjs";
+import { EMOJIS } from "coop-shared/config.mjs";
+import COOP, { STATE, REACTIONS, ITEMS } from "../../../../../../coop.mjs";
 
 export default class RareEggHandler {
 

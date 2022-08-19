@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-import COOP, { USERS, CHANNELS } from '../../organisation/coop.mjs';
-import { EMOJIS } from '../../organisation/config.mjs';
+import COOP, { USERS, CHANNELS } from '../../coop.mjs';
+import { EMOJIS } from 'coop-shared/config.mjs';
 import SuggestionsHelper from '../../operations/activity/suggestions/suggestionsHelper.mjs';
 
 export const name = 'suggest';

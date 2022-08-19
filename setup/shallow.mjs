@@ -12,13 +12,10 @@ import {
 } from '@discordjs/voice';
 
 
-
-
-
 import _ from 'lodash';
-import Database from './database.mjs';
+import Database from 'coop-shared/setup/database.mjs';
 import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, TIME, USERS } from '../coop.mjs';
-import { CHANNELS as CHANNELS_CONFIG, RAW_EMOJIS, ITEMS as ITEMS_CONFIG } from '../config.mjs';
+import { CHANNELS as CHANNELS_CONFIG, RAW_EMOJIS, ITEMS as ITEMS_CONFIG } from 'coop-shared/config.mjs';
 
 // v DEV IMPORT AREA v
 import BaseHelper from '../../operations/minigames/medium/conquest/baseHelper.mjs';

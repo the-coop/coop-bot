@@ -1,7 +1,7 @@
 import EggHuntMinigame from "../../../../small/egghunt.mjs";
 
 import { usedOwnedUsableGuard } from "../../itemCmdGuards.mjs";
-import COOP, { STATE } from "../../../../../../organisation/coop.mjs";
+import COOP, { STATE } from "../../../../../../coop.mjs";
 
 
 export default class LaxativeHandler {

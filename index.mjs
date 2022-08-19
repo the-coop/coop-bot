@@ -1,13 +1,13 @@
-import { STATE } from './organisation/coop.mjs';
-import Database from './organisation/setup/database.mjs';
+import { STATE } from './coop.mjs';
+import Database from 'coop-shared/setup/database.mjs';
 
-import client from './organisation/setup/client.mjs';
-import registerLogging from './organisation/setup/logging.mjs';
+import client from './setup/client.mjs';
+import registerLogging from './setup/logging.mjs';
 
 import eventsManifest from './operations/manifest.mjs';
 
 // import express from 'express';
-import secrets from './organisation/setup/secrets.mjs';
+import secrets from 'coop-shared/setup/secrets.mjs';
 
 import * as Sentry from '@sentry/node';
 

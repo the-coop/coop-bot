@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import COOP from '../../organisation/coop.mjs';
-import { EMOJIS } from '../../organisation/config.mjs';
+import COOP from '../../coop.mjs';
+import { EMOJIS } from 'coop-shared/config.mjs';
 
 import SkillsHelper from '../../operations/minigames/medium/skills/skillsHelper.mjs';
 import CraftingHelper from "../../operations/minigames/medium/skills/crafting/craftingHelper.mjs";

@@ -3,8 +3,8 @@ import _ from 'lodash';
 import VotingHelper from '../../activity/redemption/votingHelper.mjs';
 import DropTable from '../medium/economy/items/droptable.mjs';
 
-import COOP, { STATE } from '../../../organisation/coop.mjs';
-import { EMOJIS } from '../../../organisation/config.mjs';
+import COOP, { STATE } from '../../../coop.mjs';
+import { EMOJIS } from 'coop-shared/config.mjs';
 import EconomyNotifications from '../../activity/information/economyNotifications.mjs';
 
 

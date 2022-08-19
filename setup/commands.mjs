@@ -1,19 +1,18 @@
+import { Collection } from "discord.js";
 import fs from 'fs';
 import path from 'path';
-import { Collection } from "discord.js";
+import { fileURLToPath } from 'url';
+
 
 // https://discordjs.guide/creating-your-bot/command-handling.html#reading-command-files
 export default async function setupCommands(client) {    
     // Start locally loading the commands.
     client.commands = new Collection();
-
-    // Resolve commands path.
-    const pathParts = import.meta.url.split('/');
-    const trimOne = pathParts.slice(2, pathParts.length);
-    const trimTwo = trimOne.slice(0, trimOne.length - 3);
-    const commandsDir = trimTwo.join('/') + '/commands';
     
     // Parse through the command files
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const commandsDir = path.join(__dirname, "../commands/");
     const commandFolders = fs.readdirSync(commandsDir,  { withFileTypes: true }).filter(de => de.isDirectory());
     commandFolders.map(async f => {
         const cmdFolderPath = commandsDir + '/' + f.name + '/';
@@ -21,7 +20,7 @@ export default async function setupCommands(client) {
 
         for (const file of commandFiles) {
             // Dynamically import the command via path.
-            const command = await import(`../../commands/${f.name}/${file}`);
+            const command = await import(`../commands/${f.name}/${file}`);
     
             // Register the command locally.
             client.commands.set(command.name, command);

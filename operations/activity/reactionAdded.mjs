@@ -15,7 +15,7 @@ import ElectionHelper from "../members/hierarchy/election/electionHelper.mjs";
 import CleanupHandler from "./messages/cleanupHandler.mjs";
 import LinkPreviewFilter from "./messages/linkPreviewFilter.mjs";
 
-import COOP, { USABLE, STATE } from "../../organisation/coop.mjs";
+import COOP, { USABLE, STATE } from "../../coop.mjs";
 import SuggestionsHelper from "./suggestions/suggestionsHelper.mjs";
 import CompetitionHelper from "../social/competitionHelper.mjs";
 import TradingHelper from "../minigames/medium/economy/items/tradingHelper.mjs";

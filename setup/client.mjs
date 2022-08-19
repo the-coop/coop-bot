@@ -2,14 +2,14 @@ import { Intents, Client } from "discord.js";
 
 import setupCommands from './commands.mjs';
 
-import joined from "../../operations/activity/welcome/joined.mjs";
-import left from "../../operations/activity/welcome/left.mjs";
-import messageAddedHandler from "../../operations/activity/messageAdded.mjs";
-import reactAddedHandler from "../../operations/activity/reactionAdded.mjs";
+import joined from "../operations/activity/welcome/joined.mjs";
+import left from "../operations/activity/welcome/left.mjs";
+import messageAddedHandler from "../operations/activity/messageAdded.mjs";
+import reactAddedHandler from "../operations/activity/reactionAdded.mjs";
 
-import CompetitionHelper from "../../operations/social/competitionHelper.mjs";
-import ProjectsHelper from "../../operations/productivity/projects/projectsHelper.mjs";
-import BlogHelper from "../../operations/marketing/blog/blogHelper.mjs";
+import CompetitionHelper from "../operations/social/competitionHelper.mjs";
+import ProjectsHelper from "../operations/productivity/projects/projectsHelper.mjs";
+import BlogHelper from "../operations/marketing/blog/blogHelper.mjs";
 
 export default async () => {
     // Instantiate the client.

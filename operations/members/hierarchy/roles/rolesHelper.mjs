@@ -1,5 +1,5 @@
-import COOP, { SERVER, USERS } from '../../../../organisation/coop.mjs';
-import { ROLES as ROLES_CONFIG } from '../../../../organisation/config.mjs';
+import COOP, { SERVER, USERS } from '../../../../coop.mjs';
+import { ROLES as ROLES_CONFIG } from 'coop-shared/config.mjs';
 
 export default class RolesHelper {
 

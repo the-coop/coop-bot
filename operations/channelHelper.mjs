@@ -1,7 +1,7 @@
 import { Permissions } from 'discord.js';
 
-import COOP, { STATE, SERVER } from '../organisation/coop.mjs';
-import { CHANNELS as CHANNELS_CONFIG } from '../organisation/config.mjs';
+import COOP, { STATE, SERVER } from '../coop.mjs';
+import { CHANNELS as CHANNELS_CONFIG } from 'coop-shared/config.mjs';
 
 import MessageNotifications from './activity/information/messageNotifications.mjs';
 

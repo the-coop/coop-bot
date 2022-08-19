@@ -2,11 +2,10 @@ import moment from 'moment';
 
 import Chicken from "../../../chicken.mjs";
 
-import { CHANNELS, SERVER, MESSAGES, ROLES, USERS, ITEMS, TIME, STATE } from '../../../../organisation/coop.mjs';
+import { CHANNELS, SERVER, MESSAGES, ROLES, USERS, ITEMS, TIME, STATE } from '../../../../coop.mjs';
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
-
 
 import VotingHelper from '../../../activity/redemption/votingHelper.mjs';
 import EventsHelper from '../../../eventsHelper.mjs';

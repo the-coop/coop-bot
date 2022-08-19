@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { CHANNELS, TIME, USERS } from "../../organisation/coop.mjs";
+import { CHANNELS, TIME, USERS } from "../../coop.mjs";
 import EventsHelper from "../eventsHelper.mjs";
 
 export const SPOTLIGHT_DUR = 3600 * 24 * 4;

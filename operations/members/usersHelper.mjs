@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-import { SERVER, STATE, CHANNELS, USERS, MESSAGES, ROLES, TIME } from "../../organisation/coop.mjs";
-import { ROLES as ROLES_CONFIG } from "../../organisation/config.mjs";
+import { SERVER, STATE, CHANNELS, USERS, MESSAGES, ROLES, TIME } from "../../coop.mjs";
+import { ROLES as ROLES_CONFIG } from "coop-shared/config.mjs";
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";

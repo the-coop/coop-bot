@@ -1,6 +1,6 @@
 import UsableItemHelper from "../usableItemHelper.mjs";
 
-import COOP from "../../../../../../organisation/coop.mjs";
+import COOP from "../../../../../../coop.mjs";
 
 export default class DiamondHandler {
 

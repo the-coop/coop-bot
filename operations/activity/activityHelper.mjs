@@ -1,5 +1,5 @@
-import { SERVER } from "../../organisation/coop.mjs";
-import Database from "../../organisation/setup/database.mjs";
+import { SERVER } from "../../coop.mjs";
+import Database from "coop-shared/setup/database.mjs";
 
 export default class ActivityHelper {
 

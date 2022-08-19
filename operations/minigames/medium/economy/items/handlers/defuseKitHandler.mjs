@@ -1,4 +1,4 @@
-import { MESSAGES, USERS, ITEMS } from "../../../../../../organisation/coop.mjs";
+import { MESSAGES, USERS, ITEMS } from "../../../../../../coop.mjs";
 
 export default class DefuseKitHandler {
 

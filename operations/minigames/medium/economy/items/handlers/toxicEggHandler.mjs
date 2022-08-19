@@ -1,8 +1,8 @@
 import BuffsHelper from "../../../conquest/buffsHelper.mjs";
 import UsableItemHelper from "../usableItemHelper.mjs";
 
-import COOP, { ITEMS, STATE } from "../../../../../../organisation/coop.mjs";
-import { EMOJIS } from "../../../../../../organisation/config.mjs";
+import COOP, { ITEMS, STATE } from "../../../../../../coop.mjs";
+import { EMOJIS } from "coop-shared/config.mjs";
 
 
 // TODO: All eggs should extend base egg handler, same for food items / food item handlers.

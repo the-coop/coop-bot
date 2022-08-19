@@ -1,6 +1,6 @@
 import BuffsHelper from "../../../conquest/buffsHelper.mjs";
 
-import COOP, { ITEMS, USABLE } from "../../../../../../organisation/coop.mjs";
+import COOP, { ITEMS, USABLE } from "../../../../../../coop.mjs";
 
 export default class BombHandler {
 

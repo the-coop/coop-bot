@@ -1,5 +1,5 @@
 // import { usedOwnedUsableGuard } from '../../itemCmdGuards';
-import { MESSAGES, USERS } from '../../../../../../organisation/coop.mjs';
+import { MESSAGES, USERS } from '../../../../../../coop.mjs';
 
 export default class GoldCoinHandler {
     

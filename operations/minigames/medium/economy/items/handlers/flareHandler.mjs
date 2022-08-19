@@ -1,7 +1,7 @@
 import CratedropMinigame from "../../../../small/cratedrop.mjs";
 
 import { usedOwnedUsableGuard } from "../../itemCmdGuards.mjs";
-import COOP, { STATE } from "../../../../../../organisation/coop.mjs";
+import COOP, { STATE } from "../../../../../../coop.mjs";
 
 
 

@@ -3,9 +3,9 @@ import moment from 'moment';
 import ElectionHelper from './members/hierarchy/election/electionHelper.mjs';
 import CooperMorality from './minigames/small/cooperMorality.mjs';
 
-import { STATE, CHANNELS, TIME, ITEMS } from "../organisation/coop.mjs";
+import { STATE, CHANNELS, TIME, ITEMS } from "../coop.mjs";
 
-import Database from '../organisation/setup/database.mjs';
+import Database from 'coop-shared/setup/database.mjs';
 // import VisualisationHelper from './minigames/medium/conquest/visualisationHelper.mjs';
 
 

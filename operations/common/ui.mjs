@@ -1,4 +1,4 @@
-import { MESSAGES, USERS } from "../../organisation/coop.mjs";
+import { MESSAGES, USERS } from "../../coop.mjs";
 
 
 // Recursive confirmation prompt.

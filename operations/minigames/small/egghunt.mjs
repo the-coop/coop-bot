@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-import { RAW_EMOJIS, EMOJIS } from '../../../organisation/config.mjs';
-import COOP, { STATE, CHANNELS, ITEMS, MESSAGES, USERS, ROLES, REACTIONS } from '../../../organisation/coop.mjs';
+import { RAW_EMOJIS, EMOJIS } from 'coop-shared/config.mjs';
+import COOP, { STATE, CHANNELS, ITEMS, MESSAGES, USERS, ROLES, REACTIONS } from '../../../coop.mjs';
 
 import EconomyNotifications from '../../activity/information/economyNotifications.mjs';
 import DropTable from '../medium/economy/items/droptable.mjs';

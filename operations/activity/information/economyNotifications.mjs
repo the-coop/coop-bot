@@ -1,4 +1,4 @@
-import { MESSAGES, CHANNELS, STATE } from "../../../organisation/coop.mjs";
+import { MESSAGES, CHANNELS, STATE } from "../../../coop.mjs";
 
 // EGGS FOUND
 

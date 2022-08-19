@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import COOP, { CHANNELS, TIME, STATE } from '../organisation/coop.mjs';
+import COOP, { CHANNELS, TIME, STATE } from '../coop.mjs';
 
 import Chicken from './chicken.mjs';
 

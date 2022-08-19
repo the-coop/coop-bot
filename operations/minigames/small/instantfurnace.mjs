@@ -1,5 +1,5 @@
-import { STATE, USABLE, MESSAGES, CHANNELS, USERS, ITEMS } from "../../../organisation/coop.mjs";
-import { EMOJIS } from "../../../organisation/config.mjs";
+import { STATE, USABLE, MESSAGES, CHANNELS, USERS, ITEMS } from "../../../coop.mjs";
+import { EMOJIS } from "coop-shared/config.mjs";
 import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
 
 export const BAR_DATA = {

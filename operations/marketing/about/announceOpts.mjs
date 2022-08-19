@@ -1,4 +1,4 @@
-import COOP, { USERS } from "../../../organisation/coop.mjs";
+import COOP, { USERS } from "../../../coop.mjs";
 import { authorConfirmationPrompt } from '../../common/ui.mjs'
 
 export default class AnnouncementOpts {

@@ -1,7 +1,7 @@
 import EmojiHelper from "./emojiHelper.mjs";
 
-import COOP, { USABLE, SERVER, TIME, STATE } from "../../../../../organisation/coop.mjs";
-import { EMOJIS, RAW_EMOJIS } from '../../../../../organisation/config.mjs';
+import COOP, { USABLE, SERVER, TIME, STATE } from "../../../../../coop.mjs";
+import { EMOJIS, RAW_EMOJIS } from 'coop-shared/config.mjs';
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";

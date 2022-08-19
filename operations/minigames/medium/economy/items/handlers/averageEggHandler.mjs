@@ -3,8 +3,8 @@ import ReactionHelper from "../../../../../activity/messages/reactionHelper.mjs"
 import { EGG_DATA } from "../../../../small/egghunt.mjs";
 import { usedOwnedUsableGuard } from "../../itemCmdGuards.mjs";
 
-import { EMOJIS } from "../../../../../../organisation/config.mjs";
-import COOP, { ITEMS, STATE, USERS } from "../../../../../../organisation/coop.mjs";
+import { EMOJIS } from "coop-shared/config.mjs";
+import COOP, { ITEMS, STATE, USERS } from "../../../../../../coop.mjs";
 
 export default class AverageEggHandler {
 

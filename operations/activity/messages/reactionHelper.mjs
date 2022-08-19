@@ -1,5 +1,5 @@
-import { EMOJIS } from '../../../organisation/config.mjs';
-import { ROLES, USERS } from '../../../organisation/coop.mjs';
+import { EMOJIS } from 'coop-shared/config.mjs';
+import { ROLES, USERS } from '../../../coop.mjs';
 
 
 export const defaultAwaitSingleOpts = {

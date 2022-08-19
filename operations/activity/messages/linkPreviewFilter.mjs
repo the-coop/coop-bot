@@ -1,4 +1,4 @@
-import { USERS, MESSAGES } from "../../../organisation/coop.mjs";
+import { USERS, MESSAGES } from "../../../coop.mjs";
 
 // TODO: This was turned off sadly and is causing errors due to Discord api change. :(
 export default class LinkPreviewFilter {

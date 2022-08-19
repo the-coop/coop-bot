@@ -1,4 +1,4 @@
-import COOP from "../../../organisation/coop.mjs";
+import COOP from "../../../coop.mjs";
 import Chicken from "../../chicken.mjs";
 import DropTable from "../medium/economy/items/droptable.mjs";
 

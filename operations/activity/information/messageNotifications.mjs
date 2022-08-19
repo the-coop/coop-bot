@@ -1,5 +1,5 @@
 import Statistics from './statistics.mjs';
-import COOP, { CHANNELS, STATE } from '../../../organisation/coop.mjs';
+import COOP, { CHANNELS, STATE } from '../../../coop.mjs';
 
 export default class MessageNotifications {
 

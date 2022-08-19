@@ -1,4 +1,4 @@
-import { TIME } from "../../../../organisation/coop.mjs";
+import { TIME } from "../../../../../coop.mjs";
 import Socket from "../../../../organisation//api/services/socket/socket.mjs";
 import Auth from '../../../../organisation/api/auth/_auth.mjs';
 

@@ -1,9 +1,9 @@
 import VotingHelper from '../../activity/redemption/votingHelper.mjs';
 
-import { KEY_MESSAGES, EMOJIS, CHANNELS } from '../../../organisation/config.mjs';
+import { KEY_MESSAGES, EMOJIS, CHANNELS } from 'coop-shared/config.mjs';
 import CooperMorality from '../../minigames/small/cooperMorality.mjs';
 
-import COOP, { MESSAGES, ROLES } from '../../../organisation/coop.mjs';
+import COOP, { MESSAGES, ROLES } from '../../../coop.mjs';
 import TemporaryMessages from '../../maintenance/temporaryMessages.mjs';
 
 export const SACRIFICE_RATIO_PERC = .05;

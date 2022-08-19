@@ -1,5 +1,5 @@
-import { USERS, TIME, MESSAGES } from '../../../organisation/coop.mjs';
-import { EMOJIS } from '../../../organisation/config.mjs';
+import { USERS, TIME, MESSAGES } from '../../../coop.mjs';
+import { EMOJIS } from 'coop-shared/config.mjs';
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";

@@ -1,7 +1,7 @@
-import { BOTS } from "../../../../../organisation/config.mjs";
-import { USERS } from "../../../../../organisation/coop.mjs";
+import { BOTS } from "coop-shared/config.mjs";
+import { USERS } from "../../../../../coop.mjs";
 
-import STATE from "../../../../../organisation/state.mjs";
+import STATE from "../../../../../state.mjs";
 import ReactionHelper from "../../../../activity/messages/reactionHelper.mjs";
 
 export default class DropTable {

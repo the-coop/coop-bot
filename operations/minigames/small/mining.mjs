@@ -4,8 +4,8 @@ import SkillsHelper from "../medium/skills/skillsHelper.mjs";
 
 import UsableItemHelper from "../medium/economy/items/usableItemHelper.mjs";
 
-import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../organisation/coop.mjs";
-import { EMOJIS } from "../../../organisation/config.mjs";
+import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
+import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
 

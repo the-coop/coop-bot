@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-import COOP from '../../organisation/coop.mjs';
+import COOP from '../../coop.mjs';
 import { 
 	validItemQtyArgFloatGuard, usableItemCodeGuard, 
 	validUserArgGuard, useManyGuard

@@ -1,7 +1,7 @@
 import Axios from "axios";
 
-import COOP, { MESSAGES, STATE } from "../../../organisation/coop.mjs";
-import { CHANNELS } from "../../../organisation/config.mjs";
+import COOP, { MESSAGES, STATE } from "../../../coop.mjs";
+import { CHANNELS } from "coop-shared/config.mjs";
 
 import EggHuntMinigame from "../../minigames/small/egghunt.mjs";
 

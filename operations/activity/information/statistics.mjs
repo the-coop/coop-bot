@@ -2,9 +2,9 @@ import MessageNotifications from "./messageNotifications.mjs";
 
 import ServerHelper from "../../serverHelper.mjs";
 
-import STATE from "../../../organisation/state.mjs";
+import STATE from "../../../state.mjs";
 
-import COOP, { ITEMS } from "../../../organisation/coop.mjs";
+import COOP, { ITEMS } from "../../../coop.mjs";
 
 export default class Statistics {
 

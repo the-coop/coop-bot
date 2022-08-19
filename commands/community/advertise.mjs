@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-import { EMOJIS } from '../../organisation/config.mjs';
-import { ITEMS, CHANNELS, USABLE, MESSAGES } from "../../organisation/coop.mjs";
+import { EMOJIS } from 'coop-shared/config.mjs';
+import { ITEMS, CHANNELS, USABLE, MESSAGES } from "../../coop.mjs";
 
 import InteractionHelper from '../../operations/activity/messages/interactionHelper.mjs';
 import SuggestionsHelper from '../../operations/activity/suggestions/suggestionsHelper.mjs';

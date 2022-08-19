@@ -1,9 +1,7 @@
 import announcementOpts from "./announceOpts.mjs";
-import communityOpts from "./communityOpts.mjs";
-import gameOpts from "./gameOpts.mjs";
 
-import { CHANNELS as CHANNELS_CONFIG, KEY_MESSAGES } from '../../../organisation/config.mjs';
-import COOP, { CHICKEN, CHANNELS } from "../../../organisation/coop.mjs";
+import { CHANNELS as CHANNELS_CONFIG, KEY_MESSAGES } from 'coop-shared/config.mjs';
+import COOP, { CHICKEN, CHANNELS } from "../../../coop.mjs";
 
 export default class AboutHelper {
 
@@ -30,12 +28,12 @@ export default class AboutHelper {
         },
         GAMES: {
             '🎮': (react, user) => COOP.ROLES.toggle(user.id, 'GAMING'),
-            '🗡': gameOpts.conquestToggle,
-            '📉': gameOpts.logsToggle,
+            '🗡': (react, user) => COOP.ROLES.toggle(user.id, 'CONQUEST'),
+            '📉': (react, user) => COOP.ROLES.toggle(user.id, 'LOGS'),
         },
         COMMUNITY: {
-            '🧵': communityOpts.miscToggle, // Done
-            '👷': communityOpts.projectsToggle // Done
+            '🧵': (react, user) => COOP.ROLES.toggle(user.id, 'MISC'),
+            '👷': (react, user) => COOP.ROLES.toggle(user.id, 'PROJECTS')
         },
         ACADEMY_AGENCY: {
             '🏢': (react, user) => COOP.ROLES.toggle(user.id, 'AGENCY'),

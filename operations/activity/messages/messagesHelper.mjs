@@ -1,5 +1,5 @@
-import { MESSAGES, CHANNELS, SERVER }  from "../../../organisation/coop.mjs";
-import { EMOJIS } from "../../../organisation/config.mjs";
+import { MESSAGES, CHANNELS, SERVER }  from "../../../coop.mjs";
+import { EMOJIS } from "coop-shared/config.mjs";
 
 import createEmbed from "./embedHelper.mjs";
 import { silentOpts } from "../../channelHelper.mjs";

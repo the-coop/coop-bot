@@ -1,5 +1,5 @@
-import { EMOJIS, RAW_EMOJIS } from "../../../organisation/config.mjs";
-import { SERVER, CHANNELS, USERS, MESSAGES } from "../../../organisation/coop.mjs";
+import { EMOJIS, RAW_EMOJIS } from "coop-shared/config.mjs";
+import { SERVER, CHANNELS, USERS, MESSAGES } from "../../../coop.mjs";
 
 import AdvertsHelper from "../../marketing/adverts/advertsHelper.mjs";
 import BlogHelper from "../../marketing/blog/blogHelper.mjs";

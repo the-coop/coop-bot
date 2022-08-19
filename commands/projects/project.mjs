@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-import { RAW_EMOJIS, EMOJIS } from '../../organisation/config.mjs';
-import { MESSAGES, ITEMS, TIME, USERS, CHANNELS } from '../../organisation/coop.mjs';
+import { RAW_EMOJIS, EMOJIS } from 'coop-shared/config.mjs';
+import { MESSAGES, ITEMS, TIME, USERS, CHANNELS } from '../../coop.mjs';
 
 import UsableItemHelper from '../../operations/minigames/medium/economy/items/usableItemHelper.mjs';
 // import ProjectsHelper from '../../operations/productivity/projects/projectsHelper.mjs';

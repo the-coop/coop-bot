@@ -1,13 +1,13 @@
 import _ from 'lodash'
-import { STATE, CHANNELS, MESSAGES, USERS, ROLES, REACTIONS, TIME, ITEMS } from "../../organisation/coop.mjs";
-import { CHANNELS as CHANNELS_CONFIG } from "../../organisation/config.mjs";
+import Database from "coop-shared/setup/database.mjs";
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
+import { CHANNELS as CHANNELS_CONFIG } from "coop-shared/config.mjs";
+
+import { STATE, CHANNELS, MESSAGES, USERS, ROLES, REACTIONS, TIME, ITEMS } from "../../coop.mjs";
 
 import EventsHelper from "../eventsHelper.mjs";
 import DropTable from '../minigames/medium/economy/items/droptable.mjs';
-
-import Database from "coop-shared/setup/database.mjs";
-import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
 export const COMPETITION_DUR = 3600 * 24 * 7;
 

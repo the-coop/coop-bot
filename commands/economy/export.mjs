@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-import COOP from '../../organisation/coop.mjs';
-import { 
-	validItemQtyArgFloatGuard, usableItemCodeGuard, 
-	validUserArgGuard, useManyGuard
-} from '../../operations/minigames/medium/economy/itemCmdGuards.mjs';
-import ElectionHelper from '../../operations/members/hierarchy/election/electionHelper.mjs';
+// import COOP from '../../coop.mjs';
+// import { 
+// 	validItemQtyArgFloatGuard, usableItemCodeGuard, 
+// 	validUserArgGuard, useManyGuard
+// } from '../../operations/minigames/medium/economy/itemCmdGuards.mjs';
+// import ElectionHelper from '../../operations/members/hierarchy/election/electionHelper.mjs';
 
 export const name = 'export';
 

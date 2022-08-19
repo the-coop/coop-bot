@@ -1,3 +1,4 @@
+import axios from "axios";
 import { 
 	joinVoiceChannel,
 	createAudioPlayer,
@@ -8,8 +9,7 @@ import {
 	VoiceConnectionStatus,
     NoSubscriberBehavior
 } from '@discordjs/voice';
-import axios from "axios";
-import { CHANNELS, ROLES, SERVER } from '../../organisation/coop.mjs';
+import { CHANNELS, ROLES, SERVER } from '../../coop.mjs';
 
 export default class StockHelper {
 

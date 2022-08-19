@@ -1,4 +1,4 @@
-import { SERVER } from "../../../organisation/coop.mjs";
+import { SERVER } from "../../../coop.mjs";
 
 export default class VotingHelper {
 

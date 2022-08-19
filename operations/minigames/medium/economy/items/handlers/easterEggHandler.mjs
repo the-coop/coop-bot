@@ -1,5 +1,5 @@
 import { usedOwnedUsableGuard } from '../../itemCmdGuards.mjs';
-import COOP, { USERS } from '../../../../../../organisation/coop.mjs';
+import COOP, { USERS } from '../../../../../../coop.mjs';
 
 export default class EasterEggHandler {
     

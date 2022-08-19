@@ -1,7 +1,7 @@
 // import BuffsHelper, { BUFF_TYPES } from '../../../conquest/buffsHelper';
 import { usedOwnedUsableGuard } from '../../itemCmdGuards.mjs';
 
-import COOP, { ITEMS, MESSAGES } from '../../../../../../organisation/coop.mjs';
+import COOP, { ITEMS, MESSAGES } from '../../../../../../coop.mjs';
 
 
 

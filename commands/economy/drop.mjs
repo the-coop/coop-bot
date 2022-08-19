@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import COOP, { STATE, USABLE } from '../../organisation/coop.mjs';
-import { EMOJIS, RAW_EMOJIS } from '../../organisation/config.mjs';
+import COOP, { STATE, USABLE } from '../../coop.mjs';
+// import { EMOJIS, RAW_EMOJIS } from 'coop-shared/config.mjs';
 
 import EggHuntMinigame from '../../operations/minigames/small/egghunt.mjs';
 

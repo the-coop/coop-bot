@@ -32,4 +32,5 @@ const STATE = {
     // Chance/random instance
     CHANCE: new Chance,
 };
+
 export default STATE;

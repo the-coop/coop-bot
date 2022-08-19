@@ -1,5 +1,5 @@
-import { EMOJIS } from '../../../organisation/config.mjs';
-import { CHANNELS, MESSAGES, USERS } from '../../../organisation/coop.mjs';
+import { EMOJIS } from 'coop-shared/config.mjs';
+import { CHANNELS, MESSAGES, USERS } from '../../../coop.mjs';
 
 export default async function memberJoined(member) {
 

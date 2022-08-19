@@ -1,4 +1,4 @@
-import { CHANNELS } from "../../../organisation/coop.mjs";
+import { CHANNELS } from "../../../../coop.mjs";
 
 export default class ChestPopMinigame {
 

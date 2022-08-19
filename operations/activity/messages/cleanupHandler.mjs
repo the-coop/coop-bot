@@ -1,5 +1,5 @@
-import { KEY_MESSAGES, ROLES as ROLES_CONFIG } from "../../../organisation/config.mjs";
-import { MESSAGES, REACTIONS, ROLES, USERS } from "../../../organisation/coop.mjs";
+import { KEY_MESSAGES, ROLES as ROLES_CONFIG } from "coop-shared/config.mjs";
+import { MESSAGES, REACTIONS, ROLES, USERS } from "../../../coop.mjs";
 import VotingHelper from "../redemption/votingHelper.mjs";
 
 export const cleanEmoji = '❎';

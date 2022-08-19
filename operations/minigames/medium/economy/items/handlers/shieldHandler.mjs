@@ -2,8 +2,8 @@ import BuffsHelper, { BUFF_TYPES } from '../../../conquest/buffsHelper.mjs';
 
 import { usedOwnedUsableGuard } from '../../itemCmdGuards.mjs';
 
-import COOP, { MESSAGES } from '../../../../../../organisation/coop.mjs';
-import { CHANNELS, RAW_EMOJIS } from '../../../../../../organisation/config.mjs';
+import COOP, { MESSAGES } from '../../../../../../coop.mjs';
+import { CHANNELS, RAW_EMOJIS } from 'coop-shared/config.mjs';
 
 // Give shield user protected state for a set amount of time.
 

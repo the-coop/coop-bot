@@ -3,7 +3,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 import { usableItemCodeGuard } from "../../operations/minigames/medium/economy/itemCmdGuards.mjs";
 
-import { ITEMS, MESSAGES, USERS } from "../../organisation/coop.mjs";
+import { ITEMS, MESSAGES, USERS } from "../../coop.mjs";
 
 // TODO: Refactor to a different location.
 const perc = (sub, total) => Math.round((sub / total) * 100);

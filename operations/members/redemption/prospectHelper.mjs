@@ -1,4 +1,4 @@
-import { CHANNELS, ROLES, TIME } from "../../../organisation/coop.mjs";
+import { CHANNELS, ROLES, TIME } from "../../../coop.mjs";
 import SacrificeHelper from "./sacrificeHelper.mjs";
 
 export default class ProspectHelper {

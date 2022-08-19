@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { USERS } from '../../organisation/coop.mjs';
+import { USERS } from '../../coop.mjs';
 import TempAccessCodeHelper from '../../operations/members/tempAccessCodeHelper.mjs';
 
 export const name = 'login';

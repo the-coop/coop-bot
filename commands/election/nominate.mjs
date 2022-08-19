@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import COOP, { ROLES, USERS } from '../../organisation/coop.mjs';
-import { CHANNELS } from '../../organisation/config.mjs';
+import COOP, { ROLES, USERS } from '../../coop.mjs';
+import { CHANNELS } from 'coop-shared/config.mjs';
 
 import ElectionHelper from '../../operations/members/hierarchy/election/electionHelper.mjs';
 

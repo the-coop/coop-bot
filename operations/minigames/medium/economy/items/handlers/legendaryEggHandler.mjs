@@ -1,9 +1,9 @@
-import { EGG_DATA } from "../../../../small/egghunt.mjs";
-
+import { EMOJIS } from "coop-shared/config.mjs";
 import UsableItemHelper from "../usableItemHelper.mjs";
 
-import { EMOJIS } from "../../../../../../organisation/config.mjs";
-import COOP, { STATE, REACTIONS } from '../../../../../../organisation/coop.mjs';
+import COOP, { STATE, REACTIONS } from '../../../../../../coop.mjs';
+import { EGG_DATA } from "../../../../small/egghunt.mjs";
+
 
 export default class LegendaryEggHandler {
 

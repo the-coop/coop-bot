@@ -10,8 +10,8 @@ import ToxicEggHandler from "./handlers/toxicEggHandler.mjs";
 import EggHuntMinigame from "../../../small/egghunt.mjs";
 import ReactionHelper from "../../../../activity/messages/reactionHelper.mjs";
 
-import { EMOJIS, RAW_EMOJIS } from "../../../../../organisation/config.mjs";
-import { STATE, CHICKEN, ROLES, REACTIONS, MESSAGES, ITEMS, CHANNELS, USERS, USABLE } from "../../../../../organisation/coop.mjs";
+import { EMOJIS, RAW_EMOJIS } from "coop-shared/config.mjs";
+import { STATE, CHICKEN, ROLES, REACTIONS, MESSAGES, ITEMS, CHANNELS, USERS, USABLE } from "../../../../../coop.mjs";
 import ElectionHelper from "../../../../members/hierarchy/election/electionHelper.mjs";
 import GoldCoinHandler from "./handlers/goldCoinHandler.mjs";
 import MineHandler from "./handlers/mineHandler.mjs";

@@ -5,18 +5,18 @@ import {
 	validItemQtyArgFloatGuard
 } from '../../operations/minigames/medium/economy/itemCmdGuards.mjs';
 
-import COOP, { MESSAGES, USABLE } from '../../organisation/coop.mjs';
+import COOP, { MESSAGES, USABLE } from '../../coop.mjs';
 import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
 
 // import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
 
 // import CoopCommand from '../../operations/activity/messages/coopCommand.mjs';
-// import COOP from '../../organisation/coop.mjs';
+// import COOP from '../../coop.mjs';
 
 // import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
 
 // import CoopCommand from '../../operations/activity/messages/coopCommand.mjs';
-// import COOP from '../../organisation/coop.mjs';
+// import COOP from '../../coop.mjs';
 
 
 // TODO: Move to Reactions/Message helper.

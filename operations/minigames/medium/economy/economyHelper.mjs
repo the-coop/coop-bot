@@ -1,4 +1,4 @@
-import { USABLE, USERS, MESSAGES, SERVER, CHANNELS, STATE, ITEMS } from "../../../../organisation/coop.mjs";
+import { USABLE, USERS, MESSAGES, SERVER, CHANNELS, STATE, ITEMS } from "../../../../coop.mjs";
 
 
 export default class EconomyHelper {

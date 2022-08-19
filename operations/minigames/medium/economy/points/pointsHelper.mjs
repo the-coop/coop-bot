@@ -4,8 +4,8 @@ import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 import Chicken from "../../../../chicken.mjs";
 
 
-// import { ROLES } from "../../../../../organisation/config.mjs";
-import COOP, {ITEMS, STATE } from "../../../../../organisation/coop.mjs";
+// import { ROLES } from "coop-shared/config.mjs";
+import COOP, {ITEMS, STATE } from "../../../../../coop.mjs";
 
 
 

@@ -1,5 +1,5 @@
-import COOP from "../../../../../organisation/coop.mjs";
-import EMOJIS from 'coopshared/config/emojis.mjs';
+import COOP from "../../../../../coop.mjs";
+import EMOJIS from 'coop-shared/config/emojis.mjs';
 
 import SkillsHelper from "../skillsHelper.mjs";
 

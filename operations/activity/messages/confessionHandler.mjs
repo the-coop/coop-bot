@@ -1,6 +1,6 @@
 import SubscriptionHelper from "../../marketing/newsletter/subscriptionHelper.mjs";
 
-import { USERS, CHANNELS } from "../../../organisation/coop.mjs";
+import { USERS, CHANNELS } from "../../../coop.mjs";
 
 export default class ConfessionHandler {
 
