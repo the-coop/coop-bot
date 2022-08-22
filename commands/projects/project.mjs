@@ -8,6 +8,7 @@ import UsableItemHelper from '../../operations/minigames/medium/economy/items/us
 
 import { authorConfirmationPrompt } from '../../operations/common/ui.mjs';
 import SuggestionsHelper from "../../operations/activity/suggestions/suggestionsHelper.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 export const name = 'project';
 
@@ -61,7 +62,7 @@ export const execute = async (interaction) => {
 	const confirmText = createProjectText + '_Please react with tick to propose the project\'s creation!_';
 
 	// Check the user can afford to pay the price!
-	const userCoinQty = await ITEMS.getUserItemQty(interaction.user.id, 'GOLD_COIN');
+	const userCoinQty = await Items.getUserItemQty(interaction.user.id, 'GOLD_COIN');
 	if (userCoinQty < price)
 		return MESSAGES.selfDestruct(interaction.channel, `<@${interaction.user.id}>, you cannot afford the project price (${price}xGOLD_COIN).`);
 

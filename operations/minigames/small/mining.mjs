@@ -8,6 +8,7 @@ import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../..
 import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 export default class MiningMinigame {
     
@@ -46,7 +47,7 @@ export default class MiningMinigame {
         const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 2 });
 
         // Check if has a pickaxe
-        const userPickaxesNum = await ITEMS.getUserItemQty(user.id, 'PICK_AXE');
+        const userPickaxesNum = await Items.getUserItemQty(user.id, 'PICK_AXE');
         const noPickText = `<@${user.id}> tried to mine the rocks, but doesn't have a pickaxe.`;
 
         // Remove reaction and warn.

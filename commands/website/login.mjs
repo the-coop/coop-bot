@@ -1,6 +1,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { USERS } from '../../coop.mjs';
-import TempAccessCodeHelper from '../../operations/members/tempAccessCodeHelper.mjs';
+
+import AccessCodes from "coop-shared/services/access-codes.mjs";
+
 
 export const name = 'login';
 
@@ -12,7 +14,7 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction) => {
 	// Generate a saved code the web api to authenticate on link visit.
-	const code = await TempAccessCodeHelper.create(interaction.user.id);
+	const code = await AccessCodes.create(interaction.user.id);
 
 	// DM the login code to the user
 	USERS._dm(interaction.user.id, 

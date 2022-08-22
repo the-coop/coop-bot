@@ -10,6 +10,7 @@ import UsableItemHelper from '../medium/economy/items/usableItemHelper.mjs';
 import SkillsHelper from '../medium/skills/skillsHelper.mjs';
 
 import { isRegisteredUserGuard } from '../medium/economy/itemCmdGuards.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 
 export const EGG_DATA = {
@@ -120,7 +121,7 @@ export default class EggHuntMinigame {
         // Check if user has a bomb to use
         try {
             // TODO: Allow all other explosives to do this too.
-            const bombQuantity = await ITEMS.getUserItemQty(user.id, 'BOMB');
+            const bombQuantity = await Items.getUserItemQty(user.id, 'BOMB');
 
             const rarity = this.calculateRarityFromMessage(reaction.message);
             const reward = EGG_DATA[rarity].points;
@@ -438,7 +439,7 @@ export default class EggHuntMinigame {
         const roll = STATE.CHANCE.bool({ likelihood: 15 });
         if (isTrollEgg && roll) {
             // Check if the user has an egg.
-            const hasQty = await ITEMS.hasQty(msg.author.id, eggRarity, 1);
+            const hasQty = await Items.hasQty(msg.author.id, eggRarity, 1);
             if (!hasQty) return false;
 
             // Try to take the egg from the user.

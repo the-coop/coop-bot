@@ -1,6 +1,7 @@
 import { STATE, USABLE, MESSAGES, CHANNELS, USERS, ITEMS } from "../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
 import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 export const BAR_DATA = {
     GOLD_BAR: {
@@ -32,7 +33,7 @@ export default class InstantFurnaceMinigame {
             const oreLimitMin = 25;
 
             // Check the quantity for the user.
-            const hasQty = await ITEMS.hasQty(user.id, 'METAL_ORE', oreLimitMin);
+            const hasQty = await Items.hasQty(user.id, 'METAL_ORE', oreLimitMin);
             if (!hasQty) return MESSAGES.selfDestruct(reaction.message, `${user.username} lacks ${oreLimitMin}xMETAL_ORE.`, 0, 5000);
 
             // Guard the action from those not sincerely using the item.

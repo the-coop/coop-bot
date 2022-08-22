@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "pm2 kill && pm2 start ./index.mjs",
-    "dev": "nodemon ./index.mjs"
+    "dev": "nodemon ./index.mjs",
+    "shallow": "nodemon ./setup/shallow.mjs"
   },
   "author": "the-coop",
   "engines": {

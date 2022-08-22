@@ -3,6 +3,7 @@ import { ITEMS, USABLE, USERS, CHANNELS, REACTIONS, CHICKEN } from "../../../../
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
+import Trading from "coop-shared/services/trading.mjs";
 
 
 // TODO: Rename file.
@@ -41,29 +42,6 @@ export default class TradingHelper {
         };
 
         const result = await Database.query(query);
-        return result;
-    }
-
-    // Defaults to returning 15 latest trades.
-    static async all(limit = 15) {
-        const query = {
-            name: "get-all-trades",
-            text: `SELECT * FROM open_trades ORDER BY id DESC LIMIT $1;`,
-            values: [limit]
-        };
-
-        const result = await Database.query(query);
-        return DatabaseHelper.many(result);
-    }
-
-    static async create(userID, username, offerItem, receiveItem, offerQty, receiveQty) {
-        const query = {
-            name: "create-trade",
-            text: `INSERT INTO open_trades(trader_id, trader_username, offer_item, receive_item, offer_qty, receive_qty) 
-                VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            values: [userID, username, offerItem, receiveItem, offerQty, receiveQty]
-        };
-        const result = DatabaseHelper.single(await Database.query(query));
         return result;
     }
 
@@ -123,27 +101,6 @@ export default class TradingHelper {
         return DatabaseHelper.many(result);
     }
 
-    static async get(tradeID) {
-        const query = {
-            name: "get-open-trade-id",
-            text: `SELECT * FROM open_trades WHERE id = $1`,
-            values: [tradeID]
-        };
-        
-        const result = await Database.query(query);
-        return DatabaseHelper.single(result);
-    }
-
-    static async getByTrader(traderID) {
-        const query = {
-            name: "get-open-by-trader-id",
-            text: `SELECT * FROM open_trades WHERE trader_id = $1 ORDER BY id DESC`,
-            values: [traderID]
-        };
-        
-        const result = await Database.query(query);
-        return DatabaseHelper.many(result);
-    }
 
 
     // Turn trade into items receive/loss string from searcher perspective 
@@ -161,37 +118,14 @@ export default class TradingHelper {
         ).join('');
     }
 
-
-    static async _accept(trade, accepteeID) {
-        try {
-            const didUse = await USABLE.use(accepteeID, trade.receive_item, trade.receive_qty);
-            if (didUse) {
-                // Add the offer items to the acceptee.
-                await ITEMS.add(accepteeID, trade.offer_item, trade.offer_qty, 'Trade accepted');
-    
-                // Add the receive items to the trader.
-                await ITEMS.add(trade.trader_id, trade.receive_item, trade.receive_qty, 'Trade accepted');
-    
-                // Delete/close the open trade offer.
-                await this.remove(trade.id);
-
-                return true;
-            }
-        } catch(e) {
-            console.log('Accepting trade error');
-            console.error(e);
-        }
-        return false;
-    }
-
     // This method directly takes items from user to close a trade.
     static async accept(openTradeID, accepteeID, accepteeName) {
         try {
             // Get trade by ID.
-            const trade = await this.get(openTradeID);
+            const trade = await Trading.get(openTradeID);
 
             // Trade may have been removed before accept.
-            if (await this._accept(trade, accepteeID)) {
+            if (await Trading.resolve(trade, accepteeID)) {
                 // Build string for logging/feedback.
                 const exchangeStr = this.tradeItemsStr(trade);
                 const actionStr = `**${accepteeName} accepted trade #${trade.id} from ${trade.trader_username}`;
@@ -210,28 +144,11 @@ export default class TradingHelper {
         return false;
     }
 
-    static async _cancel(trade) {
-        try {
-            // Add the offer items to the cancelee.
-            await ITEMS.add(trade.trader_id, trade.offer_item, trade.offer_qty, 'Trade cancelled');
-
-            // Delete/close the open trade offer.
-            await this.remove(trade.id);
-
-            return true;
-
-        } catch(e) {
-            console.log('Error cancelling trade offer.');
-            console.error(e);
-            return false;
-        }        
-    }
-
     static async cancel(cancelTradeID, canceleeName) {
         try {
             // Get trade by ID
-            const trade = await this.get(cancelTradeID);
-            await this._cancel(trade);
+            const trade = await Trading.get(cancelTradeID);
+            await Trading.close(trade);
 
             // Build string for logging/feedback.
             const lossItemQtyStr = ITEMS.lossItemQtyStr(trade.offer_item, trade.offer_qty);

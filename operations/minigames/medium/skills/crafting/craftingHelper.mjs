@@ -2,6 +2,7 @@ import COOP from "../../../../../coop.mjs";
 import EMOJIS from 'coop-shared/config/emojis.mjs';
 
 import SkillsHelper from "../skillsHelper.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 export default class CraftingHelper {
 
@@ -61,7 +62,7 @@ export default class CraftingHelper {
         const ingredList = Object.keys(this.CRAFTABLES[itemCode].ingredients);
         const ownedIngredients = await Promise.all(
             ingredList.map(async ingred => ({
-                quantity: await COOP.ITEMS.getUserItemQty(memberID, ingred),
+                quantity: await Items.getUserItemQty(memberID, ingred),
                 item_code: ingred
             })
         ));

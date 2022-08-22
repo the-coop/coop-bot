@@ -41,15 +41,6 @@ export default class AdvertsHelper {
         return DatabaseHelper.manyQuery(query);
     }
 
-    static async latest() {
-        const query = {
-            name: "latest-advert",
-            text: `SELECT * FROM adverts ORDER BY id DESC LIMIT 1`
-        };
-        
-        return DatabaseHelper.singleQuery(query);
-    }
-
     static async create(ownerID, targetURL, imageURL) {
         try {
             const query = {

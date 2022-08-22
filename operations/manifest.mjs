@@ -24,7 +24,7 @@ import COOP, { SERVER, USERS } from "../coop.mjs";
 import ProspectHelper from "./members/redemption/prospectHelper.mjs";
 import serverTick from "./serverTick.mjs";
 import TemporaryMessages from "./maintenance/temporaryMessages.mjs";
-import TempAccessCodeHelper from "./members/tempAccessCodeHelper.mjs";
+import AccessCodes from "coop-shared/services/access-codes.mjs";
 import NewsHelper from "./social/newsHelper.mjs";
 import CompetitionHelper from "./social/competitionHelper.mjs";
 import ActivityHelper from "./activity/activityHelper.mjs";
@@ -102,7 +102,7 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => TemporaryMessages.flush(), baseTickDur);
 
   // Cleanup temporary codes.
-  EventsHelper.runInterval(() => TempAccessCodeHelper.flush(), baseTickDur / 2);
+  EventsHelper.runInterval(() => AccessCodes.flush(), baseTickDur / 2);
 
   // Clean up user data, may have missed detection on a leave/kick/ban.
   EventsHelper.runInterval(() => COOP.USERS.cleanupUsers(), baseTickDur * 2);

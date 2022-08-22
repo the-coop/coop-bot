@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { SlashCommandBuilder } from "@discordjs/builders";
+import Trading from 'coop-shared/services/trading.mjs';
 
 import { 
 	validItemQtyArgFloatGuard
@@ -7,6 +8,7 @@ import {
 
 import COOP, { MESSAGES, USABLE } from '../../coop.mjs';
 import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 // import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
 
@@ -132,11 +134,11 @@ const createTrade = async interaction => {
 			return null;
 
 		// Check if user can fulfil the trade.
-		const canUserFulfil = await COOP.ITEMS.hasQty(tradeeID, offerItemCode, offerQty);
+		const canUserFulfil = await Items.hasQty(tradeeID, offerItemCode, offerQty);
 		if (!canUserFulfil) return COOP.MESSAGES.selfDestruct(interaction.channel, `Insufficient item quantity for trade.`, 0, 7500);
 
 		// Get their existing trades to check slots.
-		const ownerExistingTrades = await TradingHelper.getByTrader(tradeeID);
+		const ownerExistingTrades = await Trading.getByTrader(tradeeID);
 		if (ownerExistingTrades.length > 5)
 			return COOP.MESSAGES.selfDestruct(interaction.channel, `Insufficient available trade slots ${ownerExistingTrades.length}/5.`, 0, 7500);
 
@@ -211,7 +213,7 @@ const createTrade = async interaction => {
 			//  the item becomes a trade credit note, can be converted back.
 			const didUse = await USABLE.use(tradeeID, offerItemCode, offerQty);
 			if (didUse) {
-				const trade = await TradingHelper.create(
+				const trade = await Trading.create(
 					tradeeID, tradeeName,
 					offerItemCode, receiveItemCode,
 					offerQty, receiveQty
@@ -262,7 +264,7 @@ const tradeAccept = async interaction => {
 		const tradeeName = interaction.user.username;
 
 		// Check if valid trade ID given.
-		const trade = await TradingHelper.get(tradeID);
+		const trade = await Trading.get(tradeID);
 		if (!trade) return COOP.MESSAGES.selfDestruct(interaction.channel, `Invalid trade ID - already sold?`, 0, 5000);
 		
 		// Check if user can fulfil the trade.
@@ -300,7 +302,7 @@ const tradeCancel = async interaction => {
 		const tradeeName = interaction.user.username;
 
 		// Check if valid trade ID given.
-		const trade = await TradingHelper.get(tradeID);
+		const trade = await Trading.get(tradeID);
 		if (!trade) return COOP.MESSAGES.selfDestruct(interaction.channel, `Invalid # trade ID - already cancelled?`, 0, 5000);
 		
 		// Check if user can fulfil the trade.

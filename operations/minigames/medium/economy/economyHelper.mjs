@@ -1,10 +1,11 @@
+import Useable from "coop-shared/services/useable.mjs";
 import { USABLE, USERS, MESSAGES, SERVER, CHANNELS, STATE, ITEMS } from "../../../../coop.mjs";
 
 
 export default class EconomyHelper {
 
     static async circulation() {
-        const items = USABLE.getUsableItems();
+        const items = Useable.getUsableItems();
         const itemCode = STATE.CHANCE.pickone(items);
 
 		const total = await ITEMS.count(itemCode);

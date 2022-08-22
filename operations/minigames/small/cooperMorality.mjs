@@ -1,3 +1,4 @@
+import Items from "coop-shared/services/items.mjs";
 import COOP from "../../../coop.mjs";
 import Chicken from "../../chicken.mjs";
 import DropTable from "../medium/economy/items/droptable.mjs";
@@ -11,7 +12,7 @@ export default class CooperMorality {
     static async calculate() {
         let morality = null;
 
-        const points = await COOP.ITEMS.getUserItemQty(COOP.STATE.CLIENT.user.id, 'COOP_POINT');
+        const points = await Items.getUserItemQty(COOP.STATE.CLIENT.user.id, 'COOP_POINT');
 
         if (points < 0) morality = 'EVIL';
         if (points > 0) morality = 'GOOD';

@@ -6,6 +6,7 @@ import Chicken from "../../../../chicken.mjs";
 
 // import { ROLES } from "coop-shared/config.mjs";
 import COOP, {ITEMS, STATE } from "../../../../../coop.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 
 
@@ -80,7 +81,7 @@ export default class PointsHelper {
 
     static async getPercChange(userID) {
         const oldPoints = (await COOP.USERS.getField(userID, 'historical_points')) || 0;
-        const qty = await COOP.ITEMS.getUserItemQty(userID, 'COOP_POINT')
+        const qty = await Items.getUserItemQty(userID, 'COOP_POINT')
         const diff = qty - oldPoints;
         let percChange = (diff / oldPoints) * 100;
 

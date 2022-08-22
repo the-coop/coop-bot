@@ -6,6 +6,7 @@ import { STATE, REACTIONS, USABLE, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } fro
 import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 export default class WoodcuttingMinigame {
 
@@ -48,7 +49,7 @@ export default class WoodcuttingMinigame {
         const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 4 });
 
         // Check if has a axe
-        const userAxesNum = await ITEMS.getUserItemQty(user.id, 'AXE');
+        const userAxesNum = await Items.getUserItemQty(user.id, 'AXE');
         const noText = `${user.username} tried to cut wood, but doesn't have an axe.`;
         if (userAxesNum <= 0) 
             return MESSAGES.silentSelfDestruct(msg, noText, 0, 3333);

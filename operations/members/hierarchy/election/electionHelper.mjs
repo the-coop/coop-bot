@@ -1,11 +1,12 @@
 import moment from 'moment';
+import Database from "coop-shared/setup/database.mjs";
+import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
+import Election from "coop-shared/services/election.mjs";
 
 import Chicken from "../../../chicken.mjs";
 
 import { CHANNELS, SERVER, MESSAGES, ROLES, USERS, ITEMS, TIME, STATE } from '../../../../coop.mjs';
 
-import Database from "coop-shared/setup/database.mjs";
-import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
 import VotingHelper from '../../../activity/redemption/votingHelper.mjs';
 import EventsHelper from '../../../eventsHelper.mjs';
@@ -134,6 +135,9 @@ export default class ElectionHelper {
 
     static async startElection() {
         try {
+            // Show the channel.
+            CHANNELS._show(CHANNELS._getCode('ELECTION').id);
+
             // Turn election on and set latest election to now! :D
             Chicken.setConfig('election_on', 'true');
             Chicken.setConfig('last_election', parseInt(Date.now() / 1000));
@@ -279,6 +283,9 @@ export default class ElectionHelper {
             hierarchy.leaders.map(leader => 
                 ITEMS.add(leader.id, 'LEADERS_SWORD', 1, 'Election victory (leader)')
             );
+
+            // Hide the channel.
+            CHANNELS._hide(CHANNELS._getCode('ELECTION').id);
 
         } catch(e) {
             console.log('Something went wrong ending the election...');
@@ -797,28 +804,7 @@ export default class ElectionHelper {
         // TODO: Post the occassional reminder too...
     }
 
-    static async loadHierarchy() {
-        const hierarchy = {
-            commander: await this.loadHierarchySingleType('COMMANDER') || null,
-            leaders: await this.loadHierarchyEntitiesByType('LEADER') || [],
-            motw: await this.loadHierarchySingleType('MEMBEROFWEEK') || null
-        }
-        return hierarchy;
-    }
 
-    static loadHierarchySingleType(type) {
-        return DatabaseHelper.singleQuery({
-            text: "SELECT * FROM hierarchy WHERE type = $1",
-            values: [type]
-        });
-    }
-
-    static loadHierarchyEntitiesByType(type) {
-        return DatabaseHelper.manyQuery({
-            text: "SELECT * FROM hierarchy WHERE type = $1",
-            values: [type]
-        });
-    }
 
     static removeIDFromTrackedHierarchy(userID) {
         return Database.query({ 
@@ -836,7 +822,7 @@ export default class ElectionHelper {
     }
 
     static async trackHierarchy() {
-        const savedHierarchy = await this.loadHierarchy();
+        const savedHierarchy = await Election.loadHierarchy();
         const roleHierarchy = this._roleHierarchy();
 
         // Check if saved commander lost role.

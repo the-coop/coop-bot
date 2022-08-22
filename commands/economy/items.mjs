@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import COOP, { USABLE } from '../../coop.mjs';
 import { EMOJIS } from 'coop-shared/config.mjs';
+import Items from "coop-shared/services/items.mjs";
 
 export const name = 'items';
 
@@ -66,7 +67,7 @@ export const execute = async (interaction) => {
 			return await interaction.reply({ content: `${name}, ${parsedItemCode} seems invalid.`, ephemeral: true });
 
 		// Check a specific item instead.
-		const itemQty = await COOP.ITEMS.getUserItemQty(target.id, parsedItemCode);
+		const itemQty = await Items.getUserItemQty(target.id, parsedItemCode);
 		const displayQty = COOP.ITEMS.displayQty(itemQty);
 
 		// Send specific item count.

@@ -5,6 +5,7 @@ import CooperMorality from '../../minigames/small/cooperMorality.mjs';
 
 import COOP, { MESSAGES, ROLES } from '../../../coop.mjs';
 import TemporaryMessages from '../../maintenance/temporaryMessages.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 export const SACRIFICE_RATIO_PERC = .05;
 export const KEEP_RATIO_PERC = .02;
@@ -239,7 +240,7 @@ export default class SacrificeHelper {
         if (lastMsgSecs) lastMessageFmt = COOP.TIME.secsLongFmt(lastMsgSecs);
 
         const totalMsgsSent = await COOP.USERS.getField(user.id, 'total_msgs') || 0;
-        const points = await COOP.ITEMS.getUserItemQty(user.id, 'COOP_POINT');
+        const points = await Items.getUserItemQty(user.id, 'COOP_POINT');
         const totalItems = await COOP.ITEMS.getUserTotal(user.id);
 
         const cooperMood = await CooperMorality.load();

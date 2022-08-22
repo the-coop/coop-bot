@@ -1,6 +1,8 @@
 import { USERS, TIME, MESSAGES } from '../../../coop.mjs';
 import { EMOJIS } from 'coop-shared/config.mjs';
 
+import Subscription from 'coop-shared/services/subscription.mjs';
+
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
@@ -74,20 +76,7 @@ export default class SubscriptionHelper {
         }
     }
 
-    static async create(email, owner = null, level = 1) {
-        let result = false;
-        const creation = await Database.query({
-            name: 'create-subscription',
-            text: `INSERT INTO propaganda_subscriptions
-                (email, level, owner_id, subscribed_at) 
-                VALUES($1, $2, $3, $4)`,
-            values: [email, level, owner, TIME._secs()]
-        });
-        if (typeof creation.rowCount !== 'undefined') {
-            if (creation.rowCount === 1) result = true;
-        }
-        return result;
-    }
+
 
     static getEmailFromMessage(msg) {
         let email = null;
@@ -98,14 +87,6 @@ export default class SubscriptionHelper {
         return email;
     }
 
-    static async getByEmail(email) {
-        return DatabaseHelper.singleQuery({
-            name: 'get-subscription-by-email',
-            text: `SELECT * FROM propaganda_subscriptions WHERE email = $1`,
-            values: [email]
-        });
-    }
-
     static async subscribe(userID, email) {
         const subscription = {
             newLead: false,
@@ -114,7 +95,7 @@ export default class SubscriptionHelper {
 
         try {
             // Check current value in that column of database.
-            const currentSubscription = await this.getByEmail(email);
+            const currentSubscription = await Subscription.getByEmail(email);
 
             // If email was already known, modify the record (anon -> tied to known user)
             if (currentSubscription && !currentSubscription.owner_id) {
@@ -126,7 +107,7 @@ export default class SubscriptionHelper {
             if (!currentSubscription) {
                 subscription.newLead = true;
 
-                const didSubscribe = await this.create(email, userID, 1);
+                const didSubscribe = await Subscription.create(email, userID, 1);
                 if (didSubscribe) subscription.success = true;
             }
 
@@ -160,17 +141,6 @@ export default class SubscriptionHelper {
         });
     }
 
-    static async unsubscribeByEmail(email) {
-        let result = false;
-        const query = {
-            name: 'unsubscribe-by-email',
-            text: `DELETE FROM propaganda_subscriptions WHERE email = $1`,
-            values: [email]
-        };
-        const response = await Database.query(query);
-        if (typeof response.rowCount !== 'undefined') {
-            if (response.rowCount === 1) result = true;
-        }
-        return result;
-    }
+
+
 }

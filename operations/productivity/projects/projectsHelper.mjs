@@ -24,17 +24,6 @@ export default class ProjectsHelper {
         MESSAGES.delayReact(announcementMsg, EMOJIS.GOLD_COIN);
     }
 
-    static loadBySlug(slug) {
-        return DatabaseHelper.singleQuery({
-            name: "load-project-slug", 
-            text: `SELECT * FROM projects
-                    JOIN users 
-                    ON projects.owner_id = discord_id
-                WHERE slug = $1`,
-            values: [slug]
-        });
-    }
-
     static async create(name, owner, deadline) {
         try {
             // Create the channel under projects.
@@ -84,17 +73,6 @@ export default class ProjectsHelper {
             console.error(e);
             return null;
         }
-    }
-
-    static async all() {
-        const query = {
-            name: "get-all-projects-with-username",
-            text: `SELECT * FROM projects
-                INNER JOIN users 
-                ON projects.owner_id = discord_id`
-        };
-        const result = await DatabaseHelper.manyQuery(query);
-        return result;
     }
 
     static async setTitle(channelID, title) {

@@ -61,15 +61,6 @@ export default class BlogHelper {
         return draft;
     }
 
-    static async loadDraftByChannelID(chanID) {
-        const draft = await DatabaseHelper.singleQuery({
-            name: "load-draft",
-            text: `SELECT * FROM post_drafts WHERE channel_id = $1`,
-            values: [chanID]
-        });
-        return draft;
-    }
-
     static async loadDrafts() {
         const draft = await DatabaseHelper.manyQuery({
             name: "load-drafts", text: `SELECT * FROM post_drafts`
@@ -77,17 +68,6 @@ export default class BlogHelper {
         return draft;
     }
 
-    static loadHeadlines() {
-        return DatabaseHelper.manyQuery({
-            name: "load-headlines", text: `SELECT title, slug, id, author_id, author_username, date FROM blog_posts`
-        });
-    }
-
-    static loadAllForBuild() {
-        return DatabaseHelper.manyQuery({
-            name: "load-posts-build-intent", text: `SELECT * FROM blog_posts`
-        });
-    }
 
     static loadPostByID(id) {
         return DatabaseHelper.singleQuery({
@@ -97,13 +77,7 @@ export default class BlogHelper {
         });
     }
 
-    static loadPostBySlug(slug) {
-        return DatabaseHelper.singleQuery({
-            name: "load-post-slug", 
-            text: `SELECT * FROM blog_posts WHERE slug = $1`,
-            values: [slug]
-        });
-    }
+
 
     static async deleteDraft(draftID) {
         return Database.query({

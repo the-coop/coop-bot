@@ -6,7 +6,11 @@ import Database from "coop-shared/setup/database.mjs";
 
 import BlogHelper from "../../operations/marketing/blog/blogHelper.mjs";
 
+import Blog from 'coop-shared/services/blog.mjs';
+
 import { MESSAGES, TIME, ITEMS, CHANNELS, USABLE } from '../../coop.mjs';
+
+import ItemsShared from "coop-shared/services/items.mjs";
 
 export const name = 'post';
 
@@ -66,7 +70,7 @@ const post = async interaction => {
 	const price = basePrice * numWeeks;
 
 	// Check the user can afford to pay the price!
-	const userCoinQty = await ITEMS.getUserItemQty(interaction.user.id, 'GOLD_COIN');
+	const userCoinQty = await ItemsShared.getUserItemQty(interaction.user.id, 'GOLD_COIN');
 	if (userCoinQty < price)
 		return await interaction.reply(`<@${interaction.user.id}>, you cannot afford the post price (${price}xGOLD_COIN).`);
 
@@ -144,7 +148,7 @@ const post = async interaction => {
 
 
 const preview = async interaction => {
-	const draft = await BlogHelper.loadDraftByChannelID(interaction.channel.id);
+	const draft = await Blog.loadDraftByChannelID(interaction.channel.id);
 	const previewLink = `https://thecoop.group/blog/preview?channel_id=${interaction.channel.id}`;
 
 	// Only allow usage on a draft channel.
@@ -167,7 +171,7 @@ const preview = async interaction => {
 
 
 // const preview = interaction => {
-// 	const draft = await BlogHelper.loadDraftByChannelID(interaction.channel.id);
+// 	const draft = await Blog.loadDraftByChannelID(interaction.channel.id);
 // 	const previewLink = `https://thecoop.group/blog/preview?channel_id=${interaction.channel.id}`;
 
 // 	if (!draft)
@@ -192,7 +196,7 @@ const preview = async interaction => {
 // const publish = interaction => {		
 // 	try {
 // 		// If ID is null... try to see if the current one will work.
-// 		const draft = await BlogHelper.loadDraftByChannelID(interaction.channel.id);
+// 		const draft = await Blog.loadDraftByChannelID(interaction.channel.id);
 // 		if (!draft)
 // 			return MESSAGES.selfDestruct(interaction.channel, 'Please run command within a post channel.');
 

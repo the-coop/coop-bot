@@ -48,7 +48,7 @@ export const execute = async interaction => {
 		const price = await ITEMS.perBeakRelativePrice('GOLD_COIN', .005);
 
 		// Check user can afford this price.
-		const userCoinQty = await ITEMS.getUserItemQty(interaction.user.id, 'GOLD_COIN');
+		const userCoinQty = await ItemsShared.getUserItemQty(interaction.user.id, 'GOLD_COIN');
 		if (userCoinQty < price)
 			return await interaction.reply({ content: `Can't afford ad ${userCoinQty.toFixed(2)}/${price.toFixed(2)} GOLD_COIN.`, ephemeral: true });
 

@@ -16,6 +16,7 @@ import ElectionHelper from "../../../../members/hierarchy/election/electionHelpe
 import GoldCoinHandler from "./handlers/goldCoinHandler.mjs";
 import MineHandler from "./handlers/mineHandler.mjs";
 import DefuseKitHandler from "./handlers/defuseKitHandler.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 
 export default class UsableItemHelper {
@@ -94,58 +95,11 @@ export default class UsableItemHelper {
         return dropMsg;
     }
 
-    static async use(userID, itemCode, useQty, note = 'Used item') {
-        // Attempt to load item ownership.
-        const ownedQty = await ITEMS.getUserItemQty(userID, itemCode);
-
-        // Check if enough qty of item is owned.
-        if (ownedQty - useQty >= 0) {
-            // TODO: Just ensure that subtract does this itself...? Get rid of use?
-            await ITEMS.subtract(userID, itemCode, useQty, note);
-            return true;
-        } else return false;
-    }
-
-    static getUsableItems() {
-        const unusable = this.NON_USABLE_EMOJIS;
-        const codeFilter = itemCode => !unusable.includes(itemCode);
-        return Object.keys(EMOJIS).filter(codeFilter);
-    }
-
     static isDroppedItemMsg(msg) {
         return ReactionHelper.didUserReactWith(
             msg, CHICKEN.getDiscordID(), RAW_EMOJIS.DROPPED
         );
     }
-
-    static isUsable(itemCode) {
-		return this.getUsableItems().includes(itemCode);
-    }
-
-    static NON_USABLE_EMOJIS = [
-        "COOP",
-        "VOTE_FOR",
-        "VOTE_AGAINST",
-
-        "LEGENDARY_CRATE",
-        "LEGENDARY_CRATE_OPEN",
-        "RARE_CRATE",
-        "RARE_CRATE_OPEN",
-        "AVERAGE_CRATE",
-        "AVERAGE_CRATE_OPEN",
-
-        "POLL_FOR",
-        "POLL_AGAINST",
-        "ROADMAP",
-        "SACRIFICE_SHIELD",
-        "ROCK",
-
-        "DROPPED",
-        "BASKET",
-
-        // Maybe usable.
-        "DAGGER",
-    ];
 
     // Check if a message has an emoji and is pickupable.
     static isPickupable(reaction) {

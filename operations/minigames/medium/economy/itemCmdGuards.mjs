@@ -1,3 +1,4 @@
+import Items from 'coop-shared/services/items.mjs';
 import { MESSAGES, USERS, SERVER, ITEMS, USABLE } from '../../../../coop.mjs';
 
 
@@ -116,7 +117,7 @@ export async function useManyGuard(user, msg, itemManifest) {
 export async function ownEnoughGuard(user, itemCode, qty, msgRef) {
     try {
         // Load the user's owned item qty.
-        const itemQty = await ITEMS.getUserItemQty(user.id, itemCode);
+        const itemQty = await Items.getUserItemQty(user.id, itemCode);
         const emoji = MESSAGES.emojiCodeText(itemCode);
         if (itemQty < 0 || itemQty - qty < 0) {
             const displayItemQty = ITEMS.displayQty(itemQty);
@@ -156,7 +157,7 @@ export async function ownEnoughManyGuard(user, msg, itemManifest) {
             };
 
             // Indicate guard failed.
-            const itemQty = await ITEMS.getUserItemQty(user.id, itemCode);
+            const itemQty = await Items.getUserItemQty(user.id, itemCode);
 
             // Update result object with information for clearer result.
             result.has = itemQty;
