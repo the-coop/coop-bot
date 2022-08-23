@@ -1,9 +1,6 @@
 import axios from 'axios';
 
-import COOP, { CHANNELS, TIME, STATE } from '../coop.mjs';
-
-import SERVERS from 'coop-shared/config/'
-
+import { CHANNELS, TIME, STATE } from '../coop.mjs';
 
 import Chicken from './chicken.mjs';
 

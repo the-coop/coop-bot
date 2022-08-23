@@ -93,7 +93,7 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // Common checks:
-        // ServerHelper.checkMissingChannels();
+        ServerHelper.checkMissingChannels();
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
