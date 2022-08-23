@@ -15,7 +15,7 @@ export default class GoldCoinHandler {
         // const reward = parseInt(rewardBase * .25);
 
         // Add the points to the user.
-        // await COOP.ITEMS.add(subject.id, 'COOP_POINT', reward);
+        // await Items.add(subject.id, 'COOP_POINT', reward);
 
         // COOP.CHANNELS.silentPropagate(msgRef, feedbackText, 'ACTIONS');
     }

@@ -11,6 +11,7 @@ import Blog from 'coop-shared/services/blog.mjs';
 import { MESSAGES, TIME, ITEMS, CHANNELS, USABLE } from '../../coop.mjs';
 
 import ItemsShared from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 export const name = 'post';
 
@@ -116,7 +117,7 @@ const post = async interaction => {
 		// Handle confirmations.
 		if (i.customId === 'confirm') {
 			// Check the user did pay.
-			const didPay = await USABLE.use(interaction.user.id, 'GOLD_COIN', price, 'Proposing blog post');
+			const didPay = await Useable.use(interaction.user.id, 'GOLD_COIN', price, 'Proposing blog post');
 			if (!didPay) 
 				return await i.editReply({ content: `Post proposal cancelled, payment failure.`, components: [] });
  

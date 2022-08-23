@@ -9,6 +9,7 @@ import {
 import COOP, { MESSAGES, USABLE } from '../../coop.mjs';
 import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
 import Items from 'coop-shared/services/items.mjs';
+import Useable from 'coop-shared/services/useable.mjs';
 
 // import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
 
@@ -211,7 +212,7 @@ const createTrade = async interaction => {
 		} else {
 			// Use the items to create a trade, so we can assume its always fulfillable,
 			//  the item becomes a trade credit note, can be converted back.
-			const didUse = await USABLE.use(tradeeID, offerItemCode, offerQty);
+			const didUse = await Useable.use(tradeeID, offerItemCode, offerQty);
 			if (didUse) {
 				const trade = await Trading.create(
 					tradeeID, tradeeName,

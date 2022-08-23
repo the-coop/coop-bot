@@ -1,4 +1,5 @@
 import Items from 'coop-shared/services/items.mjs';
+import Useable from 'coop-shared/services/useable.mjs';
 import { MESSAGES, USERS, SERVER, ITEMS, USABLE } from '../../../../coop.mjs';
 
 
@@ -21,7 +22,7 @@ export async function isRegisteredUserGuard(msgRef, user, silent = false) {
 
 export function usableItemCodeGuard(msgRef, itemCode, username, silent = false) {
     // Check if this item code can be given.
-    if (!USABLE.isUsable(itemCode) || itemCode === null) {
+    if (!Useable.isUsable(itemCode) || itemCode === null) {
         const errorText = `${username}, ${itemCode} is not a usable/matching item code.`;
 
         if (!silent)
@@ -83,7 +84,7 @@ export async function useManyGuard(user, msg, itemManifest) {
             };
 
             // Indicate guard failed.
-            const wasUsed = await USABLE.use(user.id, itemCode, itemManifestQty);
+            const wasUsed = await Useable.use(user.id, itemCode, itemManifestQty);
             if (wasUsed) result.used = true;
 
             return result;
@@ -201,7 +202,7 @@ export async function ownEnoughManyGuard(user, msg, itemManifest) {
 export async function didUseGuard(user, itemCode, qty = 1, msgRef, reactEmoji = null) {
     try {
         // Attempt to use the shield item
-        const didUseItem = await USABLE.use(user.id, itemCode, qty);
+        const didUseItem = await Useable.use(user.id, itemCode, qty);
     
         // Provide error feedback, since this prevents action.
         if (didUseItem) return true;

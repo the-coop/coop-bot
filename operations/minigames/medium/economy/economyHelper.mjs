@@ -1,5 +1,5 @@
 import Useable from "coop-shared/services/useable.mjs";
-import { USABLE, USERS, MESSAGES, SERVER, CHANNELS, STATE, ITEMS } from "../../../../coop.mjs";
+import { USERS, MESSAGES, SERVER, CHANNELS, STATE, ITEMS } from "../../../../coop.mjs";
 
 
 export default class EconomyHelper {

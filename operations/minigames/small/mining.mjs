@@ -78,7 +78,7 @@ export default class MiningMinigame {
             const pickaxeUpdate = await UsableItemHelper.use(user.id, 'PICK_AXE', 1);
             if (pickaxeUpdate) {
                 const brokenPickDamage = -2;
-                const pointsDamageResult = await ITEMS.subtract(user.id, 'COOP_POINT', Math.abs(brokenPickDamage), 'Broken pickaxe damage');
+                const pointsDamageResult = await Items.subtract(user.id, 'COOP_POINT', Math.abs(brokenPickDamage), 'Broken pickaxe damage');
                 const ptsDmgText = ITEMS.displayQty(pointsDamageResult);
                 
                 // Update mining economy statistics.
@@ -105,19 +105,19 @@ export default class MiningMinigame {
             }
         } else {
             // See if updating the item returns the item and quantity.
-            const addMetalOre = await ITEMS.add(user.id, 'METAL_ORE', extractedOreNum, 'Mining');
-            const addPoints = await ITEMS.add(user.id, 'COOP_POINT', 1, 'Mining');
+            const addMetalOre = await Items.add(user.id, 'METAL_ORE', extractedOreNum, 'Mining');
+            const addPoints = await Items.add(user.id, 'COOP_POINT', 1, 'Mining');
             let diamondsFound = 0;
 
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
                 diamondsFound = 1;
-                const addDiamond = await ITEMS.add(user.id, 'DIAMOND', diamondsFound, 'Mining rare event');
+                const addDiamond = await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining rare event');
                 CHANNELS.propagate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
             }
             
             if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
                 diamondsFound = STATE.CHANCE.natural({ min: 5, max: 25 });
-                await ITEMS.add(user.id, 'DIAMOND', diamondsFound, 'Mining very rare event');
+                await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining very rare event');
                 CHANNELS.propagate(msg, `${user.username} hit a major diamond vein, ${diamondsFound}xDIAMOND found!`, 'FEED');
             }
 

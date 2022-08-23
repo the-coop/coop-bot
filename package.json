@@ -22,7 +22,7 @@
     "algosdk": "^1.19",
     "axios": "^0.21.2",
     "chance": "^1.1.7",
-    "coop-shared": "git+https://github.com/the-coop/coop-shared.git#master",
+    "coop-shared": "git+https://github.com/the-coop/coop-shared.git#576810cbc52469723315c64fca8504ed016de451",
     "discord.js": "^13.8.1",
     "emoji-regex": "^9.2.0",
     "ffmpeg-static": "^5.0.2",
@@ -31,12 +31,10 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.2",
     "node-eval": "^2.0.0",
-    "pg": "^8.4.1",
     "sugar": "^2.0.6",
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "eslint": "^7.24.0",
     "nodemon": "^2.0.7"
   },
   "homepage": "https://thecoop.group",

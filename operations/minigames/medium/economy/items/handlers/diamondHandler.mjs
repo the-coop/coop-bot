@@ -1,6 +1,7 @@
 import UsableItemHelper from "../usableItemHelper.mjs";
 
 import COOP from "../../../../../../coop.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 export default class DiamondHandler {
 
@@ -18,7 +19,7 @@ export default class DiamondHandler {
                     // Allow five seconds for people to stack bombs.
                     setTimeout(async () => {
                         const reward = 10 * reaction.count;
-                        const updatedPoints = await COOP.ITEMS.add(messageAuthor.id, 'COOP_POINT', reward, 'Diamond effect');
+                        const updatedPoints = await Items.add(messageAuthor.id, 'COOP_POINT', reward, 'Diamond effect');
     
                         // Add visuals animation
                         COOP.MESSAGES.delayReactionRemove(reaction, 333);

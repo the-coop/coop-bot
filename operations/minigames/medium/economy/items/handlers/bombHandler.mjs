@@ -1,6 +1,8 @@
 import BuffsHelper from "../../../conquest/buffsHelper.mjs";
 
 import COOP, { ITEMS, USABLE } from "../../../../../../coop.mjs";
+import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 export default class BombHandler {
 
@@ -12,7 +14,7 @@ export default class BombHandler {
         
         if (reaction.emoji.name === '💣') {
             try {
-                const didUse = await USABLE.use(user.id, 'BOMB', 1);
+                const didUse = await Useable.use(user.id, 'BOMB', 1);
                 if (!didUse) {
                     COOP.MESSAGES.silentSelfDestruct(msg, `<@${user.id}> lacks a bomb to use on <@${target.id}>`);
                     return await reaction.users.remove(user.id);
@@ -32,7 +34,7 @@ export default class BombHandler {
                         const damage = -4 * reaction.count;
     
                         // Apply the damage to the target's points.
-                        const updatedPoints = await COOP.ITEMS.subtract(target.id, 'COOP_POINT', Math.abs(damage), 'Bomb effect x' + reaction.count);
+                        const updatedPoints = await Items.subtract(target.id, 'COOP_POINT', Math.abs(damage), 'Bomb effect x' + reaction.count);
     
                         // Add visuals animation
                         COOP.MESSAGES.delayReactionRemove(reaction, 333);

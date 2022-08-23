@@ -2,6 +2,7 @@
 import { usedOwnedUsableGuard } from '../../itemCmdGuards.mjs';
 
 import COOP, { ITEMS, MESSAGES } from '../../../../../../coop.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 
 
@@ -47,7 +48,7 @@ export default class RPGHandler {
         const reward = parseInt(pointAvg * .25);
 
         // Subtract the points from the user.
-        await COOP.ITEMS.subtract(target.id, 'COOP_POINT', reward, 'RPG damage');
+        await Items.subtract(target.id, 'COOP_POINT', reward, 'RPG damage');
 
 
         // TODO: Check if the user is using a shield.

@@ -7,6 +7,7 @@ import {
 	validUserArgGuard, useManyGuard
 } from '../../operations/minigames/medium/economy/itemCmdGuards.mjs';
 import ElectionHelper from '../../operations/members/hierarchy/election/electionHelper.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 export const name = 'give';
 
@@ -73,7 +74,7 @@ export const execute = async (interaction) => {
 		// TODO: State how many both have now after gift.
 
 		// Add the item to the gift recepient.
-		await COOP.ITEMS.add(recipientInput.id, itemCode, qty, `Gifted by ${interaction.user.username}`);
+		await Items.add(recipientInput.id, itemCode, qty, `Gifted by ${interaction.user.username}`);
 
 		// Intercept the giving of election items.
 		if (itemCode === 'LEADERS_SWORD' || itemCode === 'ELECTION_CROWN')

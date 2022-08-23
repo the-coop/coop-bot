@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import COOP, { USABLE } from '../../coop.mjs';
 import { EMOJIS } from 'coop-shared/config.mjs';
 import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 export const name = 'items';
 
@@ -63,7 +64,7 @@ export const execute = async (interaction) => {
 		}
 
 		// Check if itemCode valid to use.
-		if (!USABLE.isUsable(parsedItemCode))
+		if (!Useable.isUsable(parsedItemCode))
 			return await interaction.reply({ content: `${name}, ${parsedItemCode} seems invalid.`, ephemeral: true });
 
 		// Check a specific item instead.

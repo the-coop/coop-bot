@@ -7,6 +7,7 @@ import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 export default class WoodcuttingMinigame {
 
@@ -71,10 +72,10 @@ export default class WoodcuttingMinigame {
 
         const didBreak = STATE.CHANCE.bool({ likelihood: axeBreakPerc });
         if (didBreak) {
-            const axeUpdate = await USABLE.use(user.id, 'AXE', 1);
+            const axeUpdate = await Useable.use(user.id, 'AXE', 1);
             if (axeUpdate) {
                 const brokenDamage = -2;
-                const pointsDamageResult = await ITEMS.subtract(user.id, 'COOP_POINT', Math.abs(brokenDamage), 'Broken axe damage');
+                const pointsDamageResult = await Items.subtract(user.id, 'COOP_POINT', Math.abs(brokenDamage), 'Broken axe damage');
                 const ptsDmgText = ITEMS.displayQty(pointsDamageResult);
 
                 // Update economy statistics.
@@ -101,24 +102,24 @@ export default class WoodcuttingMinigame {
             }
         } else {
             // See if updating the item returns the item and quantity.
-            const addedWood = await ITEMS.add(user.id, 'WOOD', extractedWoodNum, 'Woodcutting');
-            const addPoints = await ITEMS.add(user.id, 'COOP_POINT', 1, 'Woodcutting');
+            const addedWood = await Items.add(user.id, 'WOOD', extractedWoodNum, 'Woodcutting');
+            const addPoints = await Items.add(user.id, 'COOP_POINT', 1, 'Woodcutting');
 
             // Rare events from woodcutting.
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
-                const addDiamond = await ITEMS.add(user.id, 'AVERAGE_EGG', 1, 'Woodcutting uncommon event');
+                const addDiamond = await Items.add(user.id, 'AVERAGE_EGG', 1, 'Woodcutting uncommon event');
                 CHANNELS.propagate(msg, `${user.username} catches an average egg as it falls from a tree! (${addDiamond})`, 'ACTIONS');
             }
             
             if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
                 const branchQty = STATE.CHANCE.natural({ min: 5, max: 25 });
-                await ITEMS.add(user.id, 'RARE_EGG', branchQty, 'Woodcutting rare event');
+                await Items.add(user.id, 'RARE_EGG', branchQty, 'Woodcutting rare event');
                 CHANNELS.propagate(msg, `${user.username} triggered a chain branch reaction, ${branchQty} rare eggs found!`, 'ACTIONS');
             }
 
             if (STATE.CHANCE.bool({ likelihood: 0.0525 })) {
                 const legendaryNestQty = STATE.CHANCE.natural({ min: 2, max: 4 });
-                await ITEMS.add(user.id, 'LEGENDARY_EGG', legendaryNestQty, 'Woodcutting, very rare event');
+                await Items.add(user.id, 'LEGENDARY_EGG', legendaryNestQty, 'Woodcutting, very rare event');
                 CHANNELS.propagate(msg, `${user.username} hit a lucky branch, ${legendaryNestQty} legendary egg(s) found!`, 'TALK');
             }
 

@@ -112,7 +112,7 @@ export default class EggHuntMinigame {
         
         CHANNELS.silentPropagate(msgRef, eventText, 'ACTIONS', 10000);
         
-        await ITEMS.add(user.id, reward.item, reward.qty, `EGGHUNT_BOMB_REWARD - ${actionTypeText}'d ${rarity} (bomb)`);
+        await Items.add(user.id, reward.item, reward.qty, `EGGHUNT_BOMB_REWARD - ${actionTypeText}'d ${rarity} (bomb)`);
     }
 
     // TODO: Add a small chance of bomb exploding on you.
@@ -131,7 +131,7 @@ export default class EggHuntMinigame {
             if (bombQuantity <= 0) return await reaction.users.remove(user.id);
 
             // Remove bomb from user.
-            await ITEMS.subtract(user.id, 'BOMB', 1, `Bombed an ${rarity}`);
+            await Items.subtract(user.id, 'BOMB', 1, `Bombed an ${rarity}`);
 
             // User has enough eggs, blow egg up.
             const blownupEggMsg = await reaction.message.edit('💥... egg destroyed');
@@ -149,7 +149,7 @@ export default class EggHuntMinigame {
 
             // Store points and egg collection data in database.
             const awardedUserIDs = Object.keys(aroundUsers);
-            Promise.all(awardedUserIDs.map(userID => COOP.ITEMS.add(userID, 'COOP_POINT', reward, `EGGHUNT_BOMB_SPLASH_REWARD - Bombed ${rarity} splash effect`)));
+            Promise.all(awardedUserIDs.map(userID => Items.add(userID, 'COOP_POINT', reward, `EGGHUNT_BOMB_SPLASH_REWARD - Bombed ${rarity} splash effect`)));
 
             // Add/update random item to user if it was a legendary egg
             this.processBombDrop(reaction.message, rarity, user);
@@ -181,7 +181,7 @@ export default class EggHuntMinigame {
                 const actionReward = -points;   
     
                 // Process the points change.
-                const updatedPoints = await COOP.ITEMS.add(user.id, 'COOP_POINT', actionReward, `EGGHUNT_REWARD_FRIED - Fried toxic egg`);
+                const updatedPoints = await Items.add(user.id, 'COOP_POINT', actionReward, `EGGHUNT_REWARD_FRIED - Fried toxic egg`);
     
                 // TODO: Maybe include in output message??
                 await SkillsHelper.addXP(user.id, 'cooking', 3);
@@ -223,7 +223,7 @@ export default class EggHuntMinigame {
         MESSAGES.selfDestruct(reaction.message, christmasReleaseText, 0, 666);
 
         // Add the item to the user's ownership.
-        COOP.ITEMS.add(user.id, 'CHRISTMAS_EGG', reward, `EGGHUNT_REWARD_CHRISTMAS - Christmas egg release.`);
+        Items.add(user.id, 'CHRISTMAS_EGG', reward, `EGGHUNT_REWARD_CHRISTMAS - Christmas egg release.`);
     }
 
     static async collect(reaction, user) {
@@ -249,13 +249,13 @@ export default class EggHuntMinigame {
             // TODO: If Cooper is evil you break more pickaxes, axes, frying pans and eggs.
             if (STATE.CHANCE.bool({ likelihood: 83 })) {
                 // Store points and egg collection data in database.
-                const updatedPoints = await COOP.ITEMS.add(user.id, 'COOP_POINT', reward, `EGGHUNT_COLLECTED_${rarity.toUpperCase()}_REWARD_POINTS Collected ${rarity}`);
+                const updatedPoints = await Items.add(user.id, 'COOP_POINT', reward, `EGGHUNT_COLLECTED_${rarity.toUpperCase()}_REWARD_POINTS Collected ${rarity}`);
                 const updated = ItemsHelper.displayQty(updatedPoints);
 
                 acknowledgementMsgText += ` (${updated})`;
                 
                 // Add/update egg item to user
-                await ITEMS.add(user.id, rarity, 1, `EGGHUNT_COLLECTED_${rarity.toUpperCase()}`);
+                await Items.add(user.id, rarity, 1, `EGGHUNT_COLLECTED_${rarity.toUpperCase()}`);
 
                 // Update economy statistics.
                 EconomyNotifications.add('EGG_HUNT', {
@@ -308,7 +308,7 @@ export default class EggHuntMinigame {
                 acknowledgementMsgText += ` ${rewardPolarity}${reward} points!`;
 
                 // Add/subtract the reward.
-                await ITEMS.add(user.id, 'COOP_POINT', reward, `EGGHUNT_BROKEN_REWARD_${rarity.toUpperCase()}`);
+                await Items.add(user.id, 'COOP_POINT', reward, `EGGHUNT_BROKEN_REWARD_${rarity.toUpperCase()}`);
             }
             
             MESSAGES.delayEdit(msg, acknowledgementMsgText, 0);
@@ -446,7 +446,7 @@ export default class EggHuntMinigame {
             const didUse = await UsableItemHelper.use(msg.author.id, eggRarity, 1);
             if (!didUse) return false;
 
-            await ITEMS.add(STATE.CLIENT.user.id, eggRarity, 1, 'EGGHUNT_ANTITROLL_TAKEN - Stolen trolling egg, karma');
+            await Items.add(STATE.CLIENT.user.id, eggRarity, 1, 'EGGHUNT_ANTITROLL_TAKEN - Stolen trolling egg, karma');
             
             MESSAGES.selfDestruct(msg, 'Thanks for the egg! ;)', 0, 333);
             

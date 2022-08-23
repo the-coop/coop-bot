@@ -6,6 +6,7 @@ import { ITEMS, CHANNELS, USABLE, MESSAGES } from "../../coop.mjs";
 
 import InteractionHelper from '../../operations/activity/messages/interactionHelper.mjs';
 import SuggestionsHelper from '../../operations/activity/suggestions/suggestionsHelper.mjs';
+import Useable from 'coop-shared/services/useable.mjs';
 
 export const name = 'advertise';
 
@@ -64,7 +65,7 @@ export const execute = async interaction => {
 		if (!userIntent) return await interaction.editReply( `Ad creation cancelled.`);
 
 		// Charge the user for the advert.
-		const didPay = await USABLE.use(interaction.user.id, 'GOLD_COIN', price, 'Proposing project');
+		const didPay = await Useable.use(interaction.user.id, 'GOLD_COIN', price, 'Proposing project');
 		if (!didPay) return await interaction.reply({ content: `Ad payment failed.`, ephemeral: true });
 	
 		// Post to suggestions for confirmation.

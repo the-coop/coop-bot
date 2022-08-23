@@ -71,7 +71,7 @@ export default class CooperMorality {
         // Add the item to each user.
         await Promise.all(dropResults.map(dropSet =>
             Promise.all(dropSet.drops.map(drop =>
-                COOP.ITEMS.add(dropSet.user.id, drop.item, drop.qty, 'Cooper\'s giveaway')
+                Items.add(dropSet.user.id, drop.item, drop.qty, 'Cooper\'s giveaway')
             ))
         ));
         

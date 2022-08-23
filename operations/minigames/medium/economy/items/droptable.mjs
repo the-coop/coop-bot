@@ -139,7 +139,7 @@ export default class DropTable {
 
         // Add drop table contents to collecting user.
 
-        // COOP.ITEMS.add(user.id, rewardItem, rewardQty, `${rarity} reward`);
+        // Items.add(user.id, rewardItem, rewardQty, `${rarity} reward`);
 
         // Provide collection feedback.
 
@@ -170,7 +170,7 @@ export default class DropTable {
         //             const rateLimitBypassDelay = (rewardeeIndex * 666) + (333 * rewardIndex);
 
         //             anyRewardGiven = true;
-        //             await COOP.ITEMS.add(user.id, reward, rewardItemQuantity);
+        //             await Items.add(user.id, reward, rewardItemQuantity);
 
 
         //             setTimeout(async () => {

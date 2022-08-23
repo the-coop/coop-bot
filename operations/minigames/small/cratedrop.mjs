@@ -6,6 +6,7 @@ import DropTable from '../medium/economy/items/droptable.mjs';
 import COOP, { STATE } from '../../../coop.mjs';
 import { EMOJIS } from 'coop-shared/config.mjs';
 import EconomyNotifications from '../../activity/information/economyNotifications.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 
 const CRATE_DATA = {
@@ -135,7 +136,7 @@ export default class CratedropMinigame {
             const hitterNames = hitters.map(user => user.username);
             
             // Add points to all hitters.
-            await Promise.all(hitters.map(user => COOP.ITEMS.add(user.id, 'COOP_POINT', crate.openingPoints, `Opening ${rarity}`)));
+            await Promise.all(hitters.map(user => Items.add(user.id, 'COOP_POINT', crate.openingPoints, `Opening ${rarity}`)));
 
             // Reward amount of users based on luck/chance.
             let anyRewardGiven = false;
@@ -169,7 +170,7 @@ export default class CratedropMinigame {
                             anyRewardGiven = true;
 
                             // Give the user the item via the database.
-                            COOP.ITEMS.add(user.id, rewardItem, rewardQty, `${rarity} reward`);
+                            Items.add(user.id, rewardItem, rewardQty, `${rarity} reward`);
 
                             // Get the item emoji.
                             const itemEmoji = COOP.MESSAGES.emojiCodeText(rewardItem);

@@ -175,7 +175,7 @@ export default class PointsHelper {
             // Give the winner the reward.
             if (hadAlready) {
                 const cpDisplay = COOP.MESSAGES.emojiCodeText('COOP_POINT');
-                await COOP.ITEMS.add(highestChange.userID, 'COOP_POINT', 30);
+                await Items.add(highestChange.userID, 'COOP_POINT', 30);
                 updateText += `_Given 50${cpDisplay} for MOTW reward._`;
             }
 
@@ -234,7 +234,7 @@ export default class PointsHelper {
             let successText = `${username} is now the point leader.`;
             if (prevWinner) successText = ` ${username} overtakes ${prevWinner.username} for most points!`;
 
-            const pointsAfter = await ITEMS.add(highestRecord.owner_id, 'COOP_POINT', 25, 'Highest points role winner');
+            const pointsAfter = await Items.add(highestRecord.owner_id, 'COOP_POINT', 25, 'Highest points role winner');
             successText += ` Given MOST POINTS role and awarded 25 points (${pointsAfter})!`;
 
             COOP.CHANNELS._postToFeed(successText);

@@ -2,6 +2,7 @@ import { STATE, USABLE, MESSAGES, CHANNELS, USERS, ITEMS } from "../../../coop.m
 import { EMOJIS } from "coop-shared/config.mjs";
 import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 export const BAR_DATA = {
     GOLD_BAR: {
@@ -37,7 +38,7 @@ export default class InstantFurnaceMinigame {
             if (!hasQty) return MESSAGES.selfDestruct(reaction.message, `${user.username} lacks ${oreLimitMin}xMETAL_ORE.`, 0, 5000);
 
             // Guard the action from those not sincerely using the item.
-            const didUse = await USABLE.use(user.id, 'METAL_ORE', oreLimitMin);
+            const didUse = await Useable.use(user.id, 'METAL_ORE', oreLimitMin);
             if (!didUse) return MESSAGES.selfDestruct(reaction.message, `${user.username}, something went wrong smelting your ore. ;(`, 5000);
 
             // Add smelting multiplier effect.
@@ -60,7 +61,7 @@ export default class InstantFurnaceMinigame {
             // Add rewards to user.
             await Object.keys(rewards).map(rewardItem => {
                 const qty = rewards[rewardItem];
-                return ITEMS.add(user.id, rewardItem, qty)
+                return Items.add(user.id, rewardItem, qty)
             });
 
             const sumTotal = Object.keys(rewards).reduce((acc, val) => {
@@ -109,7 +110,7 @@ export default class InstantFurnaceMinigame {
                 const burnText = usersIDsAround.map(userID => `<@${userID}>`).join(', ') +
                     ` ${usersIDsAround.length > 1 ? 'were all' : 'was'} burned by the the instant furnace! -10x${coopEmoji}`;
 
-                usersIDsAround.map(userID => ITEMS.subtract(userID, 'COOP_POINT', 10, 'Volcano burn'));
+                usersIDsAround.map(userID => Items.subtract(userID, 'COOP_POINT', 10, 'Volcano burn'));
 
                 CHANNELS.silentPropagate(msg, burnText, 'ACTIONS', 333, 10000);
             }

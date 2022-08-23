@@ -2,6 +2,9 @@ import axios from 'axios';
 
 import COOP, { CHANNELS, TIME, STATE } from '../coop.mjs';
 
+import SERVERS from 'coop-shared/config/'
+
+
 import Chicken from './chicken.mjs';
 
 export default class ServerHelper {
@@ -9,10 +12,6 @@ export default class ServerHelper {
     static _coop() { return this.getByID(STATE.CLIENT, process.env.GUILD_ID); }
 
     static getByID(client, id) { return client.guilds.cache.get(id); }
-
-    static getByCode(client, code) { 
-        return this.getByID(client, SERVERS[code].id); 
-    }
 
     static _count(numBots = 1) { return this._coop().memberCount - numBots || 0; }
 

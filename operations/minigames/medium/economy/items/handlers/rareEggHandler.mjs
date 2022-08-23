@@ -4,6 +4,7 @@ import UsableItemHelper from "../usableItemHelper.mjs";
 
 import { EMOJIS } from "coop-shared/config.mjs";
 import COOP, { STATE, REACTIONS, ITEMS } from "../../../../../../coop.mjs";
+import Items from 'coop-shared/services/items.mjs';
 
 export default class RareEggHandler {
 
@@ -26,7 +27,7 @@ export default class RareEggHandler {
                 const damage = EGG_DATA['RARE_EGG'].points;
 
                 // Apply the damage to the target's points.
-                const updatedPoints = await COOP.ITEMS.add(targetID, 'COOP_POINT', damage, 'Rare egg effect');
+                const updatedPoints = await Items.add(targetID, 'COOP_POINT', damage, 'Rare egg effect');
 
                 // Calculate feedback text.
                 const damageInfoText = ` ${damage} points (${ITEMS.displayQty(updatedPoints)})`;

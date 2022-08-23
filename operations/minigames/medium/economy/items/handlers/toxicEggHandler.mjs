@@ -3,6 +3,7 @@ import UsableItemHelper from "../usableItemHelper.mjs";
 
 import COOP, { ITEMS, STATE } from "../../../../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 
 // TODO: All eggs should extend base egg handler, same for food items / food item handlers.
@@ -40,7 +41,7 @@ export default class ToxicEggHandler {
 
 
                     // Apply the damage to the target's points.
-                    const updatedPoints = await COOP.ITEMS.subtract(targetID, 'COOP_POINT', Math.abs(damage), 'Toxic egg effect');
+                    const updatedPoints = await Items.subtract(targetID, 'COOP_POINT', Math.abs(damage), 'Toxic egg effect');
 
                     const popularity = COOP.REACTIONS.countType(msg, '☢️');
                     if (popularity <= 3) COOP.MESSAGES.delayReactionRemove(reaction, 333);

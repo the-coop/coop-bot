@@ -6,6 +6,7 @@ import Useable from 'coop-shared/services/useable.mjs';
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 
 export default class ItemsHelper {
@@ -66,30 +67,6 @@ export default class ItemsHelper {
         return numTxRows;
     }
 
-    static async add(userID, itemCode, quantity, sourceReason = 'unknown') {
-        // TODO: Could make item source throw an error if not declared.
-        const query = {
-            name: "add-item",
-            text: `INSERT INTO items(owner_id, item_code, quantity)
-                VALUES($1, $2, $3) 
-                ON CONFLICT (owner_id, item_code)
-                DO 
-                UPDATE SET quantity = items.quantity + EXCLUDED.quantity
-                RETURNING quantity`,
-            values: [userID, itemCode, quantity]
-        };
-        
-        const result = await Database.query(query);
-        const newQty = DatabaseHelper.singleField(result, 'quantity', 0)
-
-        // Get the total of that item now.
-        const total = await this.count(itemCode);
-        
-        await this.saveTransaction(userID, itemCode, quantity, total, sourceReason);
-
-        return newQty;
-    }
-
     static async getAllItemOwners(itemCode) {
         const query = {
             name: "get-all-user-items",
@@ -110,9 +87,8 @@ export default class ItemsHelper {
         return DatabaseHelper.many(await Database.query(query));
     }
 
-
     static async perBeakRelativePrice(code, percPrice, min = 0.01) {
-        const avg = await this.perBeak('GOLD_COIN');
+        const avg = await this.perBeak(code);
 		const price = Math.max(min, (avg * percPrice).toFixed(2));
         return price;
     }
@@ -291,7 +267,7 @@ export default class ItemsHelper {
         // If the new winner didn't already have the role, award it and notify server.
         if (!alreadyHadRole) {
             // Add point reward to item leader.
-            const pointsAfter = await COOP.ITEMS.add(richestMember.user.id, 'COOP_POINT', 100, 'Won richest role');
+            const pointsAfter = await Items.add(richestMember.user.id, 'COOP_POINT', 100, 'Won richest role');
             
             // Add the role to new item leader.
             richestMember.roles.add(richestRole);
@@ -347,7 +323,7 @@ export default class ItemsHelper {
         if (!alreadyHadRole) {
             // Add point reward to item leader.
             
-            const pointsAfter = await COOP.ITEMS.add(mostItems.owner_id, 'COOP_POINT', 50, 'Won most items role');
+            const pointsAfter = await Items.add(mostItems.owner_id, 'COOP_POINT', 50, 'Won most items role');
             
             // Add the role to new item leader.
             mostItemsMember.roles.add(mostItemsRole);

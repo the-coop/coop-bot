@@ -8,6 +8,7 @@ import { STATE, CHANNELS, MESSAGES, USERS, ROLES, REACTIONS, TIME, ITEMS } from 
 
 import EventsHelper from "../eventsHelper.mjs";
 import DropTable from '../minigames/medium/economy/items/droptable.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 export const COMPETITION_DUR = 3600 * 24 * 7;
 
@@ -350,7 +351,7 @@ export default class CompetitionHelper {
             
             // Add the items to the user.
             winners[index].rewards = rewards;
-            winners[index].rewards.map(r => ITEMS.add(w.entrant_id, r.item, r.qty, 'Competition win'));
+            winners[index].rewards.map(r => Items.add(w.entrant_id, r.item, r.qty, 'Competition win'));
 
             // DM the winners.
             try {

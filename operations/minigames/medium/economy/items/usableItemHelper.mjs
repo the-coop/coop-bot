@@ -17,6 +17,7 @@ import GoldCoinHandler from "./handlers/goldCoinHandler.mjs";
 import MineHandler from "./handlers/mineHandler.mjs";
 import DefuseKitHandler from "./handlers/defuseKitHandler.mjs";
 import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 
 export default class UsableItemHelper {
@@ -68,7 +69,7 @@ export default class UsableItemHelper {
             itemCode && this.isUsable(itemCode),
     
             // Attempt to consume the item
-            await USABLE.use(user.id, itemCode, 1, 'Via redropping.')
+            await Useable.use(user.id, itemCode, 1, 'Via redropping.')
         ];
 
         // Check all guards passed.
@@ -151,7 +152,7 @@ export default class UsableItemHelper {
             REACTIONS.removeAll(reaction.message);
 
             // Add recalculated item ownership to user.
-            const addEvent = await ITEMS.add(user.id, itemCode, 1, 'USABLE_PICKUP - Picked up in ' + reaction.message.channel.name);
+            const addEvent = await Items.add(user.id, itemCode, 1, 'USABLE_PICKUP - Picked up in ' + reaction.message.channel.name);
 
             // Add user's item counts to message.
             const editText = `${reaction.message.content} collected by ${user.username}, now has x${addEvent}.`;

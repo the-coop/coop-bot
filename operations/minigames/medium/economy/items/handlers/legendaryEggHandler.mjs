@@ -3,6 +3,7 @@ import UsableItemHelper from "../usableItemHelper.mjs";
 
 import COOP, { STATE, REACTIONS } from '../../../../../../coop.mjs';
 import { EGG_DATA } from "../../../../small/egghunt.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 
 export default class LegendaryEggHandler {
@@ -25,7 +26,7 @@ export default class LegendaryEggHandler {
                     const damage = EGG_DATA['LEGENDARY_EGG'].points;
 
                     // Apply the damage to the target's points.
-                    const updatedPoints = await COOP.ITEMS.add(targetID, 'COOP_POINT', damage, 'Legendary egg effect');
+                    const updatedPoints = await Items.add(targetID, 'COOP_POINT', damage, 'Legendary egg effect');
 
                     // Remove egg reaction based on popularity
                     const popularity = REACTIONS.countType(reaction.message, '💜');

@@ -12,6 +12,7 @@ import VotingHelper from '../../../activity/redemption/votingHelper.mjs';
 import EventsHelper from '../../../eventsHelper.mjs';
 
 import { baseTickDur } from '../../../manifest.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 
 export const LEADERS_RATIO_PERC = .025;
@@ -277,11 +278,11 @@ export default class ElectionHelper {
 
             // Add the election crown to elected commander.
             if (hierarchy.commander)
-                ITEMS.add(hierarchy.commander.id, 'ELECTION_CROWN', 1, 'Election victory (commander)');
+                Items.add(hierarchy.commander.id, 'ELECTION_CROWN', 1, 'Election victory (commander)');
 
             // Add the leader swords to elected leaders
             hierarchy.leaders.map(leader => 
-                ITEMS.add(leader.id, 'LEADERS_SWORD', 1, 'Election victory (leader)')
+                Items.add(leader.id, 'LEADERS_SWORD', 1, 'Election victory (leader)')
             );
 
             // Hide the channel.
@@ -366,14 +367,14 @@ export default class ElectionHelper {
                 
                 // If it isn't a relected leader, remove role.
                 if (!leaderReElected)
-                    ITEMS.subtract(exLeader.owner_id, 'LEADERS_SWORD', 1, 'Election reset');
+                    Items.subtract(exLeader.owner_id, 'LEADERS_SWORD', 1, 'Election reset');
             });
 
             // Remove commander crown if not re-elected.
             if (typeof commanderItems[0] !== 'undefined' && hierarchy.commander) {
                 const exCommanderID = commanderItems[0].owner_id;
                 if (exCommanderID !== hierarchy.commander.id) {
-                    ITEMS.subtract(commanderItems[0].owner_id, 'ELECTION_CROWN', 1, 'Election reset');
+                    Items.subtract(commanderItems[0].owner_id, 'ELECTION_CROWN', 1, 'Election reset');
                 }
             }
 

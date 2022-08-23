@@ -1,5 +1,6 @@
 import { usedOwnedUsableGuard } from '../../itemCmdGuards.mjs';
 import COOP, { USERS } from '../../../../../../coop.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 export default class EasterEggHandler {
     
@@ -11,7 +12,7 @@ export default class EasterEggHandler {
         const reward = parseInt(rewardBase * .25);
 
         // Add the points to the user.
-        await COOP.ITEMS.add(subject.id, 'COOP_POINT', reward, 'Easter egg effect');
+        await Items.add(subject.id, 'COOP_POINT', reward, 'Easter egg effect');
 
         // Add feedback.
         const coopEmoji = COOP.MESSAGES.emojiCodeText('COOP_POINT');

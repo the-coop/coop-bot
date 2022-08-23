@@ -5,6 +5,7 @@ import { usedOwnedUsableGuard } from "../../itemCmdGuards.mjs";
 
 import { EMOJIS } from "coop-shared/config.mjs";
 import COOP, { ITEMS, STATE, USERS } from "../../../../../../coop.mjs";
+import Items from "coop-shared/services/items.mjs";
 
 export default class AverageEggHandler {
 
@@ -36,7 +37,7 @@ export default class AverageEggHandler {
                 // Only apply damage when egg hasn't broken on self.
                 if (!(backFired && isSelf)) {
                     // Apply the damage to the target's points.
-                    const updatedPoints = await COOP.ITEMS.add(targetID, 'COOP_POINT', damage, 'Average egg effect');
+                    const updatedPoints = await Items.add(targetID, 'COOP_POINT', damage, 'Average egg effect');
 
                     // Update feedback string, did cause damage.
                     damageInfoText = `: ${damage} points (${ITEMS.displayQty(updatedPoints)})`;
