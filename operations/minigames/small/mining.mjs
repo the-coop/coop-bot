@@ -9,6 +9,7 @@ import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 export default class MiningMinigame {
     
@@ -75,7 +76,7 @@ export default class MiningMinigame {
         // Test the pickaxe for breaking.
         const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
         if (didBreak) {
-            const pickaxeUpdate = await UsableItemHelper.use(user.id, 'PICK_AXE', 1);
+            const pickaxeUpdate = await Useable.use(user.id, 'PICK_AXE', 1);
             if (pickaxeUpdate) {
                 const brokenPickDamage = -2;
                 const pointsDamageResult = await Items.subtract(user.id, 'COOP_POINT', Math.abs(brokenPickDamage), 'Broken pickaxe damage');

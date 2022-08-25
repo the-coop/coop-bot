@@ -221,7 +221,7 @@ export default class CratedropMinigame {
     // static async explode(reaction, user) {
         // Check user actually has a bomb to use
         // Potentially require 2 bombs.
-        // UsableItemHelper.use(user.id, 'BOMB', 2);
+        // Useable.use(user.id, 'BOMB', 2);
         // Edit message to explosion emoji, THEN open.
         // this.open(reaction, user);
     // }

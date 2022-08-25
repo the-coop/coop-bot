@@ -1,9 +1,9 @@
 import BuffsHelper from "../../../conquest/buffsHelper.mjs";
-import UsableItemHelper from "../usableItemHelper.mjs";
 
 import COOP, { ITEMS, STATE } from "../../../../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
 import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 
 // TODO: All eggs should extend base egg handler, same for food items / food item handlers.
@@ -14,7 +14,7 @@ export default class ToxicEggHandler {
 
         if (reaction.emoji.name === 'toxic_egg') {
             try {
-                const didUse = await UsableItemHelper.use(user.id, 'TOXIC_EGG', 1);
+                const didUse = await Useable.use(user.id, 'TOXIC_EGG', 1);
                 if (!didUse) {
                     const unableText = `${user.username} tried to use a toxic egg, but has none.`;
                     COOP.MESSAGES.selfDestruct(msg, unableText, 0, 5000);

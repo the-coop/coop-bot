@@ -11,6 +11,7 @@ import SkillsHelper from '../medium/skills/skillsHelper.mjs';
 
 import { isRegisteredUserGuard } from '../medium/economy/itemCmdGuards.mjs';
 import Items from 'coop-shared/services/items.mjs';
+import Useable from 'coop-shared/services/useable.mjs';
 
 
 export const EGG_DATA = {
@@ -170,7 +171,7 @@ export default class EggHuntMinigame {
     static async fry(reaction, user) {
         try {
             // Attempt to use the laxative item
-            const didUsePan = await UsableItemHelper.use(user.id, 'FRYING_PAN', 1);
+            const didUsePan = await Useable.use(user.id, 'FRYING_PAN', 1);
     
             // Respond to usage result.
             if (didUsePan) {
@@ -443,7 +444,7 @@ export default class EggHuntMinigame {
             if (!hasQty) return false;
 
             // Try to take the egg from the user.
-            const didUse = await UsableItemHelper.use(msg.author.id, eggRarity, 1);
+            const didUse = await Useable.use(msg.author.id, eggRarity, 1);
             if (!didUse) return false;
 
             await Items.add(STATE.CLIENT.user.id, eggRarity, 1, 'EGGHUNT_ANTITROLL_TAKEN - Stolen trolling egg, karma');

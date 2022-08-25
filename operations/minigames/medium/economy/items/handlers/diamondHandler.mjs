@@ -1,14 +1,13 @@
-import UsableItemHelper from "../usableItemHelper.mjs";
-
 import COOP from "../../../../../../coop.mjs";
 import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 export default class DiamondHandler {
 
     static async onReaction(reaction, user) {       
         if (reaction.emoji.name === 'diamond') {
             try {
-                const didUse = await UsableItemHelper.use(user.id, 'DIAMOND', 1);
+                const didUse = await Useable.use(user.id, 'DIAMOND', 1);
                 if (!didUse) {
                     // Warn that the user is missing the item
                     COOP.MESSAGES.selfDestruct(reaction.message, `${user.username} lacks 1xDIAMOND...`, 0, 5000);

@@ -1,9 +1,9 @@
 import { EMOJIS } from "coop-shared/config.mjs";
-import UsableItemHelper from "../usableItemHelper.mjs";
+import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 import COOP, { STATE, REACTIONS } from '../../../../../../coop.mjs';
 import { EGG_DATA } from "../../../../small/egghunt.mjs";
-import Items from "coop-shared/services/items.mjs";
 
 
 export default class LegendaryEggHandler {
@@ -11,7 +11,7 @@ export default class LegendaryEggHandler {
     static async onReaction(reaction, user) {
         if (reaction.emoji.name === 'legendary_egg') {
             try {
-                const didUse = await UsableItemHelper.use(user.id, 'LEGENDARY_EGG', 1);
+                const didUse = await Useable.use(user.id, 'LEGENDARY_EGG', 1);
                 if (!didUse) {
                     const failureText = `${user.username} tried to use a legendary egg, but has none l-`;
                     COOP.MESSAGES.selfDestruct(reaction.message, failureText, 0, 5000);

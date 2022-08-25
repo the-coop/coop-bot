@@ -3,12 +3,12 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { RAW_EMOJIS, EMOJIS } from 'coop-shared/config.mjs';
 import { MESSAGES, ITEMS, TIME, USERS, CHANNELS } from '../../coop.mjs';
 
-import UsableItemHelper from '../../operations/minigames/medium/economy/items/usableItemHelper.mjs';
 // import ProjectsHelper from '../../operations/productivity/projects/projectsHelper.mjs';
 
 import { authorConfirmationPrompt } from '../../operations/common/ui.mjs';
 import SuggestionsHelper from "../../operations/activity/suggestions/suggestionsHelper.mjs";
 import Items from "coop-shared/services/items.mjs";
+import Useable from "coop-shared/services/useable.mjs";
 
 export const name = 'project';
 
@@ -71,7 +71,7 @@ export const execute = async (interaction) => {
 	if (!confirmMsg) return null;
 
 	// Check the user did pay.
-	const didPay = await UsableItemHelper.use(interaction.user.id, 'GOLD_COIN', price, 'Proposing project');
+	const didPay = await Useable.use(interaction.user.id, 'GOLD_COIN', price, 'Proposing project');
 	if (!didPay) return MESSAGES.selfDestruct(interaction.channel, `Project proposal cancelled, payment failure.`);
 	
 	// Proceed to list the channel for approval.

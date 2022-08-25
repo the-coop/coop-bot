@@ -1,17 +1,16 @@
-import { EGG_DATA } from '../../../../small/egghunt.mjs';
-
-import UsableItemHelper from "../usableItemHelper.mjs";
-
 import { EMOJIS } from "coop-shared/config.mjs";
-import COOP, { STATE, REACTIONS, ITEMS } from "../../../../../../coop.mjs";
+import Useable from 'coop-shared/services/useable.mjs';
 import Items from 'coop-shared/services/items.mjs';
+
+import COOP, { STATE, REACTIONS, ITEMS } from "../../../../../../coop.mjs";
+import { EGG_DATA } from '../../../../small/egghunt.mjs';
 
 export default class RareEggHandler {
 
     static async onReaction(reaction, user) {
         if (reaction.emoji.name === 'rare_egg') {
             try {
-                const didUse = await UsableItemHelper.use(user.id, 'RARE_EGG', 1);
+                const didUse = await Useable.use(user.id, 'RARE_EGG', 1);
                 if (!didUse) {
                     const failureText = `${user.username} tried to use a rare egg, but has none...`;
                     COOP.MESSAGES.selfDestruct(reaction.message, failureText, 0, 5000);
