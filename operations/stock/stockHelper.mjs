@@ -31,7 +31,8 @@ export default class StockHelper {
 
         now.setTime(now.getTime() + now.getTimezoneOffset() * 60 * 1000);
 
-        const estOffset = -300; // Timezone offset for EST in minutes.
+        // Timezone offset for EST in minutes.
+        const estOffset = -300;
         const estDate = new Date(now.getTime() + estOffset * 60 * 1000);
 
         // Check if weekday.
@@ -39,6 +40,9 @@ export default class StockHelper {
 
         // The NYSE is open from Monday through Friday 9:30 a.m. to 4:00 p.m. Eastern time.
         const afterOpen = (estDate.getHours() === 9 && estDate.getMinutes() >= 30) || estDate.getHours() > 10;
+        console.log(estDate.getHours());
+        
+
         const beforeClose = estDate.getHours() < 4;
 
         const currentlyOpen = await this.isMarketOpen();
@@ -49,6 +53,15 @@ export default class StockHelper {
         console.log('currentlyOpen', currentlyOpen);
 
         if (isESTWeekday) {
+            if (currentlyOpen && !beforeClose) {
+                this.setMarketOpen(false);
+
+                CHANNELS._send('STOCKS_VC_TEXT', "Setting stock market closed");
+    
+                // Announce open at the end until another file created (testing).
+                // this.announce();
+            }
+
             if (!currentlyOpen && afterOpen && beforeClose) {
                 this.setMarketOpen(true);
                 
@@ -59,17 +72,8 @@ export default class StockHelper {
 
                 // Give them 15 seconds to join before announcing after ping so they can catch it.
                 setTimeout(() => {
-                    // this.announce();
+                    this.announce();
                 }, 15000);
-            }
-    
-            if (currentlyOpen && !beforeClose) {
-                this.setMarketOpen(false);
-
-                CHANNELS._send('STOCKS_VC_TEXT', "Setting stock market closed");
-    
-                // Announce open at the end until another file created (testing).
-                // this.announce();
             }
         }
     }
