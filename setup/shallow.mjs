@@ -93,12 +93,9 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // Common checks:
-        ServerHelper.checkMissingChannels();
+        // ServerHelper.checkMissingChannels();
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-
-        // test
-        StockHelper.update();
 
         // Ticker of the day (cost gold coin)
         // Make competitions take more leaders to start

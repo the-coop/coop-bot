@@ -1,15 +1,13 @@
-import axios from "axios";
 import { 
 	joinVoiceChannel,
 	createAudioPlayer,
 	createAudioResource,
 	entersState,
-	StreamType,
 	AudioPlayerStatus,
 	VoiceConnectionStatus,
     NoSubscriberBehavior
 } from '@discordjs/voice';
-import { CHANNELS, ROLES, SERVER } from '../../coop.mjs';
+import { CHANNELS, ROLES } from '../../coop.mjs';
 import Chicken from "../chicken.mjs";
 
 
@@ -27,54 +25,62 @@ export default class StockHelper {
     }
 
     static async update() {
-        const now = new Date;
-
+        // Timezone offset for EST in minutes.
+        const now = new Date;        
         now.setTime(now.getTime() + now.getTimezoneOffset() * 60 * 1000);
 
-        // Timezone offset for EST in minutes.
+        // Create an EST date.
         const estOffset = -300;
         const estDate = new Date(now.getTime() + estOffset * 60 * 1000);
 
         // Check if weekday.
         const isESTWeekday = ![0, 6].includes(estDate.getDay());
 
-        // The NYSE is open from Monday through Friday 9:30 a.m. to 4:00 p.m. Eastern time.
-        const afterOpen = (estDate.getHours() === 9 && estDate.getMinutes() >= 30) || estDate.getHours() > 10;
-        console.log(estDate.getHours());
-        
+        // NYSE open Monday-Friday, 9:30 a.m. to 4:00 p.m. EST.
+        const afterOpen = (estDate.getHours() === 9 && estDate.getMinutes() >= 30) || estDate.getHours() >= 10;
 
-        const beforeClose = estDate.getHours() < 4;
+        // Check the hour has not yet reached 4pm EST.
+        const beforeClose = estDate.getHours() < 16;
 
+        // Check persisted state [Script awareness of openness].
         const currentlyOpen = await this.isMarketOpen();
 
-        console.log('isESTWeekday', isESTWeekday);
-        console.log('afterOpen', afterOpen);
-        console.log('beforeClose', beforeClose);
-        console.log('currentlyOpen', currentlyOpen);
+        // console.log('isESTWeekday', isESTWeekday);
+        // console.log('afterOpen', afterOpen);
+        // console.log('beforeClose', beforeClose);
+        // console.log('currentlyOpen', currentlyOpen);
 
-        if (isESTWeekday) {
-            if (currentlyOpen && !beforeClose) {
-                this.setMarketOpen(false);
+        // This may be problematic at the end/start of the week???
+        if (!isESTWeekday) 
+            return false;
 
-                CHANNELS._send('STOCKS_VC_TEXT', "Setting stock market closed");
-    
-                // Announce open at the end until another file created (testing).
-                // this.announce();
-            }
+        // Intercept market opening and handle it.
+        if (currentlyOpen && afterOpen && !beforeClose) {
+            this.setMarketOpen(false);
 
-            if (!currentlyOpen && afterOpen && beforeClose) {
-                this.setMarketOpen(true);
-                
-                // Ping opt in role.
-                // CHANNELS._send('STOCKS_VC_TEXT', `${ROLES._textRef('MARKET_OPEN_PING')}, NYSE market open - good luck!`, {});
+            CHANNELS._send('STOCKS_VC_TEXT', "Setting stock market closed");
 
-                CHANNELS._send('STOCKS_VC_TEXT', "Setting stock market open");
+            console.log("Setting stock market closed");
 
-                // Give them 15 seconds to join before announcing after ping so they can catch it.
-                setTimeout(() => {
-                    this.announce();
-                }, 15000);
-            }
+            // Announce open at the end until another file created (testing).
+            // this.announce();
+        }
+
+        // Detect and handle market closing.
+        if (!currentlyOpen && afterOpen && beforeClose) {
+            this.setMarketOpen(true);
+            
+            // Ping opt in role.
+            CHANNELS._send('STOCKS_VC_TEXT', `${ROLES._textRef('MARKET_OPEN_PING')}, NYSE market open - good luck!`, {});
+
+            console.log("Market open detected");
+
+            // CHANNELS._send('STOCKS_VC_TEXT', "Setting stock market open");
+
+            // Give them 15 seconds to join before announcing after ping so they can catch it.
+            setTimeout(() => {
+                this.announce();
+            }, 15000);
         }
     }
 
@@ -104,20 +110,8 @@ export default class StockHelper {
         //     inputType: StreamType.Arbitrary
         // });
 
-        const resource = createAudioResource(url);
-
-        player.play(resource);
+        player.play(createAudioResource(url));
     
         entersState(player, AudioPlayerStatus.Playing, 5e3);
-        
-        // const botChan = CHANNELS._get('974458778495905872')
-
-        // botChan.send('!clear-queue');
-        // botChan.send(`!play ${url}`);
-        
-        // !clear-queue
-        // !play ${url}
-
-
     }
 }
