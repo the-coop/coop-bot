@@ -206,15 +206,7 @@ export default class UsersHelper {
         const result = await Database.query(query);
         return DatabaseHelper.single(result);
     }
-
-    static loadSingleConquest(id) {
-        return DatabaseHelper.singleQuery({
-            name: "get-user-conquest",
-            text: "SELECT discord_id, x, y, z FROM users WHERE discord_id = $1",
-            values: [id]
-        });
-    }
-
+    
     static async isRegistered(discordID) {
         return !!(await this.loadSingle(discordID));
     }

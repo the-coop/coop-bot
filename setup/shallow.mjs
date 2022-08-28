@@ -97,6 +97,14 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+
+
+
+
+
+
+
+
         // Ticker of the day (cost gold coin)
         // Make competitions take more leaders to start
 
