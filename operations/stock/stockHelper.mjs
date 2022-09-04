@@ -7,6 +7,8 @@ import {
 	VoiceConnectionStatus,
     NoSubscriberBehavior
 } from '@discordjs/voice';
+import axios from 'axios';
+import moment from 'moment';
 import { CHANNELS, ROLES } from '../../coop.mjs';
 import Chicken from "../chicken.mjs";
 
@@ -25,30 +27,20 @@ export default class StockHelper {
     }
 
     static async update() {
-        // Timezone offset for EST in minutes.
-        const now = new Date;        
-        now.setTime(now.getTime() + now.getTimezoneOffset() * 60 * 1000);
-
-        // Create an EST date.
-        const estOffset = -300;
-        const estDate = new Date(now.getTime() + estOffset * 60 * 1000);
+        const { data } = await axios.get('https://worldtimeapi.org/api/timezone/EST');
+        const date = moment.parseZone(data.datetime);
 
         // Check if weekday.
-        const isESTWeekday = ![0, 6].includes(estDate.getDay());
+        const isESTWeekday = ![0, 6].includes(date.day());
 
         // NYSE open Monday-Friday, 9:30 a.m. to 4:00 p.m. EST.
-        const afterOpen = (estDate.getHours() === 9 && estDate.getMinutes() >= 30) || estDate.getHours() >= 10;
+        const afterOpen = (date.hours() === 9 && date.minutes() >= 30) || date.hours() >= 10;
 
         // Check the hour has not yet reached 4pm EST.
-        const beforeClose = estDate.getHours() < 16;
+        const beforeClose = date.hours() < 16;
 
         // Check persisted state [Script awareness of openness].
         const currentlyOpen = await this.isMarketOpen();
-
-        // console.log('isESTWeekday', isESTWeekday);
-        // console.log('afterOpen', afterOpen);
-        // console.log('beforeClose', beforeClose);
-        // console.log('currentlyOpen', currentlyOpen);
 
         // This may be problematic at the end/start of the week???
         if (!isESTWeekday) 

@@ -18,6 +18,8 @@ import { CHANNELS as CHANNELS_CONFIG, RAW_EMOJIS, ITEMS as ITEMS_CONFIG } from '
 import StockHelper from '../operations/stock/stockHelper.mjs';
 import secrets from 'coop-shared/setup/secrets.mjs';
 import ServerHelper from '../operations/serverHelper.mjs';
+import axios from 'axios';
+import moment from 'moment';
 
 // v DEV IMPORT AREA v
 // import BaseHelper from '../../operations/minigames/medium/conquest/baseHelper.mjs';
@@ -97,13 +99,7 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-
-
-
-
-
-
-
+        StockHelper.update();
 
         // Ticker of the day (cost gold coin)
         // Make competitions take more leaders to start
