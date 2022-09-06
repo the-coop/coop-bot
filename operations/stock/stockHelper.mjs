@@ -26,18 +26,26 @@ export default class StockHelper {
         return Chicken.setConfig('market_open', state);
     }
 
-    static async update() {
+    static async getEST() {
         const { data } = await axios.get('https://worldtimeapi.org/api/timezone/EST');
         const date = moment.parseZone(data.datetime);
+
+        console.log('EST hours', date.hours());
+
+        return date;
+    }
+
+    static async update() {
+        const date = await this.getEST();
 
         // Check if weekday.
         const isESTWeekday = ![0, 6].includes(date.day());
 
         // NYSE open Monday-Friday, 9:30 a.m. to 4:00 p.m. EST.
-        const afterOpen = (date.hours() === 9 && date.minutes() >= 30) || date.hours() >= 10;
+        const afterOpen = (date.hours() === 8 && date.minutes() >= 30) || date.hours() >= 9;
 
         // Check the hour has not yet reached 4pm EST.
-        const beforeClose = date.hours() < 16;
+        const beforeClose = date.hours() < 15;
 
         // Check persisted state [Script awareness of openness].
         const currentlyOpen = await this.isMarketOpen();

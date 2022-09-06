@@ -99,7 +99,7 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        StockHelper.update();
+        // StockHelper.getEST();
 
         // Ticker of the day (cost gold coin)
         // Make competitions take more leaders to start
