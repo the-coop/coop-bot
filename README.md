@@ -1,25 +1,19 @@
-# Cooper (The Coop's Discord Bot & Web API)
+# Cooper (The Coop's Discord Bot)
 
 PRIMARY_WEBSITE_URL:
 https://thecoop.group/
 
 PRIMARY_API_URL:
-https://cooperchickenbot.herokuapp.com
 
-PRIMARY_APP:
-cooperchickenbot
 
 # Installing from source code:
 
 Quick start current stable version:
-Clone Github repository >> https://github.com/the-coop/cooper.git
+Clone Github repository >> https://github.com/the-coop/coop-bot.git
 yarn install
 
-Contributors only/development version:
-Clone Github DEVELOPMENT repository >> git clone -b development https://github.com/the-coop/cooper.git
-
 # Environment/configuration:
-Create .env file in root (cooper/.env)
+Create .env file in root (coop-bot/.env)
 
 # Add following 3 lines to .env file in root.
 DISCORD_TOKEN=<DISCORD_TOKEN >
