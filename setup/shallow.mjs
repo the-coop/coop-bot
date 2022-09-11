@@ -53,7 +53,7 @@ import moment from 'moment';
 // import ServerHelper from '../../operations/serverHelper.mjs';
 // import SpotlightHelper from '../../operations/members/spotlightHelper.mjs';
 // import SacrificeHelper from '../../operations/members/redemption/sacrificeHelper.mjs';
-// import TemporaryMessages from '../../operations/maintenance/temporaryMessages.mjs';
+// import TemporaryMessages from '../../operations/activity/maintenance/temporaryMessages.mjs';
 // import AboutHelper from '../../operations/marketing/about/aboutHelper.mjs';
 
 // import transaction from '../../patching/blockchain/transaction.mjs';

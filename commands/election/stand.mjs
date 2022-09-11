@@ -102,7 +102,7 @@ export const execute = async (interaction) => {
 				// Post to feed
 				const successfulCandidateText = `${interaction.user.username} was put forward for <#${CHANNELS.ELECTION.id}>`;
 				COOP.MESSAGES.selfDestruct(interaction.channel, successfulCandidateText);
-				COOP.CHANNELS._postToFeed(successfulCandidateText);
+				COOP.CHANNELS._send('TALK', successfulCandidateText);
 				
 				// Add coop emoji to campaign message and crown
 				COOP.MESSAGES.delayReact(electionMsg, '👑', 666);

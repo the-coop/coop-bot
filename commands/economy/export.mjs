@@ -77,7 +77,7 @@ export const execute = async (interaction) => {
 	// 	const qtyText = COOP.ITEMS.displayQty(qty);
 	// 	const addText = `<@${interaction.user.id}> gave <@${recipientInput.id}> ${itemEmoji} ${itemCode}x${qtyText}.`;
 	// 	interaction.channel.send(addText);
-	// 	COOP.CHANNELS._send('FEED', addText);
+	// 	COOP.CHANNELS._send('TALK', addText);
 
 	// 	// Acknowledge completion.
 	// 	return await interaction.reply({ content: 'Item(s) successfully given.', ephemeral: true });

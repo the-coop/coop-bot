@@ -29,7 +29,7 @@ export default class DonationHelper {
                 
                 // Announce.
                 await CHANNELS._send(
-                    'FEED', 
+                    'TALK', 
                     `<@${member.user.id}> donated ${d.symbol}${d.amount}, given ${ROLES._textRef('SUPPORTER')} role like all donators (any size).`,
                     { allowedMentions: { users: [member.user.id], roles: [] }}
                 );

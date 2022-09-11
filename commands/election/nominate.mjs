@@ -115,7 +115,7 @@ export const execute = async (interaction) => {
 				const successfulCandidateText = `${interaction.user.username} nominates ${nominee.username} for the <#${CHANNELS.ELECTION.id}>`;
 
 				// Post to feed
-				COOP.CHANNELS._postToFeed(successfulCandidateText);
+				COOP.CHANNELS._send('TALK', successfulCandidateText);
 				
 				// Add coop emoji to campaign message and crown
 				COOP.MESSAGES.delayReact(electionMsg, '👑', 666);

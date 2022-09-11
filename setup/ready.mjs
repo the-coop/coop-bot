@@ -1,4 +1,4 @@
-import TemporaryMessages from "../operations/maintenance/temporaryMessages.mjs";
+import TemporaryMessages from "../operations/activity/maintenance/temporaryMessages.mjs";
 import AboutHelper from "../operations/marketing/about/aboutHelper.mjs";
 import ElectionHelper from "../operations/members/hierarchy/election/electionHelper.mjs";
 import SacrificeHelper from "../operations/members/redemption/sacrificeHelper.mjs";

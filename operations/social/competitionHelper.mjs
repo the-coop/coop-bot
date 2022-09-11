@@ -290,7 +290,7 @@ export default class CompetitionHelper {
         const registerCompMsgText = `📋 <@${user.id}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`;
 
         // Make sure to post it to feed, add some nice reactions (with ping).
-        const registeredFeedMsg = await CHANNELS._send('FEED', registerCompMsgText, {});
+        const registeredFeedMsg = await CHANNELS._send('TALK', registerCompMsgText, {});
 
         // Add four leaf clover so people can wish good luck
         MESSAGES.delayReact(registeredFeedMsg, '🍀');
@@ -604,7 +604,7 @@ export default class CompetitionHelper {
         await this.setEntryMessageID(entrant.id, msg.id);
 
         // Notify feed
-        CHANNELS._send('FEED', `${msg.author.username} submitted their entry to the ${CHANNELS.textRef(code.toUpperCase())}!`);
+        CHANNELS._send('TALK', `${msg.author.username} submitted their entry to the ${CHANNELS.textRef(code.toUpperCase())}!`);
 
         // Add the trophy emoji for voting
         MESSAGES.delayReact(msg, '🏆');

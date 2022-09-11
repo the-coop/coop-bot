@@ -20,7 +20,7 @@ export default class ProjectsHelper {
         const channel = await this.create(title, member, deadline);
 
         // Is this necessary??
-        const announcementMsg = await CHANNELS._postToChannelCode('FEED', `Project created! <#${channel.id}>`);
+        const announcementMsg = await CHANNELS._postToChannelCode('TALK', `Project created! <#${channel.id}>`);
         MESSAGES.delayReact(announcementMsg, EMOJIS.GOLD_COIN);
     }
 

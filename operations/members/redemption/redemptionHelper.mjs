@@ -165,7 +165,7 @@ export default class RedemptionHelper {
         const stayDurationDays = stayDurationHours / 24;
         if (stayDurationDays > 3 && !hasRole) {
             const banReason = `${member.user.username} banned due to not being approved within 3 days.`;
-            CHANNELS._postToChannelCode('FEED', banReason)
+            CHANNELS._postToChannelCode('TALK', banReason)
             member.ban({ days: 7, reason: banReason });
         }
     }

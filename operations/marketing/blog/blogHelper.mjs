@@ -18,7 +18,7 @@ export default class BlogHelper {
         const channel = await this.channelDraft(title, member, deadline);
 
         // Is this necessary??
-        const announcementMsg = await CHANNELS._postToChannelCode('FEED', `Blog draft post created! <#${channel.id}>`);
+        const announcementMsg = await CHANNELS._postToChannelCode('TALK', `Blog draft post created! <#${channel.id}>`);
     }
 
     static async publish(title, slug, content, authorID) {

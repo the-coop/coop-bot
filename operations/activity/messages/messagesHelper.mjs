@@ -3,7 +3,7 @@ import { EMOJIS } from "coop-shared/config.mjs";
 
 import createEmbed from "./embedHelper.mjs";
 import { silentOpts } from "../../channelHelper.mjs";
-import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
+import TemporaryMessages from "../maintenance/temporaryMessages.mjs";
 
 export default class MessagesHelper {
 

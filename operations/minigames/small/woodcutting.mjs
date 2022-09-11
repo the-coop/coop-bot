@@ -5,7 +5,7 @@ import SkillsHelper from "../medium/skills/skillsHelper.mjs";
 import { STATE, REACTIONS, USABLE, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
-import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
+import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 
@@ -175,6 +175,6 @@ export default class WoodcuttingMinigame {
 
         const branchText = magnitude > 1 ? `${magnitude} branches` : `a branch`;
         const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(magnitude))} ${ROLES._textRef('TREE_FELL_PING')}, a tree with ${branchText} to fell!`;
-        CHANNELS._send('FEED', woodcuttingEventText, {});
+        CHANNELS._send('TALK', woodcuttingEventText, {});
     }
 }

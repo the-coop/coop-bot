@@ -191,7 +191,7 @@ export default class PointsHelper {
             // TODO: Give them some random eggs and items.
 
             // Inform the community.
-            COOP.CHANNELS._codes(['FEED', 'TALK'], updateText, { allowedMentions: { users: [], roles: [] } });
+            COOP.CHANNELS._codes(['TALK'], updateText, { allowedMentions: { users: [], roles: [] } });
 
             // Make sure all historical_points are updated.
             pointUpdateManifest.map(({ id, points }) => COOP.USERS.updateField(id, 'historical_points', points));
@@ -237,7 +237,7 @@ export default class PointsHelper {
             const pointsAfter = await Items.add(highestRecord.owner_id, 'COOP_POINT', 25, 'Highest points role winner');
             successText += ` Given MOST POINTS role and awarded 25 points (${pointsAfter})!`;
 
-            COOP.CHANNELS._postToFeed(successText);
+            COOP.CHANNELS._send('TALK', successText);
             mostPointsMember.roles.add(mostPointsRole);
         }
     }

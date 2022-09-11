@@ -28,7 +28,7 @@ export default class CooperMorality {
         // On morality change event.
         if (prevMorality !== morality) {
             await Chicken.setConfig('morality', morality);
-            await COOP.CHANNELS._postToFeed(`I am feeling... ${morality.toLowerCase()}!`);
+            await COOP.CHANNELS._send('TALK', `I am feeling... ${morality.toLowerCase()}!`);
         }
 
         // Buffs for GOOD morality:
@@ -44,7 +44,7 @@ export default class CooperMorality {
     }
 
     static async takeaway() {
-        COOP.CHANNELS._postToFeed('I taketh as I giveth...');
+        COOP.CHANNELS._send('TALK', 'I taketh as I giveth...');
     }
 
     static async giveaway() {
@@ -84,7 +84,7 @@ export default class CooperMorality {
             }`).join('.\n\n');
         
         // Send and ping the users, since it's rare/infrequent and positive they won't mind.
-        COOP.CHANNELS._send('FEED', giveawayText, {});
+        COOP.CHANNELS._send('TALK', giveawayText, {});
 
         return dropResults;
     }

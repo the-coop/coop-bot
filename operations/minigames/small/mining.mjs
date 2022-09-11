@@ -7,7 +7,7 @@ import UsableItemHelper from "../medium/economy/items/usableItemHelper.mjs";
 import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
-import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
+import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 
@@ -119,7 +119,7 @@ export default class MiningMinigame {
             if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
                 diamondsFound = STATE.CHANCE.natural({ min: 5, max: 25 });
                 await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining very rare event');
-                CHANNELS.propagate(msg, `${user.username} hit a major diamond vein, ${diamondsFound}xDIAMOND found!`, 'FEED');
+                CHANNELS.propagate(msg, `${user.username} hit a major diamond vein, ${diamondsFound}xDIAMOND found!`, 'TALK');
             }
 
             // Add the experience.
@@ -178,6 +178,6 @@ export default class MiningMinigame {
         // Add the prompt for mining the rock.
         MESSAGES.delayReact(rockMsg, '⛏️');
 
-        CHANNELS._send('FEED', `${ROLES._textRef('ROCK_SLIDE_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
+        CHANNELS._send('TALK', `${ROLES._textRef('ROCK_SLIDE_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
     }
 }

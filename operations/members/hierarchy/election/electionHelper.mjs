@@ -154,7 +154,8 @@ export default class ElectionHelper {
                 `To stand for election, use the /stand (slash command). \n\n` +
                 `Time remaining: ${readableElecLeft}.`;
 
-            CHANNELS._postToFeed(`@everyone, ${electionText}`);
+
+            CHANNELS._send('TALK', `${ROLES._textRef('ANNOUNCEMENTS')}, ${electionText}`);
 
             // Indicate successful start.
             return true;
@@ -226,7 +227,7 @@ export default class ElectionHelper {
         
         // Post an update if chosen.
         if (postUpdate)
-            CHANNELS._codes(['FEED', 'TALK', 'ACTIONS'], electionProgressText);
+            CHANNELS._codes(['TALK', 'ACTIONS'], electionProgressText);
     }
 
     static async endElection() {
@@ -270,7 +271,7 @@ export default class ElectionHelper {
 
                 `**Next Election:** ${nextElecFmt}.`;
             
-            CHANNELS._postToFeed(declareText);
+            CHANNELS._send('TALK', declareText);
             await this.editElectionInfoMsg(declareText);
 
             // Handle election items.
@@ -331,14 +332,14 @@ export default class ElectionHelper {
             
                     // Add former commander to ex commander!
                     if (!ROLES._has(exCommander, 'FORMER_COMMANDER')) {
-                        CHANNELS._postToFeed(`${exCommander.user.username} is recognised as a former commander and allowed access into the former commanders' secret channel!`);
+                        CHANNELS._send('TALK', `${exCommander.user.username} is recognised as a former commander and allowed access into the former commanders' secret channel!`);
                         await ROLES._add(exCommander.user.id, 'FORMER_COMMANDER');
         
                         // Update last served data for the former commander.
                         // last_served
                     }
                 } else {
-                    CHANNELS._postToFeed(`${exCommander.user.username} is re-elected as Commander for another term!`);
+                    CHANNELS._send('TALK', `${exCommander.user.username} is re-elected as Commander for another term!`);
                 }
             }
 
@@ -534,7 +535,7 @@ export default class ElectionHelper {
                 // Disabled vote limits, but use it to prevent feedback spam.
                 if (!vote) {
                     // Acknowledge vote in feed.
-                    CHANNELS._postToFeed(`${user.username} cast their vote for ${candidateUser.username}!`);
+                    CHANNELS._send('TALK', `${user.username} cast their vote for ${candidateUser.username}!`);
                 }
             }
         } catch(e) {

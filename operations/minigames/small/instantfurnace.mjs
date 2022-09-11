@@ -1,6 +1,6 @@
 import { STATE, USABLE, MESSAGES, CHANNELS, USERS, ITEMS } from "../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
-import TemporaryMessages from "../../maintenance/temporaryMessages.mjs";
+import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 

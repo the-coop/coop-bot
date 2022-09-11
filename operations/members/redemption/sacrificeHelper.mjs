@@ -4,7 +4,7 @@ import { KEY_MESSAGES, EMOJIS, CHANNELS } from 'coop-shared/config.mjs';
 import CooperMorality from '../../minigames/small/cooperMorality.mjs';
 
 import COOP, { MESSAGES, ROLES } from '../../../coop.mjs';
-import TemporaryMessages from '../../maintenance/temporaryMessages.mjs';
+import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
 import Items from 'coop-shared/services/items.mjs';
 
 export const SACRIFICE_RATIO_PERC = .05;
@@ -327,7 +327,7 @@ export default class SacrificeHelper {
     // Last sacrifice time, last updated, how it works, current dagger/shield count.
     static announce() {
         const announceText = `**${EMOJIS.DAGGER}${EMOJIS.DAGGER} The Coop Sacrifice Ritual:**\n\n Work in progress...`;
-        COOP.CHANNELS._send('FEED', announceText);
+        COOP.CHANNELS._send('TALK', announceText);
     }
     
 }

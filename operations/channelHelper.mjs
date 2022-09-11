@@ -62,17 +62,6 @@ export default class ChannelHelper {
         return this.filter(guild, filter);
     }
 
-    static _postToFeed(message, delay = 333) {
-        const prodServer = SERVER._coop();
-        const feedChannel = this.getByCode(prodServer, 'FEED');
-        return new Promise((resolve) => {
-            setTimeout(async () => {
-                const msg = await feedChannel.send(message);
-                resolve(msg);
-            }, delay);
-        });
-    }
-
     static codeSay(channelCode, messageText, delay = 333) {
         return this._postToChannelCode(channelCode, messageText, delay);
     }

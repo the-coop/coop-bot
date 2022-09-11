@@ -45,7 +45,7 @@ export default class LegendaryEggHandler {
                     COOP.CHANNELS.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💜', false);
 
                     // Also notify feed channel due to the rarity of the egg.
-                    COOP.CHANNELS.send('FEED', feedbackMsgText, 666);
+                    COOP.CHANNELS.send('TALK', feedbackMsgText, 666);
                 }
             } catch(e) {
                 console.error(e);

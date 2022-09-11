@@ -23,7 +23,7 @@ import COOP, { SERVER, USERS } from "../coop.mjs";
 
 import ProspectHelper from "./members/redemption/prospectHelper.mjs";
 import serverTick from "./serverTick.mjs";
-import TemporaryMessages from "./maintenance/temporaryMessages.mjs";
+import TemporaryMessages from "./activity/maintenance/temporaryMessages.mjs";
 import AccessCodes from "coop-shared/services/access-codes.mjs";
 import NewsHelper from "./social/newsHelper.mjs";
 import CompetitionHelper from "./social/competitionHelper.mjs";

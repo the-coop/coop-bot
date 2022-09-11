@@ -276,7 +276,7 @@ export default class ItemsHelper {
             let successText = `${username} is now the **richest**!`;
             if (prevWinner) successText = ` ${username} overtakes ${prevWinner.username} as richest member!`;
             successText += ` Given RICHEST reward role and 100 points (${pointsAfter})!`;
-            COOP.CHANNELS._postToFeed(successText);
+            COOP.CHANNELS._send('TALK', successText);
         }
     }
 
@@ -332,7 +332,7 @@ export default class ItemsHelper {
             let successText = `${username} is now the biggest hoarder.`;
             if (prevWinner) successText = ` ${username} overtakes ${prevWinner.username} for most items!`;
             successText += ` Given MOST ITEMS reward role and 50 points (${pointsAfter})!`;
-            COOP.CHANNELS._postToFeed(successText);
+            COOP.CHANNELS._send('TALK', successText);
         }
     }
 

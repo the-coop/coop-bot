@@ -82,7 +82,7 @@ export default class SuggestionsHelper {
                 const tiedText = `Tied suggestion detected, please break the deadlock: \n\n ${link} \n\n` +
                     `${EMOJIS.POLL_FOR.repeat(votes.for)}${EMOJIS.POLL_AGAINST.repeat(votes.against)}`;
     
-                ['TALK', 'FEED'].forEach((channelKey, channelIndex) => {
+                ['TALK'].forEach((channelKey, channelIndex) => {
                     setTimeout(
                         () => CHANNELS._postToChannelCode(channelKey, tiedText), 
                         channelIndex * 666
@@ -198,7 +198,7 @@ export default class SuggestionsHelper {
                     `${EMOJIS.POLL_FOR.repeat(votes.for)}${EMOJIS.POLL_AGAINST.repeat(votes.against)}`;
                 
                 // Inform the server of rejected suggestion.
-                ['TALK', 'FEED'].forEach((channelKey, channelIndex) => {
+                ['TALK'].forEach((channelKey, channelIndex) => {
                     setTimeout(
                         () => CHANNELS._postToChannelCode(channelKey, rejectedText), 
                         channelIndex * 666
