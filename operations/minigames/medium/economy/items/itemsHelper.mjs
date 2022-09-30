@@ -95,7 +95,7 @@ export default class ItemsHelper {
     
     static async perBeak(itemCode) {
         const userCount = SERVER._coop().memberCount || 0;
-        const total = await this.count(itemCode);
+        const total = await Items.count(itemCode);
         return total / userCount;
     }
 

@@ -29,9 +29,6 @@ export default class StockHelper {
     static async getEST() {
         const { data } = await axios.get('https://worldtimeapi.org/api/timezone/EST');
         const date = moment.parseZone(data.datetime);
-
-        console.log('EST hours', date.hours());
-
         return date;
     }
 
