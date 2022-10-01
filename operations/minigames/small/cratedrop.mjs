@@ -199,7 +199,10 @@ export default class CratedropMinigame {
             const pointsRewardString = `**${usersRewardedText} for opening the ${rewardTypeText}!**\n\n`;
             const crateLootText = pointsRewardString + listLootString;
 
-            // Send the update.
+            // Edit the drop into the message content.
+            msg.edit(msg.content + '\n' + crateLootText);
+
+            // Send the update to logs channel.
             COOP.CHANNELS.propagate(msg, crateLootText, 'ACTIONS', false);
 
             // Remove the opened crate.
