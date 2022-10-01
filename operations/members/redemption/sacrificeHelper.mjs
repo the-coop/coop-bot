@@ -278,7 +278,7 @@ export default class SacrificeHelper {
                 `**Decide <@${user.id}>'s fate**: React to choose! Dagger (remove) OR Shield (keep)!\n` +
                 `\n**Member Stats:**\n` +
                 `_Last message sent: ${lastMessageFmt}_\n` + 
-                `_Total messages sent: ${totalMsgsSent}_\n` +
+                // `_Total messages sent: ${totalMsgsSent}_\n` +
                 `_Total points: ${points}_\n` +
                 `_Total items: ${totalItems}_`,
             thumbnail: COOP.USERS.avatar(user),
