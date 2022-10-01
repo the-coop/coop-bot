@@ -34,17 +34,6 @@ export default class TradingHelper {
             CHANNELS._send('TALK', '**Latest active trades**:\n' + this.manyTradeItemsStr(lastTrades), 0, 30000);
     }
 
-    static async remove(tradeID) {
-        const query = {
-            name: "remove-trade-id",
-            text: `DELETE FROM open_trades WHERE id = $1`,
-            values: [tradeID]
-        };
-
-        const result = await Database.query(query);
-        return result;
-    }
-
     static async findOfferMatches(offerItem) {
         const query = {
             name: "get-trades-by-offer",

@@ -56,17 +56,6 @@ export default class ItemsHelper {
         return result;
     }
 
-    static async getTransactionRowCount() {
-        const query = {
-            name: "transactions-rows-count",
-            text: `SELECT COUNT(*) FROM item_qty_change_history`
-        };  
-
-        const result = await Database.query(query);
-        const numTxRows = DatabaseHelper.singleField(result, 'count', 0);
-        return numTxRows;
-    }
-
     static async getAllItemOwners(itemCode) {
         const query = {
             name: "get-all-user-items",
