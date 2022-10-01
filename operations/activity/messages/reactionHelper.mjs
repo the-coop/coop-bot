@@ -89,7 +89,6 @@ export default class ReactionHelper {
         return msgRef.awaitReactions(filterFn, opts);
     }
 
-
     static _usersEmojisAwait(msgRef, emojis = [], modifier = null) {
         // Construct the await reactions filter.
         return this.handleConsentManyVoteMsg(msgRef, ({ emoji }, user) => {

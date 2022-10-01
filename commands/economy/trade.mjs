@@ -129,7 +129,8 @@ const createTrade = async interaction => {
 
 		// Guard against bad/negative amounts for both qtys
 		if (
-			!validItemQtyArgFloatGuard(interaction.channel, interaction.user, offerQty) || 
+			!validItemQtyArgFloatGuard(interaction.channel, interaction.user, offerQty) 
+			|| 
 			!validItemQtyArgFloatGuard(interaction.channel, interaction.user, receiveQty)
 		)
 			return null;
@@ -168,7 +169,7 @@ const createTrade = async interaction => {
 		// Setup the reaction collector for trade confirmation interaction handling.
 		const interactions = await confirmMsg.awaitReactions(
 			userDesiredReactsFilter(['❎', '✅']), 
-			{ max: 1, time: 30000, errors: ['time'] }
+			{ max: 1, time: 12500, errors: ['time'] }
 		);
 
 		// Check reaction is from user who asked, if restricting confirmation to original.
