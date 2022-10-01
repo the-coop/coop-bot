@@ -269,7 +269,7 @@ const tradeAccept = async interaction => {
 		if (!trade) return COOP.MESSAGES.selfDestruct(interaction.channel, `Invalid trade ID - already sold?`, 0, 5000);
 		
 		// Check if user can fulfil the trade.
-		const hasEnough = await COOP.ITEMS.hasQty(tradeeID, trade.receive_item, trade.receive_qty);
+		const hasEnough = await Items.hasQty(tradeeID, trade.receive_item, trade.receive_qty);
 		if (!hasEnough) return COOP.MESSAGES.selfDestruct(interaction.channel, `Insufficient offer quantity for trade.`, 0, 5000);
 
 		// Let helper handle accepting logic as it's used in multiple places so far.
