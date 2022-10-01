@@ -66,7 +66,7 @@ export default class UsableItemHelper {
             ROLES._idHasCode(user.id, 'MEMBER'),
     
             // If invalid item code or not usable, don't allow pick up event.
-            itemCode && this.isUsable(itemCode),
+            itemCode && Useable.isUsable(itemCode),
     
             // Attempt to consume the item
             await Useable.use(user.id, itemCode, 1, 'Via redropping.')
@@ -133,7 +133,7 @@ export default class UsableItemHelper {
                 );
 
             // If invalid item code or not usable, don't allow pick up event.
-            if (!itemCode || !this.isUsable(itemCode))
+            if (!itemCode || !Useable.isUsable(itemCode))
                 // TODO: Maybe use reply functionality to point to message they tried to pick up?
                 return MESSAGES.selfDestruct(reaction.message,
                     `${user.username} you can't pick that up.`
