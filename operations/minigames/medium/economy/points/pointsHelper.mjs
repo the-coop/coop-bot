@@ -124,8 +124,11 @@ export default class PointsHelper {
                 return result;
             }));
 
+            // Remove the 0s.
+            const filteredPercChanges = percChanges.filter(change => change.percChange > 0);
+
             // Sort the points changes by highest (positive) perc change first.
-            percChanges.sort((a, b) => {
+            filteredPercChanges.sort((a, b) => {
                 if (a.percChange === Infinity) return 1;
                 if (a.percChange < 0) return 1;
                 if (a.percChange >= b.percChange) return -1;
@@ -135,7 +138,7 @@ export default class PointsHelper {
             const membersOfWeek = COOP.ROLES._allWith('MEMBEROFWEEK');
 
             // Check if that winner has the role already.
-            const highestChange = percChanges[0];
+            const highestChange = filteredPercChanges[0];
 
             // Remove other member of the week.
             let hadAlready = false;
@@ -170,7 +173,7 @@ export default class PointsHelper {
             }
 
             // Add reasoning.
-            updateText += `<@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) was selected by MOTW as the best/most promising member this week!\n\n`;
+            updateText += `<@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) was selected by MOTW as the best/most promising member this week! `;
 
             // Give the winner the reward.
             if (hadAlready) {
@@ -180,8 +183,8 @@ export default class PointsHelper {
             }
 
             // Add the runners up.
-            updateText += 'Runners up:\n' +
-                [percChanges[1], percChanges[2], percChanges[3]]
+            updateText += '\n\nRunners up:\n' +
+                [filteredPercChanges[1], filteredPercChanges[2], filteredPercChanges[3]]
                     .map(runnerUp =>
                         `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%)`
                     ).join('\n');
