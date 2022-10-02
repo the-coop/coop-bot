@@ -21,6 +21,22 @@ export default class MessagesHelper {
         return match;
     }
 
+    // Used to find similar messages in order to edit them or interact further (condense etc).
+    static async getSimilarExistingMsg(chan, includeText, limit = 10) {
+        // Check for existing update message.
+        let updateMsg = null;
+
+        const limitHistoryMsgs = await chan.messages.fetch({ limit });
+
+        // Check limit message history for similar message.
+        limitHistoryMsgs.map(m => {
+                if (m.content.includes(includeText))
+                    updateMsg = m;
+            });
+
+        return updateMsg;
+    }
+
     static parselink(link) {
         let result = null;
 

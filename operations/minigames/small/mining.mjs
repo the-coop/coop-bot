@@ -66,12 +66,7 @@ export default class MiningMinigame {
         const pickaxeBreakPerc = Math.min(75, Math.max(25, extractedOreNum));
 
         // Attempt to access the mining message.
-        let updateMsg = null;
-        (await msg.channel.messages.fetch({ limit: 10 }))
-            .map(m => {
-                if (m.content.includes('**MINING IN PROGRESS**'))
-                    updateMsg = m;
-            });
+        let updateMsg = await MESSAGES.getSimilarExistingMsg(msg.channel, '**MINING IN PROGRESS**');
             
         // Test the pickaxe for breaking.
         const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });

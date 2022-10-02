@@ -1,5 +1,5 @@
 import { KEY_MESSAGES, RAW_EMOJIS } from "coop-shared/config.mjs";
-import { ITEMS, USABLE, USERS, CHANNELS, REACTIONS, CHICKEN } from "../../../../../coop.mjs";
+import { ITEMS, USABLE, USERS, CHANNELS, REACTIONS, CHICKEN, MESSAGES } from "../../../../../coop.mjs";
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
@@ -22,16 +22,20 @@ export default class TradingHelper {
         console.log('Someone trying to accept a trade', isAcceptEmoji);
     }
 
-    static async updateChannel() {
-        // Update message at top of trades :)
-        // const dateFmt = TIME.secsLongFmt(Date.now() / 1000);
-        // const editResult = await MESSAGES.editByLink(KEY_MESSAGES.trade_info, 'Trade Message Updated ' + dateFmt);
-        // return editResult;
-
+    // TODO: Rename
+    static async announce() {
         // Post latest/most recent 5-10 trades in talk.
         const lastTrades = await Trading.all();
-        if (lastTrades.length > 0)
-            CHANNELS._send('TALK', '**Latest active trades**:\n' + this.manyTradeItemsStr(lastTrades), 0, 30000);
+        if (lastTrades.length === 0) return null;
+
+        const msgTitle = '**Latest active trades**';
+        const msgContent = msgTitle + ':\n' + this.manyTradeItemsStr(lastTrades);
+        const talkChannel = CHANNELS._getCode('TALK');
+        const updateMsg = await MESSAGES.getSimilarExistingMsg(talkChannel, msgTitle);
+        if (!updateMsg)
+            CHANNELS._send('TALK', msgContent, 0, 30000);
+        else 
+            updateMsg.edit(msgContent);
     }
 
     static async findOfferMatches(offerItem) {

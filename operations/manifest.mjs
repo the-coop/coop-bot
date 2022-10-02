@@ -152,7 +152,7 @@ export default function eventsManifest() {
   EventsHelper.chanceRunInterval(() => EasterMinigame.run(), 33, baseTickDur);
 
   // Update trades channel message
-  EventsHelper.chanceRunInterval(() => TradingHelper.updateChannel(), 22, baseTickDur * 4);
+  EventsHelper.runInterval(() => TradingHelper.announce(), baseTickDur * 2);
 
   // Clean up CONQUEST buffs/item effects.
   EventsHelper.runInterval(() => BuffsHelper.cleanupExpired(), baseTickDur / 3);

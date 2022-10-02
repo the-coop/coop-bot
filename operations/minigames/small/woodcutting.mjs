@@ -56,12 +56,7 @@ export default class WoodcuttingMinigame {
             return MESSAGES.silentSelfDestruct(msg, noText, 0, 3333);
 
         // Check for existing update message.
-        let updateMsg = null;
-        (await msg.channel.messages.fetch({ limit: 10 }))
-            .map(m => {
-                if (m.content.includes('**WOODCUTTING IN PROGRESS**'))
-                    updateMsg = m;
-            });
+        let updateMsg = await MESSAGES.getSimilarExistingMsg(msg.channel, '**WOODCUTTING IN PROGRESS**');
 
         // Calculate number of extracted wood with applied collab buff/modifier.
         const numCutters = REACTIONS.countType(msg, '🪓') - 1;
