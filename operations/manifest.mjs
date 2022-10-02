@@ -73,7 +73,7 @@ export const VELOCITY_EVENTS = {
   CRATEDROP: { 
     since: 0, 
     handler: () => CrateDrop.run(), 
-    interval: baseTickDur * 25
+    interval: baseTickDur * 15
   },
 };
 

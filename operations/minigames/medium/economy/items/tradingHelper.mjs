@@ -22,6 +22,9 @@ export default class TradingHelper {
         console.log('Someone trying to accept a trade', isAcceptEmoji);
     }
 
+    // TODO: Refactor, this kind of thing should be isolated to a file, it is an action and not core to the service - but an implementation
+    // of the service.
+
     // TODO: Rename
     static async announce() {
         // Post latest/most recent 5-10 trades in talk.
@@ -106,11 +109,10 @@ export default class TradingHelper {
     }
 
     static manyTradeItemsStr(trades) {
-        return trades.map(trade => 
-            `#${trade.id} by ${trade.trader_username}\n${this.tradeItemsStr(trade)}\n\n`
+        return trades.map(trade =>
+            `**#${trade.id}** by ${trade.trader_username} | ${this.tradeItemsStr(trade)} |`
         ).join('');
     }
-
     // This method directly takes items from user to close a trade.
     static async accept(openTradeID, accepteeID, accepteeName) {
         try {

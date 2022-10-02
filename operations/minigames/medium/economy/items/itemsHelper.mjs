@@ -157,11 +157,11 @@ export default class ItemsHelper {
     }
 
     static gainItemQtyStr(itemCode, itemQty = 1) {
-        return `-> ${this.itemEmojiQtyStr(itemCode, itemQty)}`;
+        return `:arrow_right: ${this.itemEmojiQtyStr(itemCode, itemQty)}`;
     }
 
     static lossItemQtyStr(itemCode, itemQty = 1) {
-        return `<- ${this.itemEmojiQtyStr(itemCode, itemQty)}`;
+        return `:arrow_left: ${this.itemEmojiQtyStr(itemCode, itemQty)}`;
     }
 
     static exchangeItemsQtysStr(lossItem, lossQty, gainItem, gainQty) {

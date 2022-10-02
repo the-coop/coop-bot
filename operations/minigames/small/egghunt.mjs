@@ -336,6 +336,9 @@ export default class EggHuntMinigame {
                     MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BASKET, STATE.CHANCE.integer({ min: 111, max: 222 }));
                     MESSAGES.delayReact(eggMsg, RAW_EMOJIS.HAMMER, STATE.CHANCE.integer({ min: 111, max: 222 }));
 
+                    // TODO: If TOXIC_EGG add a frying pan emoji
+                    // MESSAGES.delayReact(eggMsg, RAW_EMOJIS.FRYING_PAN, STATE.CHANCE.integer({ min: 111, max: 222 }));
+
                     // If an annotation for the egg drop was provided, use it.
                     const fivePercentRoll = STATE.CHANCE.bool({ likelihood: 7.5 });
                     if (dropText && fivePercentRoll) 

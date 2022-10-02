@@ -47,7 +47,7 @@ export default class CraftingHelper {
                 STEEL_BAR: 3,
                 IRON_BAR: 5
             }
-        },
+        }
     }
 
     static isItemCraftable(code) {
