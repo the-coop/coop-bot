@@ -159,8 +159,10 @@ export default class ElectionHelper {
 
                 `Time remaining: ${readableElecLeft}.`;
 
+            const msg = await CHANNELS._send('TALK', `${ROLES._textRef('ANNOUNCEMENTS')}, ${electionText}`);
 
-            CHANNELS._send('TALK', `${ROLES._textRef('ANNOUNCEMENTS')}, ${electionText}`);
+            // Add the guide emoji or buttons for more information.
+            msg.react('📖');
 
             // Indicate successful start.
             return true;

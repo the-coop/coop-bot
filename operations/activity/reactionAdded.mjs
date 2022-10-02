@@ -15,7 +15,7 @@ import ElectionHelper from "../members/hierarchy/election/electionHelper.mjs";
 import CleanupHandler from "./messages/cleanupHandler.mjs";
 import LinkPreviewFilter from "./messages/linkPreviewFilter.mjs";
 
-import COOP, { USABLE, STATE } from "../../coop.mjs";
+import COOP, { USABLE, STATE, ROLES } from "../../coop.mjs";
 import SuggestionsHelper from "./suggestions/suggestionsHelper.mjs";
 import CompetitionHelper from "../social/competitionHelper.mjs";
 import TradingHelper from "../minigames/medium/economy/items/tradingHelper.mjs";
@@ -55,6 +55,12 @@ export default async function reactAddedHandler(reaction, user) {
 
         // Prevent and toggle link previews.
         LinkPreviewFilter.onReaction(reaction, user);
+
+        // TODO: Refine/limit 
+        // If they react with '📖' on a message cooper also has that emoji, give them guide role.
+        if (reaction.emoji.name === '📖' && isUser) {
+            ROLES._add(user.id, 'GUIDE');
+        }
 
         // Random point spawn.
         if (reaction.emoji.name === 'coop' && isUser) {

@@ -10,7 +10,12 @@ import Mining from "./minigames/small/mining.mjs";
 import Woodcutting from "./minigames/small/woodcutting.mjs";
 import InstantFurnace from "./minigames/small/instantfurnace.mjs";
 import EasterMinigame from "./minigames/small/holidays/easter.mjs";
+
+// TODO: Turn chest pop into a simple gold coin release.
 // import ChestPop from "./minigames/small/chestpop.mjs";
+
+// import NewsHelper from "./social/newsHelper.mjs";
+
 
 import BuffsHelper from "./minigames/medium/conquest/buffsHelper.mjs";
 import CooperMorality from "./minigames/small/cooperMorality.mjs";
@@ -18,23 +23,25 @@ import TradingHelper from "./minigames/medium/economy/items/tradingHelper.mjs";
 import EconomyHelper from "./minigames/medium/economy/economyHelper.mjs";
 import ElectionHelper from "./members/hierarchy/election/electionHelper.mjs";
 
-
 import COOP, { SERVER, USERS } from "../coop.mjs";
 
 import ProspectHelper from "./members/redemption/prospectHelper.mjs";
 import serverTick from "./serverTick.mjs";
 import TemporaryMessages from "./activity/maintenance/temporaryMessages.mjs";
 import AccessCodes from "coop-shared/services/access-codes.mjs";
-import NewsHelper from "./social/newsHelper.mjs";
+
 import CompetitionHelper from "./social/competitionHelper.mjs";
 import ActivityHelper from "./activity/activityHelper.mjs";
 import DonationHelper from "./social/donationHelper.mjs";
 import SpotlightHelper from "./members/spotlightHelper.mjs";
 import RedemptionHelper from "./members/redemption/redemptionHelper.mjs";
 import StockHelper from "./stock/stockHelper.mjs";
-
+import { Chance } from "chance";
 
 export const baseTickDur = 60 * 25 * 1000;
+
+// Seperate chance instance to avoid circular STATE dependency.
+const manifestChance = new Chance;
 
 // Interval basis for checking events that depend on community velocity value.
 export const VELOCITY_EVENTS = {
@@ -51,12 +58,12 @@ export const VELOCITY_EVENTS = {
   MINING: {
     since: 0, 
     handler: () => Mining.run(), 
-    interval: baseTickDur * STATE.CHANCE.floating({ min: 9, max: 11 })
+    interval: baseTickDur * manifestChance.floating({ min: 9, max: 11 })
   },
   WOODCUTTING: { 
     since: 0, 
     handler: () => Woodcutting.run(), 
-    interval: baseTickDur * STATE.CHANCE.floating({ min: 9, max: 11 })
+    interval: baseTickDur * manifestChance.floating({ min: 9, max: 11 })
   },
   EGGHUNT: { 
     since: 0, 
@@ -87,8 +94,6 @@ export default function eventsManifest() {
 
   // Track spotlight event until required.
   EventsHelper.runInterval(() => SpotlightHelper.track(), baseTickDur * 20);
-
-  
 
   // Core tick handler for more granularity over timing.
   EventsHelper.runInterval(() => serverTick(), 30000);
