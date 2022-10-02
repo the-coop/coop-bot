@@ -48,15 +48,15 @@ export const VELOCITY_EVENTS = {
     handler: () => InstantFurnace.run(), 
     interval: baseTickDur * 15
   },
-  MINING: { 
+  MINING: {
     since: 0, 
     handler: () => Mining.run(), 
-    interval: baseTickDur * 10
+    interval: baseTickDur * STATE.CHANCE.floating({ min: 9, max: 11 })
   },
   WOODCUTTING: { 
     since: 0, 
     handler: () => Woodcutting.run(), 
-    interval: baseTickDur * 10
+    interval: baseTickDur * STATE.CHANCE.floating({ min: 9, max: 11 })
   },
   EGGHUNT: { 
     since: 0, 
