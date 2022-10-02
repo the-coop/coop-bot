@@ -97,8 +97,6 @@ export default class TradingHelper {
         return DatabaseHelper.many(result);
     }
 
-
-
     // Turn trade into items receive/loss string from searcher perspective 
     // (not trader perspective).
     static tradeItemsStr(trade) {
