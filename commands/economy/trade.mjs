@@ -107,7 +107,7 @@ const createTrade = async interaction => {
 	const receiveQty = _.get(interaction.options.get('receive_qty'), 'value', 1);
 
 	// Acknowledge but let rest of function handle confiramtion.
-	interaction.reply({ content: 'Please confirm trade creation!', ephemeral: true });
+	// interaction.reply({ content: 'Please confirm trade creation!', ephemeral: true });
 
 	// TODO: Could potentially allow others to take the same trade with this. GME FTW.
 	// TODO: Provide a more useful error message here with qty details.
@@ -137,12 +137,13 @@ const createTrade = async interaction => {
 
 		// Check if user can fulfil the trade.
 		const canUserFulfil = await Items.hasQty(tradeeID, offerItemCode, offerQty);
-		if (!canUserFulfil) return COOP.MESSAGES.selfDestruct(interaction.channel, `Insufficient item quantity for trade.`, 0, 7500);
+		if (!canUserFulfil)
+			return interaction.reply(`Insufficient item quantity for trade.`);
 
 		// Get their existing trades to check slots.
 		const ownerExistingTrades = await Trading.getByTrader(tradeeID);
 		if (ownerExistingTrades.length > 5)
-			return COOP.MESSAGES.selfDestruct(interaction.channel, `Insufficient available trade slots ${ownerExistingTrades.length}/5.`, 0, 7500);
+			return interaction.reply(`Insufficient available trade slots ${ownerExistingTrades.length}/5.`);
 
 		// Generate strings with emojis based on item codes.
 		const tradeAwayStr = `${COOP.MESSAGES.emojiCodeText(offerItemCode)}x${offerQty}`;
@@ -170,7 +171,7 @@ const createTrade = async interaction => {
 
 		// Trade cancelled, remove message.
 		const confirmation = await InteractionHelper.confirm(interaction, feedbackTexts);
-		if (!confirmation) return await interaction.editReply( `Trade creation cancelled.`);
+		if (!confirmation) return await interaction.reply( `Trade creation cancelled.`);
 
 		// Accept cheapest matching offer.
 		if (matchingOffers.length > 0) {
@@ -192,10 +193,12 @@ const createTrade = async interaction => {
 					const actionsLinkStr = `\n\n_View in <#${COOP.CHANNELS.textRef('TRADE')}>_`;
 
 					// Post accepted trade to channel and record channel.
-					COOP.MESSAGES.delayEdit(confirmMsg, tradeConfirmStr + actionsLinkStr, 333);
+					interaction.reply( tradeConfirmStr + actionsLinkStr);
+
 			} else {
 				// Edit failure onto message.
-				COOP.MESSAGES.selfDestruct(confirmMsg, 'Failure confirming instant trade.', 666, 5000);
+				// COOP.MESSAGES.selfDestruct(confirmMsg, 'Failure confirming instant trade.', 666, 5000);
+				interaction.reply('Failure confirming instant trade.');
 			}
 
 		} else {
@@ -232,7 +235,7 @@ const createTrade = async interaction => {
 				// TODO: Add reaction to cancel trade.
 				
 			} else {
-				COOP.MESSAGES.selfDestruct(confirmMsg, 'Error creating trade.', 666, 5000);
+				interaction.reply('Error creating trade.');
 			}
 		}
 		
@@ -241,7 +244,6 @@ const createTrade = async interaction => {
 		console.error(e);
 	}
 };
-
 
 
 const tradeAccept = async interaction => {
@@ -255,19 +257,21 @@ const tradeAccept = async interaction => {
 
 		// Check if valid trade ID given.
 		const trade = await Trading.get(tradeID);
-		if (!trade) return COOP.MESSAGES.selfDestruct(interaction.channel, `Invalid trade ID - already sold?`, 0, 5000);
+		if (!trade)
+			return interaction.reply(`Invalid trade ID - already sold?`);
 		
 		// Check if user can fulfil the trade.
 		const hasEnough = await Items.hasQty(tradeeID, trade.receive_item, trade.receive_qty);
-		if (!hasEnough) return COOP.MESSAGES.selfDestruct(interaction.channel, `Insufficient offer quantity for trade.`, 0, 5000);
+		if (!hasEnough)
+			return interaction.reply(`Insufficient offer quantity for trade.`);
 
 		// Let helper handle accepting logic as it's used in multiple places so far.
 		const tradeAccepted = await TradingHelper.accept(tradeID, tradeeID, tradeeName);
 		if (tradeAccepted) {
-			COOP.MESSAGES.selfDestruct(interaction.channel, 'Trade accepted.', 0, 10000);
+			interaction.reply('Trade accepted.');
 		} else {
 			// Log cancelled trades
-			COOP.MESSAGES.selfDestruct(interaction.channel, 'Trade could not be accepted.', 0, 5000);
+			interaction.reply('Trade could not be accepted.');
 			console.log('Trade accept failed');
 		}
 		
@@ -276,9 +280,6 @@ const tradeAccept = async interaction => {
 		console.error(e);
 	}
 }
-
-
-
 
 
 const tradeCancel = async interaction => {
@@ -293,19 +294,19 @@ const tradeCancel = async interaction => {
 
 		// Check if valid trade ID given.
 		const trade = await Trading.get(tradeID);
-		if (!trade) return COOP.MESSAGES.selfDestruct(interaction.channel, `Invalid # trade ID - already cancelled?`, 0, 5000);
+		if (!trade) return interaction.reply(`Invalid # trade ID - already cancelled?`);
 		
 		// Check if user can fulfil the trade.
 		const isYours = trade.trader_id === tradeeID;
-		if (!isYours) return COOP.MESSAGES.selfDestruct(interaction.channel, `Trade #${trade.id} is not yours to cancel.`, 0, 5000);
+		if (!isYours) return interaction.reply(`Trade #${trade.id} is not yours to cancel.`);
 
 		// Let helper handle accepting logic as it's used in multiple places so far.
 		const tradeCancelled = await TradingHelper.cancel(tradeID, tradeeName);
 		if (tradeCancelled) {
 			// Log cancelled trades
-			COOP.MESSAGES.selfDestruct(interaction.channel, `Trade #${trade.id} cancelled.`, 0, 7500);
+			interaction.reply(`Trade #${trade.id} cancelled.`);
 		} else {
-			COOP.MESSAGES.selfDestruct(interaction.channel, `Trade #${trade.id} could not be cancelled.`, 0, 10000);
+			interaction.reply(`Trade #${trade.id} could not be cancelled.`);
 			console.log('Trade cancel failed');
 		}
 		
