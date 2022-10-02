@@ -60,8 +60,6 @@ export default class EggHuntMinigame {
             const isBasketEmoji = reaction.emoji.name === RAW_EMOJIS.BASKET;
             const isHammerEmoji = reaction.emoji.name === RAW_EMOJIS.HAMMER;
 
-            // TODO: This isn't secure enough, need to check it's a coop emoji
-            // SOLUTION: reaction.emoji.guild.id === COOP.id
             const isPanEmoji = reaction.emoji.name === 'frying_pan';
 
             // Check user is in the database:
@@ -335,9 +333,11 @@ export default class EggHuntMinigame {
                     // Add collection action emoji.
                     MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BASKET, STATE.CHANCE.integer({ min: 111, max: 222 }));
                     MESSAGES.delayReact(eggMsg, RAW_EMOJIS.HAMMER, STATE.CHANCE.integer({ min: 111, max: 222 }));
+                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BOMB, 333);
 
-                    // TODO: If TOXIC_EGG add a frying pan emoji
-                    // MESSAGES.delayReact(eggMsg, RAW_EMOJIS.FRYING_PAN, STATE.CHANCE.integer({ min: 111, max: 222 }));
+                    // If TOXIC_EGG add a frying pan emoji
+                    if (rarity === 'TOXIC_EGG')
+                        MESSAGES.delayReact(eggMsg, EMOJIS.FRYING_PAN, 444);
 
                     // If an annotation for the egg drop was provided, use it.
                     const fivePercentRoll = STATE.CHANCE.bool({ likelihood: 7.5 });
