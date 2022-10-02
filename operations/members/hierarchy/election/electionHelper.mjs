@@ -151,7 +151,12 @@ export default class ElectionHelper {
             // Inform all members so they can fairly stand.
             const electionText = `our latest ${CHANNELS.textRef('ELECTION')} is running, all members are welcome to stand or vote for their preferred commander and leaders. \n` +
                 `For further information on our elections refer to our forth amendment in ${CHANNELS.textRef('ABOUT')}\n\n` +
-                `To stand for election, use the /stand (slash command). \n\n` +
+
+                `To enter election yourself use the /stand slash command with a short message of why people should vote for you.\n` +
+                `To nominate another person for leadership use the /nominate slash command with a similar message.\n\n` +
+                
+                `_Guide available at ${CHANNELS.textRef('MEMBER_GUIDE')} (requires guide role)._\n\n` +
+
                 `Time remaining: ${readableElecLeft}.`;
 
 

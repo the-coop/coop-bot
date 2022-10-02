@@ -10,6 +10,9 @@ import Items from 'coop-shared/services/items.mjs';
 export const SACRIFICE_RATIO_PERC = .05;
 export const KEEP_RATIO_PERC = .02;
 
+const sacrificeDuration = 60 * 60 * 12;
+const sacrificeMsgLifetime = 60 * 60 * 12;
+
 export default class SacrificeHelper {
 
     static SACRIFICES = [];
@@ -17,7 +20,7 @@ export default class SacrificeHelper {
     static async preload() {
         this.SACRIFICES = await TemporaryMessages.getType('SACRIFICE');
     }
-   
+
     static isReactionSacrificeVote(reaction, user) {
         const emoji = reaction.emoji.name;
         const isVoteEmoji = [EMOJIS.DAGGER, EMOJIS.SACRIFICE_SHIELD].indexOf(emoji) > -1;
@@ -34,8 +37,6 @@ export default class SacrificeHelper {
 
     static isBackDagger(reaction, user) {
         const emoji = reaction.emoji.name;
-        const channelID = reaction.message.channel.id;
-        // const isSacrificeChannel = channelID === CHANNELS.SACRIFICE.id;
         const isDagger = COOP.MESSAGES.emojiToUni(emoji) === COOP.MESSAGES.emojiToUni(EMOJIS.DAGGER);
 
         // if (isSacrificeChannel) return false;
@@ -151,7 +152,6 @@ export default class SacrificeHelper {
                         COOP.CHANNELS._send('TALK', sacrificeText);
                 }
 
-                
             // Intercept latest vote granted protection to user.
             } else if (missingKeepVotes <= 0 && reaction.emoji.name === EMOJIS.SACRIFICE_SHIELD) {
                 let savedText = `<@${sacrificeeID}> was protected from sacrifice by votes!`;
@@ -226,10 +226,19 @@ export default class SacrificeHelper {
         
         // If happened within past week, prevent.
         const lastWeek = COOP.TIME._secs() - ((60 * 60) * 24) * 7;
+
         // Ignore null lastSacSecs, these players have never been sacrificed before... no reason not to choose them. :D
-        if (lastSacSecs !== null && lastSacSecs >= lastWeek) {
+        if (lastSacSecs >= lastWeek) {
             const sparedText = `${user.username} was considered for sacrifice but spared.`;
             return COOP.CHANNELS._send('TALK', sparedText);
+        }
+
+        // If there is a previous sacrifice and the user still has prospect role (implies survived) remove role.
+        if (lastSacSecs && ROLES._idHasCode(user.id, 'PROSPECT')) {
+            await ROLES._remove(user.id, 'PROSPECT');
+
+            const deprospectedText = `${user.username} survived their last sacrifice and is no longer considered a prospect`;
+            return COOP.CHANNELS._send('TALK', deprospectedText);
         }
 
         // Show some basic user statistics on the sacrifice message.
@@ -239,7 +248,6 @@ export default class SacrificeHelper {
         const lastMsgSecs = await COOP.USERS.getField(user.id, 'last_msg_secs');
         if (lastMsgSecs) lastMessageFmt = COOP.TIME.secsLongFmt(lastMsgSecs);
 
-        const totalMsgsSent = await COOP.USERS.getField(user.id, 'total_msgs') || 0;
         const points = await Items.getUserItemQty(user.id, 'COOP_POINT');
         const totalItems = await COOP.ITEMS.getUserTotal(user.id);
 
@@ -287,7 +295,7 @@ export default class SacrificeHelper {
 
         // Schedule end of message and reaction voting (24hr)
         const sacrificeMsg = await COOP.CHANNELS._postToChannelCode('TALK', sacrificeEmbed);
-        TemporaryMessages.add(sacrificeMsg, 60 * 60 * 24, 'SACRIFICE');
+        TemporaryMessages.add(sacrificeMsg, sacrificeMsgLifetime, 'SACRIFICE');
 
         // Update the user's latest recorded sacrifice time.
         await COOP.USERS.updateField(user.id, 'last_sacrificed_secs', COOP.TIME._secs());
