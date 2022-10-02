@@ -1,3 +1,5 @@
+import { Chance } from "chance";
+
 import SacrificeHelper from "./members/redemption/sacrificeHelper.mjs";
 import SuggestionsHelper from "./activity/suggestions/suggestionsHelper.mjs";
 import EventsHelper from "./eventsHelper.mjs";
@@ -10,9 +12,7 @@ import Mining from "./minigames/small/mining.mjs";
 import Woodcutting from "./minigames/small/woodcutting.mjs";
 import InstantFurnace from "./minigames/small/instantfurnace.mjs";
 import EasterMinigame from "./minigames/small/holidays/easter.mjs";
-
-// TODO: Turn chest pop into a simple gold coin release.
-// import ChestPop from "./minigames/small/chestpop.mjs";
+import ChestPop from "./minigames/small/chestpop.mjs";
 
 // import NewsHelper from "./social/newsHelper.mjs";
 
@@ -36,7 +36,6 @@ import DonationHelper from "./social/donationHelper.mjs";
 import SpotlightHelper from "./members/spotlightHelper.mjs";
 import RedemptionHelper from "./members/redemption/redemptionHelper.mjs";
 import StockHelper from "./stock/stockHelper.mjs";
-import { Chance } from "chance";
 
 export const baseTickDur = 60 * 25 * 1000;
 
@@ -45,11 +44,11 @@ const manifestChance = new Chance;
 
 // Interval basis for checking events that depend on community velocity value.
 export const VELOCITY_EVENTS = {
-  // CHESTPOP: { 
-  //   since: 0, 
-  //   handler: () => ChestPop.run(), 
-  //   interval: (baseTickDur * 2) * 9 
-  // },
+  CHESTPOP: { 
+    since: 0, 
+    handler: () => ChestPop.run(), 
+    interval: (baseTickDur * 2) * 9 
+  },
   INSTANT_FURNACE: { 
     since: 0, 
     handler: () => InstantFurnace.run(), 

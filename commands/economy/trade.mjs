@@ -10,6 +10,7 @@ import COOP, { MESSAGES, USABLE } from '../../coop.mjs';
 import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import Useable from 'coop-shared/services/useable.mjs';
+import InteractionHelper from '../../operations/activity/messages/interactionHelper.mjs';
 
 // import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
 
@@ -109,7 +110,6 @@ const createTrade = async interaction => {
 	interaction.reply({ content: 'Please confirm trade creation!', ephemeral: true });
 
 	// TODO: Could potentially allow others to take the same trade with this. GME FTW.
-	// TODO: Support moving all personal confirmations to DM.
 	// TODO: Provide a more useful error message here with qty details.
 
 	try {
@@ -161,28 +161,16 @@ const createTrade = async interaction => {
 		if (matchingOffers.length > 0) 
 			confirmStr += `\n\n_Matching offers detected._`;
 
-		// Post the confirmation message and add reactions to assist interaction.
-		const confirmMsg = await COOP.MESSAGES.selfDestruct(interaction.channel, confirmStr, 0, 30000);
-		COOP.MESSAGES.delayReact(confirmMsg, '❎', 666);
-		COOP.MESSAGES.delayReact(confirmMsg, '✅', 999);
-
-		// Setup the reaction collector for trade confirmation interaction handling.
-		const interactions = await confirmMsg.awaitReactions(
-			userDesiredReactsFilter(['❎', '✅']), 
-			{ max: 1, time: 12500, errors: ['time'] }
-		);
-
-		// Check reaction is from user who asked, if restricting confirmation to original.
-		const confirmation = interactions.reduce((acc, { emoji, users }) => {
-			// TODO: Refactor this line to Reaction helper
-			const userReacted = users.cache.has(tradeeID);
-			if (emoji.name === '✅' && userReacted) return acc = true;
-			else return acc;
-		}, false);
+		// Craft the confirmation message texts.
+		const feedbackTexts = {
+			preconfirmationText: confirmStr,
+			confirmationText: 'Trade confirmed.',
+			cancellationText: 'Cancelled trade, your items were returned.'
+		};
 
 		// Trade cancelled, remove message.
-		if (!confirmation)
-			return COOP.MESSAGES.delayDelete(confirmMsg);
+		const confirmation = await InteractionHelper.confirm(interaction, feedbackTexts);
+		if (!confirmation) return await interaction.editReply( `Trade creation cancelled.`);
 
 		// Accept cheapest matching offer.
 		if (matchingOffers.length > 0) {

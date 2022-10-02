@@ -122,14 +122,21 @@ export default class Chicken {
             // Send the conquest visuals!
             // await VisualisationHelper.record("https://www.thecoop.group/conquest/world");
             // CHANNELS._getCode('TALK').send(newDayText, new MessageAttachment('/tmp/video.webm'));
-            
-            const txs = await this.getTransactionsPreviousDay();
-            console.log(txs);
-            console.log('Previous is the txs for previous day.')
-            
-            console.log('Show above transactions in the right channel formatted');
 
-            // CHANNELS._getCode('TALK').send('New day! What information should go here? (Implementing Poof\'s idea) :thinking: ');
+            const newDayMessage = `A New Coop day begins...\n\n` +
+
+                `__Economy past 24hr__.\n\n` +
+                // const txs = await this.getTransactionsPreviousDay();
+                // console.log(txs);
+                // console.log('Previous is the txs for previous day.')
+                // console.log('Show above transactions in the right channel formatted');
+
+                // Parse this economy information - started somewhere already.
+
+                `__Command usage__\n` +
+                `Add commands usage stats`;
+
+            CHANNELS._getCode('TALK').send(newDayMessage);
 
             return true;
             

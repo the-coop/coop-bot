@@ -21,6 +21,7 @@ import ServerHelper from '../operations/serverHelper.mjs';
 import axios from 'axios';
 import moment from 'moment';
 import Items from 'coop-shared/services/items.mjs';
+import Chicken from '../operations/chicken.mjs';
 
 // v DEV IMPORT AREA v
 // import BaseHelper from '../../operations/minigames/medium/conquest/baseHelper.mjs';
@@ -100,10 +101,19 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+
+
+
+        
+        // const txs = await Chicken.getTransactionsPreviousDay();
+        // console.log(txs);
+
+
+        // Send Poof and Doc test eggs
+
         // Ticker of the day (cost gold coin)
         // Make competitions take more leaders to start
 
-        // Send Poof and Doc test eggs
 
         // Create a monthly trigger and clear supporter roles on it
 
