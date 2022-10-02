@@ -23,9 +23,7 @@ import InteractionHelper from '../../operations/activity/messages/interactionHel
 // import COOP from '../../coop.mjs';
 
 
-// TODO: Move to Reactions/Message helper.
-const userDesiredReactsFilter = (emojis = []) =>
-	({ emoji }, user) => emojis.includes(emoji.name) && !COOP.USERS.isCooper(user.id)
+
 
 export const name = 'trade';
 

@@ -12,6 +12,10 @@ export const defaultAwaitManyOpts = {
 
 export default class ReactionHelper {
 
+    // // TODO: Move to Reactions/Message helper.
+    // const userDesiredReactsFilter = (emojis = []) =>
+    //     ({ emoji }, user) => emojis.includes(emoji.name) && !COOP.USERS.isCooper(user.id)
+
     // Check if the user with specified ID reacted to a message with a certain emoji.
     static didUserReactWith(msg, userID, emoji) {
         let didReactWith = false;
