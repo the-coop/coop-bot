@@ -31,7 +31,7 @@ export default class TradingHelper {
         const lastTrades = await Trading.all();
         if (lastTrades.length === 0) return null;
 
-        const msgTitle = '**Latest active trades**';
+        const msgTitle = '**Latest active trades**';µ
         const msgContent = msgTitle + ':\n' + this.manyTradeItemsStr(lastTrades);
         const talkChannel = CHANNELS._getCode('TALK');
         const updateMsg = await MESSAGES.getSimilarExistingMsg(talkChannel, msgTitle);
@@ -109,8 +109,9 @@ export default class TradingHelper {
     static manyTradeItemsStr(trades) {
         return trades.map(trade =>
             `**#${trade.id}** by ${trade.trader_username} | ${this.tradeItemsStr(trade)} |`
-        ).join('');
+        ).join('\n');
     }
+
     // This method directly takes items from user to close a trade.
     static async accept(openTradeID, accepteeID, accepteeName) {
         try {
@@ -123,7 +124,7 @@ export default class TradingHelper {
                 const exchangeStr = this.tradeItemsStr(trade);
                 const actionStr = `**${accepteeName} accepted trade #${trade.id} from ${trade.trader_username}`;
                 const tradeConfirmStr = `${actionStr}**\n\n${exchangeStr}`;
-                                    
+
                 // Log confirmed trades
                 CHANNELS._postToChannelCode('TRADE', tradeConfirmStr, 999);
 

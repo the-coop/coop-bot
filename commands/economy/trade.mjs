@@ -195,7 +195,6 @@ const createTrade = async interaction => {
 
 			} else {
 				// Edit failure onto message.
-				// COOP.MESSAGES.selfDestruct(confirmMsg, 'Failure confirming instant trade.', 666, 5000);
 				interaction.reply('Failure confirming instant trade.');
 			}
 
@@ -209,9 +208,6 @@ const createTrade = async interaction => {
 					offerItemCode, receiveItemCode,
 					offerQty, receiveQty
 				);
-
-				// Remove the original message now to simplify the UI.
-				COOP.MESSAGES.delayDelete(confirmMsg, 999);
 
 				// Offer feedback for trade creation. :)
 				const tradeText = `**${tradeeName} created trade #${trade.id}**\n\n` +
