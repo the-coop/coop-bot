@@ -122,6 +122,7 @@ export default class Chicken {
             // Send the conquest visuals!
             // await VisualisationHelper.record("https://www.thecoop.group/conquest/world");
             // CHANNELS._getCode('TALK').send(newDayText, new MessageAttachment('/tmp/video.webm'));
+            // + new AttachmentBuilder(buffer, { name: 'image.png' });
 
             const newDayMessage = `A New Coop day begins...\n\n` +
 

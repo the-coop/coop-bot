@@ -1,4 +1,4 @@
-import { Permissions } from 'discord.js';
+import { PermissionsBitField } from 'discord.js';
 
 import { USERS, MESSAGES, ROLES, CHANNELS, TIME } from '../../../coop.mjs';
 import { RAW_EMOJIS, ROLES as ROLES_CONFIG, CHANNELS as CHANNEL_CONFIG } from 'coop-shared/config.mjs';
@@ -59,7 +59,7 @@ export default async (msg) => {
         MESSAGES.delayReact(msg, RAW_EMOJIS.VOTE_AGAINST, 999);
 
         // Remove SEND_MESSAGE permission from the user (only 1 intro message supported).
-        msg.channel.permissionOverwrites.create(msg.author.id, { [Permissions.FLAGS.SEND_MESSAGES]: false });
+        msg.channel.permissionOverwrites.create(msg.author.id, { [PermissionsBitField.Flags.SendMessages]: false });
       }
 
   } catch(e) {

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { MessageActionRow, MessageSelectMenu } from "discord.js";
+import { MessageActionRow, SelectMenuBuilder } from "discord.js";
 
 export const name = 'selectaction';
 
@@ -11,7 +11,7 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction) => {
 	const row = new MessageActionRow()
-        .addComponents(new MessageSelectMenu()
+        .addComponents(new SelectMenuBuilder()
             .setCustomId('select')
             .setPlaceholder('Nothing selected')
             .addOptions([

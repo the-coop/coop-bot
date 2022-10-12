@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton } from "discord.js";
+import { ButtonBuilder, MessageActionRow } from "discord.js";
 
 export default class InteractionHelper {
 
@@ -7,11 +7,11 @@ export default class InteractionHelper {
             // Show confirmation and prompt.
             const ConfirmationActions = new MessageActionRow()
                 .addComponents(
-                    new MessageButton()
+                    new ButtonBuilder()
                         .setCustomId('confirm')
                         .setLabel('Confirm')
                         .setStyle('SUCCESS'),
-                    new MessageButton()
+                    new ButtonBuilder()
                         .setCustomId('cancel')
                         .setLabel('Cancel')
                         .setStyle('DANGER'),

@@ -1,27 +1,19 @@
-import { Intents, Client } from 'discord.js';
-
-import {
-    joinVoiceChannel,
-    createAudioPlayer,
-    createAudioResource,
-    entersState,
-    StreamType,
-    AudioPlayerStatus,
-    VoiceConnectionStatus,
-} from '@discordjs/voice';
-
-
+import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import _ from 'lodash';
 import Database from 'coop-shared/setup/database.mjs';
-import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, TIME, USERS } from '../coop.mjs';
-import { CHANNELS as CHANNELS_CONFIG, RAW_EMOJIS, ITEMS as ITEMS_CONFIG } from 'coop-shared/config.mjs';
-import StockHelper from '../operations/stock/stockHelper.mjs';
 import secrets from 'coop-shared/setup/secrets.mjs';
-import ServerHelper from '../operations/serverHelper.mjs';
-import axios from 'axios';
-import moment from 'moment';
-import Items from 'coop-shared/services/items.mjs';
-import Chicken from '../operations/chicken.mjs';
+import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, TIME, USERS } from '../coop.mjs';
+
+// import { CHANNELS as CHANNELS_CONFIG, RAW_EMOJIS, ITEMS as ITEMS_CONFIG } from 'coop-shared/config.mjs';
+// import StockHelper from '../operations/stock/stockHelper.mjs';
+// import ServerHelper from '../operations/serverHelper.mjs';
+// import axios from 'axios';
+// import moment from 'moment';
+// import Items from 'coop-shared/services/items.mjs';
+// import Chicken from '../operations/chicken.mjs';
+
+
+
 
 // v DEV IMPORT AREA v
 // import BaseHelper from '../../operations/minigames/medium/conquest/baseHelper.mjs';
@@ -77,14 +69,14 @@ const shallowBot = async () => {
     COOP.STATE.CLIENT = new Client({ 
         owner: '786671654721683517',
         intents: [
-            Intents.FLAGS.GUILDS,
-            Intents.FLAGS.GUILD_MEMBERS,
-            Intents.FLAGS.DIRECT_MESSAGES,
-            Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-            Intents.FLAGS.GUILD_MESSAGES,
-            Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-            Intents.FLAGS.GUILD_PRESENCES,
-            Intents.FLAGS.GUILD_VOICE_STATES
+            GatewayIntentBits.Guilds,
+            GatewayIntentBits.GuildMembers,
+            GatewayIntentBits.DirectMessages,
+            GatewayIntentBits.DirectMessageReactions,
+            GatewayIntentBits.GuildMessages,
+            GatewayIntentBits.GuildMessageReactions,
+            GatewayIntentBits.GuildPresences,
+            GatewayIntentBits.GuildVoiceStates
         ]
     });
 
@@ -93,27 +85,76 @@ const shallowBot = async () => {
 
     // Login, then wait for the bot to be fully online before testing.
     await COOP.STATE.CLIENT.login(process.env.DISCORD_TOKEN);
+
+    // Common checks:
+    // COOP.STATE.CLIENT.on('ready', () => ServerHelper.checkMissingChannels());
+
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-        // Common checks:
-        // ServerHelper.checkMissingChannels();
+        // TODO:
+        // Add a message with buttons to the information channel.
+
+		const row = new ActionRowBuilder()
+			.addComponents([
+                new ButtonBuilder()
+                    .setCustomId('test_two')
+                    .setLabel('Click me!')
+                    .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setCustomId('test_four')
+                    .setLabel('Click me!')
+                    .setStyle(ButtonStyle.Danger),
+                new ButtonBuilder()
+                    .setCustomId('test_three')
+                    .setLabel('Click me!')
+                    .setStyle(ButtonStyle.Success),
+				new ButtonBuilder()
+					.setCustomId('test')
+					.setLabel('Click me!')
+					.setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
+					.setLabel('Click me!')
+                    .setURL('https://google.com')
+					.setStyle(ButtonStyle.Link),
+            ]);
+
+
+        const msg = await CHANNELS._send('ABOUT', 'test');
+
+        msg.edit({ components: [row] });
+
+		// await interaction.reply({ content: 'I think you should,', components: [row] });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-
-
-
-        
         // const txs = await Chicken.getTransactionsPreviousDay();
         // console.log(txs);
-
 
         // Send Poof and Doc test eggs
 
         // Ticker of the day (cost gold coin)
         // Make competitions take more leaders to start
-
 
         // Create a monthly trigger and clear supporter roles on it
 

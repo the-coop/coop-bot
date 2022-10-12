@@ -7,7 +7,6 @@
     "start": "pm2 kill && pm2 start ./index.mjs",
     "dev": "nodemon ./index.mjs",
     "shallow": "nodemon ./setup/shallow.mjs",
-
     "deploy-commands": "node ./operations/patching/deploy-commands.mjs",
     "check-commands": "node ./operations/patching/check-commands.mjs"
   },
@@ -17,7 +16,6 @@
   },
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
-    "@discordjs/rest": "^0.5.0",
     "@discordjs/voice": "^0.11.0",
     "@json-rpc-tools/utils": "^1.7.6",
     "@sentry/node": "^7.10.0",
@@ -26,7 +24,7 @@
     "axios": "^0.21.2",
     "chance": "^1.1.7",
     "coop-shared": "git+https://github.com/the-coop/coop-shared.git#11a857ce4fb6ceb246f351d3f2bda2a94d7f513d",
-    "discord.js": "^13.8.1",
+    "discord.js": "^14.6.0",
     "emoji-regex": "^9.2.0",
     "ffmpeg-static": "^5.0.2",
     "jsonwebtoken": "^8.5.1",

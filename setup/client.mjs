@@ -1,4 +1,4 @@
-import { Intents, Client } from "discord.js";
+import { GatewayIntentBits, Client } from "discord.js";
 
 import setupCommands from './commands.mjs';
 
@@ -15,14 +15,14 @@ export default async () => {
     // Instantiate the client.
     const client = new Client({ 
         intents: [
-            Intents.FLAGS.GUILDS,
-            Intents.FLAGS.GUILD_MEMBERS,
-            Intents.FLAGS.DIRECT_MESSAGES,
-            Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-            Intents.FLAGS.GUILD_MESSAGES,
-            Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-            Intents.FLAGS.GUILD_PRESENCES,
-            Intents.FLAGS.GUILD_VOICE_STATES
+            GatewayIntentBits.Guilds,
+            GatewayIntentBits.GuildMembers,
+            GatewayIntentBits.DirectMessages,
+            GatewayIntentBits.DirectMessageReactions,
+            GatewayIntentBits.GuildMessages,
+            GatewayIntentBits.GuildMessageReactions,
+            GatewayIntentBits.GuildPresences,
+            GatewayIntentBits.GuildVoiceStates
         ]
     });
 

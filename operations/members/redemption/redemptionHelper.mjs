@@ -6,7 +6,7 @@ import { RAW_EMOJIS, ROLES, CHANNELS as CHANNELS_CONFIG } from 'coop-shared/conf
 
 export const STARTING_ROLES = [
     'MEMBER', 'BEGINNER', 'SUBSCRIBER', 'SOCIAL',
-    'PROSPECT', 'ANNOUNCEMENTS', 'PROJECTS'
+    'PROSPECT', 'PROJECTS'
 ];
 
 export default class RedemptionHelper {

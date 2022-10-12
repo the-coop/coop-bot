@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton } from "discord.js";
+import { ButtonBuilder, MessageActionRow } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
 import { EMOJIS, RAW_EMOJIS } from 'coop-shared/config.mjs';
@@ -88,11 +88,11 @@ const post = async interaction => {
 	await interaction.reply({ content: createProjectText, components: [
 		new MessageActionRow()
 			.addComponents(
-				new MessageButton()
+				new ButtonBuilder()
 					.setCustomId('confirm')
 					.setLabel('Confirm')
 					.setStyle('SUCCESS'),
-				new MessageButton()
+				new ButtonBuilder()
 					.setCustomId('cancel')
 					.setLabel('Cancel')
 					.setStyle('DANGER')

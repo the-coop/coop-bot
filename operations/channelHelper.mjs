@@ -1,4 +1,4 @@
-import { Permissions } from 'discord.js';
+import { PermissionsBitField } from 'discord.js';
 
 import COOP, { STATE, SERVER } from '../coop.mjs';
 import { CHANNELS as CHANNELS_CONFIG } from 'coop-shared/config.mjs';
@@ -163,7 +163,7 @@ export default class ChannelHelper {
        channel.permissionOverwrites.set(
            [{
               id: everyoneRole.id,
-              deny: [Permissions.FLAGS.VIEW_CHANNEL]
+              deny: [PermissionsBitField.Flags.ViewChannel]
            }], 
            reason
        );
@@ -189,8 +189,8 @@ export default class ChannelHelper {
             roles.map(r => ({
                 id: r.id,
                 allow: [
-                    Permissions.FLAGS.VIEW_CHANNEL,
-                    Permissions.FLAGS.READ_MESSAGE_HISTORY
+                    PermissionsBitField.Flags.ViewChannel,
+                    PermissionsBitField.Flags.ReadMessageHistory
                 ]
             }))
         );

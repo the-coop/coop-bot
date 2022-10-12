@@ -1,4 +1,4 @@
-import { Permissions, MessageMentions } from "discord.js";
+import { MessageMentions, PermissionsBitField } from "discord.js";
 
 import { CATEGORIES } from "coop-shared/config.mjs";
 import { CHANNELS, MESSAGES, TIME, USERS } from "../../../coop.mjs";
@@ -139,7 +139,7 @@ export default class BlogHelper {
                     {
                         id: owner.id,
                         allow: [
-                            Permissions.FLAGS.MANAGE_CHANNELS
+                            PermissionsBitField.Flags.ManageChannels
                         ]
                     }
                 ],
