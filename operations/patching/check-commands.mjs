@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 
-import BOTS from 'coopshared/config/bots.mjs';
+import BOTS from 'coop-shared/config/bots.mjs';
 
 dotenv.config();
 

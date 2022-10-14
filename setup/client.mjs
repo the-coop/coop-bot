@@ -10,6 +10,8 @@ import reactAddedHandler from "../operations/activity/reactionAdded.mjs";
 import CompetitionHelper from "../operations/social/competitionHelper.mjs";
 import ProjectsHelper from "../operations/productivity/projects/projectsHelper.mjs";
 import BlogHelper from "../operations/marketing/blog/blogHelper.mjs";
+import { CHANNELS } from "coop-shared/config.mjs";
+import AccessCodes from "coop-shared/services/access-codes.mjs";
 
 export default async () => {
     // Instantiate the client.
@@ -31,6 +33,19 @@ export default async () => {
 
     // Add handler for reaction added
     client.on('messageReactionAdd', reactAddedHandler);
+
+    // Add handler for information buttons
+    client.on('interactionCreate', async interaction => {
+        const infoChannel = interaction.channelId === CHANNELS.ABOUT.id;
+        if (!interaction.isButton()) return;
+        if (!infoChannel) return;
+
+        if (interaction.customId === 'login') {
+            const code = await AccessCodes._createLink(interaction.user.id);
+            const link = AccessCodes.link(code);
+            return await interaction.reply({ content: link, ephemeral: true });
+        }
+    });
 
     // Handler for a new member has joined
     client.on("guildMemberAdd", joined);

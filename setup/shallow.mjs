@@ -29,8 +29,8 @@ import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, TIM
 // import DropTable from '../../operations/minigames/medium/economy/items/droptable.mjs';
 // import AdvertsHelper from '../../operations/marketing/adverts/advertsHelper.mjs';
 
-// import EmojiHelper from 'coopshared/helper/ui/EmojiHelper.mjs';
-// // const EmojiHelper = require('coopshared/helper/ui/EmojiHelper.mjs');
+// import EmojiHelper from 'coop-shared/helper/ui/EmojiHelper.mjs';
+// // const EmojiHelper = require('coop-shared/helper/ui/EmojiHelper.mjs');
 
 // import { getAccount } from '../../patching/blockchain/account.mjs';
 // import transaction from '../../patching/blockchain/transaction.mjs';
@@ -43,7 +43,7 @@ import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, TIM
 // import ActivityHelper from '../../operations/activity/activityHelper.mjs';
 // import BlogHelper from '../../operations/marketing/blog/blogHelper.mjs';
 
-// import EMOJIS from 'coopshared/config/emojis.mjs';
+// import EMOJIS from 'coop-shared/config/emojis.mjs';
 // import ServerHelper from '../../operations/serverHelper.mjs';
 // import SpotlightHelper from '../../operations/members/spotlightHelper.mjs';
 // import SacrificeHelper from '../../operations/members/redemption/sacrificeHelper.mjs';
@@ -95,33 +95,64 @@ const shallowBot = async () => {
         // TODO:
         // Add a message with buttons to the information channel.
 
+        // COOP.STATE.CLIENT.on('interactionCreate', interaction => {
+        //     switch (interaction.customId) {
+        //         case "login":
+
+        //     }
+        //     console.log();
+        //     if (!interaction.isButton()) return;
+        // });
+
 		const row = new ActionRowBuilder()
 			.addComponents([
                 new ButtonBuilder()
-                    .setCustomId('test_two')
-                    .setLabel('Click me!')
-                    .setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder()
-                    .setCustomId('test_four')
-                    .setLabel('Click me!')
-                    .setStyle(ButtonStyle.Danger),
-                new ButtonBuilder()
-                    .setCustomId('test_three')
-                    .setLabel('Click me!')
-                    .setStyle(ButtonStyle.Success),
-				new ButtonBuilder()
-					.setCustomId('test')
-					.setLabel('Click me!')
-					.setStyle(ButtonStyle.Primary),
-                new ButtonBuilder()
-					.setLabel('Click me!')
-                    .setURL('https://google.com')
+					.setLabel('Website')
+                    .setURL('https://thecoop.group')
 					.setStyle(ButtonStyle.Link),
+                new ButtonBuilder()
+					.setLabel('Links')
+                    .setURL('https://thecoop.group/links')
+					.setStyle(ButtonStyle.Link),
+				new ButtonBuilder()
+					.setCustomId('login')
+					.setLabel('Login')
+					.setStyle(ButtonStyle.Primary),
             ]);
 
 
-        const msg = await CHANNELS._send('ABOUT', 'test');
+                // new ButtonBuilder()
+				// 	.setLabel('Drive')
+                //     .setURL('https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop')
+				// 	.setStyle(ButtonStyle.Link),
+                // new ButtonBuilder()
+				// 	.setLabel('Designs')
+                //     .setURL('https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop')
+				// 	.setStyle(ButtonStyle.Link),
 
+            // Modify your roles: https://www.thecoop.group/members/roles/
+            // Permanent invite link: https://discord.gg/thecoop
+            // Figma/Design Files: https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop
+
+            // Drive: LINK
+
+        const content = `**The Coop**\nDemocratic, free chicken themed, multiplayer universe enabled,` +
+            `gravity simulating, economy having, advice giving, learning ` +
+            `community collaboration server:`;
+
+            // Never answered my question
+            // Moralising and slandering
+
+        const file = 'https://cdn.discordapp.com/attachments/723660447508725806/1030331201652797440/Screenshot_2022-10-14_at_05.08.02.png';
+
+        // await CHANNELS._send('ABOUT', test);µµ
+
+        // const msg = await CHANNELS._send('ABOUT', content + '\n' + test);
+
+        const channel =  CHANNELS._getCode('ABOUT');
+        const msg = await channel.send({ files: [file] , content });
+
+        // channel.edit({ components: [row],  });
         msg.edit({ components: [row] });
 
 		// await interaction.reply({ content: 'I think you should,', components: [row] });

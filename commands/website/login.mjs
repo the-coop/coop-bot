@@ -14,15 +14,15 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction) => {
 	// Generate a saved code the web api to authenticate on link visit.
-	const code = await AccessCodes.create(interaction.user.id);
+	const link = await AccessCodes._createLink(interaction.user.id);
 
 	// DM the login code to the user
 	USERS._dm(interaction.user.id, 
 		`**Your temporary login code (expiring link) is here, use it within the next 5 minutes:**\n\n` +
-		'||https://thecoop.group/auth/authorise?method=cooper_dm&code=' + code + '||'
+		'||' + link + '||'
 	);
 
 	// Indicate success.
-	return await interaction.reply('Login link was securely DMed to you.')
+	return await interaction.reply('Login link was securely DMed to you.');
 };
 
