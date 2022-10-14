@@ -1,3 +1,5 @@
+import { CHANNELS } from "coop-shared/config.mjs";
+import AccessCodes from "coop-shared/services/access-codes.mjs";
 import { Collection } from "discord.js";
 import fs from 'fs';
 import path from 'path';
@@ -32,10 +34,16 @@ export default async function setupCommands(client) {
 
     // Dynamically load and execute the command based on the interaction command name/key.
     client.on('interactionCreate', async interaction => {
-        if (!interaction.isCommand()) return;
+        console.log(interaction);
+
+        const infoChannel = interaction.channelId === CHANNELS.ABOUT.id;
+        if (infoChannel && interaction.customId === 'login') {
+            const code = await AccessCodes._createLink(interaction.user.id);
+            const link = AccessCodes.link(code);
+            return await interaction.reply({ content: link, ephemeral: true });
+        }
 
         const command = client.commands.get(interaction.commandName);
-    
         if (!command) return;
 
         try {

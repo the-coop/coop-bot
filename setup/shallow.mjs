@@ -95,65 +95,60 @@ const shallowBot = async () => {
         // TODO:
         // Add a message with buttons to the information channel.
 
-        // COOP.STATE.CLIENT.on('interactionCreate', interaction => {
-        //     switch (interaction.customId) {
-        //         case "login":
+        COOP.STATE.CLIENT.on('interactionCreate', interaction => {
+            console.log(interaction);
+        });
 
-        //     }
-        //     console.log();
-        //     if (!interaction.isButton()) return;
-        // });
-
-		const row = new ActionRowBuilder()
-			.addComponents([
-                new ButtonBuilder()
-					.setLabel('Website')
-                    .setURL('https://thecoop.group')
-					.setStyle(ButtonStyle.Link),
-                new ButtonBuilder()
-					.setLabel('Links')
-                    .setURL('https://thecoop.group/links')
-					.setStyle(ButtonStyle.Link),
-				new ButtonBuilder()
-					.setCustomId('login')
-					.setLabel('Login')
-					.setStyle(ButtonStyle.Primary),
-            ]);
+		// const row = new ActionRowBuilder()
+		// 	.addComponents([
+        //         new ButtonBuilder()
+		// 			.setLabel('Website')
+        //             .setURL('https://thecoop.group')
+		// 			.setStyle(ButtonStyle.Link),
+        //         new ButtonBuilder()
+		// 			.setLabel('Links')
+        //             .setURL('https://thecoop.group/links')
+		// 			.setStyle(ButtonStyle.Link),
+		// 		new ButtonBuilder()
+		// 			.setCustomId('login')
+		// 			.setLabel('Login')
+		// 			.setStyle(ButtonStyle.Primary),
+        //     ]);
 
 
-                // new ButtonBuilder()
-				// 	.setLabel('Drive')
-                //     .setURL('https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop')
-				// 	.setStyle(ButtonStyle.Link),
-                // new ButtonBuilder()
-				// 	.setLabel('Designs')
-                //     .setURL('https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop')
-				// 	.setStyle(ButtonStyle.Link),
+        //         // new ButtonBuilder()
+		// 		// 	.setLabel('Drive')
+        //         //     .setURL('https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop')
+		// 		// 	.setStyle(ButtonStyle.Link),
+        //         // new ButtonBuilder()
+		// 		// 	.setLabel('Designs')
+        //         //     .setURL('https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop')
+		// 		// 	.setStyle(ButtonStyle.Link),
 
-            // Modify your roles: https://www.thecoop.group/members/roles/
-            // Permanent invite link: https://discord.gg/thecoop
-            // Figma/Design Files: https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop
+        //     // Modify your roles: https://www.thecoop.group/members/roles/
+        //     // Permanent invite link: https://discord.gg/thecoop
+        //     // Figma/Design Files: https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop
 
-            // Drive: LINK
+        //     // Drive: LINK
 
-        const content = `**The Coop**\nDemocratic, free chicken themed, multiplayer universe enabled,` +
-            `gravity simulating, economy having, advice giving, learning ` +
-            `community collaboration server:`;
+        // const content = `**The Coop**\nDemocratic, free chicken themed, multiplayer universe enabled,` +
+        //     `gravity simulating, economy having, advice giving, learning ` +
+        //     `community collaboration server:`;
 
-            // Never answered my question
-            // Moralising and slandering
+        //     // Never answered my question
+        //     // Moralising and slandering
 
-        const file = 'https://cdn.discordapp.com/attachments/723660447508725806/1030331201652797440/Screenshot_2022-10-14_at_05.08.02.png';
+        // const file = 'https://cdn.discordapp.com/attachments/723660447508725806/1030331201652797440/Screenshot_2022-10-14_at_05.08.02.png';
 
-        // await CHANNELS._send('ABOUT', test);
+        // // await CHANNELS._send('ABOUT', test);
 
-        // const msg = await CHANNELS._send('ABOUT', content + '\n' + test);
+        // // const msg = await CHANNELS._send('ABOUT', content + '\n' + test);
 
-        const channel =  CHANNELS._getCode('ABOUT');
-        const msg = await channel.send({ files: [file] , content });
+        // const channel =  CHANNELS._getCode('ABOUT');
+        // const msg = await channel.send({ files: [file] , content });
 
-        // channel.edit({ components: [row],  });
-        msg.edit({ components: [row] });
+        // // channel.edit({ components: [row],  });
+        // msg.edit({ components: [row] });
 
 		// await interaction.reply({ content: 'I think you should,', components: [row] });
 
