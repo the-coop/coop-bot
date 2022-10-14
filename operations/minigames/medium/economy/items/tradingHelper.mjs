@@ -31,7 +31,7 @@ export default class TradingHelper {
         const lastTrades = await Trading.all();
         if (lastTrades.length === 0) return null;
 
-        const msgTitle = '**Latest active trades**';µ
+        const msgTitle = '**Latest active trades**';
         const msgContent = msgTitle + ':\n' + this.manyTradeItemsStr(lastTrades);
         const talkChannel = CHANNELS._getCode('TALK');
         const updateMsg = await MESSAGES.getSimilarExistingMsg(talkChannel, msgTitle);

@@ -145,7 +145,7 @@ const shallowBot = async () => {
 
         const file = 'https://cdn.discordapp.com/attachments/723660447508725806/1030331201652797440/Screenshot_2022-10-14_at_05.08.02.png';
 
-        // await CHANNELS._send('ABOUT', test);µµ
+        // await CHANNELS._send('ABOUT', test);
 
         // const msg = await CHANNELS._send('ABOUT', content + '\n' + test);
 
