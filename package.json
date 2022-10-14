@@ -23,7 +23,7 @@
     "algosdk": "^1.19",
     "axios": "^0.21.2",
     "chance": "^1.1.7",
-    "coop-shared": "git+https://github.com/the-coop/coop-shared.git#11a857ce4fb6ceb246f351d3f2bda2a94d7f513d",
+    "coop-shared": "git+https://github.com/the-coop/coop-shared.git#fc1df2497c8e75f7bfc8f9132284eb1f9bdc8630",
     "discord.js": "^14.6.0",
     "emoji-regex": "^9.2.0",
     "ffmpeg-static": "^5.0.2",
