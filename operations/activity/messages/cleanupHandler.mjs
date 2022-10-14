@@ -1,4 +1,4 @@
-import { KEY_MESSAGES, ROLES as ROLES_CONFIG } from "coop-shared/config.mjs";
+import { ROLES as ROLES_CONFIG } from "coop-shared/config.mjs";
 import { MESSAGES, REACTIONS, ROLES, USERS } from "../../../coop.mjs";
 import VotingHelper from "../redemption/votingHelper.mjs";
 
@@ -20,14 +20,14 @@ export default class CleanupHandler {
             return MESSAGES.silentSelfDestruct(reaction.message, memberReqText);
 
         // Protect key messages and other from attempts to sabotage.
-        const linkDel = MESSAGES.link(reaction.message);
-        const matchFn = keyMsgKey => KEY_MESSAGES[keyMsgKey] === linkDel;
-        const matches = Object.keys(KEY_MESSAGES).filter(matchFn);
-        const protectKeyText = `${cleanEmoji} Cannot democratically delete a key message.`;
-        if (matches.length > 0) {
-            reaction.remove();
-            return MESSAGES.silentSelfDestruct(reaction.message, protectKeyText);
-        }
+        // const linkDel = MESSAGES.link(reaction.message);
+        // const matchFn = keyMsgKey => KEY_MESSAGES[keyMsgKey] === linkDel;
+        // const matches = Object.keys(KEY_MESSAGES).filter(matchFn);
+        // const protectKeyText = `${cleanEmoji} Cannot democratically delete a key message.`;
+        // if (matches.length > 0) {
+        //     reaction.remove();
+        //     return MESSAGES.silentSelfDestruct(reaction.message, protectKeyText);
+        // }
 
         // Count votes and delete, less votes required if leader votes, even less if commander votes.
         const countVotes = REACTIONS.countType(reaction.message, cleanEmoji);

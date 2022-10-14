@@ -1,6 +1,6 @@
 import announcementOpts from "./announceOpts.mjs";
 
-import { CHANNELS as CHANNELS_CONFIG, KEY_MESSAGES } from 'coop-shared/config.mjs';
+import { CHANNELS as CHANNELS_CONFIG } from 'coop-shared/config.mjs';
 import COOP, { CHICKEN, CHANNELS } from "../../../coop.mjs";
 
 export default class AboutHelper {
@@ -117,7 +117,7 @@ export default class AboutHelper {
     static async preloadMesssages() {
         console.log('preload role msgs');
         return await COOP.MESSAGES.preloadMsgLinks(
-            Object.keys(KEY_MESSAGES).map(key => KEY_MESSAGES[key])
+            ["https://discord.com/channels/723660447508725802/762472730980515870/1030376436730712114"]
         );
     }
     

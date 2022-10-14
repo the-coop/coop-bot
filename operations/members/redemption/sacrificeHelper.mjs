@@ -1,6 +1,6 @@
 import VotingHelper from '../../activity/redemption/votingHelper.mjs';
 
-import { KEY_MESSAGES, EMOJIS, CHANNELS } from 'coop-shared/config.mjs';
+import { EMOJIS, CHANNELS } from 'coop-shared/config.mjs';
 import CooperMorality from '../../minigames/small/cooperMorality.mjs';
 
 import COOP, { MESSAGES, ROLES } from '../../../coop.mjs';

@@ -1,4 +1,4 @@
-import { KEY_MESSAGES, RAW_EMOJIS } from "coop-shared/config.mjs";
+import { RAW_EMOJIS } from "coop-shared/config.mjs";
 import { ITEMS, USABLE, USERS, CHANNELS, REACTIONS, CHICKEN, MESSAGES } from "../../../../../coop.mjs";
 
 import Database from "coop-shared/setup/database.mjs";
