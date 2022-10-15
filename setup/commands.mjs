@@ -38,8 +38,7 @@ export default async function setupCommands(client) {
 
         const infoChannel = interaction.channelId === CHANNELS.ABOUT.id;
         if (infoChannel && interaction.customId === 'login') {
-            const code = await AccessCodes._createLink(interaction.user.id);
-            const link = AccessCodes.link(code);
+            const link = await AccessCodes._createLink(interaction.user.id);
             return await interaction.reply({ content: link, ephemeral: true });
         }
 
