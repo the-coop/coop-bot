@@ -1,4 +1,4 @@
-import { ButtonBuilder, MessageActionRow } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
 import { EMOJIS, RAW_EMOJIS } from 'coop-shared/config.mjs';
@@ -86,7 +86,7 @@ const post = async interaction => {
 
 	// Create the response actions.
 	await interaction.reply({ content: createProjectText, components: [
-		new MessageActionRow()
+		new ActionRowBuilder()
 			.addComponents(
 				new ButtonBuilder()
 					.setCustomId('confirm')
