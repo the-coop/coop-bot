@@ -34,7 +34,7 @@ export default async function setupCommands(client) {
 
     // Dynamically load and execute the command based on the interaction command name/key.
     client.on('interactionCreate', async interaction => {
-        console.log(interaction);
+        // console.log(interaction);
 
         const infoChannel = interaction.channelId === CHANNELS.ABOUT.id;
         if (infoChannel && interaction.customId === 'login') {
