@@ -8,6 +8,7 @@ import {
     NoSubscriberBehavior
 } from '@discordjs/voice';
 import axios from 'axios';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import moment from 'moment';
 import { CHANNELS, ROLES } from '../../coop.mjs';
 import Chicken from "../chicken.mjs";
@@ -65,19 +66,23 @@ export default class StockHelper {
 
         // Detect and handle market closing.
         if (!currentlyOpen && afterOpen && beforeClose) {
+            console.log("Market open detected");
             this.setMarketOpen(true);
             
             // Ping opt in role.
-            CHANNELS._send('STOCKS_VC_TEXT', `${ROLES._textRef('MARKET_OPEN_PING')}, NYSE market open - good luck!`, {});
-
-            console.log("Market open detected");
-
-            // CHANNELS._send('STOCKS_VC_TEXT', "Setting stock market open");
+            const msg = await CHANNELS._send('STOCKS_VC_TEXT', `${ROLES._textRef('MARKET_OPEN_PING')}, NYSE market open - good luck!`, {});
+            msg.edit({ components: [
+                new ActionRowBuilder()
+                    .addComponents([
+                        new ButtonBuilder()
+                            .setLabel("Ridahk's Take!")
+                            .setURL('https://discord.com/channels/723660447508725802/1020871428934992013')
+                            .setStyle(ButtonStyle.Link)
+                    ])
+            ] });
 
             // Give them 15 seconds to join before announcing after ping so they can catch it.
-            setTimeout(() => {
-                this.announce();
-            }, 15000);
+            setTimeout(() => this.announce(), 15000);
         }
     }
 

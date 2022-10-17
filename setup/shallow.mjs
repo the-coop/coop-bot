@@ -1,8 +1,10 @@
-import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder } from 'discord.js';
 import _ from 'lodash';
 import Database from 'coop-shared/setup/database.mjs';
 import secrets from 'coop-shared/setup/secrets.mjs';
-import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, TIME, USERS } from '../coop.mjs';
+import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
+import TradingHelper from '../operations/minigames/medium/economy/items/tradingHelper.mjs';
+import Trading from 'coop-shared/services/trading.mjs';
 
 // import { CHANNELS as CHANNELS_CONFIG, RAW_EMOJIS, ITEMS as ITEMS_CONFIG } from 'coop-shared/config.mjs';
 // import StockHelper from '../operations/stock/stockHelper.mjs';
@@ -95,82 +97,144 @@ const shallowBot = async () => {
         // TODO:
         // Add a message with buttons to the information channel.
 
-        COOP.STATE.CLIENT.on('interactionCreate', interaction => {
+        COOP.STATE.CLIENT.on('interactionCreate', async interaction => {
             console.log(interaction);
+
+
+            // TODO: Filter out trades by user (won't want to accept their own trades);
+
+            let trades = await Trading.all();
+
+            // Filter own trades from trades to accept.
+            if (interaction.customId === 'accept_trade')
+                trades = trades.filter(t => t.trader_id !== interaction.user.id)
+
+            if (interaction.customId === 'cancel_trade')
+                trades = trades.filter(t => t.trader_id === interaction.user.id)
+
+            const tradeOptions = trades.map(t => ({
+                label: `${t.id} - ${t.offer_item}x${t.offer_qty}`,
+                description: `${t.trader_username}'s ${t.offer_item}x${t.offer_qty} for your ${t.receive_item}x${t.receive_qty}`,
+                value: String(t.id)
+            }));
+
+            if (interaction.customId === 'accept_trade') {
+                console.log('Button accept trade');
+                await interaction.reply({ 
+                    ephemeral: true, 
+                    content: '**__Warning__ Trade Action**: Pick a trade to accept:', 
+                    components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
+                        .setCustomId('accept_trade_select')
+                        .setPlaceholder('Select a trade #ID to accept:')
+                        .setMaxValues(1)
+                        .addOptions(...tradeOptions))] 
+                });
+            }
+
+            if (interaction.customId === 'cancel_trade') {
+                console.log('Button cancel trade');
+                await interaction.reply({ 
+                    ephemeral: true, 
+                    content: '**__Warning__ Trade Action**: Pick a trade to accept:', 
+                    components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
+                        .setCustomId('cancel_trade_select')
+                        .setPlaceholder('Select a trade #ID to cancel:')
+                        .setMaxValues(1)
+                        .addOptions(...tradeOptions))] 
+                });
+            }
+
+            // Need to check context of whether it as accepting or cancelling
+            
+            
+
+            if (interaction.customId === 'accept_trade_select') {
+                await interaction.reply({
+                    ephemeral: true,
+                    content: 'Work in progress, accepting.',
+                });
+
+                // await interaction.reply({
+                //     ephemeral: true,
+                //     content: 'Confirm accepting trade',
+                //     components: [
+                //         new ActionRowBuilder().addComponents([
+                //             new ButtonBuilder()
+                //                 .setCustomId('confirm_trade')
+                //                 .setLabel('Confirm')
+                //                 .setStyle(ButtonStyle.Success),
+                //         ])
+                //     ]
+                // });
+            }
+
+            if (interaction.customId === 'cancel_trade_select') {
+                await interaction.reply({
+                    ephemeral: true,
+                    content: 'Work in progress, cancelling.',
+                });
+
+                // await interaction.reply({
+                //     ephemeral: true,
+                //     content: 'Confirm accepting trade',
+                //     components: [
+                //         new ActionRowBuilder().addComponents([
+                //             new ButtonBuilder()
+                //                 .setCustomId('confirm_trade')
+                //                 .setLabel('Confirm')
+                //                 .setStyle(ButtonStyle.Success),
+                //         ])
+                //     ]
+                // });
+            }
+
+            if (interaction.customId === 'create_trade') {
+                const command = STATE.CLIENT.commands.get('trade accept');
+                console.log(command);
+            }
         });
 
-		// const row = new ActionRowBuilder()
-		// 	.addComponents([
-        //         new ButtonBuilder()
-		// 			.setLabel('Website')
-        //             .setURL('https://thecoop.group')
-		// 			.setStyle(ButtonStyle.Link),
-        //         new ButtonBuilder()
-		// 			.setLabel('Links')
-        //             .setURL('https://thecoop.group/links')
-		// 			.setStyle(ButtonStyle.Link),
-		// 		new ButtonBuilder()
-		// 			.setCustomId('login')
-		// 			.setLabel('Login')
-		// 			.setStyle(ButtonStyle.Primary),
-        //     ]);
+        // const gameLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
+        //     "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=game"
+
+        // const msgLink = 'https://discord.com/channels/723660447508725802/762472730980515870/1030376436730712114';
+
+        // const msg = await MESSAGES.getByLink(msgLink);
 
 
-        //         // new ButtonBuilder()
-		// 		// 	.setLabel('Drive')
-        //         //     .setURL('https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop')
-		// 		// 	.setStyle(ButtonStyle.Link),
-        //         // new ButtonBuilder()
-		// 		// 	.setLabel('Designs')
-        //         //     .setURL('https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop')
-		// 		// 	.setStyle(ButtonStyle.Link),
+        const msg = await CHANNELS._send('TALK', 'Testing economy trading between users.');
+        msg.edit({ components: [		
+            new ActionRowBuilder().addComponents([
+                new ButtonBuilder()
+					.setCustomId('accept_trade')
+					.setLabel('Accept')
+					.setStyle(ButtonStyle.Success),
+                new ButtonBuilder()
+					.setCustomId('cancel_trade')
+					.setLabel('Cancel')
+					.setStyle(ButtonStyle.Danger),
+                new ButtonBuilder()
+					.setCustomId('create_trade')
+					.setLabel('Create')
+					.setStyle(ButtonStyle.Primary),
+            ])]
+        });
 
-        //     // Modify your roles: https://www.thecoop.group/members/roles/
-        //     // Permanent invite link: https://discord.gg/thecoop
-        //     // Figma/Design Files: https://www.figma.com/file/7Tw7W3VaWReQ7zSlAl2J9d/The-Coop
-
-        //     // Drive: LINK
-
-        // const content = `**The Coop**\nDemocratic, free chicken themed, multiplayer universe enabled,` +
-        //     `gravity simulating, economy having, advice giving, learning ` +
-        //     `community collaboration server:`;
-
-        //     // Never answered my question
-        //     // Moralising and slandering
-
-        // const file = 'https://cdn.discordapp.com/attachments/723660447508725806/1030331201652797440/Screenshot_2022-10-14_at_05.08.02.png';
-
-        // // await CHANNELS._send('ABOUT', test);
-
-        // // const msg = await CHANNELS._send('ABOUT', content + '\n' + test);
-
-        // const channel =  CHANNELS._getCode('ABOUT');
-        // const msg = await channel.send({ files: [file] , content });
-
-        // // channel.edit({ components: [row],  });
-        // msg.edit({ components: [row] });
 
 		// await interaction.reply({ content: 'I think you should,', components: [row] });
 
 
+        // const msg = await CHANNELS._send('TALK', 'test');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        // msg.edit({ components: [
+        //     new ActionRowBuilder()
+        //         .addComponents([
+        //             new ButtonBuilder()
+        //                 .setLabel("Ridahk's Take!")
+        //                 .setURL('https://discord.com/channels/723660447508725802/1020871428934992013')
+        //                 .setStyle(ButtonStyle.Link)
+        //         ])
+        // ] });
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 

@@ -4,6 +4,7 @@ import { Collection } from "discord.js";
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import TradingHelper from "../operations/minigames/medium/economy/items/tradingHelper.mjs";
 
 
 // https://discordjs.guide/creating-your-bot/command-handling.html#reading-command-files
@@ -41,6 +42,11 @@ export default async function setupCommands(client) {
             const link = await AccessCodes._createLink(interaction.user.id);
             return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
         }
+
+        // Handle trading buttons (accept_trade, trade_cancel).
+        TradingHelper.onInteractionCreate(interaction);
+
+        // TODO: Add a create button which "executes" the command.
 
         const command = client.commands.get(interaction.commandName);
         if (!command) return;

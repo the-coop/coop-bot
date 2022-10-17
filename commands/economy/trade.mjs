@@ -72,6 +72,7 @@ export const data = new SlashCommandBuilder()
 							.setName('trade_id')
 							.setDescription('Trade ID # to accept')
 							.setRequired(true)
+							.setAutocomplete(true)
 					)
 		)
 		// Cancel trade subcommand.
@@ -84,6 +85,7 @@ export const data = new SlashCommandBuilder()
 							.setName('trade_id')
 							.setDescription('Trade ID # to cancel')
 							.setRequired(true)
+							.setAutocomplete(true)
 					)
 		);
 
@@ -240,10 +242,19 @@ const createTrade = async interaction => {
 };
 
 
+// TODO: Make sure 
+// https://discordjs.guide/interactions/autocomplete.html#sending-results
+
 const tradeAccept = async interaction => {
 	// Sanitise + validate input a little before processing.
 	const tradeIDOption = interaction.options.get('trade_id').value;
 	const tradeID = parseInt(tradeIDOption);
+
+	
+
+
+
+
 
 	try {
 		const tradeeID = interaction.user.id;

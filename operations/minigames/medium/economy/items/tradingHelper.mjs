@@ -4,6 +4,8 @@ import { ITEMS, USABLE, USERS, CHANNELS, REACTIONS, CHICKEN, MESSAGES } from "..
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 import Trading from "coop-shared/services/trading.mjs";
+import { ActionRowBuilder, ButtonStyle } from "discord.js";
+import { ButtonBuilder } from "@discordjs/builders";
 
 
 // TODO: Rename file.
@@ -25,6 +27,17 @@ export default class TradingHelper {
     // TODO: Refactor, this kind of thing should be isolated to a file, it is an action and not core to the service - but an implementation
     // of the service.
 
+    static onInteractionCreate(interaction) {
+        console.log('trade_interaction', interaction);
+
+        if (interaction.customId === 'accept_trade') {
+            console.log('Button accept trade')
+        }
+        if (interaction.customId === 'trade_cancel') {
+            console.log('Button cancel trade')
+        }
+    }
+
     // TODO: Rename
     static async announce() {
         // Post latest/most recent 5-10 trades in talk.
@@ -35,9 +48,22 @@ export default class TradingHelper {
         const msgContent = msgTitle + ':\n' + this.manyTradeItemsStr(lastTrades);
         const talkChannel = CHANNELS._getCode('TALK');
         const updateMsg = await MESSAGES.getSimilarExistingMsg(talkChannel, msgTitle);
-        if (!updateMsg)
-            CHANNELS._send('TALK', msgContent, 0, 30000);
-        else 
+        if (!updateMsg) {
+            const msg = await CHANNELS._send('TALK', msgContent, 0, 30000);
+            msg.edit({ components: [
+                new ActionRowBuilder().addComponents([
+                    new ButtonBuilder()
+                        .setLabel("Accept")
+                        .setCustomId('accept_trade')
+                        .setStyle(ButtonStyle.Success),
+                    new ButtonBuilder()
+                        .setLabel("Cancel")
+                        .setCustomId('cancel_trade')
+                        .setStyle(ButtonStyle.Danger)
+
+                ])
+            ] });
+        } else 
             updateMsg.edit(msgContent);
     }
 
