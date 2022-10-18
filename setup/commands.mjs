@@ -44,7 +44,7 @@ export default async function setupCommands(client) {
         }
 
         // Handle trading buttons (accept_trade, trade_cancel).
-        TradingHelper.onInteractionCreate(interaction);
+        TradingHelper.onInteractionCreate(interaction, client);
 
         // TODO: Add a create button which "executes" the command.
 

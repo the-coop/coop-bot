@@ -5,6 +5,7 @@ import secrets from 'coop-shared/setup/secrets.mjs';
 import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
 import TradingHelper from '../operations/minigames/medium/economy/items/tradingHelper.mjs';
 import Trading from 'coop-shared/services/trading.mjs';
+import setupCommands from './commands.mjs';
 
 // import { CHANNELS as CHANNELS_CONFIG, RAW_EMOJIS, ITEMS as ITEMS_CONFIG } from 'coop-shared/config.mjs';
 // import StockHelper from '../operations/stock/stockHelper.mjs';
@@ -91,107 +92,20 @@ const shallowBot = async () => {
     // Common checks:
     // COOP.STATE.CLIENT.on('ready', () => ServerHelper.checkMissingChannels());
 
+    setupCommands(COOP.STATE.CLIENT);
+
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
         // TODO:
         // Add a message with buttons to the information channel.
 
+        
+
         COOP.STATE.CLIENT.on('interactionCreate', async interaction => {
             console.log(interaction);
 
-
-            // TODO: Filter out trades by user (won't want to accept their own trades);
-
-            let trades = await Trading.all();
-
-            // Filter own trades from trades to accept.
-            if (interaction.customId === 'accept_trade')
-                trades = trades.filter(t => t.trader_id !== interaction.user.id)
-
-            if (interaction.customId === 'cancel_trade')
-                trades = trades.filter(t => t.trader_id === interaction.user.id)
-
-            const tradeOptions = trades.map(t => ({
-                label: `${t.id} - ${t.offer_item}x${t.offer_qty}`,
-                description: `${t.trader_username}'s ${t.offer_item}x${t.offer_qty} for your ${t.receive_item}x${t.receive_qty}`,
-                value: String(t.id)
-            }));
-
-            if (interaction.customId === 'accept_trade') {
-                console.log('Button accept trade');
-                await interaction.reply({ 
-                    ephemeral: true, 
-                    content: '**__Warning__ Trade Action**: Pick a trade to accept:', 
-                    components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
-                        .setCustomId('accept_trade_select')
-                        .setPlaceholder('Select a trade #ID to accept:')
-                        .setMaxValues(1)
-                        .addOptions(...tradeOptions))] 
-                });
-            }
-
-            if (interaction.customId === 'cancel_trade') {
-                console.log('Button cancel trade');
-                await interaction.reply({ 
-                    ephemeral: true, 
-                    content: '**__Warning__ Trade Action**: Pick a trade to accept:', 
-                    components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
-                        .setCustomId('cancel_trade_select')
-                        .setPlaceholder('Select a trade #ID to cancel:')
-                        .setMaxValues(1)
-                        .addOptions(...tradeOptions))] 
-                });
-            }
-
-            // Need to check context of whether it as accepting or cancelling
-            
-            
-
-            if (interaction.customId === 'accept_trade_select') {
-                await interaction.reply({
-                    ephemeral: true,
-                    content: 'Work in progress, accepting.',
-                });
-
-                // await interaction.reply({
-                //     ephemeral: true,
-                //     content: 'Confirm accepting trade',
-                //     components: [
-                //         new ActionRowBuilder().addComponents([
-                //             new ButtonBuilder()
-                //                 .setCustomId('confirm_trade')
-                //                 .setLabel('Confirm')
-                //                 .setStyle(ButtonStyle.Success),
-                //         ])
-                //     ]
-                // });
-            }
-
-            if (interaction.customId === 'cancel_trade_select') {
-                await interaction.reply({
-                    ephemeral: true,
-                    content: 'Work in progress, cancelling.',
-                });
-
-                // await interaction.reply({
-                //     ephemeral: true,
-                //     content: 'Confirm accepting trade',
-                //     components: [
-                //         new ActionRowBuilder().addComponents([
-                //             new ButtonBuilder()
-                //                 .setCustomId('confirm_trade')
-                //                 .setLabel('Confirm')
-                //                 .setStyle(ButtonStyle.Success),
-                //         ])
-                //     ]
-                // });
-            }
-
-            if (interaction.customId === 'create_trade') {
-                const command = STATE.CLIENT.commands.get('trade accept');
-                console.log(command);
-            }
+            TradingHelper.onInteractionCreate(interaction, COOP.STATE.CLIENT);
         });
 
         // const gameLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
@@ -200,7 +114,6 @@ const shallowBot = async () => {
         // const msgLink = 'https://discord.com/channels/723660447508725802/762472730980515870/1030376436730712114';
 
         // const msg = await MESSAGES.getByLink(msgLink);
-
 
         const msg = await CHANNELS._send('TALK', 'Testing economy trading between users.');
         msg.edit({ components: [		
@@ -217,6 +130,12 @@ const shallowBot = async () => {
 					.setCustomId('create_trade')
 					.setLabel('Create')
 					.setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
+                        .setLabel("Create")
+                        // .setCustomId('create_trade')
+                        // .setStyle(ButtonStyle.Primary)
+                        .setURL("https://www.thecoop.group/conquest/economy/trade")
+                        .setStyle(ButtonStyle.Link)
             ])]
         });
 

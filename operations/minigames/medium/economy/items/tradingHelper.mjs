@@ -4,7 +4,7 @@ import { ITEMS, USABLE, USERS, CHANNELS, REACTIONS, CHICKEN, MESSAGES } from "..
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 import Trading from "coop-shared/services/trading.mjs";
-import { ActionRowBuilder, ButtonStyle } from "discord.js";
+import { ActionRowBuilder, ButtonStyle, ModalBuilder, SelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { ButtonBuilder } from "@discordjs/builders";
 
 
@@ -27,14 +27,129 @@ export default class TradingHelper {
     // TODO: Refactor, this kind of thing should be isolated to a file, it is an action and not core to the service - but an implementation
     // of the service.
 
-    static onInteractionCreate(interaction) {
+    static async onInteractionCreate(interaction, client) {
         console.log('trade_interaction', interaction);
 
+        // TODO: Filter out trades by user (won't want to accept their own trades);
+
+        let trades = await Trading.all();
+
+        // Filter own trades from trades to accept.
+        if (interaction.customId === 'accept_trade')
+            trades = trades.filter(t => t.trader_id !== interaction.user.id)
+
+        if (interaction.customId === 'cancel_trade')
+            trades = trades.filter(t => t.trader_id === interaction.user.id)
+
+        const tradeOptions = trades.map(t => ({
+            label: `${t.id} - ${t.offer_item}x${t.offer_qty}`,
+            description: `${t.trader_username}'s ${t.offer_item}x${t.offer_qty} for your ${t.receive_item}x${t.receive_qty}`,
+            value: String(t.id)
+        }));
+
         if (interaction.customId === 'accept_trade') {
-            console.log('Button accept trade')
+            console.log('Button accept trade');
+            await interaction.reply({ 
+                ephemeral: true, 
+                content: '**__Warning__ Trade Action**: Pick a trade to accept:', 
+                components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
+                    .setCustomId('accept_trade_select')
+                    .setPlaceholder('Select a trade #ID to accept:')
+                    .setMaxValues(1)
+                    .addOptions(...tradeOptions))] 
+            });
         }
-        if (interaction.customId === 'trade_cancel') {
-            console.log('Button cancel trade')
+
+        if (interaction.customId === 'cancel_trade') {
+            console.log('Button cancel trade');
+            await interaction.reply({ 
+                ephemeral: true, 
+                content: '**__Warning__ Trade Action**: Pick a trade to accept:', 
+                components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
+                    .setCustomId('cancel_trade_select')
+                    .setPlaceholder('Select a trade #ID to cancel:')
+                    .setMaxValues(1)
+                    .addOptions(...tradeOptions))] 
+            });
+        }
+
+        // Need to check context of whether it as accepting or cancelling
+
+        if (interaction.customId === 'accept_trade_select') {
+            await interaction.reply({
+                ephemeral: true,
+                content: 'Work in progress, accepting.',
+            });
+
+            // await interaction.reply({
+            //     ephemeral: true,
+            //     content: 'Confirm accepting trade',
+            //     components: [
+            //         new ActionRowBuilder().addComponents([
+            //             new ButtonBuilder()
+            //                 .setCustomId('confirm_trade')
+            //                 .setLabel('Confirm')
+            //                 .setStyle(ButtonStyle.Success),
+            //         ])
+            //     ]
+            // });
+        }
+
+        if (interaction.customId === 'cancel_trade_select') {
+            await interaction.reply({
+                ephemeral: true,
+                content: 'Work in progress, cancelling.',
+            });
+
+            // await interaction.reply({
+            //     ephemeral: true,
+            //     content: 'Confirm accepting trade',
+            //     components: [
+            //         new ActionRowBuilder().addComponents([
+            //             new ButtonBuilder()
+            //                 .setCustomId('confirm_trade')
+            //                 .setLabel('Confirm')
+            //                 .setStyle(ButtonStyle.Success),
+            //         ])
+            //     ]
+            // });
+        }
+
+        if (interaction.customId === 'create_trade') {
+            interaction.reply({ content: 'Create trade WIP', ephemeral: true });
+            console.log('Create trade');
+
+            // Modal?
+            const modal = new ModalBuilder()
+                .setCustomId('myModal')
+                .setTitle('My Modal');
+
+            // Add components to modal
+
+            // Create the text input components
+            const favoriteColorInput = new TextInputBuilder()
+                .setCustomId('favoriteColorInput')
+                // The label is the prompt the user sees for this input
+                .setLabel("What's your favorite color?")
+                // Short means only a single line of text
+                .setStyle(TextInputStyle.Short);
+
+            const hobbiesInput = new TextInputBuilder()
+                .setCustomId('hobbiesInput')
+                .setLabel("What's some of your favorite hobbies?")
+                // Paragraph means multiple lines of text.
+                .setStyle(TextInputStyle.Paragraph);
+
+            // An action row only holds one text input,
+            // so you need one action row per text input.
+            const firstActionRow = new ActionRowBuilder().addComponents(favoriteColorInput);
+            const secondActionRow = new ActionRowBuilder().addComponents(hobbiesInput);
+
+            // Add inputs to the modal
+            modal.addComponents(firstActionRow, secondActionRow);
+
+            // Show the modal to the user
+            interaction.showModal(modal);
         }
     }
 
@@ -59,7 +174,13 @@ export default class TradingHelper {
                     new ButtonBuilder()
                         .setLabel("Cancel")
                         .setCustomId('cancel_trade')
-                        .setStyle(ButtonStyle.Danger)
+                        .setStyle(ButtonStyle.Danger),
+                    new ButtonBuilder()
+                        .setLabel("Create")
+                        // .setCustomId('create_trade')
+                        // .setStyle(ButtonStyle.Primary)
+                        .setURL("https://www.thecoop.group/conquest/economy/trade")
+                        .setStyle(ButtonStyle.Link)
 
                 ])
             ] });

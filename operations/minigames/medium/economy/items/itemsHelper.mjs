@@ -165,7 +165,7 @@ export default class ItemsHelper {
     }
 
     static exchangeItemsQtysStr(lossItem, lossQty, gainItem, gainQty) {
-        return `${this.lossItemQtyStr(lossItem, lossQty)}\n${this.gainItemQtyStr(gainItem, gainQty)}`;
+        return `${this.lossItemQtyStr(lossItem, lossQty)} ${this.gainItemQtyStr(gainItem, gainQty)}`;
     }
 
     static emojiToItemCode(emoji) {
