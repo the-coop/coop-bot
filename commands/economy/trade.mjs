@@ -11,6 +11,7 @@ import TradingHelper from '../../operations/minigames/medium/economy/items/tradi
 import Items from 'coop-shared/services/items.mjs';
 import Useable from 'coop-shared/services/useable.mjs';
 import InteractionHelper from '../../operations/activity/messages/interactionHelper.mjs';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 // import TradingHelper from '../../operations/minigames/medium/economy/items/tradingHelper.mjs';
 
@@ -122,10 +123,10 @@ const createTrade = async interaction => {
 
 		// Check if valid item codes given.
 		if (!offerItemCode || !receiveItemCode) 
-			return COOP.MESSAGES.selfDestruct(
-				interaction.channel, 
-				`Invalid item codes for trade, ${offerItemCode} ${receiveItemCode}`, 0, 7500
-			);
+			return interaction.reply({ 
+				content: `Invalid item codes for trade, ${offerItemCode} ${receiveItemCode}`, 
+				ephemeral: true 
+			});
 
 		// Guard against bad/negative amounts for both qtys
 		if (
@@ -138,12 +139,12 @@ const createTrade = async interaction => {
 		// Check if user can fulfil the trade.
 		const canUserFulfil = await Items.hasQty(tradeeID, offerItemCode, offerQty);
 		if (!canUserFulfil)
-			return interaction.reply(`Insufficient item quantity for trade.`);
+			return interaction.reply({ content: `Insufficient item quantity for trade.`, ephemeral: true });
 
 		// Get their existing trades to check slots.
 		const ownerExistingTrades = await Trading.getByTrader(tradeeID);
 		if (ownerExistingTrades.length > 5)
-			return interaction.reply(`Insufficient available trade slots ${ownerExistingTrades.length}/5.`);
+			return interaction.reply({ content: `Insufficient available trade slots ${ownerExistingTrades.length}/5.`, ephemeral: true });
 
 		// Generate strings with emojis based on item codes.
 		const tradeAwayStr = `${COOP.MESSAGES.emojiCodeText(offerItemCode)}x${offerQty}`;
@@ -171,7 +172,7 @@ const createTrade = async interaction => {
 
 		// Trade cancelled, remove message.
 		const confirmation = await InteractionHelper.confirm(interaction, feedbackTexts);
-		if (!confirmation) return await interaction.reply( `Trade creation cancelled.`);
+		if (!confirmation) return await interaction.reply({ content: `Trade creation cancelled.`, ephemeral: true });
 
 		// Accept cheapest matching offer.
 		if (matchingOffers.length > 0) {
@@ -193,11 +194,11 @@ const createTrade = async interaction => {
 					const actionsLinkStr = `\n\n_View in <#${COOP.CHANNELS.textRef('TRADE')}>_`;
 
 					// Post accepted trade to channel and record channel.
-					interaction.reply( tradeConfirmStr + actionsLinkStr);
+					return interaction.reply({ content: tradeConfirmStr + actionsLinkStr, ephemeral: true });
 
 			} else {
 				// Edit failure onto message.
-				interaction.reply('Failure confirming instant trade.');
+				return interaction.reply({ content: 'Failure confirming instant trade.', ephemeral: true });
 			}
 
 		} else {
@@ -212,23 +213,32 @@ const createTrade = async interaction => {
 				);
 
 				// Offer feedback for trade creation. :)
-				const tradeText = `**${tradeeName} created trade #${trade.id}**\n\n` +
-					exchangeString + `\n\n` +
-					`Use _trade accept_ slash command to accept this trade or react with :handshake:._`;
+				const tradeText = `**${tradeeName} created trade #${trade.id}**\n\n` + exchangeString;
 
 				// Send confirmation in channel as feedback.
 				const confirmationMsg = await interaction.channel.send(tradeText);
-				
-				COOP.CHANNELS._send('TRADE', tradeText);
-
-				// Indicate it is a trade relevant message with money bag emoji.
-				MESSAGES.delayReact(confirmationMsg, '💰');
-				
-				// Add reaction to accept trade.
-				MESSAGES.delayReact(confirmationMsg, '🤝');
+				confirmationMsg.edit({ components: [		
+					new ActionRowBuilder().addComponents([
+						new ButtonBuilder()
+							.setCustomId('accept_trade')
+							.setLabel('Accept')
+							.setStyle(ButtonStyle.Success),
+						new ButtonBuilder()
+							.setCustomId('cancel_trade')
+							.setLabel('Cancel')
+							.setStyle(ButtonStyle.Danger),
+						new ButtonBuilder()
+							.setCustomId('create_trade')
+							.setLabel('Create')
+							.setStyle(ButtonStyle.Primary),
+						new ButtonBuilder()
+							.setLabel("Create")
+							.setURL("https://www.thecoop.group/conquest/economy/trade")
+							.setStyle(ButtonStyle.Link)
+					])]
+				});
 
 				// TODO: Add to trade stats.
-				// TODO: Add reaction to cancel trade.
 				
 			} else {
 				interaction.reply('Error creating trade.');
