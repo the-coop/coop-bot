@@ -48,9 +48,15 @@ export default class TradingHelper {
             value: String(t.id)
         }));
 
+        if (interaction.customId === 'accept_trade' && tradeOptions.length === 0)
+            return await interaction.reply({ 
+                ephemeral: true, 
+                content: 'There are no trades you can accept.'
+            });
+            
         if (interaction.customId === 'accept_trade') {
             console.log('Button accept trade');
-            await interaction.reply({ 
+            return await interaction.reply({ 
                 ephemeral: true, 
                 content: '**__Warning__ Trade Action**: Pick a trade to accept:', 
                 components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
@@ -61,9 +67,14 @@ export default class TradingHelper {
             });
         }
 
+        if (interaction.customId === 'cancel_trade' && tradeOptions.length === 0)
+            return await interaction.reply({ 
+                ephemeral: true, 
+                content: 'There are no trades you can cancel.'
+            });
+
         if (interaction.customId === 'cancel_trade') {
-            console.log('Button cancel trade');
-            await interaction.reply({ 
+            return await interaction.reply({ 
                 ephemeral: true, 
                 content: '**__Warning__ Trade Action**: Pick a trade to cancel:', 
                 components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()

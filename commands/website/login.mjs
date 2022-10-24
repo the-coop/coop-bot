@@ -23,6 +23,6 @@ export const execute = async (interaction) => {
 	);
 
 	// Indicate success.
-	return await interaction.reply('Login link was securely DMed to you.');
+	return await interaction.reply({ content: 'Login link was securely DMed to you.', ephemeral: true });
 };
 

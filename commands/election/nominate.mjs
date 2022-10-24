@@ -125,7 +125,7 @@ export const execute = async (interaction) => {
 			}
 		}
 
-		return await interaction.reply('Something may have gone wrong with nomination.');
+		return await interaction.reply({ content: 'Something may have gone wrong with nomination.', ephemeral: true });
 
 	} catch(e) {
 		console.error(e);

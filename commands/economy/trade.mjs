@@ -241,7 +241,7 @@ const createTrade = async interaction => {
 				// TODO: Add to trade stats.
 				
 			} else {
-				interaction.reply('Error creating trade.');
+				interaction.reply({ content: 'Error creating trade.', ephemeral: true });
 			}
 		}
 		
@@ -282,15 +282,15 @@ export const _tradeAccept = async (interaction, tradeID) => {
 		// Check if user can fulfil the trade.
 		const hasEnough = await Items.hasQty(tradeeID, trade.receive_item, trade.receive_qty);
 		if (!hasEnough)
-			return interaction.reply(`Insufficient offer quantity for trade.`);
+			return interaction.reply({ content: `Insufficient offer quantity for trade.`, ephemeral: true });
 
 		// Let helper handle accepting logic as it's used in multiple places so far.
 		const tradeAccepted = await TradingHelper.accept(tradeID, tradeeID, tradeeName);
 		if (tradeAccepted) {
-			interaction.reply('Trade accepted.');
+			interaction.reply({ content: 'Trade accepted.', ephemeral: true });
 		} else {
 			// Log cancelled trades
-			interaction.reply('Trade could not be accepted.');
+			interaction.reply({ content: 'Trade could not be accepted.', ephemeral: true });
 			console.log('Trade accept failed');
 		}
 		

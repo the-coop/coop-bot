@@ -110,7 +110,7 @@ export const execute = async (interaction) => {
 		}
 
 		// Indicate success.
-		return await interaction.reply('Successfully entered the election!');
+		return await interaction.reply({ content: 'Successfully entered the election!', ephemeral: true });
 
 	} catch(e) {
 		console.error(e);
