@@ -6,6 +6,7 @@ import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 import Trading from "coop-shared/services/trading.mjs";
 import { ActionRowBuilder, ButtonStyle, ModalBuilder, SelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { ButtonBuilder } from "@discordjs/builders";
+import { _tradeAccept, _tradeCancel } from "../../../../../commands/economy/trade.mjs";
 
 
 // TODO: Rename file.
@@ -74,50 +75,11 @@ export default class TradingHelper {
         }
 
         // Need to check context of whether it as accepting or cancelling
+        if (interaction.customId === 'accept_trade_select')
+            await _tradeAccept(interaction, parseInt(interaction.values[0]));
 
-        if (interaction.customId === 'accept_trade_select') {
-
-            console.log(interaction);
-
-            console.log('EXTRACT VALUE')
-            await interaction.reply({
-                ephemeral: true,
-                content: 'Work in progress, accepting. - EXTRACT VALUE',
-            });
-        }
-
-            // await interaction.reply({
-            //     ephemeral: true,
-            //     content: 'Confirm accepting trade',
-            //     components: [
-            //         new ActionRowBuilder().addComponents([
-            //             new ButtonBuilder()
-            //                 .setCustomId('confirm_trade')
-            //                 .setLabel('Confirm')
-            //                 .setStyle(ButtonStyle.Success),
-            //         ])
-            //     ]
-            // });
-
-        if (interaction.customId === 'cancel_trade_select') {
-            await interaction.reply({
-                ephemeral: true,
-                content: 'Work in progress, cancelling.',
-            });
-
-            // await interaction.reply({
-            //     ephemeral: true,
-            //     content: 'Confirm accepting trade',
-            //     components: [
-            //         new ActionRowBuilder().addComponents([
-            //             new ButtonBuilder()
-            //                 .setCustomId('confirm_trade')
-            //                 .setLabel('Confirm')
-            //                 .setStyle(ButtonStyle.Success),
-            //         ])
-            //     ]
-            // });
-        }
+        if (interaction.customId === 'cancel_trade_select')
+            await _tradeCancel(interaction, parseInt(interaction.values[0]));
 
         if (interaction.customId === 'create_trade') {
             interaction.reply({ content: 'Create trade WIP', ephemeral: true });
