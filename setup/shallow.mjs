@@ -115,29 +115,29 @@ const shallowBot = async () => {
 
         // const msg = await MESSAGES.getByLink(msgLink);
 
-        const msg = await CHANNELS._send('TALK', 'Testing economy trading between users.');
-        msg.edit({ components: [		
-            new ActionRowBuilder().addComponents([
-                new ButtonBuilder()
-					.setCustomId('accept_trade')
-					.setLabel('Accept')
-					.setStyle(ButtonStyle.Success),
-                new ButtonBuilder()
-					.setCustomId('cancel_trade')
-					.setLabel('Cancel')
-					.setStyle(ButtonStyle.Danger),
-                new ButtonBuilder()
-					.setCustomId('create_trade')
-					.setLabel('Create')
-					.setStyle(ButtonStyle.Primary),
-                new ButtonBuilder()
-                        .setLabel("Create")
-                        // .setCustomId('create_trade')
-                        // .setStyle(ButtonStyle.Primary)
-                        .setURL("https://www.thecoop.group/conquest/economy/trade")
-                        .setStyle(ButtonStyle.Link)
-            ])]
-        });
+        // const msg = await CHANNELS._send('TALK', 'Testing economy trading between users.');
+        // msg.edit({ components: [		
+        //     new ActionRowBuilder().addComponents([
+        //         new ButtonBuilder()
+		// 			.setCustomId('accept_trade')
+		// 			.setLabel('Accept')
+		// 			.setStyle(ButtonStyle.Success),
+        //         new ButtonBuilder()
+		// 			.setCustomId('cancel_trade')
+		// 			.setLabel('Cancel')
+		// 			.setStyle(ButtonStyle.Danger),
+        //         new ButtonBuilder()
+		// 			.setCustomId('create_trade')
+		// 			.setLabel('Create')
+		// 			.setStyle(ButtonStyle.Primary),
+        //         new ButtonBuilder()
+        //                 .setLabel("Create")
+        //                 // .setCustomId('create_trade')
+        //                 // .setStyle(ButtonStyle.Primary)
+        //                 .setURL("https://www.thecoop.group/conquest/economy/trade")
+        //                 .setStyle(ButtonStyle.Link)
+        //     ])]
+        // });
 
 
 		// await interaction.reply({ content: 'I think you should,', components: [row] });

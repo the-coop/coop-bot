@@ -64,7 +64,7 @@ export default class TradingHelper {
             console.log('Button cancel trade');
             await interaction.reply({ 
                 ephemeral: true, 
-                content: '**__Warning__ Trade Action**: Pick a trade to accept:', 
+                content: '**__Warning__ Trade Action**: Pick a trade to cancel:', 
                 components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
                     .setCustomId('cancel_trade_select')
                     .setPlaceholder('Select a trade #ID to cancel:')
@@ -76,10 +76,15 @@ export default class TradingHelper {
         // Need to check context of whether it as accepting or cancelling
 
         if (interaction.customId === 'accept_trade_select') {
+
+            console.log(interaction);
+
+            console.log('EXTRACT VALUE')
             await interaction.reply({
                 ephemeral: true,
-                content: 'Work in progress, accepting.',
+                content: 'Work in progress, accepting. - EXTRACT VALUE',
             });
+        }
 
             // await interaction.reply({
             //     ephemeral: true,
@@ -93,7 +98,6 @@ export default class TradingHelper {
             //         ])
             //     ]
             // });
-        }
 
         if (interaction.customId === 'cancel_trade_select') {
             await interaction.reply({

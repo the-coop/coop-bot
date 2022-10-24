@@ -245,17 +245,21 @@ const createTrade = async interaction => {
 // TODO: Make sure 
 // https://discordjs.guide/interactions/autocomplete.html#sending-results
 
-const tradeAccept = async interaction => {
+const tradeAccept = interaction => {
 	// Sanitise + validate input a little before processing.
 	const tradeIDOption = interaction.options.get('trade_id').value;
 	const tradeID = parseInt(tradeIDOption);
+	return _tradeAccept(interaction, tradeID);
+}
 
-	
+const tradeCancel = interaction => {
+	// Sanitise + validate input a little before processing.
+	const tradeIDOption = interaction.options.get('trade_id').value;
+	const tradeID = parseInt(tradeIDOption);
+	return _tradeCancel(interaction, tradeID);
+}
 
-
-
-
-
+export const _tradeAccept = async (interaction, tradeID) => {
 	try {
 		const tradeeID = interaction.user.id;
 		const tradeeName = interaction.user.username;
@@ -286,12 +290,7 @@ const tradeAccept = async interaction => {
 	}
 }
 
-
-const tradeCancel = async interaction => {
-	// Sanitise + validate input a little before processing.
-	const tradeIDOption = interaction.options.get('trade_id').value;
-	const tradeID = parseInt(tradeIDOption);
-
+export const _tradeCancel = async (interaction, tradeID) => {
 	try {
 		// More readable access to useful properties.
 		const tradeeID = interaction.user.id;
