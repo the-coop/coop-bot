@@ -6,6 +6,8 @@ import CooperMorality from '../../minigames/small/cooperMorality.mjs';
 import COOP, { MESSAGES, ROLES } from '../../../coop.mjs';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
 import Items from 'coop-shared/services/items.mjs';
+import { ActionRowBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder } from '@discordjs/builders';
 
 export const SACRIFICE_RATIO_PERC = .05;
 export const KEEP_RATIO_PERC = .02;
@@ -333,9 +335,25 @@ export default class SacrificeHelper {
     }
 
     // Last sacrifice time, last updated, how it works, current dagger/shield count.
-    static announce() {
-        const announceText = `**${EMOJIS.DAGGER}${EMOJIS.DAGGER} The Coop Sacrifice Ritual:**\n\n Work in progress...`;
-        COOP.CHANNELS._send('TALK', announceText);
+    static async announce() {
+        const announceTitle = `**${EMOJIS.DAGGER}${EMOJIS.DAGGER} The Coop Sacrifice Ritual:**\n\n`;
+
+        const announceContent = 'Work in progress...';
+
+        const updateMsg = await MESSAGES.getSimilarExistingMsg(COOP.CHANNELS._getCode('TALK'), announceTitle);
+        if (!updateMsg) {
+            const msg = await COOP.CHANNELS._send('TALK', announceContent);
+            msg.edit({ components: [
+                new ActionRowBuilder().addComponents([
+                    new ButtonBuilder()
+                        .setLabel("Sacrifice [WIP]")
+                        // .setCustomId('create_trade')
+                        // .setStyle(ButtonStyle.Primary)
+                        .setURL("https://www.thecoop.group")
+                        .setStyle(ButtonStyle.Link)
+                ])
+            ] });
+        }
     }
     
 }

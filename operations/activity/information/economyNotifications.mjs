@@ -1,3 +1,5 @@
+import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
+import { ButtonStyle } from "discord.js";
 import { MESSAGES, CHANNELS, STATE } from "../../../coop.mjs";
 
 // EGGS FOUND
@@ -25,10 +27,13 @@ export default class EconomyNotifications {
         if (eventType === 'CRATE_DROP') this.updateCrateDrop(eventData);
     }
 
-    static post() {
+    static async post() {
+        let notificationString = '';
+        const postTitle = '**Latest economy actions:**\n\n';
+        
         const eventStatusesKeys = Object.keys(STATE.EVENTS_HISTORY);
         if (eventStatusesKeys.length > 0) {
-            let notificationString = '**Latest economy actions:**\n\n';
+            notificationString += postTitle;
             
             if (STATE.EVENTS_HISTORY['WOODCUTTING']) {
                 const woodcutting = STATE.EVENTS_HISTORY['WOODCUTTING'];
@@ -119,7 +124,34 @@ export default class EconomyNotifications {
                 console.log(STATE.EVENTS_HISTORY['CRATE_DROP']);
             }
 
-            CHANNELS._postToChannelCode('TALK', notificationString);
+            const updateMsg = await MESSAGES.getSimilarExistingMsg(CHANNELS._getCode('TALK'), postTitle);
+            if (!updateMsg) {
+                const msg = await CHANNELS._send('TALK', notificationString);
+                msg.edit({ components: [
+                    new ActionRowBuilder().addComponents([
+                        new ButtonBuilder()
+                            .setLabel("Trades")
+                            // .setCustomId('create_trade')
+                            // .setStyle(ButtonStyle.Primary)
+                            .setURL("https://www.thecoop.group/conquest/economy/items")
+                            .setStyle(ButtonStyle.Link),
+                        new ButtonBuilder()
+                            .setLabel("Trades")
+                            // .setCustomId('create_trade')
+                            // .setStyle(ButtonStyle.Primary)
+                            .setURL("https://www.thecoop.group/conquest/economy/trade")
+                            .setStyle(ButtonStyle.Link),
+                        new ButtonBuilder()
+                            .setLabel("Coop Coin")
+                            // .setCustomId('create_trade')
+                            // .setStyle(ButtonStyle.Primary)
+                            .setURL("https://www.thecoop.group/conquest/economy/items/GOLD_COIN")
+                            .setStyle(ButtonStyle.Link)
+    
+                    ])
+                ] });
+            }
+            
 
             this.clear('WOODCUTTING');
             this.clear('MINING');
