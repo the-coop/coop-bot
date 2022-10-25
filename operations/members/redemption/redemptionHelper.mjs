@@ -2,6 +2,8 @@ import VotingHelper from "../../activity/redemption/votingHelper.mjs";
 
 import COOP, { STATE, CHANNELS, MESSAGES } from "../../../coop.mjs";
 import { RAW_EMOJIS, ROLES, CHANNELS as CHANNELS_CONFIG } from 'coop-shared/config.mjs';
+import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
+import { ButtonStyle } from "discord.js";
 
 
 export const STARTING_ROLES = [
@@ -46,7 +48,6 @@ export default class RedemptionHelper {
 
             // Prevent PROSPECTS from letting people in.
             if (COOP.ROLES._idHasCode(user.id, 'PROSPECT')) {
-                // Remove vote.
                 reaction.users.remove(user.id);
                 return COOP.MESSAGES.selfDestruct(reaction.message, `${user.username} you can't vote as a PROSPECT. :dagger:`);
             }
@@ -55,57 +56,27 @@ export default class RedemptionHelper {
             const reqForVotes = VotingHelper.getNumRequired(.025);
             const reqAgainstVotes = VotingHelper.getNumRequired(.015);
             
-            // Refactor into a reaction guard! :D
-
+            // TODO: Refactor into a reaction guard! :D
             // Remove invalid reactions.
             if (!COOP.USERS.hasRoleID(voterMember, ROLES.MEMBER.id))
-                return await reaction.users.remove(user.id)
-            
+                return await reaction.users.remove(user.id);
+
             // Get existing reactions on message.
             reaction.message.reactions.cache.map(reactionType => {
-                if (reactionType.emoji.name === RAW_EMOJIS.VOTE_FOR) forVotes = Math.max(0, reactionType.count - 1);
-                if (reactionType.emoji.name === RAW_EMOJIS.VOTE_AGAINST) againstVotes = Math.max(0, reactionType.count - 1);
+                if (reactionType.emoji.name === RAW_EMOJIS.VOTE_FOR) 
+                    forVotes = Math.max(0, reactionType.count - 1);
+
+                if (reactionType.emoji.name === RAW_EMOJIS.VOTE_AGAINST) 
+                    againstVotes = Math.max(0, reactionType.count - 1);
             });
-        
-            
+
+            const votes = { for: forVotes, against: againstVotes };
+
             // Handle user approved.
             if (forVotes >= reqForVotes) {
-                // Add to database if not already in it.
-                const savedUser = await COOP.USERS.loadSingle(targetMember.user.id);
-                if (!savedUser) {
-                    await COOP.USERS.addToDatabase(
-                        targetMember.user.id, 
-                        targetMember.user.username, 
-                        targetMember.joinedDate,
-                        reaction.message.createdTimestamp,
-                        MESSAGES.link(reaction.message),
+                this.approve(targetMember, reaction, votes);
 
-                        // TODO: Sanitise.
-                        reaction.message.content
-                    );
-                }
-
-                // Inform the user.
-                try {
-                    // TODO: Improve welcome text message to be more informative.
-                    targetMember.send('Thank you for joining, we value your presence! You were voted into The Coop and now have **full access**!');
-                } catch(e) {
-                    console.log('Failed to inform user via DM of their removal.', targetUser);
-                    console.error(e);
-                }
-
-                // Give intro roles
-                await COOP.ROLES._addCodes(targetMember.user.id, STARTING_ROLES);
-                
-                // Inform community.
-                COOP.CHANNELS._codes(['TALK'], 
-                    `Congratulations <@${targetUser.id}>! The community has approved your entry into the server!\n` +
-                    `Feel free to select ${COOP.CHANNELS.textRef('ABOUT')} to view more working areas :smile:\n` +
-                    `Have fun!\n` +
-                    `${forVotes ? `\n${RAW_EMOJIS.VOTE_FOR.repeat(forVotes)}` : ''}` +
-                    `${againstVotes ? `\n${RAW_EMOJIS.VOTE_AGAINST.repeat(againstVotes)}` : ''}`
-                );
-
+            // TODO: Refactor to reject method
             // Handle user rejected.
             } else if (againstVotes >= reqAgainstVotes) {
                 // Inform community.
@@ -122,10 +93,8 @@ export default class RedemptionHelper {
                 // TODO: List current leaders/command for contact in order to appeal.
                 await targetMember.ban();
 
-
             } else {
-                // TODO: This way of preventing certain kinds of feedback spam should be refactored and reused everywhere.
-                const votingStatusTitle = `<@${targetUser.id}>'s entry was voted upon!`;
+                const votingStatusTitle = `**<@${targetUser.id}>'s entry was voted upon!**`;
                 const votingStatusText = votingStatusTitle +
                     `\n# Votes still required: ` +
                     `Entry ${RAW_EMOJIS.VOTE_FOR}: ${Math.max(0, reqForVotes - forVotes)} | ` +
@@ -135,6 +104,7 @@ export default class RedemptionHelper {
                 let updatingMsgInstead = false;
 
                 // Check if the message is already within the past 5 feed messages (if so update it and reduce spam).
+                // TODO: This way of preventing certain kinds of feedback spam should be refactored and reused everywhere.
                 const feed = COOP.CHANNELS._getCode('TALK');
                 const latestMsgs = await feed.messages.fetch({ limit: 10 });
                 latestMsgs.map(m => {
@@ -168,6 +138,72 @@ export default class RedemptionHelper {
             CHANNELS._postToChannelCode('TALK', banReason)
             member.ban({ days: 7, reason: banReason });
         }
+    }
+
+    static async approve(targetMember, reaction, votes) {
+        // Add to database if not already in it.
+        const savedUser = await COOP.USERS.loadSingle(targetMember.user.id);
+        if (!savedUser) {
+            await COOP.USERS.addToDatabase(
+                targetMember.user.id, 
+                targetMember.user.username, 
+                targetMember.joinedDate,
+                reaction.message.createdTimestamp,
+                MESSAGES.link(reaction.message),
+
+                // TODO: Sanitise.
+                reaction.message.content
+            );
+        }
+
+        // Inform the user.
+        try {
+            // TODO: Improve welcome text message to be more informative and prettier.
+            targetMember.send('Thank you for joining, we value your presence! You were voted into The Coop and now have **full access**!');
+        } catch(e) {
+            console.log('Failed to inform user via DM of their removal.', targetMember.user);
+            console.error(e);
+        }
+
+        // Give intro roles
+        await COOP.ROLES._addCodes(targetMember.user.id, STARTING_ROLES);
+
+        // Check message for roles that may match their interests.
+        const roleMatches = {
+            MONEY: ['stocks', 'finance', 'business', 'invest', 'gambl'],
+            ART: ['painting', 'drawing', '3d modelling', 'game', 'design'],
+            TECH: ['coding', 'program', 'tech', 'dev', 'game design'],
+        }
+
+        // Check 
+        const desiredRoles = Object.keys(roleMatches).filter(roleKey => {
+            const roleMatches = roleMatches[roleKey].some(roleWord => reaction.message.content.includes(roleWord));
+            return roleMatches
+        });
+
+        COOP.CHANNELS._send('TALK', 'Could have added desired roles', desiredRoles, reaction.message.content);
+
+        // Inform community.
+        const msg = await COOP.CHANNELS._send('TALK', 
+            `**<@${targetMember.user.id}> democratically approved into the community!** !\n` +
+            `${votes.for ? `\n${RAW_EMOJIS.VOTE_FOR.repeat(votes.for)}` : ''}` +
+            `${votes.against ? `\n${RAW_EMOJIS.VOTE_AGAINST.repeat(votes.against)}` : ''}`
+        );
+        msg.edit({ components: [
+            new ActionRowBuilder()
+                .addComponents([
+                    new ButtonBuilder()
+                        .setLabel("Profile")
+                        .setEmoji('👤')
+                        .setURL('https://www.thecoop.group/members/' + targetMember.user.id)
+                        .setStyle(ButtonStyle.Link),
+                    new ButtonBuilder()
+                        .setLabel("Edit Roles")
+                        .setEmoji('⚙️')
+                        .setURL('https://thecoop.group')
+                        .setStyle(ButtonStyle.Link)
+                ])
+        ] });
     }
 
 }
