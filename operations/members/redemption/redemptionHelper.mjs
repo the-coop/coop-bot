@@ -189,6 +189,10 @@ export default class RedemptionHelper {
             `${votes.for ? `\n${RAW_EMOJIS.VOTE_FOR.repeat(votes.for)}` : ''}` +
             `${votes.against ? `\n${RAW_EMOJIS.VOTE_AGAINST.repeat(votes.against)}` : ''}`
         );
+
+        const rolesLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
+            "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=roles";
+            
         msg.edit({ components: [
             new ActionRowBuilder()
                 .addComponents([
@@ -200,7 +204,7 @@ export default class RedemptionHelper {
                     new ButtonBuilder()
                         .setLabel("Edit Roles")
                         .setEmoji('⚙️')
-                        .setURL('https://thecoop.group')
+                        .setURL(rolesLoginLink)
                         .setStyle(ButtonStyle.Link)
                 ])
         ] });
