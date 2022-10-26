@@ -9,7 +9,6 @@ import EasterMinigame from "../minigames/small/holidays/easter.mjs";
 
 import RedemptionHelper from "../members/redemption/redemptionHelper.mjs";
 import SacrificeHelper from "../members/redemption/sacrificeHelper.mjs";
-import AboutHelper from "../marketing/about/aboutHelper.mjs";
 import ElectionHelper from "../members/hierarchy/election/electionHelper.mjs";
 
 import CleanupHandler from "./messages/cleanupHandler.mjs";
@@ -32,9 +31,6 @@ export default async function reactAddedHandler(reaction, user) {
         RedemptionHelper.onReaction(reaction, user);
         ElectionHelper.onReaction(reaction, user);
 
-        // User settings via about channel
-        AboutHelper.onReaction(reaction, user);
-
         // Competition reactions/abilities.
         CompetitionHelper.onReaction(reaction, user);
 
@@ -55,12 +51,6 @@ export default async function reactAddedHandler(reaction, user) {
 
         // Prevent and toggle link previews.
         LinkPreviewFilter.onReaction(reaction, user);
-
-        // TODO: Refine/limit 
-        // If they react with '📖' on a message cooper also has that emoji, give them guide role.
-        if (reaction.emoji.name === '📖' && isUser) {
-            ROLES._add(user.id, 'GUIDE');
-        }
 
         // Random point spawn.
         if (reaction.emoji.name === 'coop' && isUser) {

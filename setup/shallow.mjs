@@ -1,4 +1,4 @@
-import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder } from 'discord.js';
+import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder, REST, Routes } from 'discord.js';
 import _ from 'lodash';
 import Database from 'coop-shared/setup/database.mjs';
 import secrets from 'coop-shared/setup/secrets.mjs';
@@ -6,6 +6,8 @@ import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, STA
 import TradingHelper from '../operations/minigames/medium/economy/items/tradingHelper.mjs';
 import Trading from 'coop-shared/services/trading.mjs';
 import setupCommands from './commands.mjs';
+import { BOTS } from 'coop-shared/config.mjs';
+import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
 
 // import { CHANNELS as CHANNELS_CONFIG, RAW_EMOJIS, ITEMS as ITEMS_CONFIG } from 'coop-shared/config.mjs';
 // import StockHelper from '../operations/stock/stockHelper.mjs';
@@ -91,22 +93,27 @@ const shallowBot = async () => {
 
     // Common checks:
     // COOP.STATE.CLIENT.on('ready', () => ServerHelper.checkMissingChannels());
+    COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingRoles());
 
-    setupCommands(COOP.STATE.CLIENT);
+    // setupCommands(COOP.STATE.CLIENT);
 
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
-
-        // TODO:
-        // Add a message with buttons to the information channel.
-
         
 
-        COOP.STATE.CLIENT.on('interactionCreate', async interaction => {
-            console.log(interaction);
 
-            TradingHelper.onInteractionCreate(interaction, COOP.STATE.CLIENT);
-        });
+
+        // const rolesCache = RolesHelper._all();
+        // rolesCache.map(r => console.log(r.name, r.id));
+
+
+
+        // COOP.STATE.CLIENT.on('interactionCreate', async interaction => {
+        //     console.log(interaction);
+
+        //     TradingHelper.onInteractionCreate(interaction, COOP.STATE.CLIENT);
+        // });
+ 
 
         // const gameLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
         //     "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=game"
@@ -139,21 +146,6 @@ const shallowBot = async () => {
         //     ])]
         // });
 
-
-		// await interaction.reply({ content: 'I think you should,', components: [row] });
-
-
-        // const msg = await CHANNELS._send('TALK', 'test');
-
-        // msg.edit({ components: [
-        //     new ActionRowBuilder()
-        //         .addComponents([
-        //             new ButtonBuilder()
-        //                 .setLabel("Ridahk's Take!")
-        //                 .setURL('https://discord.com/channels/723660447508725802/1020871428934992013')
-        //                 .setStyle(ButtonStyle.Link)
-        //         ])
-        // ] });
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 

@@ -1,5 +1,4 @@
 import TemporaryMessages from "../operations/activity/maintenance/temporaryMessages.mjs";
-import AboutHelper from "../operations/marketing/about/aboutHelper.mjs";
 import ElectionHelper from "../operations/members/hierarchy/election/electionHelper.mjs";
 import SacrificeHelper from "../operations/members/redemption/sacrificeHelper.mjs";
 // import StockHelper from "../operations/stock/stockHelper.mjs";
@@ -21,9 +20,6 @@ export default async () => {
 
         // Check if election is on before preloading/caching campaign messages.
         await ElectionHelper.preloadIfNecessary();
-
-        // Preload all about/options preferences options.
-        await AboutHelper.preloadMesssages();
 
         // Preload 15 intros, should be sufficient for a while.
         await CHANNELS._getCode('INTRO').messages.fetch({ limit: 15 });

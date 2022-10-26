@@ -1,8 +1,10 @@
 import axios from 'axios';
+import { ROLES } from 'coop-shared/config.mjs';
 
 import { CHANNELS, TIME, STATE } from '../coop.mjs';
 
 import Chicken from './chicken.mjs';
+import RolesHelper from './members/hierarchy/roles/rolesHelper.mjs';
 
 export default class ServerHelper {
 
@@ -14,16 +16,20 @@ export default class ServerHelper {
 
     static checkMissingChannels() {
         Object.keys(CHANNELS.config).map(ck => {
-            const channel = CHANNELS.config[ck];
+            if (!CHANNELS._get(CHANNELS.config[ck].id)) 
+                console.log('No channel ' + ck);
+        });
+    }
 
-            // console.log('Checking channel still exists ' + ck);
-            // console.log(channel.id);
+    static checkMissingRoles() {
+        console.log('Checking missing roles');
 
-            const realChannel = CHANNELS._get(channel.id)
-            if (!realChannel) console.log('No channel ' + ck);
-            // else console.log(realChannel.id);
+        Object.keys(ROLES).map(roleKey => {
+            const role = ROLES[roleKey];
+            const realRole = RolesHelper._get(role.id)
+            if (!realRole) console.log('No role ' + roleKey);
 
-            // CHANNELS._all()
+            // TODO Check for roles on the server but not in the config
         });
     }
 
@@ -50,7 +56,6 @@ export default class ServerHelper {
             const until = expiration - nowSecs;
             CHANNELS._send('ACTIONS', `Website rebuild is due in roughly ${Math.round(until / 3600)} hours.`);
         }
-
     }
 
 }

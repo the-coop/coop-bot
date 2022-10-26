@@ -383,7 +383,7 @@ export default class EggHuntMinigame {
             this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
 
         if (STATE.CHANCE.bool({ likelihood: .3 })) {
-            CHANNELS._postToChannelCode('TALK', ROLES._textRef('BONUS_EGGS_PING') + ', a legendary egg was dropped! Find and grab it before others can!');
+            CHANNELS._postToChannelCode('TALK', ROLES._textRef('MINIGAME_PING') + ', a legendary egg was dropped! Find and grab it before others can!');
             this.drop('LEGENDARY_EGG');
         }
 
@@ -396,7 +396,7 @@ export default class EggHuntMinigame {
 
         // Small chance of bonus eggs being released.     
         if (STATE.CHANCE.bool({ likelihood: 4.5 })) {        
-            const bonusEggRolePing = ROLES._textRef('BONUS_EGGS_PING');
+            const bonusEggRolePing = ROLES._textRef('MINIGAME_PING');
             let bonusEggStatus = ' bonus eggs rolling!';
 
             // Calculate a number of bonus eggs.

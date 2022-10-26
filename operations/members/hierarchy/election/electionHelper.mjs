@@ -154,15 +154,10 @@ export default class ElectionHelper {
 
                 `To enter election yourself use the /stand slash command with a short message of why people should vote for you.\n` +
                 `To nominate another person for leadership use the /nominate slash command with a similar message.\n\n` +
-                
-                `_Guide available at ${CHANNELS.textRef('MEMBER_GUIDE')} (requires guide role)._\n\n` +
 
                 `Time remaining: ${readableElecLeft}.`;
 
             const msg = await CHANNELS._send('TALK', `${ROLES._textRef('SUBSCRIBER')}, ${electionText}`);
-
-            // Add the guide emoji or buttons for more information.
-            msg.react('📖');
 
             // Indicate successful start.
             return true;

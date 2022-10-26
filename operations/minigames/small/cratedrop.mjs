@@ -242,7 +242,7 @@ export default class CratedropMinigame {
 
                 // Format rarity text and provide a record.
                 const rarityWord = COOP.MESSAGES.titleCase(rarity.split('_')[0]);
-                const crateDropText = `${COOP.ROLES._textRef('CRATEDROP_PING')}, ${rarityWord} crate drop in progress.`;
+                const crateDropText = `${COOP.ROLES._textRef('MINIGAME_PING')}, ${rarityWord} crate drop in progress.`;
                 const feedMsg = await COOP.CHANNELS._send('TALK', crateDropText, {});
 
                 // Add user reaction feedback/aesthetic only.

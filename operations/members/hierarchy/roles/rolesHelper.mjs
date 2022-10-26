@@ -31,6 +31,8 @@ export default class RolesHelper {
         return guild.roles.cache.get(roleID);
     }
 
+    static _all = () => SERVER._coop().roles.cache || [];
+
     static _get(roleID) {
         return this.getRoleByID(SERVER._coop(), roleID);
     }

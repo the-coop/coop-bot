@@ -173,6 +173,6 @@ export default class MiningMinigame {
         // Add the prompt for mining the rock.
         MESSAGES.delayReact(rockMsg, '⛏️');
 
-        CHANNELS._send('TALK', `${ROLES._textRef('ROCK_SLIDE_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
+        CHANNELS._send('TALK', `${ROLES._textRef('MINIGAME_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
     }
 }

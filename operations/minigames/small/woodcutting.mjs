@@ -169,7 +169,7 @@ export default class WoodcuttingMinigame {
         MESSAGES.delayReact(woodMsg, '🪓', 666);
 
         const branchText = magnitude > 1 ? `${magnitude} branches` : `a branch`;
-        const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(magnitude))} ${ROLES._textRef('TREE_FELL_PING')}, a tree with ${branchText} to fell!`;
+        const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(magnitude))} ${ROLES._textRef('MINIGAME_PING')}, a tree with ${branchText} to fell!`;
         CHANNELS._send('TALK', woodcuttingEventText, {});
     }
 }
