@@ -338,7 +338,7 @@ export default class SacrificeHelper {
     static async announce() {
         const announceTitle = `**${EMOJIS.DAGGER}${EMOJIS.DAGGER} The Coop Sacrifice Ritual:**\n\n`;
 
-        const announceContent = 'Work in progress...';
+        const announceContent = announceTitle + 'Work in progress...';
 
         const updateMsg = await MESSAGES.getSimilarExistingMsg(COOP.CHANNELS._getCode('TALK'), announceTitle);
         if (!updateMsg) {
