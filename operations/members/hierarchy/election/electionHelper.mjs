@@ -808,8 +808,6 @@ export default class ElectionHelper {
         // TODO: Post the occassional reminder too...
     }
 
-
-
     static removeIDFromTrackedHierarchy(userID) {
         return Database.query({ 
             text: "DELETE FROM hierarchy WHERE discord_id = $1",

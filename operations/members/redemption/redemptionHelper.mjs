@@ -192,7 +192,7 @@ export default class RedemptionHelper {
 
         const rolesLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
             "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=roles";
-            
+
         msg.edit({ components: [
             new ActionRowBuilder()
                 .addComponents([

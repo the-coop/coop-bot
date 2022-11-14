@@ -29,7 +29,11 @@ export default class StockHelper {
 
     static async getEST() {
         const { data } = await axios.get('https://worldtimeapi.org/api/timezone/EST');
+
         const date = moment.parseZone(data.datetime);
+        
+        date.add(data.dst_offset, 'h');
+        
         return date;
     }
 
@@ -40,13 +44,16 @@ export default class StockHelper {
         const isESTWeekday = ![0, 6].includes(date.day());
 
         // NYSE open Monday-Friday, 9:30 a.m. to 4:00 p.m. EST.
-        const afterOpen = (date.hours() === 8 && date.minutes() >= 30) || date.hours() >= 9;
+        const afterOpen = (date.hours() === 9 && date.minutes() >= 30) || date.hours() > 9;
 
         // Check the hour has not yet reached 4pm EST.
         const beforeClose = date.hours() < 15;
 
         // Check persisted state [Script awareness of openness].
         const currentlyOpen = await this.isMarketOpen();
+
+        // TODO: Check if power hour
+        // const currentlyOpen = await this.isPowerHour();
 
         // This may be problematic at the end/start of the week???
         if (!isESTWeekday) 
@@ -87,33 +94,7 @@ export default class StockHelper {
     }
 
     static async announce() {
-        const player = createAudioPlayer({
-            behaviors: {
-                noSubscriber: NoSubscriberBehavior.Pause
-            }
-        });
-        
-        const channel = CHANNELS._getCode('STOCKS_VC');
-
-        const connection = joinVoiceChannel({
-            channelId: channel.id,
-            guildId: channel.guild.id,
-            adapterCreator: channel.guild.voiceAdapterCreator,
-            debug: true
-        });
-    
-        await entersState(connection, VoiceConnectionStatus.Ready, 30e3);
-
-        connection.subscribe(player);
-
         const url = 'https://www.thecoop.group/marketopen.mp3';
-
-        // const resource = createAudioResource(url, {
-        //     inputType: StreamType.Arbitrary
-        // });
-
-        player.play(createAudioResource(url));
-    
-        entersState(player, AudioPlayerStatus.Playing, 5e3);
+        Chicken.joinAndPlay('STOCKS_VC', url);
     }
 }

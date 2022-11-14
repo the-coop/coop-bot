@@ -8,6 +8,15 @@ import { STATE, CHANNELS, TIME, ITEMS } from "../coop.mjs";
 import Database from 'coop-shared/setup/database.mjs';
 // import VisualisationHelper from './minigames/medium/conquest/visualisationHelper.mjs';
 
+import { 
+	joinVoiceChannel,
+	createAudioPlayer,
+	createAudioResource,
+	entersState,
+	AudioPlayerStatus,
+	VoiceConnectionStatus,
+    NoSubscriberBehavior
+} from '@discordjs/voice';
 
 
 
@@ -145,6 +154,32 @@ export default class Chicken {
             console.log('New day detection failed.')
             console.error(e);
         }
+    }
+
+    static async joinAndPlay(channelCode, url) {
+        const player = createAudioPlayer({
+            behaviors: {
+                noSubscriber: NoSubscriberBehavior.Pause
+            }
+        });
+        
+        const channel = CHANNELS._getCode(channelCode);
+
+        const connection = joinVoiceChannel({
+            channelId: channel.id,
+            guildId: channel.guild.id,
+            adapterCreator: channel.guild.voiceAdapterCreator,
+            debug: true
+        });
+    
+        await entersState(connection, VoiceConnectionStatus.Ready, 30e3);
+
+        connection.subscribe(player);
+
+        // { inputType: StreamType.Arbitrary });
+        player.play(createAudioResource(url));
+    
+        entersState(player, AudioPlayerStatus.Playing, 5e3);
     }
 
 }
