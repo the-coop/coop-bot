@@ -32,7 +32,7 @@ export default class ActivityHelper {
         // Calculate the cycle repeat beginning/start point for the day.
     }
 
-    static categorisePresentTransactions(txs) {
+    static summariseTransactions(txs) {
         const activityModel = { 
             items: {
                 dropped: {},

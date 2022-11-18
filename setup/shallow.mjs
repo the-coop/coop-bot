@@ -12,6 +12,7 @@ import TradingHelper from '../operations/minigames/medium/economy/items/tradingH
 import Trading from 'coop-shared/services/trading.mjs';
 import StockHelper from '../operations/stock/stockHelper.mjs';
 import Chicken from '../operations/chicken.mjs';
+import ActivityHelper from '../operations/activity/activityHelper.mjs';
 
 
 // Commonly useful.
@@ -54,6 +55,11 @@ const shallowBot = async () => {
 
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
+
+        const txs = await Chicken.getTransactionsPreviousDay();
+        // console.log(txs);
+
+        console.log(ActivityHelper.summariseTransactions(txs));
     });
 };
 

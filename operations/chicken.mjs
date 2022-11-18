@@ -3,7 +3,7 @@ import moment from 'moment';
 import ElectionHelper from './members/hierarchy/election/electionHelper.mjs';
 import CooperMorality from './minigames/small/cooperMorality.mjs';
 
-import { STATE, CHANNELS, TIME, ITEMS } from "../coop.mjs";
+import { STATE, CHANNELS, TIME, ITEMS, ROLES } from "../coop.mjs";
 
 import Database from 'coop-shared/setup/database.mjs';
 // import VisualisationHelper from './minigames/medium/conquest/visualisationHelper.mjs';
@@ -133,9 +133,10 @@ export default class Chicken {
             // CHANNELS._getCode('TALK').send(newDayText, new MessageAttachment('/tmp/video.webm'));
             // + new AttachmentBuilder(buffer, { name: 'image.png' });
 
-            const newDayMessage = `A New Coop day begins...\n\n` +
+            const newDayMessage = `${ROLES._textRef('NEW_COOP_DAY')}\n\n` +
 
                 `__Economy past 24hr__.\n\n` +
+
                 // const txs = await this.getTransactionsPreviousDay();
                 // console.log(txs);
                 // console.log('Previous is the txs for previous day.')
@@ -149,7 +150,7 @@ export default class Chicken {
             CHANNELS._getCode('TALK').send(newDayMessage);
 
             return true;
-            
+
         } catch(e) {
             console.log('New day detection failed.')
             console.error(e);

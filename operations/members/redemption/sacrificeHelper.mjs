@@ -296,7 +296,7 @@ export default class SacrificeHelper {
         });
 
         // Schedule end of message and reaction voting (24hr)
-        const sacrificeMsg = await COOP.CHANNELS._postToChannelCode('TALK', sacrificeEmbed);
+        const sacrificeMsg = await COOP.CHANNELS._postToChannelCode('ABOUT', sacrificeEmbed);
         TemporaryMessages.add(sacrificeMsg, sacrificeMsgLifetime, 'SACRIFICE');
 
         // Update the user's latest recorded sacrifice time.
