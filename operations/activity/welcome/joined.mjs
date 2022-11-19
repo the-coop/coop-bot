@@ -4,10 +4,6 @@ import { CHANNELS, MESSAGES, USERS } from '../../../coop.mjs';
 export default async function memberJoined(member) {
 
   try {
-    // Add some nice emojis to dm welcome message.
-    MESSAGES.delayReact(dmWelcomeMessage, EMOJIS.COOP, 333);
-    MESSAGES.delayReact(dmWelcomeMessage, '👋', 666);
-
     // Notify community:
     const joinAnnouncementText = `**Someone new joined "${member.user.username}": ${CHANNELS.textRef('TALK')}!**`;
     CHANNELS._codes(['TALK'], joinAnnouncementText);

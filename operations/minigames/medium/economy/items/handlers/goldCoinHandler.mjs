@@ -28,7 +28,6 @@ export default class GoldCoinHandler {
 
         this.effect(msgRef, user);
     }
-   
 
     static async onReaction({ emoji, message }, user) {
         // Prevent Cooper from using easter eggs?

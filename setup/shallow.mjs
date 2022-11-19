@@ -56,10 +56,20 @@ const shallowBot = async () => {
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-        const txs = await Chicken.getTransactionsPreviousDay();
+        // const txs = await Chicken.getTransactionsPreviousDay();
+        // console.log(ActivityHelper.summariseTransactions(txs));
         // console.log(txs);
 
-        console.log(ActivityHelper.summariseTransactions(txs));
+
+        // TODO: Update shared repo across all and main
+
+        // Items.add('221879800900354048', 'GOLD_COIN', 1);
+
+        // SocialHelper
+
+        // Check cleanup function
+
+
     });
 };
 
