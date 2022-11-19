@@ -1,4 +1,4 @@
-import { MessageMentions, PermissionsBitField } from "discord.js";
+import { ChannelType, MessageMentions, PermissionsBitField } from "discord.js";
 
 import { CATEGORIES } from "coop-shared/config.mjs";
 import { CHANNELS, MESSAGES, TIME, USERS } from "../../../coop.mjs";
@@ -131,8 +131,9 @@ export default class BlogHelper {
     static async channelDraft(name, owner, deadline) {
         try {
             // Create the channel under projects.
-            const channel = await CHANNELS._create('post_' + name, {
-                type: 'GUILD_TEXT',
+            const channel = await CHANNELS._create({
+                name: 'post_' + name,
+                type: ChannelType.GuildText,
                 parent: CATEGORIES['PROPAGANDA'].id,
                 // Set the owner and their permissons.
                 permissionOverwrites: [

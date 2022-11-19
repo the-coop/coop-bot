@@ -246,8 +246,8 @@ export default class ChannelHelper {
         return channel.delete();
     }
 
-    static _create(name, options) {
-        return SERVER._coop().channels.create(name, options);
+    static _create(config) {
+        return SERVER._coop().channels.create(config);
     }
 
     static _all = () => SERVER._coop().channels.cache || [];

@@ -1,4 +1,4 @@
-import { MessageMentions, PermissionsBitField } from "discord.js";
+import { ChannelType, MessageMentions, PermissionsBitField } from "discord.js";
 import { EMOJIS, CATEGORIES } from "coop-shared/config.mjs";
 import { CHANNELS, MESSAGES, TIME, USERS } from "../../../coop.mjs";
 
@@ -29,8 +29,9 @@ export default class ProjectsHelper {
     static async create(name, owner, deadline) {
         try {
             // Create the channel under projects.
-            const channel = await CHANNELS._create(name, {
-                type: 'GUILD_TEXT',
+            const channel = await CHANNELS._create({
+                name,
+                type: ChannelType.GuildText,
                 parent: CATEGORIES['PROJECTS'].id,
                 reason: 'Democratically approve and paid for with GOLD_COIN',
                 position: 9999

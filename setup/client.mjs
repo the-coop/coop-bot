@@ -10,6 +10,7 @@ import reactAddedHandler from "../operations/activity/reactionAdded.mjs";
 import CompetitionHelper from "../operations/social/competitionHelper.mjs";
 import ProjectsHelper from "../operations/productivity/projects/projectsHelper.mjs";
 import BlogHelper from "../operations/marketing/blog/blogHelper.mjs";
+import SocialHelper from "../operations/social/socialHelper.mjs";
 
 export default async () => {
     // Instantiate the client.
@@ -40,6 +41,9 @@ export default async () => {
 
     // Message interceptors.
     client.on("messageCreate", messageAddedHandler);
+
+    // Social VC connection interception.
+    client.on("voiceStateUpdate", (prev, curr) => SocialHelper.onStateChange(prev, curr));
 
     // Channel modification interceptors.
     client.on('channelUpdate', chanUpdate => {

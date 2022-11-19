@@ -13,12 +13,16 @@ import Trading from 'coop-shared/services/trading.mjs';
 import StockHelper from '../operations/stock/stockHelper.mjs';
 import Chicken from '../operations/chicken.mjs';
 import ActivityHelper from '../operations/activity/activityHelper.mjs';
+import UsersHelper from '../operations/members/usersHelper.mjs';
+import TemporaryMessages from '../operations/activity/maintenance/temporaryMessages.mjs';
+import SocialHelper from '../operations/social/socialHelper.mjs';
 
 
 // Commonly useful.
 const listenReactions = (fn) => COOP.STATE.CLIENT.on('messageReactionAdd', fn);
 const listenChannelUpdates = (fn) => COOP.STATE.CLIENT.on('channelUpdate', fn);
 const listenMessages = (fn) => COOP.STATE.CLIENT.on('messageCreate', fn);
+const listenVoiceState = (fn) => COOP.STATE.CLIENT.on('voiceStateUpdate', fn);
 
 const shallowBot = async () => {
     console.log('Starting shallow bot');
@@ -56,20 +60,16 @@ const shallowBot = async () => {
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-        // const txs = await Chicken.getTransactionsPreviousDay();
-        // console.log(ActivityHelper.summariseTransactions(txs));
-        // console.log(txs);
-
-
-        // TODO: Update shared repo across all and main
-
-        // Items.add('221879800900354048', 'GOLD_COIN', 1);
+        // TODO:
+        // Need to update shared again due to that ID mistake
 
         // SocialHelper
+        
 
-        // Check cleanup function
+        listenVoiceState((prev, curr) => SocialHelper.onStateChange(prev, curr));
 
-
+        const url = 'https://www.thecoop.group/powerhour1.mp3';
+        Chicken.joinAndPlay('CREATE_SOCIAL', url);
     });
 };
 
@@ -91,6 +91,9 @@ shallowBot();
 
 // NOTES BELOW
 
+        // const txs = await Chicken.getTransactionsPreviousDay();
+        // console.log(ActivityHelper.summariseTransactions(txs));
+        // console.log(txs);
 
 // const url = 'https://www.thecoop.group/powerhour1.mp3';
 // Chicken.joinAndPlay('STOCKS_VC', url);

@@ -1,10 +1,70 @@
+import { CATEGORIES, CHANNELS as CHANNELS_CONFIG } from "coop-shared/config.mjs";
+import { ChannelType, PermissionsBitField } from "discord.js";
+import { CHANNELS, SERVER } from "../../coop.mjs";
 
 export default class SocialHelper {
-    // Detect room join
 
-    // Create a new VC
+    static async onStateChange(prev, curr) {
+        const channel = curr?.channel || null;
 
-    // Give creator perms
+        // Ignore disconnects (null) or other VC channel joins besides "create-yours" VC.
+        if (channel?.id !== CHANNELS_CONFIG.CREATE_SOCIAL.id)
+            return false;
 
-    // Delete empty VCs
+        // Process the queue of joiners.
+        await Promise.all(channel.members.map(async member => {
+            const vc = await this.createVC(member);
+            return await member.voice.setChannel(vc);
+        }));
+
+        // Check if any need cleaning up.
+        this.cleanupUnused();
+    }
+
+    static async createVC(member) {
+        const config = this.calcConfig(member);
+        return SERVER._coop().channels.create(config);
+    }
+
+    static calcConfig(member) {
+        return {
+            name: `${member.displayName}'s VC`,
+            type: ChannelType.GuildVoice,
+            parent: CATEGORIES.SOCIAL.id,
+
+            // Set the owner and their permissons.
+            permissionOverwrites: [
+                {
+                    id: member.id,
+                    allow: [
+                        PermissionsBitField.Flags.ManageChannels
+                    ]
+                }
+            ],
+            reason: 'Custom VC',
+            position: 9999
+        }
+    }
+
+    static async cleanupUnused() {
+        const category = CHANNELS._get(CATEGORIES.SOCIAL.id);
+        const unusedVCs = category.children.cache.filter(channel => {
+            // If text channel, filter out.
+            if (channel.type === ChannelType.GuildText)
+                return false;
+
+            // If create-yours channel, filter out.
+            if (channel.id === CHANNELS_CONFIG.CREATE_SOCIAL.id)
+                return false;
+
+            // If it has members (active), filter out.
+            if (channel.members.size > 0)
+                return false;
+
+            return true;
+        });
+
+        // Delete all of the unused VCs.
+        unusedVCs.map(vc => vc.delete());
+    }
 }
