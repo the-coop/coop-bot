@@ -19,10 +19,6 @@ export default class NewsHelper {
             query = 'creativity';
             channelCode = 'ART_CHAT';
 
-        } else if (STATE.CHANCE.bool({ likelihood: 22 })) {
-            query = 'economics';
-            channelCode = 'BUSINESS_CHAT';
-
         } else if (STATE.CHANCE.bool({ likelihood: 23 })) {
             query = 'technology';
             channelCode = 'CODING_CHAT';

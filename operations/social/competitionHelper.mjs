@@ -15,7 +15,7 @@ export const COMPETITION_DUR = 3600 * 24 * 7;
 export const COMPETITION_ROLES = {
     TECHNOLOGY_COMPETITION: 'CODE',
     ART_COMPETITION: 'ART',
-    BUSINESS_COMPETITION: 'BUSINESS'
+    MONEY_COMPETITION: 'MONEY'
 };
 
 export default class CompetitionHelper {
@@ -33,7 +33,7 @@ export default class CompetitionHelper {
         const competitions = await DatabaseHelper.manyQuery({
             name: "load-competitions",
             text: `SELECT * FROM events WHERE event_code 
-                IN ('technology_competition', 'art_competition', 'business_competition')`,
+                IN ('technology_competition', 'art_competition', 'MONEY_competition')`,
             });
         return competitions;
     }
@@ -91,8 +91,8 @@ export default class CompetitionHelper {
     }
 
     static isCompetitionChnanel(id) {
-        const { TECHNOLOGY_COMPETITION, ART_COMPETITION, BUSINESS_COMPETITION } = CHANNELS_CONFIG;
-        const compChannels = [TECHNOLOGY_COMPETITION, ART_COMPETITION, BUSINESS_COMPETITION];
+        const { TECHNOLOGY_COMPETITION, ART_COMPETITION, MONEY_COMPETITION } = CHANNELS_CONFIG;
+        const compChannels = [TECHNOLOGY_COMPETITION, ART_COMPETITION, MONEY_COMPETITION];
         return compChannels.some(c => c.id === id);
     }
 

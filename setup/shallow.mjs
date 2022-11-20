@@ -66,10 +66,10 @@ const shallowBot = async () => {
         // SocialHelper
         
 
-        listenVoiceState((prev, curr) => SocialHelper.onStateChange(prev, curr));
+        // listenVoiceState((prev, curr) => SocialHelper.onStateChange(prev, curr));
 
-        const url = 'https://www.thecoop.group/powerhour1.mp3';
-        Chicken.joinAndPlay('CREATE_SOCIAL', url);
+        // const url = 'https://www.thecoop.group/powerhour1.mp3';
+        // Chicken.joinAndPlay('CREATE_SOCIAL', url);
     });
 };
 
