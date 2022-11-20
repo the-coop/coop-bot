@@ -8,14 +8,12 @@ export default class SocialHelper {
         const channel = curr?.channel || null;
 
         // Ignore disconnects (null) or other VC channel joins besides "create-yours" VC.
-        if (channel?.id !== CHANNELS_CONFIG.CREATE_SOCIAL.id)
-            return false;
-
-        // Process the queue of joiners.
-        await Promise.all(channel.members.map(async member => {
-            const vc = await this.createVC(member);
-            return await member.voice.setChannel(vc);
-        }));
+        if (channel?.id === CHANNELS_CONFIG.CREATE_SOCIAL.id)
+            // Process the queue of joiners.
+            await Promise.all(channel.members.map(async member => {
+                const vc = await this.createVC(member);
+                return await member.voice.setChannel(vc);
+            }));
 
         // Check if any need cleaning up.
         this.cleanupUnused();
@@ -55,6 +53,10 @@ export default class SocialHelper {
 
             // If create-yours channel, filter out.
             if (channel.id === CHANNELS_CONFIG.CREATE_SOCIAL.id)
+                return false;
+
+            // If social-vc channel, filter out.
+            if (channel.id === CHANNELS_CONFIG.SOCIAL_VC.id)
                 return false;
 
             // If it has members (active), filter out.

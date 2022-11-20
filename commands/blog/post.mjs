@@ -59,15 +59,15 @@ export const execute = async interaction => {
 const post = async interaction => {
 	// Access the project title text.
 	const title = interaction.options.get('title').value ?? '';
-	const deadline = interaction.options.get('deadline').value ?? '';
+	const deadline = Number(interaction.options.get('deadline').value) ?? 1;
 
 	// Check deadline is valid.
-	if (!TIME.isValidDeadline(deadline))
+	if (isNaN(deadline))
 		return await interaction.reply(`<@${interaction.user.id}>, ${deadline} is an invalid duration for a post deadline.`);
 
 	// Calculate the price.
 	const basePrice = await ITEMS.perBeakRelativePrice('GOLD_COIN', 0.05);
-	const numWeeks = Math.max(1, TIME.weeksUntilStr(deadline));
+	const numWeeks = Math.max(1, deadline);
 	const price = basePrice * numWeeks;
 
 	// Check the user can afford to pay the price!

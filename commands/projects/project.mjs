@@ -26,25 +26,25 @@ export const data = new SlashCommandBuilder()
 	.addStringOption(option => 
 		option
 			.setName('deadline')
-			.setDescription('How long will the project take to complete?')
+			.setDescription('How many weeks until project completion?')
 			.setRequired(true)
 	);
 
 export const execute = async (interaction) => {
 	// Access the project title text.
 	const title = interaction.options.get('title').value ?? '';
-	const deadline = interaction.options.get('deadline').value ?? '';
+	const deadline = Number(interaction.options.get('deadline').value) ?? 1;
 
 	// TODO: Check title is valid.
 	// TODO: Check the project does not already exist.
 
 	// Check deadline is valid.
-	if (!TIME.isValidDeadline(deadline))
-		return MESSAGES.selfDestruct(interaction.channel, `<@${interaction.user.id}>, ${deadline} is an invalid duration for a project deadline.`);
+	if (isNaN(deadline))
+		return MESSAGES.selfDestruct(interaction.channel, `<@${interaction.user.id}>, ${deadline} is an invalid number of weeks for a project deadline.`);
 
 	// Calculate the price.
 	const basePrice = await ITEMS.perBeakRelativePrice('GOLD_COIN', 0.05);
-	const numWeeks = Math.max(1, TIME.weeksUntilStr(deadline));
+	const numWeeks = Math.max(1, deadline);
 	const price = basePrice * numWeeks;
 
 	// End the authority of the slash command handler, offload to messages.
