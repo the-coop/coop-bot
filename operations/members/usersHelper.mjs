@@ -358,8 +358,9 @@ export default class UsersHelper {
 
         // Check if user lost a role on the server.    
         roles.map(savedRole => {
-            if (!ROLES._has(member, savedRole.role_code))
-                ROLES._add(discordID, savedRole.role_code);
+            const code = ROLES._getCoopRoleCodeByID(savedRole.role_id);
+            if (!ROLES._has(member, code))
+                ROLES._add(discordID, code);
         });
     }
 

@@ -97,7 +97,16 @@ const shallowBot = async () => {
         // Add unique constraint to the table?
 
 
-        listenMessages(RolesHelper.onWebookMessage);
+        // listenMessages(RolesHelper.onWebookMessage);
+
+        const roles = await UserRoles.get('786671654721683517');
+        roles.map(savedRole => {
+            console.log(savedRole);
+
+            const code = ROLES._getCoopRoleCodeByID(savedRole.role_id);
+            // if (!ROLES._has(member, code))
+            //     ROLES._add(discordID, code);
+        });
 
     });
 };
