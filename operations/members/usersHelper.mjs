@@ -348,18 +348,18 @@ export default class UsersHelper {
 
         member.roles.cache.map(serverRole => {
             // Skip everything not mentioned in ROLES
-            if (!tracked.includes(serverRole.id)) return false;
+            if (!tracked.includes(serverRole.id)) return;
 
-            // Check if user's role is recognised by server yet.
+            // If role attached to user but not saved in database remove.
             const isSaved = roles.some(memberRole => memberRole.role_id === serverRole.id);
             if (!isSaved)
-                UserRoles.add(discordID, ROLES._getCoopRoleCodeByID(serverRole.id), serverRole.id);
+                ROLES._remove(discordID, ROLES._getCoopRoleCodeByID(serverRole.id));
         });
 
         // Check if user lost a role on the server.    
         roles.map(savedRole => {
             if (!ROLES._has(member, savedRole.role_code))
-                UserRoles.remove(discordID, savedRole.role_id);
+                ROLES._add(discordID, savedRole.role_code);
         });
     }
 
