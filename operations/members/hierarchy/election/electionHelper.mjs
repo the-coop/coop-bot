@@ -333,13 +333,13 @@ export default class ElectionHelper {
                     await ROLES._remove(exCommander.user.id, 'COMMANDER');
             
                     // Add former commander to ex commander!
-                    if (!ROLES._has(exCommander, 'FORMER_COMMANDER')) {
-                        CHANNELS._send('TALK', `${exCommander.user.username} is recognised as a former commander and allowed access into the former commanders' secret channel!`);
-                        await ROLES._add(exCommander.user.id, 'FORMER_COMMANDER');
+                    // if (!ROLES._has(exCommander, 'FORMER_COMMANDER')) {
+                    //     CHANNELS._send('TALK', `${exCommander.user.username} is recognised as a former commander and allowed access into the former commanders' secret channel!`);
+                    //     await ROLES._add(exCommander.user.id, 'FORMER_COMMANDER');
         
-                        // Update last served data for the former commander.
-                        // last_served
-                    }
+                    //     // Update last served data for the former commander.
+                    //     // last_served
+                    // }
                 } else {
                     CHANNELS._send('TALK', `${exCommander.user.username} is re-elected as Commander for another term!`);
                 }

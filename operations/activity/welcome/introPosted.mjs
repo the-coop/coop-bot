@@ -44,7 +44,7 @@ export default async (msg) => {
       // Send embed to approval channel for redeeming non-members via introduction.
       if (!USERS.hasRoleID(memberSubject, ROLES_CONFIG.MEMBER.id)) {
         // Inform the server and general chat (ping intro posted subscribers.
-        const introText = `${ROLES._textRef('INTRO_POSTED_PING')}, ${username} posted an introduction in ${CHANNELS.textRef('INTRO')}! 👋`;
+        const introText = `${ROLES._textRef('INSIDER')}, ${username} posted an introduction in ${CHANNELS.textRef('INTRO')}! 👋`;
         await CHANNELS._send('TALK', introText, {});
       
         await CHANNELS._postToChannelCode('TALK', MESSAGES.embed({

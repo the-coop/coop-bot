@@ -1,4 +1,4 @@
-import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder, REST, Routes } from 'discord.js';
+import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder, REST, Routes, WebhookClient } from 'discord.js';
 import _ from 'lodash';
 import Database from 'coop-shared/setup/database.mjs';
 import secrets from 'coop-shared/setup/secrets.mjs';
@@ -16,6 +16,7 @@ import ActivityHelper from '../operations/activity/activityHelper.mjs';
 import UsersHelper from '../operations/members/usersHelper.mjs';
 import TemporaryMessages from '../operations/activity/maintenance/temporaryMessages.mjs';
 import SocialHelper from '../operations/social/socialHelper.mjs';
+import UserRoles from 'coop-shared/services/userRoles.mjs';
 
 
 // Commonly useful.
@@ -60,20 +61,49 @@ const shallowBot = async () => {
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-        // TODO:
-        // Need to update shared again due to that ID mistake
+        // Can't access Discord roles directly due to separation of concerns.
+        // Use the database version of it??
 
-        // SocialHelper
-        
+        // TODO: Load saved roles
+        // const roles = await UserRoles.get('786671654721683517');
+        // console.log(roles);
 
-        // listenVoiceState((prev, curr) => SocialHelper.onStateChange(prev, curr));
+        // UsersHelper.syncRoles('786671654721683517');
 
-        // const url = 'https://www.thecoop.group/powerhour1.mp3';
-        // Chicken.joinAndPlay('CREATE_SOCIAL', url);
+        // Some saved roles are deleted roles.
+
+        // Rename all code to tech, check IDs
+        // CODE: { count: 102 },
+        // TECH: { count: 1 }
+
+        // const roles = {};
+
+        // const allRoles = await UserRoles.all();
+        // console.log(allRoles);
+
+        // allRoles.map(r => {
+        //     if (typeof roles[r.role_code] === 'undefined')
+        //         roles[r.role_code] = {
+        //             count: 0
+        //         };
+
+        //     roles[r.role_code].count++;
+        // });
+
+        // console.log(roles);
+
+
+        // Check users don't have multiple of same role
+        // Add unique constraint to the table?
+
+
+        listenMessages(RolesHelper.onWebookMessage);
+
     });
 };
 
 shallowBot();
+
 
 
 

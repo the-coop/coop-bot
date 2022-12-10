@@ -1,5 +1,7 @@
 import COOP, { SERVER, USERS } from '../../../../coop.mjs';
 import { ROLES as ROLES_CONFIG } from 'coop-shared/config.mjs';
+import { ActionRowBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder } from '@discordjs/builders';
 
 export default class RolesHelper {
 
@@ -154,12 +156,12 @@ export default class RolesHelper {
             const roleID = ROLES_CONFIG[roleCode].id;
             return member.roles.cache.has(roleID);
         } catch(e) {
-            console.log('Error reading code from member', member, roleCode);
+            console.log('Error reading code from member', roleCode);
             console.error(e);
             return false;
         }
     }
-
+    
     static _getUsersWithRoleCodes(roleCodes) {
         const guild = SERVER._coop();
         return guild.members.cache.filter(member => {
@@ -185,5 +187,35 @@ export default class RolesHelper {
         if (filterUsers.size > 0) user = filterUsers.first();
 
         return user;
+    }
+
+
+
+    static async onWebookMessage(msg) {
+        const birdfeedWebhookID = '817551615095078913';
+        if (msg.webhookId !== birdfeedWebhookID) return;
+
+        // Load message content (inserted externally [out of cache]).
+        await msg.fetch();
+
+        // Extract and sync user roles.
+        const userID = msg.content.match(/<@(\d+)>/)?.[1];
+        if (userID)
+            await USERS.syncRoles(userID);
+
+        // Add roles button to webhook messages.
+        const rolesLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
+            "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=roles";
+        
+        msg.edit({ components: [
+            new ActionRowBuilder()
+                .addComponents([
+                    new ButtonBuilder()
+                        .setLabel("Edit Roles")
+                        .setEmoji('⚙️')
+                        .setURL(rolesLoginLink)
+                        .setStyle(ButtonStyle.Link)
+                ])
+        ] });
     }
 }

@@ -13,7 +13,7 @@ import Items from 'coop-shared/services/items.mjs';
 export const COMPETITION_DUR = 3600 * 24 * 7;
 
 export const COMPETITION_ROLES = {
-    TECHNOLOGY_COMPETITION: 'CODE',
+    TECHNOLOGY_COMPETITION: 'TECH',
     ART_COMPETITION: 'ART',
     MONEY_COMPETITION: 'MONEY'
 };

@@ -10,15 +10,16 @@ import MiscMessageHandlers from "./messages/miscMessageHandlers.mjs";
 import SuggestionsHelper from "./suggestions/suggestionsHelper.mjs";
 import SubscriptionHelper from "../marketing/newsletter/subscriptionHelper.mjs";
 import CompetitionHelper from "../social/competitionHelper.mjs";
+import RolesHelper from "../members/hierarchy/roles/rolesHelper.mjs";
 
 
 export default async function messageAddedHandler(msg) {  
-    // Block Cooper from all he shouldn't be involved with.
-    // Try to optimise channel specific ones/guard orders.
-
     try {
         // Encourage intro posts with a wave and coop emoji
         introPostedHandler(msg);
+
+        // Make sure role changes get synchronised to the members.
+        RolesHelper.onWebookMessage(msg);
     
         // Check if suggestion needs handling.
         SuggestionsHelper.onMessage(msg);

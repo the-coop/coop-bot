@@ -35,7 +35,11 @@ export default class SocialHelper {
                 {
                     id: member.id,
                     allow: [
-                        PermissionsBitField.Flags.ManageChannels
+                        PermissionsBitField.Flags.ManageChannels,
+                        PermissionsBitField.Flags.MoveMembers,
+                        PermissionsBitField.Flags.MuteMembers,
+                        PermissionsBitField.Flags.DeafenMembers,
+                        PermissionsBitField.Flags.PrioritySpeaker
                     ]
                 }
             ],

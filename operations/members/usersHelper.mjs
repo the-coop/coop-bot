@@ -7,7 +7,7 @@ import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
 // import RedemptionHelper from "./redemption/redemptionHelper.mjs";
-import UserRoles from "./hierarchy/roles/userRoles.mjs";
+import UserRoles from "coop-shared/services/userRoles.mjs";
 
 export default class UsersHelper {
 
@@ -337,6 +337,29 @@ export default class UsersHelper {
             // Check if member was not processed in time and thus unwelcome.
             // if (!member.user.bot)
                 // RedemptionHelper.handleNewbOutstayedWelcome(member);
+        });
+    }
+
+    static async syncRoles(discordID) {
+        const tracked = Object.keys(ROLES_CONFIG).map(roleKey => ROLES_CONFIG[roleKey].id);
+
+        const member = this._getMemberByID(discordID);
+        const roles = await UserRoles.get(discordID);
+
+        member.roles.cache.map(serverRole => {
+            // Skip everything not mentioned in ROLES
+            if (!tracked.includes(serverRole.id)) return false;
+
+            // Check if user's role is recognised by server yet.
+            const isSaved = roles.some(memberRole => memberRole.role_id === serverRole.id);
+            if (!isSaved)
+                UserRoles.add(discordID, ROLES._getCoopRoleCodeByID(serverRole.id), serverRole.id);
+        });
+
+        // Check if user lost a role on the server.    
+        roles.map(savedRole => {
+            if (!ROLES._has(member, savedRole.role_code))
+                UserRoles.remove(discordID, savedRole.role_id);
         });
     }
 
