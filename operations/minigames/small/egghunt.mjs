@@ -1,6 +1,9 @@
 import _ from 'lodash';
 
 import { RAW_EMOJIS, EMOJIS } from 'coop-shared/config.mjs';
+import Items from 'coop-shared/services/items.mjs';
+import Useable from 'coop-shared/services/useable.mjs';
+
 import COOP, { STATE, CHANNELS, ITEMS, MESSAGES, USERS, ROLES, REACTIONS } from '../../../coop.mjs';
 
 import EconomyNotifications from '../../activity/information/economyNotifications.mjs';
@@ -10,8 +13,6 @@ import UsableItemHelper from '../medium/economy/items/usableItemHelper.mjs';
 import SkillsHelper from '../medium/skills/skillsHelper.mjs';
 
 import { isRegisteredUserGuard } from '../medium/economy/itemCmdGuards.mjs';
-import Items from 'coop-shared/services/items.mjs';
-import Useable from 'coop-shared/services/useable.mjs';
 
 
 export const EGG_DATA = {
@@ -205,15 +206,9 @@ export default class EggHuntMinigame {
     }
 
     static handleChristmasRelease(reaction, user) {
-        const currentDate = new Date();
-        const shouldRelease = (
-            currentDate.getMonth() === 11 && 
-            currentDate.getDate() >= 15 && 
-            currentDate.getDate() < 26
-        );
-
         // Limit Christmas egg releases.
-        if (!shouldRelease) return null;
+        const currentDate = new Date();
+        if (currentDate.getMonth() !== 11) return null;
         if (STATE.CHANCE.bool({ likelihood: 95 })) return null;
 
         // Inform the user of the CHRISTMAS_EGG reward.
@@ -222,7 +217,7 @@ export default class EggHuntMinigame {
         MESSAGES.selfDestruct(reaction.message, christmasReleaseText, 0, 666);
 
         // Add the item to the user's ownership.
-        Items.add(user.id, 'CHRISTMAS_EGG', reward, `EGGHUNT_REWARD_CHRISTMAS - Christmas egg release.`);
+        Items.add(user.id, 'CHRISTMAS_EGG', 1, `EGGHUNT_REWARD_CHRISTMAS - Christmas egg release.`);
     }
 
     static async collect(reaction, user) {

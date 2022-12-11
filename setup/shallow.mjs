@@ -17,6 +17,7 @@ import UsersHelper from '../operations/members/usersHelper.mjs';
 import TemporaryMessages from '../operations/activity/maintenance/temporaryMessages.mjs';
 import SocialHelper from '../operations/social/socialHelper.mjs';
 import UserRoles from 'coop-shared/services/userRoles.mjs';
+import DatabaseHelper from 'coop-shared/helper/databaseHelper.mjs';
 
 
 // Commonly useful.
@@ -92,22 +93,52 @@ const shallowBot = async () => {
 
         // console.log(roles);
 
-
         // Check users don't have multiple of same role
         // Add unique constraint to the table?
 
-
         // listenMessages(RolesHelper.onWebookMessage);
 
-        const roles = await UserRoles.get('786671654721683517');
-        roles.map(savedRole => {
-            console.log(savedRole);
+        // const roles = await UserRoles.get('786671654721683517');
+        // roles.map(savedRole => {
+            // console.log(savedRole);
 
-            const code = ROLES._getCoopRoleCodeByID(savedRole.role_id);
+            // const code = ROLES._getCoopRoleCodeByID(savedRole.role_id);
+            // console.log(code);
+
             // if (!ROLES._has(member, code))
             //     ROLES._add(discordID, code);
-        });
+        // });
 
+        // When role added to user synchronise
+
+        // '727513157374967879': { count: 45 },
+        // '725531758744961114': { count: 4 },
+        // '799318707246727188': { count: 11 },
+        // '796495195930886155': { count: 2 },
+
+        // text: 'DELETE FROM user_roles WHERE discord_id = $1 AND role_id = $2',
+
+
+
+            const currentDate = new Date();
+            const shouldRelease = (
+                currentDate.getMonth() === 11 && 
+                currentDate.getDate() >= 10 && 
+                currentDate.getDate() < 26
+            );
+    
+            // Limit Christmas egg releases.
+            console.log(currentDate);
+            console.log(shouldRelease);
+    
+            // Inform the user of the CHRISTMAS_EGG reward.
+            // MESSAGES.selfDestruct(reaction.message, christmasReleaseText, 0, 666);
+    
+            // Add the item to the user's ownership.
+            // Items.add(user.id, 'CHRISTMAS_EGG', reward, `EGGHUNT_REWARD_CHRISTMAS - Christmas egg release.`);
+            
+            
+            
     });
 };
 
