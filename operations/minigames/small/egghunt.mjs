@@ -209,7 +209,7 @@ export default class EggHuntMinigame {
         // Limit Christmas egg releases.
         const currentDate = new Date();
         if (currentDate.getMonth() !== 11) return null;
-        if (STATE.CHANCE.bool({ likelihood: 95 })) return null;
+        if (STATE.CHANCE.bool({ likelihood: 85 })) return null;
 
         // Inform the user of the CHRISTMAS_EGG reward.
         const christmasEggEmoji = MESSAGES.emojiCodeText('CHRISTMAS_EGG');

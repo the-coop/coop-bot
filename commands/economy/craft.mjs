@@ -25,7 +25,7 @@ export const data = new SlashCommandBuilder()
 		);
 
 
-export const execute = async (interaction) => {	
+export const execute = async interaction => {	
 	try {
 		// Cap the number at 0 minimum and refactor into a common guard/validator.
 		const qtyInput = interaction.options.get('qty');
@@ -41,11 +41,17 @@ export const execute = async (interaction) => {
 
 		// Check if input is a valid item code.
 		if (!itemCode)
-			return COOP.MESSAGES.selfDestruct(interaction.channel, `Cannot craft invalid item code (${itemCode}).`, 0, 5000);
+			return await interaction.reply({ 
+				content: `Cannot craft invalid item code (${itemCode}).`,
+				ephemeral: true
+			});
 
 		// Check if item is craftable
 		if (!CraftingHelper.isItemCraftable(itemCode))
-			return COOP.MESSAGES.selfDestruct(interaction.channel, `${itemCode} is a valid item/code but uncraftable.`, 0, 7500);
+			return await interaction.reply({ 
+				content: `${itemCode} is a valid item/code but uncraftable.`,
+				ephemeral: true
+			});
 
 		// Access required crafting level for item.
 		const craftingItem = CraftingHelper.CRAFTABLES[itemCode];
@@ -58,7 +64,7 @@ export const execute = async (interaction) => {
 		if (reqLevel > crafterLevel) {
 			// TODO: Add emoji
 			const lackLevelText = `<@${userID}> lacks level ${reqLevel} crafting required to make ${itemCode}`;
-			return COOP.MESSAGES.selfDestruct(interaction.channel, lackLevelText, 0, 5000);
+			return await interaction.reply({ content: lackLevelText, ephemeral: true});
 		}
 
 		// Check for ingredients and multiply quantities.
@@ -71,8 +77,8 @@ export const execute = async (interaction) => {
 					.filter(c => !c.sufficient)
 					.map(c => `${COOP.MESSAGES.emojifyID(EMOJIS[c.item_code])} ${c.item_code} -${c.missing}`)
 					.join('\n');
-					
-			return COOP.MESSAGES.selfDestruct(interaction.channel, insufficientIngredientsText, 0, 7500);
+
+			return await interaction.reply({ content: insufficientIngredientsText, ephemeral: true });
 		}
 
 		// Attempt to craft the object.
@@ -80,11 +86,10 @@ export const execute = async (interaction) => {
 		if (craftResult) {
 			const addText = `<@${userID}> crafted ${itemCode}x${qty}.`;
 			COOP.CHANNELS._send('ACTIONS', addText);
-			return await interaction.reply({ content: addText, ephemeral: true });
+			return await interaction.reply({ content: addText, ephemeral: false });
 
 		} else {
-			COOP.MESSAGES.selfDestruct(interaction.channel, `<@${userID}> failed to craft ${qty}x${itemCode}...`, 0, 15000);
-			return await interaction.reply({ content: 'Crafting failed.', ephemeral: true });
+			return await interaction.reply({ content: `<@${userID}> failed to craft ${qty}x${itemCode}...`, ephemeral: true });
 		}
 
 	} catch(err) {

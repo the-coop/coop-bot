@@ -4,7 +4,7 @@ import CratedropMinigame from "../minigames/small/cratedrop.mjs";
 import MiningMinigame from "../minigames/small/mining.mjs";
 import WoodcuttingMinigame from "../minigames/small/woodcutting.mjs";
 import InstantFurnaceMinigame from "../minigames/small/instantfurnace.mjs";
-import EasterMinigame from "../minigames/small/holidays/easter.mjs";
+
 
 
 import RedemptionHelper from "../members/redemption/redemptionHelper.mjs";
@@ -18,6 +18,7 @@ import COOP, { USABLE, STATE, ROLES } from "../../coop.mjs";
 import SuggestionsHelper from "./suggestions/suggestionsHelper.mjs";
 import CompetitionHelper from "../social/competitionHelper.mjs";
 import TradingHelper from "../minigames/medium/economy/items/tradingHelper.mjs";
+import EasterEggHandler from "../minigames/medium/economy/items/handlers/easterEggHandler.mjs";
 
 
 
@@ -43,7 +44,7 @@ export default async function reactAddedHandler(reaction, user) {
         MiningMinigame.onReaction(reaction, user);
         WoodcuttingMinigame.onReaction(reaction, user);
         InstantFurnaceMinigame.onReaction(reaction, user);
-        EasterMinigame.onReaction(reaction, user);
+        EasterEggHandler.onReaction(reaction, user);
         TradingHelper.onReaction(reaction, user);
 
         // Allow elected people to cleanup Cooper messages.

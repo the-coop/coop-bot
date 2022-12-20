@@ -84,11 +84,12 @@ export const execute = async (interaction) => {
 		const itemEmoji = COOP.MESSAGES.emojiCodeText(itemCode);
 		const qtyText = COOP.ITEMS.displayQty(qty);
 		const addText = `<@${interaction.user.id}> gave <@${recipientInput.id}> ${itemEmoji} ${itemCode}x${qtyText}.`;
-		interaction.channel.send(addText);
+
+		
 		COOP.CHANNELS._send('TALK', addText);
 
 		// Acknowledge completion.
-		return await interaction.reply({ content: 'Item(s) successfully given.', ephemeral: true });
+		return await interaction.reply({ content: addText, ephemeral: false });
 
 	} catch(e) {
 		console.log('Failed to give item.');

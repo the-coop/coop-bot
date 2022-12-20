@@ -28,11 +28,17 @@ export default class StockHelper {
     }
 
     static async getEST() {
-        const { data } = await axios.get('https://worldtimeapi.org/api/timezone/EST');
+        let date = null;
 
-        const date = moment.parseZone(data.datetime);
-        
-        date.add(data.dst_offset, 'h');
+        try {
+            const { data } = await axios.get('https://worldtimeapi.org/api/timezone/EST');
+    
+            date = moment.parseZone(data.datetime);
+            
+            date.add(data.dst_offset, 'h');
+        } catch(e) {
+            console.log('Error loading time data.');
+        }
         
         return date;
     }

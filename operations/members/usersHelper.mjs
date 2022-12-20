@@ -389,7 +389,7 @@ export default class UsersHelper {
                 // Insert and respond to successful/failed insertion.
                 const dbRes = await this.addToDatabase(member.user.id, member.user.username, member.joinedTimestamp);
                 if (dbRes.rowCount === 1)
-                    setTimeout(() => CHANNELS._send('TALK',
+                    setTimeout(() => CHANNELS._send('ACTIONS',
                         `${member.user.username} is officially recognised by The Coop ${coopEmoji}!`
                     ), 1000 * index);
                 else

@@ -130,21 +130,15 @@ export default class EconomyNotifications {
                 msg.edit({ components: [
                     new ActionRowBuilder().addComponents([
                         new ButtonBuilder()
-                            .setLabel("Trades")
-                            // .setCustomId('create_trade')
-                            // .setStyle(ButtonStyle.Primary)
-                            .setURL("https://www.thecoop.group/conquest/economy/items")
+                            .setLabel("Minigames")
+                            .setURL("https://www.thecoop.group/guide/minigames")
                             .setStyle(ButtonStyle.Link),
                         new ButtonBuilder()
                             .setLabel("Trades")
-                            // .setCustomId('create_trade')
-                            // .setStyle(ButtonStyle.Primary)
                             .setURL("https://www.thecoop.group/conquest/economy/trade")
                             .setStyle(ButtonStyle.Link),
                         new ButtonBuilder()
                             .setLabel("Coop Coin")
-                            // .setCustomId('create_trade')
-                            // .setStyle(ButtonStyle.Primary)
                             .setURL("https://www.thecoop.group/conquest/economy/items/GOLD_COIN")
                             .setStyle(ButtonStyle.Link)
                     ])

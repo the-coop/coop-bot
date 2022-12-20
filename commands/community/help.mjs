@@ -15,9 +15,5 @@ export const data = new SlashCommandBuilder()
 
 // TODO: ... Knowledgebase/wiki required/beneficial here?
 export const execute = async (interaction) => {
-	// let suggestionText = interaction.options.get('query').value ?? '';
-
-	// Form the success message.
-	const successText = `I'm sorry, I can't help you yet. Ask Commander/a Leader.`;
-	return await interaction.reply(successText);
+	return await interaction.reply('https://www.thecoop.group/guide');
 };

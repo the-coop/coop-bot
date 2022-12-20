@@ -157,7 +157,13 @@ export default class ElectionHelper {
 
                 `Time remaining: ${readableElecLeft}.`;
 
-            const msg = await CHANNELS._send('TALK', `${ROLES._textRef('SUBSCRIBER')}, ${electionText}`);
+            const announceRole = ROLES._getByCode('SUBSCRIBER');
+
+            const msg = await CHANNELS._send(
+                'TALK', 
+                `${ROLES._textRef('SUBSCRIBER')}, ${electionText}`,
+                { allowedMentions: { roles: [announceRole] }}
+            );
 
             // Indicate successful start.
             return true;
@@ -626,7 +632,7 @@ export default class ElectionHelper {
 
             if (embed) {
                 // eslint-disable-next-line
-                const idMatches = embed.description.match(/\<@(\d+)\>/gms);
+                const idMatches = embed.data.description.match(/\<@(\d+)\>/gms);
                 
                 let embedUserID = idMatches[0];
 

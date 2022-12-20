@@ -11,11 +11,11 @@ import EggHunt from "./minigames/small/egghunt.mjs";
 import Mining from "./minigames/small/mining.mjs";
 import Woodcutting from "./minigames/small/woodcutting.mjs";
 import InstantFurnace from "./minigames/small/instantfurnace.mjs";
-import EasterMinigame from "./minigames/small/holidays/easter.mjs";
+
+
 import ChestPop from "./minigames/small/chestpop.mjs";
 
 // import NewsHelper from "./social/newsHelper.mjs";
-
 
 import BuffsHelper from "./minigames/medium/conquest/buffsHelper.mjs";
 import CooperMorality from "./minigames/small/cooperMorality.mjs";
@@ -36,6 +36,8 @@ import DonationHelper from "./social/donationHelper.mjs";
 import SpotlightHelper from "./members/spotlightHelper.mjs";
 import RedemptionHelper from "./members/redemption/redemptionHelper.mjs";
 import StockHelper from "./stock/stockHelper.mjs";
+import EasterEggHandler from "./minigames/medium/economy/items/handlers/easterEggHandler.mjs";
+import ChristmasEggHandler from "./minigames/medium/economy/items/handlers/christmasEggHandler.mjs";
 
 export const baseTickDur = 60 * 25 * 1000;
 
@@ -153,7 +155,8 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => COOP.ITEMS.updateMostItems(), baseTickDur * 3);
   
   // Holiday related!
-  EventsHelper.chanceRunInterval(() => EasterMinigame.run(), 33, baseTickDur);
+  EventsHelper.chanceRunInterval(() => EasterEggHandler.run(), 33, baseTickDur);
+  EventsHelper.chanceRunInterval(() => ChristmasEggHandler.run(), 33, baseTickDur);
 
   // Update trades channel message
   EventsHelper.runInterval(() => TradingHelper.announce(), baseTickDur * 2);

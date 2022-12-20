@@ -80,11 +80,12 @@ export default class PointsHelper {
 
 
     static async getPercChange(userID) {
-        const oldPoints = (await COOP.USERS.getField(userID, 'historical_points')) || 0;
-        const qty = await Items.getUserItemQty(userID, 'COOP_POINT')
+        // Force 0s to 1s to avoid Infinity increases.
+        const oldPoints = Math.max(1, (await COOP.USERS.getField(userID, 'historical_points')) || 1);
+        const qty = Math.max(1, await Items.getUserItemQty(userID, 'COOP_POINT'));
         const diff = qty - oldPoints;
         let percChange = (diff / oldPoints) * 100;
-
+        
         // Prevent the weird unnecessary result that occurs without it.
         // Defies mathematical/js sense...? Maybe string/int type collision.
         if (isNaN(percChange)) percChange = 0;

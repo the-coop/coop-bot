@@ -67,7 +67,7 @@ export default class SacrificeHelper {
 
         // Try to access sacrificee from message
         try {
-            const sacrificeEmbedDesc = reaction.message.embeds[0].description;
+            const sacrificeEmbedDesc = reaction.message.embeds[0].data.description;
             const sacrificeeID = /<@(\d+)>/.exec(sacrificeEmbedDesc)[1];
 
             if (!sacrificeeID)
