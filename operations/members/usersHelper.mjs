@@ -364,10 +364,16 @@ export default class UsersHelper {
         });
     }
 
-    static async populateUsers() {
-        // Constant/aesthetic only reference.
-        const coopEmoji = MESSAGES.emojiCodeText('COOP');
+    static async register(id, username, joinedTimestamp) {
+        // Insert and respond to successful/failed insertion.
+        const dbRes = await this.addToDatabase(id, username, joinedTimestamp);
+        if (dbRes.rowCount === 1)
+            CHANNELS._send('ACTIONS',`${username} is officially recognised by The Coop ${MESSAGES.emojiCodeText('COOP')}!`);
+        else
+            CHANNELS._send('TALK',`<@${id}> failed to be recognised by The Coop ${MESSAGES.emojiCodeText('COOP')}...?`);
+    }
 
+    static async populateUsers() {
         // Load all recognised users.
         const dbUsers = await this.load();
 
@@ -386,16 +392,7 @@ export default class UsersHelper {
             const member = memberSet[1];
             
             try {
-                // Insert and respond to successful/failed insertion.
-                const dbRes = await this.addToDatabase(member.user.id, member.user.username, member.joinedTimestamp);
-                if (dbRes.rowCount === 1)
-                    setTimeout(() => CHANNELS._send('ACTIONS',
-                        `${member.user.username} is officially recognised by The Coop ${coopEmoji}!`
-                    ), 1000 * index);
-                else
-                    setTimeout(() => CHANNELS._send('TALK',
-                        `<@${member.user.id}> failed to be recognised by The Coop ${coopEmoji}...?`
-                    ), 1000 * index);
+                await this.register(member.id, member.user.username, member.joinedTimestamp);
 
             } catch(e) {
                 console.log('Error adding unrecognised user to database.');

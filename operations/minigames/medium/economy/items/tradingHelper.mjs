@@ -4,8 +4,7 @@ import { ITEMS, USABLE, USERS, CHANNELS, REACTIONS, CHICKEN, MESSAGES } from "..
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 import Trading from "coop-shared/services/trading.mjs";
-import { ActionRowBuilder, ButtonStyle, ModalBuilder, SelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
-import { ButtonBuilder } from "@discordjs/builders";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, SelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { _tradeAccept, _tradeCancel } from "../../../../../commands/economy/trade.mjs";
 
 

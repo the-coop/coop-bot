@@ -56,17 +56,18 @@ const shallowBot = async () => {
 
     // Common checks:
     // COOP.STATE.CLIENT.on('ready', () => ServerHelper.checkMissingChannels());
-    COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingRoles());
+    // COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingRoles());
 
     // setupCommands(COOP.STATE.CLIENT);
 
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-        // console.log(ActivityHelper.summariseTransactions(txs));
         // const txs = await ITEMS.getTransactions();
-        // const txs = await CHICKEN.getTransactionsPreviousDay();
-        // const txsText = ActivityHelper.categorisePresentTransactions(txs);
+        const txsPrevDay = await CHICKEN.getTransactionsPreviousDay();
+        const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
+        console.log(txsPrevDay);
+        console.log(summarisedTxs);
         
         // listenMessages(RolesHelper.onWebookMessage);
 
@@ -78,6 +79,14 @@ const shallowBot = async () => {
 
         // Try to add a gold coin to the button as emoji
 
+        // ROLES._add('233416843031871490', 'LEADER');
+        // Items.add('233416843031871490', 'LEADERS_SWORD', 1, 'Election failed, manual patch.');
+
+
+        // SacrificeHelper.announce();
+        
+
+        
     });
 };
 

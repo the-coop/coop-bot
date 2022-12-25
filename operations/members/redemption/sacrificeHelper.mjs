@@ -3,11 +3,10 @@ import VotingHelper from '../../activity/redemption/votingHelper.mjs';
 import { EMOJIS, CHANNELS } from 'coop-shared/config.mjs';
 import CooperMorality from '../../minigames/small/cooperMorality.mjs';
 
-import COOP, { MESSAGES, ROLES } from '../../../coop.mjs';
+import COOP, { MESSAGES, ROLES, USERS } from '../../../coop.mjs';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
 import Items from 'coop-shared/services/items.mjs';
-import { ActionRowBuilder, ButtonStyle } from 'discord.js';
-import { ButtonBuilder } from '@discordjs/builders';
+import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from 'discord.js';
 
 export const SACRIFICE_RATIO_PERC = .05;
 export const KEEP_RATIO_PERC = .02;
@@ -17,10 +16,8 @@ const sacrificeMsgLifetime = 60 * 60 * 12;
 
 export default class SacrificeHelper {
 
-    static SACRIFICES = [];
-
-    static async preload() {
-        this.SACRIFICES = await TemporaryMessages.getType('SACRIFICE');
+    static loadOffers() {
+        return TemporaryMessages.getType('SACRIFICE');
     }
 
     static isReactionSacrificeVote(reaction, user) {
@@ -319,7 +316,7 @@ export default class SacrificeHelper {
             
             // const sacrificeChannel = COOP.CHANNELS._getCode('TALK');
 
-            // TODO: Store in sacrifice table and preload instead.
+            // TODO: Store in sacrifice table and load instead.
 
             // const sacrificeOffers = await sacrificeChannel.messages.fetch({ limit: 3 });
 
@@ -336,20 +333,44 @@ export default class SacrificeHelper {
 
     // Last sacrifice time, last updated, how it works, current dagger/shield count.
     static async announce() {
-        const announceTitle = `**${EMOJIS.DAGGER}${EMOJIS.DAGGER} The Coop Sacrifice Ritual:**\n\n`;
+        const sacrificeOffers = await this.loadOffers();
+        const sacrifices = await Promise.all(sacrificeOffers.map(async offer => {
+            const message = await MESSAGES.getByLink(offer.message_link);
+            const desc = message.embeds[0].data.description;
+            const discordID = /<@(\d*)>/.exec(desc)[1];
 
-        const announceContent = announceTitle + 'Work in progress...';
+            const member = USERS._getMemberByID(discordID)
 
-        const updateMsg = await MESSAGES.getSimilarExistingMsg(COOP.CHANNELS._getCode('TALK'), announceTitle);
-        if (!updateMsg) {
+            return {
+                sacrificee: member
+            };
+        }));
+
+        console.log(sacrifices);
+
+        // If there are sacrifices update the server about it.
+        if (sacrifices.length > 0) {
+            const announceTitle = `**${EMOJIS.DAGGER}${EMOJIS.DAGGER} The Coop Sacrifice Ritual:**\n\n`;
+            const announceContent = announceTitle + 
+                'Work in progress...\n\n' +
+                'Add number of sacrifices ongoing and link to vote';
+
+
+
+            await COOP.CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/723660447508725806/1056413246652960838/New_Project.png');
             const msg = await COOP.CHANNELS._send('TALK', announceContent);
-            msg.edit({ components: [
+            msg.edit({ 
+                components: [
                 new ActionRowBuilder().addComponents([
                     new ButtonBuilder()
-                        .setLabel("Sacrifice [WIP]")
-                        // .setCustomId('create_trade')
-                        // .setStyle(ButtonStyle.Primary)
-                        .setURL("https://www.thecoop.group")
+                        .setEmoji('📖')
+                        .setLabel("Guide")
+                        .setURL("https://www.thecoop.group/guide")
+                        .setStyle(ButtonStyle.Link),
+                    new ButtonBuilder()
+                        .setEmoji('🗡')
+                        .setLabel("Sacrifice")
+                        .setURL("https://www.thecoop.group/guide/sacrifice")
                         .setStyle(ButtonStyle.Link)
                 ])
             ] });

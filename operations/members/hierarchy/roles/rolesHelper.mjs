@@ -1,7 +1,6 @@
 import COOP, { SERVER, USERS } from '../../../../coop.mjs';
 import { ROLES as ROLES_CONFIG } from 'coop-shared/config.mjs';
-import { ActionRowBuilder, ButtonStyle } from 'discord.js';
-import { ButtonBuilder } from '@discordjs/builders';
+import { ActionRowBuilder, ButtonStyle, ButtonBuilder } from 'discord.js';
 
 export default class RolesHelper {
 

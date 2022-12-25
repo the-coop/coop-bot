@@ -1,5 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
-import { ButtonStyle } from "discord.js";
+import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { MESSAGES, CHANNELS, STATE } from "../../../coop.mjs";
 
 // EGGS FOUND

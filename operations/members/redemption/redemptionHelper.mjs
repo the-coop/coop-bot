@@ -2,8 +2,7 @@ import VotingHelper from "../../activity/redemption/votingHelper.mjs";
 
 import COOP, { STATE, CHANNELS, MESSAGES } from "../../../coop.mjs";
 import { RAW_EMOJIS, ROLES, CHANNELS as CHANNELS_CONFIG } from 'coop-shared/config.mjs';
-import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
-import { ButtonStyle } from "discord.js";
+import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from "discord.js";
 
 
 export const STARTING_ROLES = [
