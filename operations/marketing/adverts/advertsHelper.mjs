@@ -12,7 +12,7 @@ export default class AdvertsHelper {
     static async passed(suggestion) {        
         try {
             // Extract the owner so we can tie it to them on the website.
-            const ownerID = MessageMentions.USERS_PATTERN.exec(suggestion.content)[1] || null;
+            const ownerID = MessageMentions.UsersPattern.exec(suggestion.content)[1] || null;
             
             // Extract both links.
             const [targetURL, imageURL] = suggestion.content.match(/\bhttps?:\/\/\S+/gi);

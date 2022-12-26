@@ -1,4 +1,4 @@
-import { ChannelType, MessageMentions, PermissionsBitField } from "discord.js";
+import { ChannelType, Message, MessageMentions, PermissionsBitField } from "discord.js";
 import { EMOJIS, CATEGORIES } from "coop-shared/config.mjs";
 import { CHANNELS, MESSAGES, TIME, USERS } from "../../../coop.mjs";
 
@@ -11,8 +11,9 @@ import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 // Should add support for contributors so it can show up on their coop website profile.
 export default class ProjectsHelper {
 
+
     static async passed(suggestion) {
-        const ownerID = MessageMentions.USERS_PATTERN.exec(suggestion.content)[1] || null;
+        const ownerID = MessageMentions.UsersPattern.exec(suggestion.content)[1] || null;
         const title = MESSAGES.getRegexMatch(/Title: __([^\r\n]*)__/gm, suggestion.content);
         const deadline = MESSAGES.getRegexMatch(/Deadline: ([^\r\n]*)/gm, suggestion.content);
 

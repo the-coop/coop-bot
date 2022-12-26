@@ -9,7 +9,7 @@ import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 export default class BlogHelper {
 
     static async passed(suggestion) {
-        const ownerID = MessageMentions.USERS_PATTERN.exec(suggestion.content)[1] || null;
+        const ownerID = MessageMentions.UsersPattern.exec(suggestion.content)[1] || null;
         const title = MESSAGES.getRegexMatch(/Title: __([^\r\n]*)__/gm, suggestion.content);
         const deadline = MESSAGES.getRegexMatch(/Deadline: ([^\r\n]*)/gm, suggestion.content);
 
