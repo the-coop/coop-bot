@@ -19,6 +19,7 @@ import SocialHelper from '../operations/social/socialHelper.mjs';
 import UserRoles from 'coop-shared/services/userRoles.mjs';
 import DatabaseHelper from 'coop-shared/helper/databaseHelper.mjs';
 import SacrificeHelper from '../operations/members/redemption/sacrificeHelper.mjs';
+import ProjectsHelper from '../operations/productivity/projects/projectsHelper.mjs';
 
 
 // Commonly useful.
@@ -69,6 +70,7 @@ const shallowBot = async () => {
         console.log(txsPrevDay);
         console.log(summarisedTxs);
         
+        
         // listenMessages(RolesHelper.onWebookMessage);
 
         // COOP.STATE.CLIENT.on('interactionCreate', async interaction => {
@@ -86,7 +88,37 @@ const shallowBot = async () => {
         // SacrificeHelper.announce();
         
 
+        // console.log(TIME.parseHuman('a week from now').getTime());
+        // const tannoy = USERS._getMemberByID('221879800900354048');
+        // ProjectsHelper.create('galactic-commander', tannoy, 'a week from now');
+
+        // const query = {
+        //     text: `SELECT * FROM projects`,
+        // };
         
+        // const resp = await Database.query(query);
+        // console.log(resp.rows);
+
+
+        // TODO: Post video
+        // 
+
+        // Add play button to it
+
+        const gameLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
+        "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=game";
+  
+      // Add informative buttons to the message.
+      const msg = await CHANNELS._send('ADVERTS', 'https://cdn.discordapp.com/attachments/894438360846848050/1058258255467515914/testing.mp4');
+      msg.edit({ components: [		
+        new ActionRowBuilder().addComponents([
+          new ButtonBuilder()
+            .setEmoji('🌎')
+            .setLabel("Conquest")
+            .setURL(gameLoginLink)
+            .setStyle(ButtonStyle.Link)
+        ])]
+      });
     });
 };
 

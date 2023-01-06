@@ -355,9 +355,7 @@ export default class SacrificeHelper {
                 'Work in progress...\n\n' +
                 'Add number of sacrifices ongoing and link to vote';
 
-
-
-            await COOP.CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/723660447508725806/1056413246652960838/New_Project.png');
+            await COOP.CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/902593785500946472/1056733990280765500/sacrifice-ritual.png');
             const msg = await COOP.CHANNELS._send('TALK', announceContent);
             msg.edit({ 
                 components: [
