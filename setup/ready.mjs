@@ -25,7 +25,7 @@ export default async () => {
         await CHANNELS._getCode('INTRO').messages.fetch({ limit: 15 });
 
         // Preload sacrifice messages
-        await SacrificeHelper.preload();
+        await SacrificeHelper.loadOffers();
 
         // TODO
         // Preload egghunt items, crates, dropped items, woodcutting, mining.
