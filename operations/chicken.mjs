@@ -147,7 +147,7 @@ export default class Chicken {
                 `__Command usage__\n` +
                 `Add commands usage stats`;
 
-            await CHANNELS._getCode('TALK').send('https://cdn.discordapp.com/attachments/902593785500946472/1056733990280765500/sacrifice-ritual.png');
+            await CHANNELS._getCode('TALK').send('https://cdn.discordapp.com/attachments/723660447508725806/1056735020036935760/new-coop-day.png');
             CHANNELS._getCode('TALK').send(newDayMessage);
 
             return true;

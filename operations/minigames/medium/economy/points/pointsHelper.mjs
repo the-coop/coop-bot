@@ -116,12 +116,13 @@ export default class PointsHelper {
             const percChanges = await Promise.all(users.map(async (user) => {
                 const result = await this.getPercChange(user.discord_id);
 
+                // Check this logic and data tyypes are valid - should update points in database if changed.
                 if (result.points !== result.lastWeekPoints)
                     pointUpdateManifest.push({ 
                         id: result.userID, 
                         points: result.points 
                     });
-    
+
                 return result;
             }));
 
@@ -174,7 +175,7 @@ export default class PointsHelper {
             }
 
             // Add reasoning.
-            updateText += `<@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) was selected by MOTW as the best/most promising member this week! `;
+            updateText += `<@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) ${highestChange.points} -> ${highestChange.lastWeekPoints} was selected by MOTW as the best/most promising member this week! `;
 
             // Give the winner the reward.
             if (hadAlready) {
@@ -187,11 +188,12 @@ export default class PointsHelper {
             updateText += '\n\nRunners up:\n' +
                 [filteredPercChanges[1], filteredPercChanges[2], filteredPercChanges[3]]
                     .map(runnerUp =>
-                        `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%)`
+                        (
+                            `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%) ` +
+                            `${runnerUp.points} -> ${runnerUp.lastWeekPoints}`
+                        )
                     ).join('\n');
 
-            // TODO: Give them 1-2 weeks of sacrifice protection too
-            // TODO: Show 3/4 runners up.
             // TODO: Give them some random eggs and items.
 
             // Inform the community.
