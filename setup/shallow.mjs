@@ -20,6 +20,7 @@ import UserRoles from 'coop-shared/services/userRoles.mjs';
 import DatabaseHelper from 'coop-shared/helper/databaseHelper.mjs';
 import SacrificeHelper from '../operations/members/redemption/sacrificeHelper.mjs';
 import ProjectsHelper from '../operations/productivity/projects/projectsHelper.mjs';
+import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
 
 
 // Commonly useful.
@@ -70,8 +71,34 @@ const shallowBot = async () => {
         console.log(txsPrevDay);
         console.log(summarisedTxs);
         
+
+        // const campaigns = await ElectionHelper.loadAllCampaigns();
+        // console.log(campaigns);
         
         // listenMessages(RolesHelper.onWebookMessage);
+
+        // Preload 15 intros, should be sufficient for a while.
+        // await CHANNELS._getCode('INTRO').messages.fetch({ limit: 15 });
+
+        // Preload sacrifice messages
+        // await SacrificeHelper.loadOffers();
+
+        // TODO
+        // Preload egghunt items, crates, dropped items, woodcutting, mining.
+
+        // Check if election is on
+        // const isElectionOn = await ElectionHelper.isVotingPeriod();
+        // console.log(isElectionOn);
+
+
+
+        // May be more efficient for now to preload all temporary messages.
+        // const tempMsgs = await TemporaryMessages.get();
+        // console.log(tempMsgs);
+
+        // MESSAGES.preloadMsgLinks(tempMsgs.map(m => m.message_link))
+
+        // TemporaryMessages.unregisterTempMsgByLink('https://discordapp.com/channels/723660447508725802/1055305753088495726/1055313741148856390');
 
         // COOP.STATE.CLIENT.on('interactionCreate', async interaction => {
         //     console.log(interaction);

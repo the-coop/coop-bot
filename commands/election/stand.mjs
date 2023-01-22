@@ -82,7 +82,7 @@ export const execute = async (interaction) => {
 			// Check if user is not already a candidate.
 			const prevCandidate = await ElectionHelper.getCandidate(interaction.user.id);
 			if (!prevCandidate) {
-				COOP.MESSAGES.selfDestruct(interaction.channel, `${interaction.user.username}, you wanna stand for <#${CHANNELS.ELECTION.id}>, eyyy?`);
+				// COOP.MESSAGES.selfDestruct(interaction.channel, `${interaction.user.username}, you wanna stand for <#${CHANNELS.ELECTION.id}>, eyyy?`);
 
 				const emojiText = COOP.MESSAGES.emojiCodeText('ELECTION_CROWN');
 				const electionEmbed = COOP.MESSAGES.embed({ 
@@ -101,7 +101,6 @@ export const execute = async (interaction) => {
 
 				// Post to feed
 				const successfulCandidateText = `${interaction.user.username} was put forward for <#${CHANNELS.ELECTION.id}>`;
-				COOP.MESSAGES.selfDestruct(interaction.channel, successfulCandidateText);
 				COOP.CHANNELS._send('TALK', successfulCandidateText);
 				
 				// Add coop emoji to campaign message and crown

@@ -17,6 +17,7 @@ import {
 	VoiceConnectionStatus,
     NoSubscriberBehavior
 } from '@discordjs/voice';
+import ActivityHelper from './activity/activityHelper.mjs';
 
 
 
@@ -118,10 +119,6 @@ export default class Chicken {
             const isNewDay = await this.isNewDay();
             if (!isNewDay) return false;
 
-            // Try to attempt a giveaway based on random roll.
-            if (STATE.CHANCE.bool({ likelihood: 5 })) 
-                CooperMorality.giveaway();
-
             // Check the most important things at the beginning of a new day.
             ElectionHelper.checkProgress();
             
@@ -133,9 +130,16 @@ export default class Chicken {
             // CHANNELS._getCode('TALK').send(newDayText, new MessageAttachment('/tmp/video.webm'));
             // + new AttachmentBuilder(buffer, { name: 'image.png' });
 
+            const txsPrevDay = await this.getTransactionsPreviousDay();
+            const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
+
             const newDayMessage = `${ROLES._textRef('NEW_COOP_DAY')}\n\n` +
 
-                `__Economy past 24hr__.\n\n` +
+                `__**Egghunt past 24hr:**__\n` +
+                    Object.keys(summarisedTxs.egghunt.collected).map(eggCode => {
+                        const count = summarisedTxs.egghunt.collected[eggCode];
+                        return `${eggCode} ${count}`;
+                    }).join(', ');
 
                 // const txs = await this.getTransactionsPreviousDay();
                 // console.log(txs);
@@ -144,11 +148,16 @@ export default class Chicken {
 
                 // Parse this economy information - started somewhere already.
 
-                `__Command usage__\n` +
-                `Add commands usage stats`;
+                // `__Command usage__\n` +
+                // `Add commands usage stats`;
 
             await CHANNELS._getCode('TALK').send('https://cdn.discordapp.com/attachments/723660447508725806/1056735020036935760/new-coop-day.png');
             CHANNELS._getCode('TALK').send(newDayMessage);
+
+
+            // Try to attempt a giveaway based on random roll.
+            if (STATE.CHANCE.bool({ likelihood: 5 })) 
+            CooperMorality.giveaway();
 
             return true;
 

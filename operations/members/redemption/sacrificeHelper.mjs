@@ -229,7 +229,7 @@ export default class SacrificeHelper {
         // Ignore null lastSacSecs, these players have never been sacrificed before... no reason not to choose them. :D
         if (lastSacSecs >= lastWeek) {
             const sparedText = `${user.username} was considered for sacrifice but spared.`;
-            return COOP.CHANNELS._send('TALK', sparedText);
+            return COOP.CHANNELS._send('ACTIONS', sparedText);
         }
 
         // If there is a previous sacrifice and the user still has prospect role (implies survived) remove role.
@@ -237,7 +237,7 @@ export default class SacrificeHelper {
             await ROLES._remove(user.id, 'PROSPECT');
 
             const deprospectedText = `${user.username} survived their last sacrifice and is no longer considered a prospect`;
-            return COOP.CHANNELS._send('TALK', deprospectedText);
+            return COOP.CHANNELS._send('ACTIONS', deprospectedText);
         }
 
         // Show some basic user statistics on the sacrifice message.

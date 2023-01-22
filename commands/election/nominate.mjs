@@ -95,7 +95,7 @@ export const execute = async (interaction) => {
 			// Check if user is not already a candidate.
 			const prevCandidate = await ElectionHelper.getCandidate(nominee.id);
 			if (!prevCandidate) {
-				COOP.MESSAGES.selfDestruct(interaction.channel, `${interaction.user.username}, you wanna nominate ${nominee.username} for <#${CHANNELS.ELECTION.id}>, eyyy?`);
+				// COOP.MESSAGES.selfDestruct(interaction.channel, `${interaction.user.username}, you wanna nominate ${nominee.username} for <#${CHANNELS.ELECTION.id}>, eyyy?`);
 
 				const emojiText = COOP.MESSAGES.emojiCodeText('ELECTION_CROWN');
 				const electionEmbed = COOP.MESSAGES.embed({ 

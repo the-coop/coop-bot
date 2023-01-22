@@ -129,8 +129,8 @@ export default function eventsManifest() {
   EventsHelper.chanceRunInterval(() => SacrificeHelper.random(), 25, baseTickDur * 20);
 
   // Announce pending intros and sacifices, 2-3 tiems a day.
-  EventsHelper.runInterval(() => RedemptionHelper.announce(), baseTickDur * 12);  
-  EventsHelper.runInterval(() => SacrificeHelper.announce(), baseTickDur * 12);
+  EventsHelper.runInterval(() => RedemptionHelper.announce(), baseTickDur * 13);  
+  EventsHelper.runInterval(() => SacrificeHelper.announce(), baseTickDur * 15);
 
   EventsHelper.chanceRunInterval(() => ProspectHelper.randomReady(), 20, baseTickDur * 14);
 
@@ -141,7 +141,7 @@ export default function eventsManifest() {
   // Ensure website rebuilt every week.
   EventsHelper.runInterval(() => SERVER.webRebuildHandler(), baseTickDur * 8);
 
-  EventsHelper.chanceRunInterval(() => EconomyHelper.circulation(), 15, baseTickDur * 6);
+  EventsHelper.chanceRunInterval(() => EconomyHelper.circulation(), 15, baseTickDur * 8.5);
 
   EventsHelper.runInterval(() => CooperMorality.evaluate(), baseTickDur * 4.5);
 
