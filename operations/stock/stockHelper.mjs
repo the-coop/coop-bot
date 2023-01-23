@@ -16,8 +16,6 @@ import Chicken from "../chicken.mjs";
 
 export default class StockHelper {
 
-    static US_OPEN = false;
-
     // This is only active from next election interval moment to a week after that
     static async isMarketOpen() {
         return await Chicken.getConfigVal('market_open') === 'true';
@@ -25,6 +23,14 @@ export default class StockHelper {
 
     static setMarketOpen(state) {
         return Chicken.setConfig('market_open', state);
+    }
+
+    static async isPowerHour() {
+        return await Chicken.getConfigVal('market_power_hour') === 'true';
+    }
+
+    static setPowerHour(state) {
+        return Chicken.setConfig('market_power_hour', state);
     }
 
     static async getEST() {
@@ -58,9 +64,7 @@ export default class StockHelper {
 
         // Check persisted state [Script awareness of openness].
         const currentlyOpen = await this.isMarketOpen();
-
-        // TODO: Check if power hour
-        // const currentlyOpen = await this.isPowerHour();
+        const isPowerHourRunning = await this.isPowerHour();
 
         // This may be problematic at the end/start of the week???
         if (!isESTWeekday) 
@@ -78,6 +82,7 @@ export default class StockHelper {
         // Intercept market opening and handle it.
         if (currentlyOpen && afterOpen && !beforeClose) {
             this.setMarketOpen(false);
+            this.setPowerHour(false);
 
             CHANNELS._send('STOCKS_VC_TEXT', "Setting stock market closed");
 
@@ -106,11 +111,23 @@ export default class StockHelper {
 
             // Give them 15 seconds to join before announcing after ping so they can catch it.
             setTimeout(() => this.announce(), 15000);
+
+            // Check if power hour needs starting (stopped when market closes).
+            const isPowerHourTime = date.hours() >= 15;
+            if (currentlyOpen && isPowerHourTime && !isPowerHourRunning) {
+                this.setPowerHour(true);
+                this.powerhourAnnounce();
+            }
         }
     }
 
     static async announce() {
         const url = 'https://www.thecoop.group/open-market.mp3';
+        Chicken.joinAndPlay('STOCKS_VC', url);
+    }
+
+    static async powerhourAnnounce() {
+        const url = 'https://www.thecoop.group/powerhour1.mp3';
         Chicken.joinAndPlay('STOCKS_VC', url);
     }
 }
