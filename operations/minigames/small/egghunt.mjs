@@ -413,7 +413,10 @@ export default class EggHuntMinigame {
             bonusEggStatus += ' Search the channels for the eggs!'
 
             // Announce bonus eggs socially.
+            CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/723660447508725806/1066971754725126174/bonus-eggs.png');
             CHANNELS._send('TALK', bonusEggRolePing + bonusEggStatus, 0, {});
+
+            // TODO: Add guide information button
 
             // Drop the bonus average eggs.
             for (let i = 0; i < bonusEggsNum; i++) {

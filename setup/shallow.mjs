@@ -153,9 +153,10 @@ const shallowBot = async () => {
     // const sacrificeEmbedDesc = reaction.message.embeds[0].data.description;
 
 
-        const msg = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/762472730980515870/1066820838743093298');
-        console.log(msg.embeds);
+        // const msg = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/762472730980515870/1066820838743093298');
+        // console.log(msg.embeds);
 
+        // SacrificeHelper.announce();
     });
 };
 
