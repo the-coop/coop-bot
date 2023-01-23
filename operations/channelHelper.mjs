@@ -16,6 +16,10 @@ export default class ChannelHelper {
 
     static textRef(code) { return `<#${CHANNELS_CONFIG[code].id}>`; }
 
+    static link(channelCode) {
+        return `https://discord.com/channels/${SERVER._coop().id}/${CHANNELS_CONFIG[channelCode].id}`;
+    }
+
     // TODO: Need to reuse this a lot! Ping/link without pinging! <3 <3 
     static _send(code, text, opts = silentOpts) {
         const coop = SERVER._coop();

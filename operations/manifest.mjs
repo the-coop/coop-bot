@@ -134,13 +134,6 @@ export default function eventsManifest() {
 
   EventsHelper.chanceRunInterval(() => ProspectHelper.randomReady(), 20, baseTickDur * 14);
 
-  // Social
-  // Pause temporarily
-  // EventsHelper.chanceRunInterval(() => NewsHelper.mailboy(), 10, baseTickDur * 8);
-
-  // Ensure website rebuilt every week.
-  EventsHelper.runInterval(() => SERVER.webRebuildHandler(), baseTickDur * 8);
-
   EventsHelper.chanceRunInterval(() => EconomyHelper.circulation(), 15, baseTickDur * 8.5);
 
   EventsHelper.runInterval(() => CooperMorality.evaluate(), baseTickDur * 4.5);

@@ -3,7 +3,7 @@ import VotingHelper from '../../activity/redemption/votingHelper.mjs';
 import { EMOJIS, CHANNELS } from 'coop-shared/config.mjs';
 import CooperMorality from '../../minigames/small/cooperMorality.mjs';
 
-import COOP, { MESSAGES, ROLES, USERS } from '../../../coop.mjs';
+import COOP, { MESSAGES, ROLES, USERS, SERVER } from '../../../coop.mjs';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from 'discord.js';
@@ -27,8 +27,7 @@ export default class SacrificeHelper {
 
         if (user.bot) return false;
         if (!isVoteEmoji) return false;
-
-        // TODO: Check if reaction message id is a sacrifice =
+        if (channelID !== CHANNELS.ABOUT.id) return false;
 
         // Guards passed.
         return true;
@@ -64,7 +63,11 @@ export default class SacrificeHelper {
 
         // Try to access sacrificee from message
         try {
-            const sacrificeEmbedDesc = reaction.message.embeds[0].data.description;
+            const sacrificeEmbedDesc = reaction.message?.embeds[0].data.description;
+
+            // Ignore reaction on non-sacrifice message.
+            if (!sacrificeEmbedDesc) return;
+
             const sacrificeeID = /<@(\d+)>/.exec(sacrificeEmbedDesc)[1];
 
             if (!sacrificeeID)
@@ -350,28 +353,32 @@ export default class SacrificeHelper {
 
         // If there are sacrifices update the server about it.
         if (sacrifices.length > 0) {
-            const announceTitle = `**${EMOJIS.DAGGER}${EMOJIS.DAGGER} The Coop Sacrifice Ritual:**\n\n`;
-            const announceContent = announceTitle + 
-                'Work in progress...\n\n' +
-                'Add number of sacrifices ongoing and link to vote';
+            // const announceTitle = `**${EMOJIS.DAGGER}${EMOJIS.DAGGER} The Coop Sacrifice Ritual:**\n\n`;
+            // const announceContent = announceTitle + 
+            //     'Work in progress...\n\n' +
+            //     'Add number of sacrifices ongoing and link to vote';
+            // // await COOP.CHANNELS._send('TALK', announceContent);
 
-            await COOP.CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/902593785500946472/1056733990280765500/sacrifice-ritual.png');
-            const msg = await COOP.CHANNELS._send('TALK', announceContent);
+            const msg = await COOP.CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/902593785500946472/1056733990280765500/sacrifice-ritual.png');
             msg.edit({ 
                 components: [
                 new ActionRowBuilder().addComponents([
                     new ButtonBuilder()
-                        .setEmoji('📖')
-                        .setLabel("Guide")
-                        .setURL("https://www.thecoop.group/guide")
-                        .setStyle(ButtonStyle.Link),
+                    .setEmoji('🗡')
+                    .setLabel("Vote!")
+                    .setURL(COOP.CHANNELS.link('ABOUT'))
+                    .setStyle(ButtonStyle.Link),
                     new ButtonBuilder()
-                        .setEmoji('🗡')
-                        .setLabel("Sacrifice")
+                        .setEmoji('📖')
+                        .setLabel("Guide?")
                         .setURL("https://www.thecoop.group/guide/sacrifice")
                         .setStyle(ButtonStyle.Link)
                 ])
             ] });
+
+
+
+
         }
     }
     

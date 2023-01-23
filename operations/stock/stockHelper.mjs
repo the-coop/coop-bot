@@ -110,7 +110,7 @@ export default class StockHelper {
     }
 
     static async announce() {
-        const url = 'https://www.thecoop.group/marketopen.mp3';
+        const url = 'https://www.thecoop.group/open-market.mp3';
         Chicken.joinAndPlay('STOCKS_VC', url);
     }
 }
