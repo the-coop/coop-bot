@@ -79,17 +79,13 @@ export default class StockHelper {
         // Christmas day - 25th December
         
 
-        // Intercept market opening and handle it.
+        // Intercept market closing and handle it.
         if (currentlyOpen && afterOpen && !beforeClose) {
             this.setMarketOpen(false);
             this.setPowerHour(false);
 
-            CHANNELS._send('STOCKS_VC_TEXT', "Setting stock market closed");
-
-            console.log("Setting stock market closed");
-
-            // Announce open at the end until another file created (testing).
-            // this.announce();
+            CHANNELS._send('STOCKS_VC_TEXT', "Stock market closed");
+            Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/close-market.mp3');
         }
 
         // Detect and handle market closing.
@@ -110,24 +106,18 @@ export default class StockHelper {
             ] });
 
             // Give them 15 seconds to join before announcing after ping so they can catch it.
-            setTimeout(() => this.announce(), 15000);
+            // Update: Don't wait for them, be fast.
+            Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/open-market.mp3')
 
             // Check if power hour needs starting (stopped when market closes).
             const isPowerHourTime = date.hours() >= 15;
             if (currentlyOpen && isPowerHourTime && !isPowerHourRunning) {
+                CHANNELS._send('STOCKS_VC_TEXT', "Power hour detection?");
                 this.setPowerHour(true);
-                this.powerhourAnnounce();
+                Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/powerhour1.mp3');
             }
         }
     }
 
-    static async announce() {
-        const url = 'https://www.thecoop.group/open-market.mp3';
-        Chicken.joinAndPlay('STOCKS_VC', url);
-    }
 
-    static async powerhourAnnounce() {
-        const url = 'https://www.thecoop.group/powerhour1.mp3';
-        Chicken.joinAndPlay('STOCKS_VC', url);
-    }
 }

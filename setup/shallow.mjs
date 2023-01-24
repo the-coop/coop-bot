@@ -71,7 +71,7 @@ const shallowBot = async () => {
         // console.log(txsPrevDay);
         // console.log(summarisedTxs);
 
-        StockHelper.announce();
+        // StockHelper.announce();
 
         // const campaigns = await ElectionHelper.loadAllCampaigns();
         // console.log(campaigns);
@@ -157,6 +157,8 @@ const shallowBot = async () => {
         // console.log(msg.embeds);
 
         // SacrificeHelper.announce();
+
+        // console.log(await StockHelper.isPowerHour());
     });
 };
 
