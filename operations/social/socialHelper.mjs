@@ -5,18 +5,23 @@ import { CHANNELS, SERVER } from "../../coop.mjs";
 export default class SocialHelper {
 
     static async onStateChange(prev, curr) {
-        const channel = curr?.channel || null;
+        try {
+            const channel = curr?.channel || null;
 
-        // Ignore disconnects (null) or other VC channel joins besides "create-yours" VC.
-        if (channel?.id === CHANNELS_CONFIG.CREATE_SOCIAL.id)
-            // Process the queue of joiners.
-            await Promise.all(channel.members.map(async member => {
-                const vc = await this.createVC(member);
-                return await member.voice.setChannel(vc);
-            }));
-
-        // Check if any need cleaning up.
-        this.cleanupUnused();
+            // Ignore disconnects (null) or other VC channel joins besides "create-yours" VC.
+            if (channel?.id === CHANNELS_CONFIG.CREATE_SOCIAL.id)
+                // Process the queue of joiners.
+                await Promise.all(channel.members.map(async member => {
+                    const vc = await this.createVC(member);
+                    return await member.voice.setChannel(vc);
+                }));
+    
+            // Check if any need cleaning up.
+            this.cleanupUnused();
+        } catch(e) {
+            console.error(e);
+            console.log('Error with create your own channel state change ^');
+        }
     }
 
     static async createVC(member) {

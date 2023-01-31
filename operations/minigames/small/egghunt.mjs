@@ -236,8 +236,7 @@ export default class EggHuntMinigame {
             else location = `"${reaction.message.channel.name}" channel`;
 
             // Setup the text for feedback messages.
-            const actionText = `Egg Hunt! ${user.username}`;
-            let acknowledgementMsgText =`${actionText} ${rewardPolarity}${reward} points!`.trim();
+            let acknowledgementMsgText =`${user.username} ${rewardPolarity}${reward} points!`.trim();
             let activityFeedMsgText = `${user.username} collected an egg in ${location}! <${emoji}>`.trim();
 
             // TODO: If Cooper is evil you break more pickaxes, axes, frying pans and eggs.
