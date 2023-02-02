@@ -12,19 +12,20 @@ export default class SocialHelper {
             if (channel?.id === CHANNELS_CONFIG.CREATE_SOCIAL.id)
                 // Process the queue of joiners.
                 await Promise.all(channel.members.map(async member => {
-                    const vc = await this.createVC(member);
+                    const vc = this.createVC(member);
                     return await member.voice.setChannel(vc);
                 }));
     
             // Check if any need cleaning up.
             this.cleanupUnused();
+            
         } catch(e) {
             console.error(e);
             console.log('Error with create your own channel state change ^');
         }
     }
 
-    static async createVC(member) {
+    static createVC(member) {
         const config = this.calcConfig(member);
         return SERVER._coop().channels.create(config);
     }

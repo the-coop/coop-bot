@@ -72,7 +72,10 @@ const shallowBot = async () => {
         // BlogHelper.postToReddit('TESTIgewawegwegawgwNG', 'COgwegawegwagwegewggwNTENT');
         
         // console.log(await BlogHelper.redditAccessToken());
-        await BlogHelper.test();
+        // await BlogHelper.test();
+
+
+        // TODO: Check the crate is included in temp messages and thus preloaded?
         
     });
 };

@@ -319,19 +319,19 @@ export default class EggHuntMinigame {
         const dropChannel = CHANNELS._randomSpammable();
         
         if (dropChannel) {
-            const randomDelayBaseMs = 30000;
+            const randomDelayBaseMs = 3000;
             setTimeout(async () => {
                 try {
                     const eggMsg = await dropChannel.send(MESSAGES.emojiText(EGG_DATA[rarity].emoji));
 
                     // Add collection action emoji.
-                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BASKET, STATE.CHANCE.integer({ min: 111, max: 222 }));
-                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.HAMMER, STATE.CHANCE.integer({ min: 111, max: 222 }));
-                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BOMB, 333);
+                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BASKET, STATE.CHANCE.integer({ min: 0, max: 50 }));
+                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.HAMMER, STATE.CHANCE.integer({ min: 25, max: 50 }));
+                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BOMB, 100);
 
                     // If TOXIC_EGG add a frying pan emoji
                     if (rarity === 'TOXIC_EGG')
-                        MESSAGES.delayReact(eggMsg, EMOJIS.FRYING_PAN, 444);
+                        MESSAGES.delayReact(eggMsg, EMOJIS.FRYING_PAN, 150);
 
                     // If an annotation for the egg drop was provided, use it.
                     const fivePercentRoll = STATE.CHANCE.bool({ likelihood: 7.5 });
@@ -341,7 +341,7 @@ export default class EggHuntMinigame {
                 } catch(e) {
                     console.error(e);
                 }
-            }, STATE.CHANCE.natural({ min: randomDelayBaseMs, max: randomDelayBaseMs * 4 }));
+            }, STATE.CHANCE.natural({ min: 0, max: randomDelayBaseMs * 4 }));
         }
     }
 
@@ -363,6 +363,7 @@ export default class EggHuntMinigame {
             }
         } catch(e) {
             console.error(e);
+            console.log('Tried to drop an egg in DMs ^');
         }
     }
 
