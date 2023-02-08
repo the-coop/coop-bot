@@ -154,10 +154,9 @@ export default class Chicken {
             await CHANNELS._getCode('TALK').send('https://cdn.discordapp.com/attachments/723660447508725806/1056735020036935760/new-coop-day.png');
             CHANNELS._getCode('TALK').send(newDayMessage);
 
-
             // Try to attempt a giveaway based on random roll.
             if (STATE.CHANCE.bool({ likelihood: 5 })) 
-            CooperMorality.giveaway();
+                CooperMorality.giveaway();
 
             return true;
 

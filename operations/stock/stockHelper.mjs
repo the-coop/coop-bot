@@ -57,10 +57,10 @@ export default class StockHelper {
         const isESTWeekday = ![0, 6].includes(date.day());
 
         // NYSE open Monday-Friday, 9:30 a.m. to 4:00 p.m. EST.
-        const afterOpen = (date.hours() === 9 && date.minutes() >= 30) || date.hours() > 9;
+        const afterOpen = (date.hours() === 9 && date.minutes() >= 30) || date.hours() >= 10;
 
         // Check the hour has not yet reached 4pm EST.
-        const beforeClose = date.hours() < 15;
+        const beforeClose = date.hours() <= 16;
 
         // Check persisted state [Script awareness of openness].
         const currentlyOpen = await this.isMarketOpen();
@@ -108,14 +108,14 @@ export default class StockHelper {
             // Give them 15 seconds to join before announcing after ping so they can catch it.
             // Update: Don't wait for them, be fast.
             Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/open-market.mp3')
-
-            // Check if power hour needs starting (stopped when market closes).
-            const isPowerHourTime = date.hours() >= 15;
-            if (currentlyOpen && isPowerHourTime && !isPowerHourRunning) {
-                CHANNELS._send('STOCKS_VC_TEXT', "Power hour detection?");
-                this.setPowerHour(true);
-                Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/powerhour1.mp3');
-            }
+        }
+        
+        // Check if power hour needs starting (stopped when market closes).
+        const isPowerHourTime = date.hours() >= 15;
+        if (currentlyOpen && isPowerHourTime && !isPowerHourRunning) {
+            CHANNELS._send('STOCKS_VC_TEXT', "Power hour detection?");
+            this.setPowerHour(true);
+            Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/powerhour1.mp3');
         }
     }
 
