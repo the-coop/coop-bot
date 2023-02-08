@@ -35,7 +35,7 @@ export default class CooperMorality {
         if (morality === 'GOOD' && COOP.STATE.CHANCE.bool({ likelihood: .5 })) this.giveaway();
 
         // Negations for EVIL morality:
-        if (morality === 'EVIL' && COOP.STATE.CHANCE.bool({ likelihood: .5 })) this.takeway(); //?'takeway' should be 'takeaway'
+        if (morality === 'EVIL' && COOP.STATE.CHANCE.bool({ likelihood: .5 })) this.takeaway(); //?'takeway' should be 'takeaway'
         // ...
         // ...
 
