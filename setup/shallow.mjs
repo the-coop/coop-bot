@@ -22,6 +22,7 @@ import SacrificeHelper from '../operations/members/redemption/sacrificeHelper.mj
 import ProjectsHelper from '../operations/productivity/projects/projectsHelper.mjs';
 import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
 import BlogHelper from '../operations/marketing/blog/blogHelper.mjs';
+import RedditHelper from '../operations/marketing/blog/redditHelper.mjs';
 
 
 // Commonly useful.
@@ -76,6 +77,13 @@ const shallowBot = async () => {
 
 
         // TODO: Check the crate is included in temp messages and thus preloaded?
+
+
+        // RedditHelper.prompt();
+
+        RedditHelper.codeToToken('zCG8I_n5dIHPAkxM1aMQHLOd1KRupw#')
+
+        // tqTfiVcnOKXqzQVhXWEw5j6U8glu0A#_
         
     });
 };
