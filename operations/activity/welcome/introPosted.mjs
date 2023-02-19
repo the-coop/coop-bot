@@ -5,16 +5,27 @@ import { RAW_EMOJIS, ROLES as ROLES_CONFIG, CHANNELS as CHANNEL_CONFIG } from 'c
 
 export default async (msg) => {
   try {
+
+    console.log('Intro posted');
+
     if (msg.channel.id !== CHANNEL_CONFIG.INTRO.id) return false;
+
+    console.log('Intro posted - correct channel');
 
     // Ignore Cooper's messages.
     if (msg.author.bot) return false;
 
+    console.log('Intro posted - not a bot');
+
     // Access the full featured member object for the user.
     const memberSubject = USERS._getMemberByID(msg.author.id);
 
+    console.log('Intro posted - not a bot');
+
     // Check they haven't already posted an intro
     const savedUser = await USERS.loadSingle(memberSubject.user.id);
+
+    console.log('Intro posted - not a bot', savedUser);
 
     // Add intro message link and time to intro if in the database.
     const introLink = MESSAGES.link(msg);
@@ -43,6 +54,9 @@ export default async (msg) => {
 
     // Send embed to approval channel for redeeming non-members via introduction.
     if (!USERS.hasRoleID(memberSubject, ROLES_CONFIG.MEMBER.id)) {
+
+      console.log('Attempting to process an intro');
+        
       // Inform the server and general chat (ping intro posted subscribers.
       const introText = `${ROLES._textRef('INSIDER')}, ${username} posted an introduction in ${CHANNELS.textRef('INTRO')}! 👋`;
       await CHANNELS._send('TALK', introText, {});

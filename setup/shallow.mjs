@@ -23,6 +23,7 @@ import ProjectsHelper from '../operations/productivity/projects/projectsHelper.m
 import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
 import BlogHelper from '../operations/marketing/blog/blogHelper.mjs';
 import RedditHelper from '../operations/marketing/blog/redditHelper.mjs';
+import ItemsHelper from '../operations/minigames/medium/economy/items/itemsHelper.mjs';
 
 
 // Commonly useful.
@@ -30,6 +31,8 @@ const listenReactions = (fn) => COOP.STATE.CLIENT.on('messageReactionAdd', fn);
 const listenChannelUpdates = (fn) => COOP.STATE.CLIENT.on('channelUpdate', fn);
 const listenMessages = (fn) => COOP.STATE.CLIENT.on('messageCreate', fn);
 const listenVoiceState = (fn) => COOP.STATE.CLIENT.on('voiceStateUpdate', fn);
+
+
 
 const shallowBot = async () => {
     console.log('Starting shallow bot');
@@ -75,13 +78,20 @@ const shallowBot = async () => {
         // console.log(await BlogHelper.redditAccessToken());
         // await BlogHelper.test();
 
+        
+
+
+        // Items.add('786671654721683517', 'LEADERS_SWORD', 1, 'Left accidentally, still a valid leader');
+        
+
 
         // TODO: Check the crate is included in temp messages and thus preloaded?
 
+        // ElectionHelper.ensureItemSeriousness();
 
         // RedditHelper.prompt();
 
-        RedditHelper.codeToToken('zCG8I_n5dIHPAkxM1aMQHLOd1KRupw#')
+        // RedditHelper.codeToToken('zCG8I_n5dIHPAkxM1aMQHLOd1KRupw#')
 
         // tqTfiVcnOKXqzQVhXWEw5j6U8glu0A#_
         
