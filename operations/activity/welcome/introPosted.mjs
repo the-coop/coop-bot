@@ -64,12 +64,12 @@ export default async (msg) => {
     
       await CHANNELS._postToChannelCode('TALK', MESSAGES.embed({
         url: MESSAGES.link(msg),
-        title: `${username}'s entry is being voted upon!`,
-        description: `Please read ${CHANNELS.textRef('INTRO')} and submit your vote! \n` +
-          `_In ${CHANNELS.textRef('TALK')} you get the chance to talk to ${username} and get to know them more before voting._`,
+        title: `${username} needs your vote for approval!`,
+        description: `Please read ${CHANNELS.textRef('INTRO')} and submit your vote! \n`,
         thumbnail: USERS.avatar(memberSubject.user)
       }));
 
+      // Add the emojis
       MESSAGES.delayReact(msg, RAW_EMOJIS.VOTE_FOR, 666);
       MESSAGES.delayReact(msg, RAW_EMOJIS.VOTE_AGAINST, 999);
 
