@@ -1,15 +1,15 @@
 import { EMOJIS } from 'coop-shared/config.mjs';
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from 'discord.js';
 import { CHANNELS, MESSAGES, USERS } from '../../../coop.mjs';
+import RolesHelper from '../../members/hierarchy/roles/rolesHelper.mjs';
 
 export default async function memberJoined(member) {
 
   try {
     // Send the welcome message.
     const welcomeMessage = await CHANNELS._postToChannelCode('TALK', 
-      `Hey <@${member.user.id}>! Please introduce yourself in ${CHANNELS.textRef('INTRO')} so the community can fully approve you into the server :smile:!\n\n` +
-      `_Be aware that you can only send one ${CHANNELS.textRef('INTRO')} message, make it good!_\n\n` +
-      `Here in ${CHANNELS.textRef('TALK')} you get the chance to talk to the community while waiting to get accepted :D! `
+      `<@${member.user.id}>, please introduce yourself in ${CHANNELS.textRef('INTRO')} so the community can vote you in :smile:!\n\n` +
+      `**We have unique features**: Use the guide button below to find out more!`
     );
     
     // React with coop emoji... because.
@@ -19,8 +19,15 @@ export default async function memberJoined(member) {
     // Register the member.
     await USERS.register(member.id, member.user.username, member.joinedTimestamp);
 
+    // Add the intro poster role.
+    RolesHelper.add(member, 'POST_INTRO');
+
     const gameLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
       "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=game";
+
+     // Add roles button to webhook messages.
+    const rolesLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
+      "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=roles";
 
     // Add informative buttons to the message.
     welcomeMessage.edit({ components: [		
@@ -31,13 +38,13 @@ export default async function memberJoined(member) {
           .setURL("https://www.thecoop.group/guide")
           .setStyle(ButtonStyle.Link),
         new ButtonBuilder()
-          .setEmoji('🥚')
-          .setLabel("Minigames")
-          .setURL("https://www.thecoop.group/guide/minigames")
+          .setEmoji('⚙️')
+          .setLabel("Roles")
+          .setURL(rolesLoginLink)
           .setStyle(ButtonStyle.Link),
         new ButtonBuilder()
-          .setEmoji('🌎')
-          .setLabel("Conquest")
+          .setEmoji('🎮')
+          .setLabel("Game")
           .setURL(gameLoginLink)
           .setStyle(ButtonStyle.Link),
         new ButtonBuilder()

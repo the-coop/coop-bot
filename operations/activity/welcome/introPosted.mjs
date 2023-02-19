@@ -2,6 +2,7 @@ import { PermissionsBitField } from 'discord.js';
 
 import { USERS, MESSAGES, ROLES, CHANNELS, TIME } from '../../../coop.mjs';
 import { RAW_EMOJIS, ROLES as ROLES_CONFIG, CHANNELS as CHANNEL_CONFIG } from 'coop-shared/config.mjs';
+import RolesHelper from '../../members/hierarchy/roles/rolesHelper.mjs';
 
 export default async (msg) => {
   try {
@@ -74,6 +75,9 @@ export default async (msg) => {
 
       // Remove SEND_MESSAGE permission from the user (only 1 intro message supported).
       msg.channel.permissionOverwrites.create(msg.author.id, { [PermissionsBitField.Flags.SendMessages]: false });
+
+      // Add the intro poster role.
+      RolesHelper._remove(memberSubject.user.id, 'POST_INTRO');
     }
 
   } catch(e) {

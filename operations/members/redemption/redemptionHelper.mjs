@@ -174,10 +174,10 @@ export default class RedemptionHelper {
             TECH: ['coding', 'program', 'tech', 'dev', 'game design'],
         }
 
-        // Check 
+        // Check
         const desiredRoles = Object.keys(roleMatches).filter(roleKey => {
             const roleMatches = roleMatches[roleKey].some(roleWord => reaction.message.content.includes(roleWord));
-            return roleMatches
+            return roleMatches;
         });
 
         COOP.CHANNELS._send('TALK', 'Could have added desired roles', desiredRoles, reaction.message.content);
