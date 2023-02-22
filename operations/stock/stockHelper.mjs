@@ -70,17 +70,15 @@ export default class StockHelper {
         if (!isESTWeekday) 
             return false;
 
-
         // Martin Luther King Jr. Day 2023 in United States 16th Jan
         // July 4th - Independence day
         // Jan 1st - New Years Day
         // Presidents day
         // June teenth - June 11th & 12th
         // Christmas day - 25th December
-        
 
         // Intercept market closing and handle it.
-        if (currentlyOpen && afterOpen && !beforeClose) {
+        if (currentlyOpen && !beforeClose) {
             this.setMarketOpen(false);
             this.setPowerHour(false);
 

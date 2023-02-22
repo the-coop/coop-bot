@@ -12,7 +12,7 @@ export default class SocialHelper {
             if (channel?.id === CHANNELS_CONFIG.CREATE_SOCIAL.id)
                 // Process the queue of joiners.
                 await Promise.all(channel.members.map(async member => {
-                    const vc = this.createVC(member);
+                    const vc = await this.createVC(member);
                     return await member.voice.setChannel(vc);
                 }));
     
