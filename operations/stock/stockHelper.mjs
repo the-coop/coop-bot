@@ -60,7 +60,7 @@ export default class StockHelper {
         const afterOpen = (date.hours() === 9 && date.minutes() >= 30) || date.hours() >= 10;
 
         // Check the hour has not yet reached 4pm EST.
-        const beforeClose = date.hours() <= 16;
+        const beforeClose = date.hours() < 16;
 
         // Check persisted state [Script awareness of openness].
         const currentlyOpen = await this.isMarketOpen();
