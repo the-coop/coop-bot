@@ -162,7 +162,7 @@ export default class ElectionHelper {
             const msg = await CHANNELS._send(
                 'TALK', 
                 `${ROLES._textRef('SUBSCRIBER')}, ${electionText}`,
-                { allowedMentions: { roles: [announceRole] }}
+                { allowedMentions: { roles: [announceRole.id] }}
             );
 
             // Indicate successful start.

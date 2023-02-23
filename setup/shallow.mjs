@@ -33,7 +33,6 @@ const listenMessages = (fn) => COOP.STATE.CLIENT.on('messageCreate', fn);
 const listenVoiceState = (fn) => COOP.STATE.CLIENT.on('voiceStateUpdate', fn);
 
 
-
 const shallowBot = async () => {
     console.log('Starting shallow bot');
 
@@ -78,12 +77,22 @@ const shallowBot = async () => {
         // console.log(await BlogHelper.redditAccessToken());
         // await BlogHelper.test();
 
-        
+        const announceRole = ROLES._getByCode('SUBSCRIBER');
+        console.log(announceRole);
 
+        const electionText = `our latest ${CHANNELS.textRef('ELECTION')} is running, all members are welcome to stand or vote for their preferred commander and leaders. \n` +
+            `For further information on our elections refer to our forth amendment in ${CHANNELS.textRef('ABOUT')}\n\n` +
+
+            `To enter election yourself use the /stand slash command with a short message of why people should vote for you.\n` +
+            `To nominate another person for leadership use the /nominate slash command with a similar message.\n\n`;
+
+        const msg = await CHANNELS._send(
+            'TALK', 
+            `${ROLES._textRef('SUBSCRIBER')}, ${electionText}`,
+            { allowedMentions: { roles: [announceRole.id] }}
+        );
 
         // Items.add('786671654721683517', 'LEADERS_SWORD', 1, 'Left accidentally, still a valid leader');
-        
-
 
         // TODO: Check the crate is included in temp messages and thus preloaded?
 
