@@ -10,7 +10,7 @@ import EventsHelper from "../eventsHelper.mjs";
 import DropTable from '../minigames/medium/economy/items/droptable.mjs';
 import Items from 'coop-shared/services/items.mjs';
 
-export const COMPETITION_DUR = 3600 * 24 * 7;
+export const COMPETITION_DUR = 3600 * 24 * 30;
 
 export const COMPETITION_ROLES = {
     TECHNOLOGY_COMPETITION: 'TECH',
