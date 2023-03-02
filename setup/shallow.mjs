@@ -77,20 +77,31 @@ const shallowBot = async () => {
         // console.log(await BlogHelper.redditAccessToken());
         // await BlogHelper.test();
 
-        const announceRole = ROLES._getByCode('SUBSCRIBER');
-        console.log(announceRole);
+        // const announceRole = ROLES._getByCode('SUBSCRIBER');
+        // console.log(announceRole);
 
-        const electionText = `our latest ${CHANNELS.textRef('ELECTION')} is running, all members are welcome to stand or vote for their preferred commander and leaders. \n` +
-            `For further information on our elections refer to our forth amendment in ${CHANNELS.textRef('ABOUT')}\n\n` +
+        // const electionText = `our latest ${CHANNELS.textRef('ELECTION')} is running, all members are welcome to stand or vote for their preferred commander and leaders. \n` +
+        //     `For further information on our elections refer to our forth amendment in ${CHANNELS.textRef('ABOUT')}\n\n` +
 
-            `To enter election yourself use the /stand slash command with a short message of why people should vote for you.\n` +
-            `To nominate another person for leadership use the /nominate slash command with a similar message.\n\n`;
+        //     `To enter election yourself use the /stand slash command with a short message of why people should vote for you.\n` +
+        //     `To nominate another person for leadership use the /nominate slash command with a similar message.\n\n`;
 
-        const msg = await CHANNELS._send(
-            'TALK', 
-            `${ROLES._textRef('SUBSCRIBER')}, ${electionText}`,
-            { allowedMentions: { roles: [announceRole.id] }}
-        );
+        // const msg = await CHANNELS._send(
+        //     'TALK', 
+        //     `${ROLES._textRef('SUBSCRIBER')}, ${electionText}`,
+        //     { allowedMentions: { roles: [announceRole.id] }}
+        // );
+
+        // SacrificeHelper.random();
+
+        // const offer = (await SacrificeHelper.loadOffers())[0];
+        // const message = await MESSAGES.getByLink(offer.message_link);
+
+        // console.log(message.embeds[0].data.description);
+
+        // const desc = message.embeds[0].data.description;
+        // const discordID = /<@(\d*)>/.exec(desc)[1];
+
 
         // Items.add('786671654721683517', 'LEADERS_SWORD', 1, 'Left accidentally, still a valid leader');
 

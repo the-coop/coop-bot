@@ -339,7 +339,8 @@ export default class SacrificeHelper {
         const sacrificeOffers = await this.loadOffers();
         const sacrifices = await Promise.all(sacrificeOffers.map(async offer => {
             const message = await MESSAGES.getByLink(offer.message_link);
-            const desc = message.embeds[0].data.description;
+            const desc = message?.embeds[0].data.description;
+            
             const discordID = /<@(\d*)>/.exec(desc)[1];
 
             const member = USERS._getMemberByID(discordID)
@@ -348,8 +349,6 @@ export default class SacrificeHelper {
                 sacrificee: member
             };
         }));
-
-        console.log(sacrifices);
 
         // If there are sacrifices update the server about it.
         if (sacrifices.length > 0) {
@@ -375,9 +374,6 @@ export default class SacrificeHelper {
                         .setStyle(ButtonStyle.Link)
                 ])
             ] });
-
-
-
 
         }
     }
