@@ -180,7 +180,7 @@ export default class RedemptionHelper {
             return roleMatches;
         });
 
-        COOP.CHANNELS._send('TALK', 'Could have added desired roles', desiredRoles, reaction.message.content);
+        COOP.CHANNELS._send('TALK', 'Could have detected desired roles' + desiredRoles);
 
         // Inform community.
         const msg = await COOP.CHANNELS._send('TALK', 

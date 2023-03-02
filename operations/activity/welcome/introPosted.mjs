@@ -1,5 +1,3 @@
-import { PermissionsBitField } from 'discord.js';
-
 import { USERS, MESSAGES, ROLES, CHANNELS, TIME } from '../../../coop.mjs';
 import { RAW_EMOJIS, ROLES as ROLES_CONFIG, CHANNELS as CHANNEL_CONFIG } from 'coop-shared/config.mjs';
 import RolesHelper from '../../members/hierarchy/roles/rolesHelper.mjs';
@@ -17,10 +15,12 @@ export default async (msg) => {
 
     // Add intro message link and time to intro if in the database.
     const introLink = MESSAGES.link(msg);
+
+    const hasMemberRole = USERS.hasRoleID(memberSubject, ROLES_CONFIG.MEMBER.id);
     
     // Add an intro link for a member without an existing intro.
     if (!savedUser.intro_link)
-      return await USERS.setIntro(memberSubject.user.id, msg.content, introLink, TIME._secs());
+      await USERS.setIntro(memberSubject.user.id, msg.content, introLink, TIME._secs());
 
     // Prevent users from adding two intro_links.
     if (savedUser.intro_link) {
@@ -41,8 +41,7 @@ export default async (msg) => {
     const username = memberSubject.user.username;
 
     // Send embed to approval channel for redeeming non-members via introduction.
-    if (!USERS.hasRoleID(memberSubject, ROLES_CONFIG.MEMBER.id)) {
-        
+    if (!hasMemberRole) {
       // Inform the server and general chat (ping intro posted subscribers.
       const introText = `${ROLES._textRef('INSIDER')}, ${username} posted an introduction in ${CHANNELS.textRef('INTRO')}! 👋`;
       await CHANNELS._send('TALK', introText, {});
@@ -55,11 +54,8 @@ export default async (msg) => {
       }));
 
       // Add the emojis
-      MESSAGES.delayReact(msg, RAW_EMOJIS.VOTE_FOR, 666);
-      MESSAGES.delayReact(msg, RAW_EMOJIS.VOTE_AGAINST, 999);
-
-      // Remove SEND_MESSAGE permission from the user (only 1 intro message supported).
-      msg.channel.permissionOverwrites.create(msg.author.id, { [PermissionsBitField.Flags.SendMessages]: false });
+      MESSAGES.delayReact(msg, RAW_EMOJIS.VOTE_FOR, 111);
+      MESSAGES.delayReact(msg, RAW_EMOJIS.VOTE_AGAINST, 222);
 
       // Add the intro poster role.
       RolesHelper._remove(memberSubject.user.id, 'POST_INTRO');
