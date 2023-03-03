@@ -361,19 +361,20 @@ export default class SacrificeHelper {
             const msg = await COOP.CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/902593785500946472/1056733990280765500/sacrifice-ritual.png');
             msg.edit({ 
                 components: [
-                new ActionRowBuilder().addComponents([
-                    new ButtonBuilder()
-                    .setEmoji('🗡')
-                    .setLabel("Vote!")
-                    .setURL(COOP.CHANNELS.link('ABOUT'))
-                    .setStyle(ButtonStyle.Link),
-                    new ButtonBuilder()
-                        .setEmoji('📖')
-                        .setLabel("Guide?")
-                        .setURL("https://www.thecoop.group/guide/sacrifice")
-                        .setStyle(ButtonStyle.Link)
-                ])
-            ] });
+                    new ActionRowBuilder().addComponents([
+                        new ButtonBuilder()
+                        .setEmoji('🗡')
+                        .setLabel("Vote!")
+                        .setURL(COOP.CHANNELS.link('ABOUT'))
+                        .setStyle(ButtonStyle.Link),
+                        new ButtonBuilder()
+                            .setEmoji('📖')
+                            .setLabel("Guide?")
+                            .setURL("https://www.thecoop.group/guide/sacrifice")
+                            .setStyle(ButtonStyle.Link)
+                    ])
+                ]
+            });
 
         }
     }
