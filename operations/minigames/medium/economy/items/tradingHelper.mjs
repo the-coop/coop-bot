@@ -28,7 +28,7 @@ export default class TradingHelper {
     // of the service.
 
     static async onInteractionCreate(interaction, client) {
-        console.log('trade_interaction', interaction);
+        // console.log('trade_interaction', interaction);
 
         // TODO: Filter out trades by user (won't want to accept their own trades);
 
