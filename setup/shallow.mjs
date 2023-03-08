@@ -76,6 +76,16 @@ const shallowBot = async () => {
         
         // console.log(await BlogHelper.redditAccessToken());
         // await BlogHelper.test();
+        // static add(member, roleCode) {
+        // const guild = SERVER._coop();
+        // const role = this.getRoleByID(guild, ROLES_CONFIG[roleCode].id);
+        // return member.roles.add(role);
+
+        // const member = USERS._get('308367247447949333');
+        // console.log(member);
+
+        // ROLES.add(member, 'MEMBER')
+        // 308367247447949333
 
         // const announceRole = ROLES._getByCode('SUBSCRIBER');
         // console.log(announceRole);
