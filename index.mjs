@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import Database from 'coop-shared/setup/database.mjs';
 import { STATE } from './coop.mjs';
 
@@ -5,9 +8,6 @@ import client from './setup/client.mjs';
 import registerLogging from './setup/logging.mjs';
 
 import eventsManifest from './operations/manifest.mjs';
-
-// import express from 'express';
-import secrets from 'coop-shared/setup/secrets.mjs';
 
 import * as Sentry from '@sentry/node';
 
@@ -20,9 +20,6 @@ Sentry.init({
 
 export default async function bot() {
     console.log('Trying to start bot');
-
-    // Load secrets.
-    await secrets();
 
     // Connect to PostGres Database and attach event/error handlers.
     await Database.connect();

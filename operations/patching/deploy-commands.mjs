@@ -5,12 +5,9 @@ import { Routes } from 'discord-api-types/v9';
 
 import BOTS from 'coop-shared/config/bots.mjs';
 
-import secrets from 'coop-shared/setup/secrets.mjs';
 
 const deploy = async () => {
     const commands = [];
-
-    await secrets();
     
     // Parse throuh the command files
     const commandsDir = path.resolve('./commands/');

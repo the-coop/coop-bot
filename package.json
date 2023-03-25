@@ -25,6 +25,7 @@
     "chance": "^1.1.7",
     "coop-shared": "git+https://github.com/the-coop/coop-shared.git#a40e2f170ba553229ee614d376889ef92f97a417",
     "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3",
     "emoji-regex": "^9.2.0",
     "ffmpeg-static": "^5.0.2",
     "jsonwebtoken": "^8.5.1",
