@@ -72,6 +72,7 @@ const shallowBot = async () => {
         // const txsPrevDay = await CHICKEN.getTransactionsPreviousDay();
         // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
 
+
         // BlogHelper.postToReddit('TESTIgewawegwegawgwNG', 'COgwegawegwagwegewggwNTENT');
         
         // console.log(await BlogHelper.redditAccessToken());

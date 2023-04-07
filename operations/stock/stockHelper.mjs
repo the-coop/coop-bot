@@ -39,7 +39,11 @@ export default class StockHelper {
     
             let date = moment.parseZone(data.datetime);
             
-            date.add(data.dst_offset, 'h');
+            if (data.dst)
+                date.add(data.dst_offset, 'h');
+
+            // For some reason it's an hour slow on the API.
+            date.add(1, 'h');
 
             return date;
         } catch(e) {
@@ -49,6 +53,13 @@ export default class StockHelper {
 
     static async update() {
         const date = await this.getEST();
+
+        // Martin Luther King Jr. Day 2023 in United States 16th Jan
+        // July 4th - Independence day
+        // Jan 1st - New Years Day
+        // Presidents day
+        // June teenth - June 11th & 12th
+        // Christmas day - 25th December
 
         // If the date cannot be calculated or requested don't bother.
         if (!date) return;
@@ -69,13 +80,6 @@ export default class StockHelper {
         // This may be problematic at the end/start of the week???
         if (!isESTWeekday) 
             return false;
-
-        // Martin Luther King Jr. Day 2023 in United States 16th Jan
-        // July 4th - Independence day
-        // Jan 1st - New Years Day
-        // Presidents day
-        // June teenth - June 11th & 12th
-        // Christmas day - 25th December
 
         // Intercept market closing and handle it.
         if (currentlyOpen && !beforeClose) {

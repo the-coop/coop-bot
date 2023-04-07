@@ -11,7 +11,6 @@ import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from 'discord.js';
 export const SACRIFICE_RATIO_PERC = .05;
 export const KEEP_RATIO_PERC = .02;
 
-const sacrificeDuration = 60 * 60 * 12;
 const sacrificeMsgLifetime = 60 * 60 * 12;
 
 export default class SacrificeHelper {
@@ -47,15 +46,16 @@ export default class SacrificeHelper {
     }
 
     static async onReaction(reaction, user) {
-        // Is back dagger
-        if (this.isBackDagger(reaction, user)) {
-            this.processBackDagger(reaction, user);
-        }
+        // Process a vote on sacrifice channel itself.
+        const channelID = reaction.message.channel.id;
+        const isSacrificeChannel = channelID !== CHANNELS.ABOUT.id;
+        const isSacrificeVote = this.isReactionSacrificeVote(reaction, user);
+        if (isSacrificeChannel && isSacrificeVote)
+            return this.processVote(reaction, user);
 
-        // Process the vote.
-        if (this.isReactionSacrificeVote(reaction, user)) {
-            this.processVote(reaction, user);
-        }
+        // Check other channels for backstabbing daggers/ban attempts.
+        if (!isSacrificeChannel && this.isBackDagger(reaction, user))
+            this.processBackDagger(reaction, user);
     }
 
     static async processVote(reaction, user) {

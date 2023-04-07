@@ -113,6 +113,12 @@ export default class PointsHelper {
             const users = await COOP.USERS.load();
             const pointUpdateManifest = [];
 
+            // Use the week hook to post the recruitment reminder.
+            const imgURL = 'https://cdn.discordapp.com/attachments/1009109018716946473/1089733334613110925/member-of-the-week.png';
+            COOP.CHANNELS._codes(['ADVERTS'], imgURL);
+            COOP.CHANNELS._codes(['ADVERTS'], "Please promote the server, 25 coop point reward for inviting new users!\n\nhttps://discord.gg/thecoop");
+
+            // Calculate the percentage changes.
             const percChanges = await Promise.all(users.map(async (user) => {
                 const result = await this.getPercChange(user.discord_id);
 
@@ -175,7 +181,7 @@ export default class PointsHelper {
             }
 
             // Add reasoning.
-            updateText += `<@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) ${highestChange.points} -> ${highestChange.lastWeekPoints} was selected by MOTW as the best/most promising member this week! `;
+            updateText += `<@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) ${highestChange.lastWeekPoints} -> ${highestChange.points} was selected by MOTW as the best/most promising member this week! `;
 
             // Give the winner the reward.
             if (hadAlready) {
@@ -190,13 +196,15 @@ export default class PointsHelper {
                     .map(runnerUp =>
                         (
                             `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%) ` +
-                            `${runnerUp.points} -> ${runnerUp.lastWeekPoints}`
+                            `${runnerUp.lastWeekPoints} -> ${runnerUp.points}`
                         )
                     ).join('\n');
 
             // TODO: Give them some random eggs and items.
 
             // Inform the community.
+            const motwImgURL = 'https://cdn.discordapp.com/attachments/1009109018716946473/1089733334613110925/member-of-the-week.png';
+            COOP.CHANNELS._codes(['TALK'], motwImgURL);
             COOP.CHANNELS._codes(['TALK'], updateText, { allowedMentions: { users: [], roles: [] } });
 
             // Make sure all historical_points are updated.

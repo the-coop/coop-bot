@@ -269,17 +269,27 @@ export default class ElectionHelper {
             const nextElecFmt = await this.nextElecFmt();
 
             // Announce the winners!
-            const declareText = `**Latest <#${CHANNELS.config.ELECTION.id}> ends with these results!**\n\n` +
+            const announceRole = ROLES._getByCode('SUBSCRIBER');
+            
+            const declareText = `**${ROLES._textRef('SUBSCRIBER')}, Latest <#${CHANNELS.config.ELECTION.id}> ends with these results!**\n\n` +
 
                 `**New ${ROLES._textRef('COMMANDER')}:**\n${hierarchy.commander ? 
-                    hierarchy.commander.username : 'None elected.' }\n\n` +
+                    `${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)`
+                    : 
+                    'None elected.' 
+                }\n\n` +
 
                 `**New ${ROLES._textRef('LEADER')}:** \n` +
                     `${hierarchy.leaders.map(leader => `${leader.username} (${leader.votes} Votes)`).join('\n')}\n\n` +
 
                 `**Next Election:** ${nextElecFmt}.`;
             
-            CHANNELS._send('TALK', declareText);
+            // Send the election image.
+            CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/723660447508725806/1093965248467304528/sacrifice-ritual-3.png');
+            CHANNELS._send(
+                'TALK', declareText, { allowedMentions: { roles: [announceRole.id] }}
+            );
+
             await this.editElectionInfoMsg(declareText);
 
             // Handle election items.
