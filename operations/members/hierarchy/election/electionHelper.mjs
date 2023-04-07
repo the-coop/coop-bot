@@ -271,7 +271,7 @@ export default class ElectionHelper {
             // Announce the winners!
             const announceRole = ROLES._getByCode('SUBSCRIBER');
             
-            const declareText = `**${ROLES._textRef('SUBSCRIBER')}, Latest <#${CHANNELS.config.ELECTION.id}> ends with these results!**\n\n` +
+            const declareText = `**${ROLES._textRef('SUBSCRIBER')}, Latest election ends with these results!**\n\n` +
 
                 `**New ${ROLES._textRef('COMMANDER')}:**\n${hierarchy.commander ? 
                     `${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)`
