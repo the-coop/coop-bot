@@ -193,12 +193,10 @@ export default class PointsHelper {
             // Add the runners up.
             updateText += '\n\nRunners up:\n' +
                 [filteredPercChanges[1], filteredPercChanges[2], filteredPercChanges[3]]
-                    .map(runnerUp =>
-                        (
-                            `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%) ` +
-                            `${runnerUp.lastWeekPoints} -> ${runnerUp.points}`
-                        )
-                    ).join('\n');
+                    .map(runnerUp => (
+                        `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%) ` +
+                        `${runnerUp.lastWeekPoints} ${cpDisplay} -> ${runnerUp.points} $${cpDisplay}`
+                    )).join('\n');
 
             // TODO: Give them some random eggs and items.
 

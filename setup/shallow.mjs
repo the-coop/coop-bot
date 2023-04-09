@@ -72,6 +72,16 @@ const shallowBot = async () => {
         // const txsPrevDay = await CHICKEN.getTransactionsPreviousDay();
         // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
 
+        const msg = await CHANNELS._send('TALK', 'TEST');
+        msg.edit({ components: [
+            new ActionRowBuilder().addComponents([
+                new ButtonBuilder()
+                    .setEmoji('<:we_are:725005855614959709>')
+                    .setLabel('Testing')
+                    .setURL("https://www.thecoop.group/guide/minigames")
+                    .setStyle(ButtonStyle.Link)
+            ])
+        ] });
 
         // BlogHelper.postToReddit('TESTIgewawegwegawgwNG', 'COgwegawegwagwegewggwNTENT');
         
