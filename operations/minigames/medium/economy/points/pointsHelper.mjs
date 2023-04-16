@@ -101,6 +101,7 @@ export default class PointsHelper {
     static async updateMOTW() {
         try {
             // Check time since last election commentation message (prevent spam).
+            const cpDisplay = COOP.MESSAGES.emojiCodeText('COOP_POINT');
             const lastMOTWCheck = parseInt(await Chicken.getConfigVal('last_motwcheck_secs'));
             const hour = 3600;
             const week = hour * 24 * 7;
@@ -114,7 +115,7 @@ export default class PointsHelper {
             const pointUpdateManifest = [];
 
             // Use the week hook to post the recruitment reminder.
-            const imgURL = 'https://cdn.discordapp.com/attachments/1009109018716946473/1089733334613110925/member-of-the-week.png';
+            const imgURL = 'https://cdn.discordapp.com/attachments/748649755965522031/1089739736043761714/refer-friends.png';
             COOP.CHANNELS._codes(['ADVERTS'], imgURL);
             COOP.CHANNELS._codes(['ADVERTS'], "Please promote the server, 25 coop point reward for inviting new users!\n\nhttps://discord.gg/thecoop");
 
@@ -185,7 +186,6 @@ export default class PointsHelper {
 
             // Give the winner the reward.
             if (hadAlready) {
-                const cpDisplay = COOP.MESSAGES.emojiCodeText('COOP_POINT');
                 await Items.add(highestChange.userID, 'COOP_POINT', 30);
                 updateText += `_Given 50${cpDisplay} for MOTW reward._`;
             }
