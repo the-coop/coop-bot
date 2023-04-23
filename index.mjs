@@ -9,14 +9,6 @@ import registerLogging from './setup/logging.mjs';
 
 import eventsManifest from './operations/manifest.mjs';
 
-import * as Sentry from '@sentry/node';
-
-Sentry.init({
-    dsn: "https://3182a42df90c41cfb2b6c483c1933668@o1362263.ingest.sentry.io/6653572",
-
-    // Set tracesSampleRate to 1.0 to capture 100%
-    tracesSampleRate: 1.0,
-});
 
 export default async function bot() {
     console.log('Trying to start bot');
