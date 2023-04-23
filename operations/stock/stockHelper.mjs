@@ -1,12 +1,3 @@
-import { 
-	joinVoiceChannel,
-	createAudioPlayer,
-	createAudioResource,
-	entersState,
-	AudioPlayerStatus,
-	VoiceConnectionStatus,
-    NoSubscriberBehavior
-} from '@discordjs/voice';
 import axios from 'axios';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import moment from 'moment';
