@@ -338,12 +338,17 @@ export default class MessagesHelper {
                 setTimeout(async () => {
                     const entityIDs = MESSAGES.parselink(link);
                     const chan = CHANNELS._get(entityIDs.channel);
-                    if (chan) {
-                        const msg = await chan.messages.fetch(entityIDs.message);
-                        if (msg) resolve(msg);
-                        if (!msg) reject(`${entityIDs.message} message does not exist.`);
-                    } else {
-                        reject(`${entityIDs.channel} channel does not exist.`);
+                    try {
+                        if (chan) {
+                            const msg = await chan.messages.fetch(entityIDs.message);
+                            if (msg) resolve(msg);
+                            if (!msg) reject(`${entityIDs.message} message does not exist.`);
+                        } else {
+                            reject(`${entityIDs.channel} channel does not exist.`);
+                        }
+                    } catch(e) {
+                        console.log('Cannot preload message ' + link);
+                        console.error(e);
                     }
                 }, 666 * index);
             });

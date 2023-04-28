@@ -195,7 +195,7 @@ export default class PointsHelper {
                 [filteredPercChanges[1], filteredPercChanges[2], filteredPercChanges[3]]
                     .map(runnerUp => (
                         `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%) ` +
-                        `${runnerUp.lastWeekPoints} ${cpDisplay} -> ${runnerUp.points} $${cpDisplay}`
+                        `${runnerUp.lastWeekPoints} ${cpDisplay} -> ${runnerUp.points} ${cpDisplay}`
                     )).join('\n');
 
             // TODO: Give them some random eggs and items.

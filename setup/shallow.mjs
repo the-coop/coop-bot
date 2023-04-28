@@ -74,10 +74,16 @@ const shallowBot = async () => {
         // const channels = CHANNELS.config;
         // console.log(channels);
 
-        const coop = SERVER._coop();
+        // const coop = SERVER._coop();
         // const categoryChannels = coop.channels.cache.filter(channel => channel.type === ChannelType.GuildCategory);
         // categoryChannels.map(c => console.log(c.name, c.id));
 
+        // const imgURL = 'https://cdn.discordapp.com/attachments/748649755965522031/1089739736043761714/refer-friends.png';
+        // COOP.CHANNELS._codes(['ADVERTS'], imgURL);
+
+        // Cannot preload message 
+
+        // TemporaryMessages.unregisterTempMsgByLink('https://discordapp.com/channels/723660447508725802/731660320514506826/1100379724737433680');
 
         // coop.channels.create({
         //     name: 'tasks|🔨',

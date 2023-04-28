@@ -71,10 +71,6 @@ export default class SocialHelper {
             if (channel.id === CHANNELS_CONFIG.CREATE_SOCIAL.id)
                 return false;
 
-            // If social-vc channel, filter out.
-            if (channel.id === CHANNELS_CONFIG.SOCIAL_VC.id)
-                return false;
-
             // If it has members (active), filter out.
             if (channel.members.size > 0)
                 return false;

@@ -33,17 +33,6 @@ export default async function bot() {
 
     // Set activity.
     botClient.user.setActivity(`We need /help`, { type: 'WATCHING' });
-
-    // Make internal router work for accessing Discord server via API
-    // const app = express();
-
-    // app.get('/', (req, res) => {
-    //     res.send('OK');
-    // });
-
-    // app.listen(5000);
-
-    // Make load balancer work lol
-}
+};
 
 bot();
