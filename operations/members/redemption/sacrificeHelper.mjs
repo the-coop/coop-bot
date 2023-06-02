@@ -338,20 +338,27 @@ export default class SacrificeHelper {
     static async announce() {
         const sacrificeOffers = await this.loadOffers();
         const sacrifices = await Promise.all(sacrificeOffers.map(async offer => {
-            const message = await MESSAGES.getByLink(offer.message_link);
-            const desc = message?.embeds[0].data.description;
-            
-            const discordID = /<@(\d*)>/.exec(desc)[1];
+            let sacrificee = null;
+            try {
+                const message = await MESSAGES.getByLink(offer.message_link);
+                const desc = message?.embeds[0].data.description;
+                
+                const discordID = /<@(\d*)>/.exec(desc)[1];
+    
+                sacrificee = USERS._getMemberByID(discordID);
 
-            const member = USERS._getMemberByID(discordID)
+            } catch(e) {
+                // TODO: May need to remove the temporary message.
+            }
 
             return {
-                sacrificee: member
+                sacrificee
             };
         }));
+        const validSacrifices = sacrifices.filter(v => v.sacrificee !== null);
 
         // If there are sacrifices update the server about it.
-        if (sacrifices.length > 0) {
+        if (validSacrifices.length > 0) {
             // const announceTitle = `**${EMOJIS.DAGGER}${EMOJIS.DAGGER} The Coop Sacrifice Ritual:**\n\n`;
             // const announceContent = announceTitle + 
             //     'Work in progress...\n\n' +
