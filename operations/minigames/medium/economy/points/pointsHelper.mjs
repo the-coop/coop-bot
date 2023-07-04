@@ -193,6 +193,8 @@ export default class PointsHelper {
             // Add the runners up.
             updateText += '\n\nRunners up:\n' +
                 [filteredPercChanges[1], filteredPercChanges[2], filteredPercChanges[3]]
+                    // In case there are less than 3 runners up, filter.
+                    .filter(i => i == true)
                     .map(runnerUp => (
                         `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%) ` +
                         `${runnerUp.lastWeekPoints} ${cpDisplay} -> ${runnerUp.points} ${cpDisplay}`
