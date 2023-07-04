@@ -111,7 +111,9 @@ const shallowBot = async () => {
         // TODO: Check the crate is included in temp messages and thus preloaded?
 
 
-        
+        // Check server level
+
+
 
     });
 };
