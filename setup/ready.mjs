@@ -32,7 +32,8 @@ export default async () => {
 
         // May be more efficient for now to preload all temporary messages.
         const tempMsgs = await TemporaryMessages.get();
-        MESSAGES.preloadMsgLinks(tempMsgs.map(m => m.message_link))
+        const removeTemps = MESSAGES.preloadMsgLinks(tempMsgs.map(m => m.message_link));
+        console.log('Temporary messages to remove', removeTemps);
 
         // Cache the members.
         USERS._all();

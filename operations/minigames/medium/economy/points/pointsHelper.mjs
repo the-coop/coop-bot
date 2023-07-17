@@ -5,7 +5,7 @@ import Chicken from "../../../../chicken.mjs";
 
 
 // import { ROLES } from "coop-shared/config.mjs";
-import COOP, {ITEMS, STATE } from "../../../../../coop.mjs";
+import COOP, {ITEMS, SERVER, STATE } from "../../../../../coop.mjs";
 import Items from "coop-shared/services/items.mjs";
 
 
@@ -115,9 +115,11 @@ export default class PointsHelper {
             const pointUpdateManifest = [];
 
             // Use the week hook to post the recruitment reminder.
+            const server = SERVER._coop();
+            const inviteLink = server.premiumTier !== 3 ? 'https://discord.com/invite/aYfTmnvS3z' : 'https://discord.gg/thecoop';
             const imgURL = 'https://cdn.discordapp.com/attachments/748649755965522031/1089739736043761714/refer-friends.png';
             COOP.CHANNELS._codes(['ADVERTS'], imgURL);
-            COOP.CHANNELS._codes(['ADVERTS'], "Please promote the server, 25 coop point reward for inviting new users!\n\nhttps://discord.gg/thecoop");
+            COOP.CHANNELS._codes(['ADVERTS'], `Please promote the server, 25 coop point reward for inviting new users!\n\n${inviteLink}`);
 
             // Calculate the percentage changes.
             const percChanges = await Promise.all(users.map(async (user) => {
@@ -194,7 +196,8 @@ export default class PointsHelper {
             updateText += '\n\nRunners up:\n' +
                 [filteredPercChanges[1], filteredPercChanges[2], filteredPercChanges[3]]
                     // In case there are less than 3 runners up, filter.
-                    .filter(i => i == true)
+                    .filter(i => typeof i !== 'undefined')
+                    
                     .map(runnerUp => (
                         `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%) ` +
                         `${runnerUp.lastWeekPoints} ${cpDisplay} -> ${runnerUp.points} ${cpDisplay}`

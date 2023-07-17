@@ -347,8 +347,7 @@ export default class MessagesHelper {
                             reject(`${entityIDs.channel} channel does not exist.`);
                         }
                     } catch(e) {
-                        console.log('Cannot preload message ' + link);
-                        console.error(e);
+                        reject({ error: 'message does not exist', link });
                     }
                 }, 666 * index);
             });

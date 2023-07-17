@@ -4,7 +4,7 @@ dotenv.config();
 import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder, REST, Routes, WebhookClient, ChannelType, PermissionFlagsBits } from 'discord.js';
 import _ from 'lodash';
 import Database from 'coop-shared/setup/database.mjs';
-import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, REACTIONS, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
+import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, POINTS, REACTIONS, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
 import setupCommands from './commands.mjs';
 import { BOTS, EMOJIS } from 'coop-shared/config.mjs';
 import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
@@ -26,6 +26,7 @@ import ElectionHelper from '../operations/members/hierarchy/election/electionHel
 import BlogHelper from '../operations/marketing/blog/blogHelper.mjs';
 import RedditHelper from '../operations/marketing/blog/redditHelper.mjs';
 import ItemsHelper from '../operations/minigames/medium/economy/items/itemsHelper.mjs';
+import PointsHelper from '../operations/minigames/medium/economy/points/pointsHelper.mjs';
 
 
 // Commonly useful.
@@ -110,8 +111,8 @@ const shallowBot = async () => {
 
         // TODO: Check the crate is included in temp messages and thus preloaded?
 
-
         // Check server level
+
 
 
 
