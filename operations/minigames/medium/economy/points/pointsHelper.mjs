@@ -177,14 +177,14 @@ export default class PointsHelper {
     
                 // Took it from previous winner.
                 if (prevWinner) {
-                    updateText = `**MOTW check ran and <@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) seizes the role from <@${prevWinner.id}>!**\n\n`;
+                    updateText = `**MOTW check ran and <@${highestChange.userID}> ${cpDisplay} (+${highestChange.percChange.toFixed(2)}%) seizes the role from <@${prevWinner.id}>!**\n\n`;
                 } else {
-                    updateText = `**MOTW check ran and <@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) seizes the role!**\n\n`;
+                    updateText = `**MOTW check ran and <@${highestChange.userID}> ${cpDisplay} (+${highestChange.percChange.toFixed(2)}%) seizes the role!**\n\n`;
                 }
             }
 
             // Add reasoning.
-            updateText += `<@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) ${highestChange.lastWeekPoints} -> ${highestChange.points} was selected by MOTW as the best/most promising member this week! `;
+            updateText += `<@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) ${highestChange.lastWeekPoints} -> ${highestChange.points} wins MOTW reward and role for highest gain percentage in Coop Points (${cpDisplay}) this week!`;
 
             // Give the winner the reward.
             if (hadAlready) {
@@ -199,7 +199,7 @@ export default class PointsHelper {
                     .filter(i => typeof i !== 'undefined')
                     
                     .map(runnerUp => (
-                        `- <@${runnerUp.userID}> (${runnerUp.percChange.toFixed(2)}%) ` +
+                        `- <@${runnerUp.userID}> (+${runnerUp.percChange.toFixed(2)}%) ` +
                         `${runnerUp.lastWeekPoints} ${cpDisplay} -> ${runnerUp.points} ${cpDisplay}`
                     )).join('\n');
 
