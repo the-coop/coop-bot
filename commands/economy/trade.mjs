@@ -149,7 +149,7 @@ const createTrade = async interaction => {
 		// Generate strings with emojis based on item codes.
 		const tradeAwayStr = `${COOP.MESSAGES.emojiCodeText(offerItemCode)}x${offerQty}`;
 		const receiveBackStr = `${COOP.MESSAGES.emojiCodeText(receiveItemCode)}x${receiveQty}`;
-		const exchangeString = `<- ${tradeAwayStr}\n-> ${receiveBackStr}`;
+		const exchangeString = `<- You lose ${tradeAwayStr}\n-> You gain ${receiveBackStr}`;
 
 		// Check if there is an existing offer matching this specifically.
 		const matchingOffers = await TradingHelper
