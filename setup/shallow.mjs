@@ -27,6 +27,7 @@ import BlogHelper from '../operations/marketing/blog/blogHelper.mjs';
 import RedditHelper from '../operations/marketing/blog/redditHelper.mjs';
 import ItemsHelper from '../operations/minigames/medium/economy/items/itemsHelper.mjs';
 import PointsHelper from '../operations/minigames/medium/economy/points/pointsHelper.mjs';
+import Users from 'coop-shared/services/users.mjs';
 
 
 // Commonly useful.
@@ -110,8 +111,6 @@ const shallowBot = async () => {
         // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
 
         // TODO: Check the crate is included in temp messages and thus preloaded?
-
-
     });
 };
 
