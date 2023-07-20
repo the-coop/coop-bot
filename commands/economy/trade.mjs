@@ -308,24 +308,19 @@ export const _tradeCancel = async (interaction, tradeID) => {
 
 		// Check if valid trade ID given.
 		const trade = await Trading.get(tradeID);
-		if (!trade) return interaction.reply(`Invalid # trade ID - already cancelled?`);
+		if (!trade) return interaction.reply({ ephemeral: true, content: `Invalid # trade ID - already cancelled?` });
 		
 		// Check if user can fulfil the trade.
 		const isYours = trade.trader_id === tradeeID;
-		if (!isYours) return interaction.reply(`Trade #${trade.id} is not yours to cancel.`);
+		if (!isYours) return interaction.reply({ ephemeral: true, content: `Trade #${trade.id} is not yours to cancel.` });
 
 		// Let helper handle accepting logic as it's used in multiple places so far.
 		const tradeCancelled = await TradingHelper.cancel(tradeID, tradeeName);
-		if (tradeCancelled) {
-			// Log cancelled trades
-			interaction.reply(`Trade #${trade.id} cancelled.`);
-		} else {
-			interaction.reply(`Trade #${trade.id} could not be cancelled.`);
-			console.log('Trade cancel failed');
-		}
+		interaction.reply({ ephemeral: true, content: `Trade #${trade.id} cancelled.` });
 		
 	} catch(e) {
-		console.log('Failed to cancel trade.');
+		console.log('Failed to cancel trade. ' + trade.id);
+		interaction.reply({ ephemeral: true, content: `Trade #${trade.id} could not be cancelled.` });
 		console.error(e);
 	}
 }
