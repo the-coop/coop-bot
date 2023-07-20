@@ -13,6 +13,7 @@ import EventsHelper from '../../../eventsHelper.mjs';
 
 import { baseTickDur } from '../../../manifest.mjs';
 import Items from 'coop-shared/services/items.mjs';
+import { PermissionsBitField } from 'discord.js';
 
 
 export const LEADERS_RATIO_PERC = .025;
@@ -138,6 +139,15 @@ export default class ElectionHelper {
         try {
             // Show the channel.
             CHANNELS._show(CHANNELS._getCode('ELECTION').id);
+
+            const everyoneRole = COOP.SERVER._coop().roles.everyone;
+            CHANNELS._getCode('ELECTION').permissionOverwrites.set(
+                [{
+                   id: everyoneRole.id,
+                   deny: [PermissionsBitField.Flags.SendMessages]
+                }], 
+                'Disallow messages, elect/nominate slash command input only.'
+            );
 
             // Turn election on and set latest election to now! :D
             Chicken.setConfig('election_on', 'true');

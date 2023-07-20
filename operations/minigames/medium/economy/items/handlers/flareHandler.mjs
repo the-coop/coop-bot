@@ -16,10 +16,9 @@ export default class FlareHandler {
         if (succeeded) CratedropMinigame.drop();
 
         const feedbackText = `${user.username} used a FLARE and ${succeeded ? 'successfully' : 'potentially'} triggered crate drop!`;
-        COOP.CHANNELS.propagate(interaction.channel, feedbackText, 'ACTIONS');
 
         // Reply to interaction
-        return await interaction.reply({ content: "Successfully used FLARE", ephemeral: true });
+        return await interaction.reply({ content: feedbackText, ephemeral: false });
     }
    
 }
