@@ -1,7 +1,8 @@
-import { ActionRowBuilder, ButtonBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 export default class InteractionHelper {
 
+    
     static confirm(interaction, texts) {
         return new Promise((resolve, reject) => {
             // Show confirmation and prompt.
@@ -10,12 +11,14 @@ export default class InteractionHelper {
                     new ButtonBuilder()
                         .setCustomId('confirm')
                         .setLabel('Confirm')
-                        .setStyle('SUCCESS'),
+                        .setStyle(ButtonStyle.Success),
                     new ButtonBuilder()
                         .setCustomId('cancel')
                         .setLabel('Cancel')
-                        .setStyle('DANGER'),
+                        .setStyle(ButtonStyle.Danger)
                 );
+
+
 
             interaction.reply({ content: texts.preconfirmationText, components: [ConfirmationActions], ephemeral: true });
 
