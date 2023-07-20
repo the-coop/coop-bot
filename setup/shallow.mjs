@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder, REST, Routes, WebhookClient, ChannelType, PermissionFlagsBits } from 'discord.js';
+import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder, REST, Routes, WebhookClient, ChannelType, StringSelectMenuBuilder } from 'discord.js';
 import _ from 'lodash';
 import Database from 'coop-shared/setup/database.mjs';
 import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, POINTS, REACTIONS, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
@@ -113,7 +113,7 @@ const shallowBot = async () => {
 
         // Check server level
 
-
+        console.log(StringSelectMenuBuilder);
 
 
     });

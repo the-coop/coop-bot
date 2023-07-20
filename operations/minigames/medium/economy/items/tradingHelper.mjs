@@ -4,11 +4,10 @@ import { ITEMS, USABLE, USERS, CHANNELS, REACTIONS, CHICKEN, MESSAGES } from "..
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 import Trading from "coop-shared/services/trading.mjs";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, SelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { _tradeAccept, _tradeCancel } from "../../../../../commands/economy/trade.mjs";
 
 
-// TODO: Rename file.
 export default class TradingHelper {
 
     static async onReaction(reaction, user) {
@@ -47,6 +46,24 @@ export default class TradingHelper {
             value: String(t.id)
         }));
 
+        // const select = new StringSelectMenuBuilder()
+        //     .setCustomId('starter')
+        //     .setPlaceholder('Make a selection!')
+        //     .addOptions(
+        //         new StringSelectMenuOptionBuilder()
+        //             .setLabel('Bulbasaur')
+        //             .setDescription('The dual-type Grass/Poison Seed Pokémon.')
+        //             .setValue('bulbasaur'),
+        //         new StringSelectMenuOptionBuilder()
+        //             .setLabel('Charmander')
+        //             .setDescription('The Fire-type Lizard Pokémon.')
+        //             .setValue('charmander'),
+        //         new StringSelectMenuOptionBuilder()
+        //             .setLabel('Squirtle')
+        //             .setDescription('The Water-type Tiny Turtle Pokémon.')
+        //             .setValue('squirtle'),
+        //     );
+
         if (interaction.customId === 'accept_trade' && tradeOptions.length === 0)
             return await interaction.reply({ 
                 ephemeral: true, 
@@ -58,7 +75,7 @@ export default class TradingHelper {
             return await interaction.reply({ 
                 ephemeral: true, 
                 content: '**__Warning__ Trade Action**: Pick a trade to accept:', 
-                components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
+                components: [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder()
                     .setCustomId('accept_trade_select')
                     .setPlaceholder('Select a trade #ID to accept:')
                     .setMaxValues(1)
@@ -76,7 +93,7 @@ export default class TradingHelper {
             return await interaction.reply({ 
                 ephemeral: true, 
                 content: '**__Warning__ Trade Action**: Pick a trade to cancel:', 
-                components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder()
+                components: [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder()
                     .setCustomId('cancel_trade_select')
                     .setPlaceholder('Select a trade #ID to cancel:')
                     .setMaxValues(1)
