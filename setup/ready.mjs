@@ -30,13 +30,13 @@ export default async () => {
         // TODO
         // Preload egghunt items, crates, dropped items, woodcutting, mining.
 
-        // May be more efficient for now to preload all temporary messages.
-        const tempMsgs = await TemporaryMessages.get();
-        const removeTemps = MESSAGES.preloadMsgLinks(tempMsgs.map(m => m.message_link));
-        console.log('Temporary messages to remove', removeTemps);
-
         // Cache the members.
         USERS._all();
+
+        // May be more efficient for now to preload all temporary messages.
+        const tempMsgs = await TemporaryMessages.get();
+        const removeTemps = await Promise.all(MESSAGES.preloadMsgLinks(tempMsgs.map(m => m.message_link)));
+        console.log('Temporary messages to remove', removeTemps);
 
     } catch(e) {
         console.error(e);
