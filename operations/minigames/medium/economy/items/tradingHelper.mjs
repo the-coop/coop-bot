@@ -266,7 +266,7 @@ export default class TradingHelper {
                 const tradeConfirmStr = `${actionStr}**\n\n${exchangeStr}`;
 
                 // Log confirmed trades
-                CHANNELS._postToChannelCode('TRADE', tradeConfirmStr, 999);
+                CHANNELS._postToChannelCode('ACTIONS', tradeConfirmStr, 999);
 
                 // Return successful result.
                 return true;
@@ -289,7 +289,7 @@ export default class TradingHelper {
             const tradeCancelStr = `**${canceleeName} cancelled trade #${trade.id}**\n\n${lossItemQtyStr}`;
 
             // Log confirmed trades
-            CHANNELS._postToChannelCode('TRADE', tradeCancelStr, 999);
+            CHANNELS._postToChannelCode('ACTIONS', tradeCancelStr, 999);
 
             // Return successful result.
             return true;
