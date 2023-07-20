@@ -169,7 +169,7 @@ export default class MessagesHelper {
                         // Ignore already deleted messages.
                         if (e.message !== 'Unknown Message') {
                             console.error(e);
-                            reject(e);
+                            resolve(e);
                         } else {
                             resolve(false);
                         }
@@ -342,12 +342,12 @@ export default class MessagesHelper {
                         if (chan) {
                             const msg = await chan.messages.fetch(entityIDs.message);
                             if (msg) resolve(msg);
-                            if (!msg) reject(`${entityIDs.message} message does not exist.`);
+                            if (!msg) resolve(`${entityIDs.message} message does not exist.`);
                         } else {
-                            reject(`${entityIDs.channel} channel does not exist.`);
+                            resolve(`${entityIDs.channel} channel does not exist.`);
                         }
                     } catch(e) {
-                        reject({ error: 'message does not exist', link });
+                        resolve({ error: 'message does not exist', link });
                     }
                 }, 666 * index);
             });
