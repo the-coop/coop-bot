@@ -34,10 +34,14 @@ export default async () => {
         USERS._all();
 
         // May be more efficient for now to preload all temporary messages.
-        const tempMsgs = await TemporaryMessages.get();
-        const removeTemps = await Promise.all(MESSAGES.preloadMsgLinks(tempMsgs.map(m => m.message_link)));
-        console.log('Temporary messages to remove', removeTemps);
+        const tempMsgsList = await TemporaryMessages.get();
+        const expiredTempMsgs = (
+            await MESSAGES.preloadMsgLinks(
+                tempMsgsList.map(m => m.message_link))
+        ).filter(i => i.error);
 
+        // Remove expired temporary messages.
+        expiredTempMsgs.map(msg => TemporaryMessages.unregisterTempMsgByLink(msg.link));
     } catch(e) {
         console.error(e);
     }

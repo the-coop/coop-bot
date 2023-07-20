@@ -111,15 +111,7 @@ const shallowBot = async () => {
 
         // TODO: Check the crate is included in temp messages and thus preloaded?
 
-        // Check server level
-        const tempMsgsList = await TemporaryMessages.get();
-        const expiredTempMsgs = (
-            await MESSAGES.preloadMsgLinks(
-                tempMsgsList.map(m => m.message_link))
-        ).filter(i => i.error);
 
-        // Remove expired temporary messages.
-        expiredTempMsgs.map(msg => TemporaryMessages.unregisterTempMsgByLink(msg.link));
     });
 };
 
