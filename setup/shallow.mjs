@@ -111,6 +111,23 @@ const shallowBot = async () => {
         // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
 
         // TODO: Check the crate is included in temp messages and thus preloaded?
+
+
+        // TODO: Preload?
+        // const tempMsgsList = await TemporaryMessages.get();
+        // const expiredTempMsgs = (
+        //     await MESSAGES.preloadMsgLinks(
+        //         tempMsgsList.map(m => m.message_link)
+        //     )
+        // ).filter(i => i.error);
+
+        // await MESSAGES.preloadMsgLinks(['https://discord.com/channels/723660447508725802/1043377209768947722/1131700677849120828']);
+
+        // const listenReactions = (fn) => COOP.STATE.CLIENT.on('messageReactionAdd', fn);
+        // listenReactions((reaction, user) => {
+        //     console.log(reaction);
+        //     console.log(user);
+        // });
     });
 };
 

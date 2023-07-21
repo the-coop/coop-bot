@@ -349,7 +349,7 @@ export default class MessagesHelper {
                     } catch(e) {
                         resolve({ error: 'message does not exist', link });
                     }
-                }, 666 * index);
+                }, 275 * index);
             });
         }));
     }
