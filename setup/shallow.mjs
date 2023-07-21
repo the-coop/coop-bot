@@ -128,6 +128,9 @@ const shallowBot = async () => {
         //     console.log(reaction);
         //     console.log(user);
         // });
+
+        const tempMsgsList = await TemporaryMessages.get();
+        console.log(tempMsgsList);
     });
 };
 

@@ -7,6 +7,7 @@ import COOP, { STATE } from '../../../coop.mjs';
 import { EMOJIS } from 'coop-shared/config.mjs';
 import EconomyNotifications from '../../activity/information/economyNotifications.mjs';
 import Items from 'coop-shared/services/items.mjs';
+import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
 
 
 const CRATE_DATA = {
@@ -239,6 +240,7 @@ export default class CratedropMinigame {
             if (random) {
                 // Drop the crate via emoji.
                 const crateMsg = await random.send(COOP.MESSAGES.emojifyID(EMOJIS[rarity]));
+                TemporaryMessages.add(crateMsg, 60 * 60 * 125, 'CRATE');
 
                 // Format rarity text and provide a record.
                 const rarityWord = COOP.MESSAGES.titleCase(rarity.split('_')[0]);
