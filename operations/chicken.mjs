@@ -3,7 +3,7 @@ import moment from 'moment';
 import ElectionHelper from './members/hierarchy/election/electionHelper.mjs';
 import CooperMorality from './minigames/small/cooperMorality.mjs';
 
-import { STATE, CHANNELS, TIME, ITEMS, ROLES } from "../coop.mjs";
+import { STATE, CHANNELS, TIME, ITEMS, ROLES, MESSAGES } from "../coop.mjs";
 
 import Database from 'coop-shared/setup/database.mjs';
 // import VisualisationHelper from './minigames/medium/conquest/visualisationHelper.mjs';
@@ -127,10 +127,12 @@ export default class Chicken {
             const newDayMessage = `${ROLES._textRef('NEW_COOP_DAY')}\n\n` +
 
                 `__**Egghunt past 24hr:**__\n` +
-                    Object.keys(summarisedTxs.egghunt.collected).map(eggCode => {
+                    Object.keys(summarisedTxs.egghunt.collected)
+                    .filter(eggCode => summarisedTxs.egghunt.collected[eggCode] > 0)
+                    .map(eggCode => {
                         const count = summarisedTxs.egghunt.collected[eggCode];
-                        return `${eggCode} ${count}`;
-                    }).join(', ');
+                        return `${MESSAGES.emojiCodeText(eggCode)} ${eggCode} x ${count}`;
+                    }).join('\n');
 
                 // const txs = await this.getTransactionsPreviousDay();
                 // console.log(txs);

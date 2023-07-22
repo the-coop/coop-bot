@@ -94,7 +94,6 @@ const shallowBot = async () => {
         // });
 
         // coop.channels.cache.get('1097915532814057502').delete();
-        
 
         // Agency | 🏭 1097911978560856165
 
@@ -103,15 +102,12 @@ const shallowBot = async () => {
         // const agency = CHANNELS._get('1097911978560856165');
         // console.log(agency.name, agency.id);
 
-
         // TODO: Restrict permissions to AGENCY role
-
 
         // const txsPrevDay = await CHICKEN.getTransactionsPreviousDay();
         // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
 
         // TODO: Check the crate is included in temp messages and thus preloaded?
-
 
         // TODO: Preload?
         // const tempMsgsList = await TemporaryMessages.get();
@@ -131,6 +127,8 @@ const shallowBot = async () => {
 
         const tempMsgsList = await TemporaryMessages.get();
         console.log(tempMsgsList);
+
+        // Items.add('786671654721683517', 'FLARE', 10, 'Testing flare persistence');;
     });
 };
 
