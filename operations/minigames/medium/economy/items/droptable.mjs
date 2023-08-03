@@ -118,6 +118,7 @@ export default class DropTable {
         // Ensure it has money bag reaction by Cooper (indicates drop table)
         const isDropTableMsg = await ReactionHelper.userReactedWith(reaction.message, BOTS.COOPER.id, '💰');
         console.log(isDropTableMsg);
+        
         if (!isDropTableMsg) return;
 
         // Ensure no other collect reaction emojis

@@ -83,7 +83,7 @@ export default class EconomyNotifications {
 
                 notificationString += '**Latest Egg Hunt Totals:**\n';
 
-                console.log(egghunt);
+                // console.log(egghunt);
 
                 // Map the eggs with the correct emoji.
                 ['AVERAGE_EGG', 'RARE_EGG', 'LEGENDARY_EGG', 'TOXIC_EGG'].map(eggCode => {
@@ -275,7 +275,7 @@ export default class EconomyNotifications {
     }
 
     static updateCrateDrop(crateDropEvent) {
-        console.log(crateDropEvent);
+        // console.log(crateDropEvent);
 
         if (typeof STATE.EVENTS_HISTORY['CRATE_DROP'] === 'undefined') {
             STATE.EVENTS_HISTORY['CRATE_DROP'] = {

@@ -383,6 +383,8 @@ export default class CompetitionHelper {
         // Annouce publicly (with pings).
         CHANNELS._send('TALK', publicPrizeText);
 
+        this.buildBlogPost();
+
         // Clear the messages.
         this.clear(competionCode);
 
@@ -391,8 +393,6 @@ export default class CompetitionHelper {
 
         // Clear the entrants.
         this.clearCompetitionEntrants(competionCode);
-
-        this.buildBlogPost();
 
         // Hide the channel until next time
         const channelID = CHANNELS._getCode(competionCode.toUpperCase()).id;

@@ -305,15 +305,6 @@ export default class ElectionHelper {
             // Handle election items.
             await this.resetHierarchyItems(hierarchy);
 
-            // Add the election crown to elected commander.
-            if (hierarchy.commander)
-                Items.add(hierarchy.commander.id, 'ELECTION_CROWN', 1, 'Election victory (commander)');
-
-            // Add the leader swords to elected leaders
-            hierarchy.leaders.map(leader => 
-                Items.add(leader.id, 'LEADERS_SWORD', 1, 'Election victory (leader)')
-            );
-
             // Hide the channel.
             CHANNELS._hide(CHANNELS._getCode('ELECTION').id);
 
@@ -334,7 +325,7 @@ export default class ElectionHelper {
             
             // Remove the former leader roles.
             let index = 0;
-            Promise.all(exLeaders.map(async (exLeader) => {
+            await Promise.all(exLeaders.map(async (exLeader) => {
                 index++;
 
                 // Check ex leader is not re-elected.
@@ -357,15 +348,6 @@ export default class ElectionHelper {
                 if (exCommander.user.id !== hierarchy.commander.id) {
                     // Remove the former commander role.
                     await ROLES._remove(exCommander.user.id, 'COMMANDER');
-            
-                    // Add former commander to ex commander!
-                    // if (!ROLES._has(exCommander, 'FORMER_COMMANDER')) {
-                    //     CHANNELS._send('TALK', `${exCommander.user.username} is recognised as a former commander and allowed access into the former commanders' secret channel!`);
-                    //     await ROLES._add(exCommander.user.id, 'FORMER_COMMANDER');
-        
-                    //     // Update last served data for the former commander.
-                    //     // last_served
-                    // }
                 } else {
                     CHANNELS._send('TALK', `${exCommander.user.username} is re-elected as Commander for another term!`);
                 }
@@ -385,8 +367,18 @@ export default class ElectionHelper {
             const leaderItems = await ITEMS.getUsersWithItem('LEADERS_SWORD');
             const commanderItems = await ITEMS.getUsersWithItem('ELECTION_CROWN');        
 
+            // Add the election crown to elected commander if they don't already have it.
+            if (hierarchy.commander && commanderItems?.[0]?.owner_id !== hierarchy.commander.id)
+                Items.add(hierarchy.commander.id, 'ELECTION_CROWN', 1, 'Election victory (commander)');
+
+            // Add the leader swords to elected leaders if they don't already have it.
+            hierarchy.leaders.map(leader => {
+                if (!leaderItems.find(l => l.owner_id === leader.id))
+                    Items.add(leader.id, 'LEADERS_SWORD', 1, 'Election victory (leader)')
+            });
+
             // Remove all of the swords from the old leaders.            
-            leaderItems.map(async exLeader => {
+            await Promise.all(leaderItems.map(async exLeader => {
                 // Check ex leader is not re-elected.
                 let leaderReElected = false;
                 hierarchy.leaders.map(l => {
@@ -396,8 +388,8 @@ export default class ElectionHelper {
                 
                 // If it isn't a relected leader, remove role.
                 if (!leaderReElected)
-                    Items.subtract(exLeader.owner_id, 'LEADERS_SWORD', 1, 'Election reset');
-            });
+                    await Items.subtract(exLeader.owner_id, 'LEADERS_SWORD', 1, 'Election reset');
+            }));
 
             // Remove commander crown if not re-elected.
             if (typeof commanderItems[0] !== 'undefined' && hierarchy.commander) {

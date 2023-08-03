@@ -28,6 +28,7 @@ import RedditHelper from '../operations/marketing/blog/redditHelper.mjs';
 import ItemsHelper from '../operations/minigames/medium/economy/items/itemsHelper.mjs';
 import PointsHelper from '../operations/minigames/medium/economy/points/pointsHelper.mjs';
 import Users from 'coop-shared/services/users.mjs';
+import CompetitionHelper from '../operations/social/competitionHelper.mjs';
 
 
 // Commonly useful.
@@ -71,64 +72,14 @@ const shallowBot = async () => {
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-        // TODO: Get list of channels/categories.
-
-        // const channels = CHANNELS.config;
-        // console.log(channels);
-
-        // const coop = SERVER._coop();
-        // const categoryChannels = coop.channels.cache.filter(channel => channel.type === ChannelType.GuildCategory);
-        // categoryChannels.map(c => console.log(c.name, c.id));
-
-        // const imgURL = 'https://cdn.discordapp.com/attachments/748649755965522031/1089739736043761714/refer-friends.png';
-        // COOP.CHANNELS._codes(['ADVERTS'], imgURL);
-
-        // Cannot preload message 
-
-        // TemporaryMessages.unregisterTempMsgByLink('https://discordapp.com/channels/723660447508725802/731660320514506826/1100379724737433680');
-
-        // coop.channels.create({
-        //     name: 'tasks|🔨',
-        //     type: ChannelType.GuildForum,
-        //     parent: '1097911978560856165'
-        // });
-
-        // coop.channels.cache.get('1097915532814057502').delete();
-
-        // Agency | 🏭 1097911978560856165
-
-        // TODO: Check if agency role still exists.
-
         // const agency = CHANNELS._get('1097911978560856165');
         // console.log(agency.name, agency.id);
 
+        // TODO: Check if agency role still exists.
         // TODO: Restrict permissions to AGENCY role
 
         // const txsPrevDay = await CHICKEN.getTransactionsPreviousDay();
         // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
-
-        // TODO: Check the crate is included in temp messages and thus preloaded?
-
-        // TODO: Preload?
-        // const tempMsgsList = await TemporaryMessages.get();
-        // const expiredTempMsgs = (
-        //     await MESSAGES.preloadMsgLinks(
-        //         tempMsgsList.map(m => m.message_link)
-        //     )
-        // ).filter(i => i.error);
-
-        // await MESSAGES.preloadMsgLinks(['https://discord.com/channels/723660447508725802/1043377209768947722/1131700677849120828']);
-
-        // const listenReactions = (fn) => COOP.STATE.CLIENT.on('messageReactionAdd', fn);
-        // listenReactions((reaction, user) => {
-        //     console.log(reaction);
-        //     console.log(user);
-        // });
-
-        const tempMsgsList = await TemporaryMessages.get();
-        console.log(tempMsgsList);
-
-        // Items.add('786671654721683517', 'FLARE', 10, 'Testing flare persistence');;
     });
 };
 

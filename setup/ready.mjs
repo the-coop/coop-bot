@@ -40,7 +40,7 @@ export default async () => {
                 tempMsgsList.map(m => m.message_link))
         ).filter(i => i.error);
 
-        console.log("Temporary messages perloaded.");
+        console.log("Temporary messages preloaded.");
 
         // Remove expired temporary messages.
         expiredTempMsgs.map(msg => TemporaryMessages.unregisterTempMsgByLink(msg.link));

@@ -77,6 +77,7 @@ export default class StockHelper {
             this.setMarketOpen(false);
             this.setPowerHour(false);
 
+            CHANNELS._send('STOCKS_VC_TEXT', "https://cdn.discordapp.com/attachments/748649755965522031/1136026746450350200/market-closed.png");
             CHANNELS._send('STOCKS_VC_TEXT', "Stock market closed");
             // Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/close-market.mp3');
         }
@@ -87,6 +88,8 @@ export default class StockHelper {
             this.setMarketOpen(true);
             
             // Ping opt in role.
+
+            await CHANNELS._send('STOCKS_VC_TEXT', 'https://cdn.discordapp.com/attachments/748649755965522031/1136451537376399440/market-open.png');
             const msg = await CHANNELS._send('STOCKS_VC_TEXT', `${ROLES._textRef('MARKET_OPEN_PING')}, NYSE market open - good luck!`, {});
             msg.edit({ components: [
                 new ActionRowBuilder()
@@ -106,7 +109,8 @@ export default class StockHelper {
         // Check if power hour needs starting (stopped when market closes).
         const isPowerHourTime = date.hours() >= 15;
         if (currentlyOpen && isPowerHourTime && !isPowerHourRunning) {
-            CHANNELS._send('STOCKS_VC_TEXT', "Power hour detection?");
+            CHANNELS._send('STOCKS_VC_TEXT', "https://cdn.discordapp.com/attachments/748649755965522031/1136026402211250227/power-hour.png");
+            // CHANNELS._send('STOCKS_VC_TEXT', "Power hour detection?");
             this.setPowerHour(true);
             // Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/powerhour1.mp3');
         }
