@@ -25,7 +25,8 @@ export default class DropTable {
             'MINE',
             'DEFUSE_KIT',
             'FLARE',
-            'STEEL_BAR'
+            'STEEL_BAR',
+            'CHESTNUT'
         ],
         LEGENDARY: [
             'RPG',

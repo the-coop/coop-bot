@@ -80,6 +80,10 @@ const shallowBot = async () => {
 
         // const txsPrevDay = await CHICKEN.getTransactionsPreviousDay();
         // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
+
+        // Added acorn
+        // TODO: Acorn spawning trees
+
     });
 };
 

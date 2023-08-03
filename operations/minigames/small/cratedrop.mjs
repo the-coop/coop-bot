@@ -31,7 +31,7 @@ const CRATE_DATA = {
         openingPoints: 25,
         percHitsReq: .04,
         rewards: DropTable.TIERS.LEGENDARY
-    },
+    }
 };
 
 // Rarity likelihood base number.

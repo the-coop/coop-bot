@@ -14,6 +14,7 @@ import EasterEggHandler from '../../operations/minigames/medium/economy/items/ha
 import GoldCoinHandler from '../../operations/minigames/medium/economy/items/handlers/goldCoinHandler.mjs';
 import MineHandler from '../../operations/minigames/medium/economy/items/handlers/mineHandler.mjs';
 import DefuseKitHandler from '../../operations/minigames/medium/economy/items/handlers/defuseKitHandler.mjs';
+import ChestnutHandler from '../../operations/minigames/medium/economy/items/handlers/chestnutHandler.mjs';
 
 export const name = 'use';
 
@@ -41,7 +42,8 @@ const handlers = {
     SHIELD: ShieldHandler,
     EASTER_EGG: EasterEggHandler,
     MINE: MineHandler,
-    DEFUSE_KIT: DefuseKitHandler
+    DEFUSE_KIT: DefuseKitHandler,
+    CHESTNUT: ChestnutHandler
 };
 
 export const execute = async (interaction) => {
@@ -68,4 +70,4 @@ export const execute = async (interaction) => {
     const handler = handlers[itemCode];
     if (handler)
         return handler.use(interaction, interaction.user);
-}
+};
