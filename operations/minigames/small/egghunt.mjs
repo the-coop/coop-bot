@@ -13,6 +13,7 @@ import UsableItemHelper from '../medium/economy/items/usableItemHelper.mjs';
 import SkillsHelper from '../medium/skills/skillsHelper.mjs';
 
 import { isRegisteredUserGuard } from '../medium/economy/itemCmdGuards.mjs';
+import ReactionHelper from '../../activity/messages/reactionHelper.mjs';
 
 
 export const EGG_DATA = {
@@ -224,6 +225,12 @@ export default class EggHuntMinigame {
         try {
             // Ignore later reactions than the first one.
             if (reaction.count > 2) return null;
+
+            // Small chance of being stolen by a fox.
+            if (STATE.CHANCE.bool({ likelihood: 5 })) {
+                reaction.message.edit('Stolen by fox 🦊');
+                return ReactionHelper.removeAll(reaction.message);
+            }
 
             const rarity = this.calculateRarityFromMessage(reaction.message);
             const reward = EGG_DATA[rarity].points;

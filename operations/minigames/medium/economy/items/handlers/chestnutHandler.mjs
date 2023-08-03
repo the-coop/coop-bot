@@ -1,8 +1,6 @@
-import EggHuntMinigame from "../../../../small/egghunt.mjs";
-
 import { usedOwnedUsableGuard } from "../../itemCmdGuards.mjs";
 import COOP, { STATE } from "../../../../../../coop.mjs";
-
+import WoodcuttingMinigame from "../../../../small/woodcutting.mjs";
 
 export default class ChestnutHandler {
 
@@ -15,7 +13,7 @@ export default class ChestnutHandler {
     
             // Attempt to run egg drop. :D
             const succeeded = STATE.CHANCE.bool({ likelihood: 40 });
-            if (succeeded) EggHuntMinigame.run();
+            if (succeeded) WoodcuttingMinigame.run();
     
             // Add feedback.
             const feedbackText = `${user.username} used chestnut and ${succeeded ? '' : 'failed to'} triggered woodcutting trees!`;
@@ -32,4 +30,4 @@ export default class ChestnutHandler {
         }
     }
    
-}
+};
