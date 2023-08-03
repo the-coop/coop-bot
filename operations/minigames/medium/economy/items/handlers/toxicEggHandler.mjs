@@ -57,7 +57,7 @@ export default class ToxicEggHandler {
 
                     const feedbackMsgText = `${actionInfoText}: ${damageInfoText}.`;
 
-                    const feedbackMsg = await COOP.CHANNELS.propagate(msg, feedbackMsgText, 'ATTACKS', true);
+                    const feedbackMsg = await COOP.CHANNELS.propagate(msg, feedbackMsgText, 'ACTIONS', true);
                     COOP.MESSAGES.delayReact(feedbackMsg, '☢️', 1333);
                 }
             } catch(e) {

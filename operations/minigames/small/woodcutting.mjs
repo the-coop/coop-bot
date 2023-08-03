@@ -45,7 +45,7 @@ export default class WoodcuttingMinigame {
         // Do this in mining also!
         // Check for an existing update message to append to!
 
-        // Calculate magnitude from message: more rocks, greater reward.
+        // Calculate multiplier from message: more rocks, greater reward.
         const textMagnitude = MESSAGES.countAllEmojiCodes(msg.content);
         const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 4 });
 
@@ -149,16 +149,16 @@ export default class WoodcuttingMinigame {
     static async run() {
         const base = Math.max(1, Statistics.calcCommunityVelocity());
 
-        let magnitude = STATE.CHANCE.natural({ min: base, max: base * 5 });
+        let multiplier = STATE.CHANCE.natural({ min: base, max: base * 5 });
 
         if (STATE.CHANCE.bool({ likelihood: 5 }))
-            magnitude = STATE.CHANCE.natural({ min: base * 5, max: base * 20 });
+            multiplier = STATE.CHANCE.natural({ min: base * 5, max: base * 20 });
 
         if (STATE.CHANCE.bool({ likelihood: 1 }))
-            magnitude = STATE.CHANCE.natural({ min: base * 7, max: base * 35 });
+            multiplier = STATE.CHANCE.natural({ min: base * 7, max: base * 35 });
 
         const eventChannel = CHANNELS._randomSpammable();
-        const woodMsg = await eventChannel.send(EMOJIS.WOOD.repeat(magnitude));
+        const woodMsg = await eventChannel.send(EMOJIS.WOOD.repeat(multiplier));
             
         // Post a message for collecting events against.
         const updatesMsg = await eventChannel.send('**WOODCUTTING IN PROGRESS**');
@@ -168,8 +168,8 @@ export default class WoodcuttingMinigame {
 
         MESSAGES.delayReact(woodMsg, '🪓', 666);
 
-        const branchText = magnitude > 1 ? `${magnitude} branches` : `a branch`;
-        const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(magnitude))} ${ROLES._textRef('MINIGAME_PING')}, a tree with ${branchText} to fell!`;
+        const branchText = multiplier > 1 ? `${multiplier} branches` : `a branch`;
+        const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(multiplier))} ${ROLES._textRef('MINIGAME_PING')}, a tree with ${branchText} to fell!`;
         CHANNELS._send('TALK', woodcuttingEventText, {});
     }
 }

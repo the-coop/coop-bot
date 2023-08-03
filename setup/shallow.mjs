@@ -1,34 +1,10 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { GatewayIntentBits, Client, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder, REST, Routes, WebhookClient, ChannelType, StringSelectMenuBuilder } from 'discord.js';
 import _ from 'lodash';
+import { GatewayIntentBits, Client } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
 import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, POINTS, REACTIONS, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
-import setupCommands from './commands.mjs';
-import { BOTS, EMOJIS } from 'coop-shared/config.mjs';
-import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
-import Items from 'coop-shared/services/items.mjs';
-
-import TradingHelper from '../operations/minigames/medium/economy/items/tradingHelper.mjs';
-import Trading from 'coop-shared/services/trading.mjs';
-import StockHelper from '../operations/stock/stockHelper.mjs';
-import Chicken from '../operations/chicken.mjs';
-import ActivityHelper from '../operations/activity/activityHelper.mjs';
-import UsersHelper from '../operations/members/usersHelper.mjs';
-import TemporaryMessages from '../operations/activity/maintenance/temporaryMessages.mjs';
-import SocialHelper from '../operations/social/socialHelper.mjs';
-import UserRoles from 'coop-shared/services/userRoles.mjs';
-import DatabaseHelper from 'coop-shared/helper/databaseHelper.mjs';
-import SacrificeHelper from '../operations/members/redemption/sacrificeHelper.mjs';
-import ProjectsHelper from '../operations/productivity/projects/projectsHelper.mjs';
-import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
-import BlogHelper from '../operations/marketing/blog/blogHelper.mjs';
-import RedditHelper from '../operations/marketing/blog/redditHelper.mjs';
-import ItemsHelper from '../operations/minigames/medium/economy/items/itemsHelper.mjs';
-import PointsHelper from '../operations/minigames/medium/economy/points/pointsHelper.mjs';
-import Users from 'coop-shared/services/users.mjs';
-import CompetitionHelper from '../operations/social/competitionHelper.mjs';
 
 
 // Commonly useful.
@@ -82,20 +58,23 @@ const shallowBot = async () => {
         // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
 
         // Added acorn
+        // Get them into the game
         // TODO: Acorn spawning trees
+
+        
+        
+        
+        const talk = await COOP.CHANNELS._getCode('TALK');
+        setInterval(async () => {
+            const dropMsg = await COOP.USABLE.drop(talk, 'CHESTNUT');
+            // setTimeout(() => dropMsg.edit('Stolen by fox 🦊'), 1500);
+            // TODO: Remove reactions
+        }, 30000);
+
+        // talk.send('🦊')
+        
 
     });
 };
 
 shallowBot();
-
-
-
-
-// NOTES BELOW
-
-
-
-// DEV WORK AND TESTING ON THE LINES BELOW.
-
-

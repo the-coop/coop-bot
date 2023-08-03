@@ -51,7 +51,7 @@ export default class BombHandler {
                         // TODO: After one of these hits... should remove all reactions etc.
 
                         // Propagate without pinging.   
-                        COOP.CHANNELS.silentPropagate(msg, feedbackText, 'ATTACKS');
+                        COOP.CHANNELS.silentPropagate(msg, feedbackText, 'ACTIONS');
                     }, 5000);
                 }
             } catch(e) {

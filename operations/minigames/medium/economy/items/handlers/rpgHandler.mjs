@@ -63,7 +63,7 @@ export default class RPGHandler {
         const successText = MESSAGES.noWhiteSpace`**${rpgEmojiText.repeat(2)} <@${attacker.id}> used an ${rpgEmojiText} RPG on ${targetName}**, 
             blasting them for ${damage}, weakening their shield and potentially starting a chain reaction! =o`;
 
-        COOP.CHANNELS.silentPropagate(msg, successText, 'ATTACKS', true);
+        COOP.CHANNELS.silentPropagate(msg, successText, 'ACTIONS', true);
     }
    
 }
