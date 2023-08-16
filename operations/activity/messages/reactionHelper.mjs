@@ -84,7 +84,8 @@ export default class ReactionHelper {
     }
 
     static removeAll(msg) {
-        return msg.reactions.removeAll();
+        if (msg && msg?.channel?.type !== 'DM')
+            return msg.reactions.removeAll();
     }
 
     // handleConsentSingleVoteMsg - In other words... a self-confirmation prompt?

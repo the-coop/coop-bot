@@ -16,7 +16,7 @@ export default class ChestnutHandler {
             if (succeeded) WoodcuttingMinigame.run();
     
             // Add feedback.
-            const feedbackText = `${user.username} used chestnut and ${succeeded ? '' : 'failed to'} triggered woodcutting trees!`;
+            const feedbackText = `${user.username} used chestnut and ${succeeded ? 'did' : 'failed to'} trigger woodcutting trees!`;
     
             // Create record
             COOP.CHANNELS._send('TALK', feedbackText);

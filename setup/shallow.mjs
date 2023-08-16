@@ -61,15 +61,19 @@ const shallowBot = async () => {
         // Get them into the game
         // TODO: Acorn spawning trees
 
+
+
+        // const msg = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/723660447508725806/1141169580081954916');
+        // console.log(msg);
         
         
         
-        const talk = await COOP.CHANNELS._getCode('TALK');
-        setInterval(async () => {
-            const dropMsg = await COOP.USABLE.drop(talk, 'CHESTNUT');
-            // setTimeout(() => dropMsg.edit('Stolen by fox 🦊'), 1500);
-            // TODO: Remove reactions
-        }, 30000);
+        // const talk = await COOP.CHANNELS._getCode('TALK');
+        // setInterval(async () => {
+        //     const dropMsg = await COOP.USABLE.drop(talk, 'CHESTNUT');
+        //     // setTimeout(() => dropMsg.edit('Stolen by fox 🦊'), 1500);
+        //     // TODO: Remove reactions
+        // }, 30000);
 
         // talk.send('🦊')
         
