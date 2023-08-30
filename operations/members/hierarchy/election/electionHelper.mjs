@@ -140,7 +140,7 @@ export default class ElectionHelper {
             // Show the channel.
             CHANNELS._show(CHANNELS._getCode('ELECTION').id);
 
-            const everyoneRole = COOP.SERVER._coop().roles.everyone;
+            const everyoneRole = SERVER._coop().roles.everyone;
             CHANNELS._getCode('ELECTION').permissionOverwrites.set(
                 [{
                    id: everyoneRole.id,
