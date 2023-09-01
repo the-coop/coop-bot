@@ -183,7 +183,7 @@ export default class ChannelHelper {
         else 
             channel.permissionOverwrites.create(
                 channel.guild.roles.everyone, 
-                { VIEW_CHANNEL: true, READ_MESSAGE_HISTORY: true }
+                { ViewChannel: true, ReadMessageHistory: true }
             );
      }
 
