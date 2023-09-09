@@ -20,6 +20,14 @@ export const COMPETITION_ROLES = {
 
 export default class CompetitionHelper {
 
+    static getAll() {
+        return DatabaseHelper.manyQuery({
+            name: "load-all-competition",
+            text: `SELECT * FROM events WHERE event_code IN ($1, $2, $3)`,
+            values: Object.keys(COMPETITION_ROLES).map(kc => kc.toLowerCase())
+        });
+    }
+
     static async get(code) {
         const competitions = await DatabaseHelper.singleQuery({
             name: "load-competition",
@@ -304,13 +312,14 @@ export default class CompetitionHelper {
         const progress = await this.check(competition);
 
         // Calculate the rightful winners.
-        let winners = progress.entries;
+        let winners = progress.entries.filter(participant => participant.votes > 0);
 
         // Sort entries into vote order.
         winners.sort((a, b) => a.votes > b.votes);
 
         // Limit winners to first 3.
         winners = winners.slice(0, 3);
+
 
         // Handle rewards and notifications for each winner.
         winners.map((w, index) => {
@@ -343,7 +352,7 @@ export default class CompetitionHelper {
             // Clean up the duplicate item awards by merging qtys.
             rawRewards.map(r => {
                 const index = _.findIndex(rewards, rv => rv.item === r.item);
-                if (index)
+                if (index !== -1)
                     rewards[index].qty += r.qty;
                 else
                     rewards.push(r);
@@ -360,6 +369,7 @@ export default class CompetitionHelper {
                     `You were rewarded for winning the ${this.formatCode(competionCode)}! :trophy:\n\n` +
 
                     'You received the following items as a prize:\n' +
+                    
                     winners[index].rewards.map(r => `${MESSAGES.emojiCodeText(r.item)} ${r.item}x${r.qty}`).join('\n')
                     
                 USERS._dm(w.entrant_id, competitionWinDMText);
