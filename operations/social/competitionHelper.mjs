@@ -369,6 +369,8 @@ export default class CompetitionHelper {
             }
         });
 
+        console.log(winners);
+
         // Declare the competition winner publicly showing prizes.
         const publicPrizeText = `:trophy: Congratulations! ` +
             `Announcing the ${this.formatCode(competionCode)} winners! :trophy:\n\n` +
