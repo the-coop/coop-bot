@@ -1,4 +1,4 @@
-import algosdk from 'algosdk';
+// import algosdk from 'algosdk';
 
 // In order to do this ASA tutorial, we will need to generate 3 accounts
 // once created copy off the values which we will past into the TutorialASA code

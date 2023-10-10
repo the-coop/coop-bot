@@ -38,6 +38,7 @@ import RedemptionHelper from "./members/redemption/redemptionHelper.mjs";
 import StockHelper from "./stock/stockHelper.mjs";
 import EasterEggHandler from "./minigames/medium/economy/items/handlers/easterEggHandler.mjs";
 import ChristmasEggHandler from "./minigames/medium/economy/items/handlers/christmasEggHandler.mjs";
+import FoxHuntMinigame from "./minigames/small/foxhunt.mjs";
 
 export const baseTickDur = 60 * 25 * 1000;
 
@@ -59,12 +60,12 @@ export const VELOCITY_EVENTS = {
   MINING: {
     since: 0, 
     handler: () => Mining.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: 9, max: 11 })
+    interval: baseTickDur * manifestChance.floating({ min: 3, max: 9 })
   },
   WOODCUTTING: { 
     since: 0, 
     handler: () => Woodcutting.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: 9, max: 11 })
+    interval: baseTickDur * manifestChance.floating({ min: 3, max: 9 })
   },
   EGGHUNT: { 
     since: 0, 
@@ -74,7 +75,12 @@ export const VELOCITY_EVENTS = {
   CRATEDROP: { 
     since: 0, 
     handler: () => CrateDrop.run(), 
-    interval: baseTickDur * 15
+    interval: baseTickDur * manifestChance.floating({ min: 6, max: 12 })
+  },
+  FOXHUNT: { 
+    since: 0, 
+    handler: () => FoxHuntMinigame.run(), 
+    interval: baseTickDur * manifestChance.floating({ min: 2, max: 13 })
   },
 };
 

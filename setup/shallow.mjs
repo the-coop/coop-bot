@@ -82,8 +82,8 @@ const shallowBot = async () => {
         // Load the competition.
         // const competition = await CompetitionHelper.get('ART_COMPETITION');
 
-        const competitions = await CompetitionHelper.getAll();
-        console.log(competitions);
+        // const competitions = await CompetitionHelper.getAll();
+        // console.log(competitions);
 
         // const events = await DatabaseHelper.manyQuery({
         //     text: `SELECT * FROM events`,
@@ -104,6 +104,8 @@ const shallowBot = async () => {
 
         // // Limit winners to first 3.
         // winners = winners.slice(0, 3);
+
+
 
         // // Handle rewards and notifications for each winner.
         // winners.map((w, index) => {
@@ -145,6 +147,10 @@ const shallowBot = async () => {
         //     // Add the items to the user.
         //     winners[index].rewards = rewards;
         // });
+
+
+        const message = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/723660447508725806/1158797679065841725');
+        message.reply('Thank you, Wyan!');
     });
 };
 
