@@ -7,6 +7,7 @@ import Chicken from "../../../../chicken.mjs";
 // import { ROLES } from "coop-shared/config.mjs";
 import COOP, {ITEMS, SERVER, STATE } from "../../../../../coop.mjs";
 import Items from "coop-shared/services/items.mjs";
+import { onNewWeek } from "../../../../manifest.mjs";
 
 
 
@@ -109,6 +110,9 @@ export default class PointsHelper {
             // Check it isn't running too often.
             const fresh = COOP.TIME._secs() <= lastMOTWCheck + week;
             if (fresh) return false;
+
+            // Trigger events manifest new week.
+            onNewWeek();
     
             // Load player points and historical points.
             const users = await COOP.USERS.load();

@@ -4,7 +4,7 @@ import ServerHelper from "../../serverHelper.mjs";
 
 import STATE from "../../../state.mjs";
 
-import COOP, { ITEMS } from "../../../coop.mjs";
+import COOP, { ITEMS, USERS } from "../../../coop.mjs";
 
 export default class Statistics {
 
@@ -20,43 +20,20 @@ export default class Statistics {
         // STATE.REACTION_HISTORY
     }
 
-static calcCommunityVelocity() {
-    // TODO/REVIEW: This should read from last database value?
-    let velocity = 0;
-
-    // Calculate the number of current users to adjust ratios.
-    const numUsers = ServerHelper._count();
-
-    // TODO: Add the ratio of active users compared to offline.
-
-    // Add score of messages (1 per message).
-    const totalMsgs = MessageNotifications.getFreshMsgTotalCount();
-    const beakAverage = totalMsgs / numUsers;
-    const msgPerBeak = isNaN(beakAverage) ? 0 : beakAverage;
-
-    const activeChannels = Object.keys(STATE.MESSAGE_HISTORY);
-    const channelAverage = msgPerBeak / activeChannels.length;
-    const msgPerChannel = isNaN(channelAverage) ? 0 : channelAverage;
-
-    // Calculate the number of active talkers adjusted for average.
-    const activeMessagers = activeChannels.reduce((acc, channelID) => {
-        const authors = STATE.MESSAGE_HISTORY[channelID].authors;
-        const numAuthors = Object.keys(authors).length;
-        return acc += numAuthors / numUsers;
-    }, 0);
-
-    // TODO: Adjust / little bonus for more active messagers.
-    velocity += activeMessagers;
-
-    // Add velocity for the channel activity.
-    velocity += msgPerChannel;
-
-    return velocity;
-}
+    static async calcCommunityVelocity() {
+        let velocity = 0;
+        const tophun = await USERS.loadTopHundredUsers();
+        tophun.map(u => {
+            const member = USERS._get(u.discord_id);
+            const connected = member?.presence?.status;
+            if (connected) velocity++;
+        });
+        return velocity / 10;
+    }
 
     // Use this to calculate and update community velocity.
     // TODO: Drop rates command and velocity command for comparison.
-    static offloadMessageStats() {
+    static async offloadMessageStats() {
         // TODO: Count # messages
         // Bonus, if bigger author:messages ratio this is better((?))
         // Count # reactions
@@ -66,7 +43,7 @@ static calcCommunityVelocity() {
         // If community velocity is higher than record, reward community
         // A rare crate, bonus eggs, etc.
 
-        const roundedVel = ITEMS.displayQty(this.calcCommunityVelocity());
+        const roundedVel = await ITEMS.displayQty(await this.calcCommunityVelocity());
         const velocityText = `Community velocity is ${roundedVel}.`
         COOP.CHANNELS._tempSend('ACTIONS', velocityText, 0, 60000);
     }

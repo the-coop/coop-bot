@@ -147,7 +147,7 @@ export default class MiningMinigame {
     }
 
     static async run() {
-        const base = Math.max(1, Statistics.calcCommunityVelocity());
+        const base = Math.max(1, await Statistics.calcCommunityVelocity());
 
         let magnitude = STATE.CHANCE.natural({ min: base, max: base * 3 });
 

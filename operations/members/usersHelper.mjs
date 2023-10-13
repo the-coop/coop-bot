@@ -27,7 +27,7 @@ export default class UsersHelper {
     // Coherentism versus foundationalism
     static _all = () => SERVER._coop().members.list({ limit: 1000 });
 
-    static _get = this._getMemberByID;
+    static _get = id => this._cache().get(id);
 
     static _fetch = async id => {
         let member = null;
@@ -39,9 +39,14 @@ export default class UsersHelper {
         return member;
     };
 
-    static _getMemberByID(id) {
-        return this._cache().get(id);
-    };
+    static async loadTopHundredUsers() {
+        const query = {
+            name: "get-top100-users",
+            text: "SELECT * FROM users ORDER BY historical_points DESC LIMIT 100"
+        };
+        const result = await Database.query(query);        
+        return DatabaseHelper.many(result);
+    }
 
     static getMemberByID = (guild, id) => guild.members.cache.get(id);
 
@@ -343,7 +348,7 @@ export default class UsersHelper {
     static async syncRoles(discordID) {
         const tracked = Object.keys(ROLES_CONFIG).map(roleKey => ROLES_CONFIG[roleKey].id);
 
-        const member = this._getMemberByID(discordID);
+        const member = this._get(discordID);
         const roles = await UserRoles.get(discordID);
 
         member.roles.cache.map(serverRole => {

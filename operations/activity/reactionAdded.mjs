@@ -19,6 +19,7 @@ import SuggestionsHelper from "./suggestions/suggestionsHelper.mjs";
 import CompetitionHelper from "../social/competitionHelper.mjs";
 import TradingHelper from "../minigames/medium/economy/items/tradingHelper.mjs";
 import EasterEggHandler from "../minigames/medium/economy/items/handlers/easterEggHandler.mjs";
+import FoxHuntMinigame from "../minigames/small/foxhunt.mjs";
 
 
 
@@ -40,6 +41,7 @@ export default async function reactAddedHandler(reaction, user) {
 
         // Reaction based minigame react processors.
         EggHuntMinigame.onReaction(reaction, user);
+        FoxHuntMinigame.onReaction(reaction, user);
         CratedropMinigame.onReaction(reaction, user);
         MiningMinigame.onReaction(reaction, user);
         WoodcuttingMinigame.onReaction(reaction, user);

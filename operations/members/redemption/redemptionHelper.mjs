@@ -36,8 +36,8 @@ export default class RedemptionHelper {
         let againstVotes = 0;
 
         try {
-            const voterMember = COOP.USERS._getMemberByID(user.id);
-            const targetMember = COOP.USERS._getMemberByID(targetUser.id);
+            const voterMember = COOP.USERS._get(user.id);
+            const targetMember = COOP.USERS._get(targetUser.id);
 
             // If member left, don't do anything.
             if (!targetMember) return false;

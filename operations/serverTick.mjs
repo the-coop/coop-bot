@@ -1,8 +1,8 @@
 import Statistics from "./activity/information/statistics.mjs";
 import { VELOCITY_EVENTS } from "./manifest.mjs";
 
-export default function serverTick() {
-    const velocity = Statistics.calcCommunityVelocity();
+export default async function serverTick() {
+    const velocity = await Statistics.calcCommunityVelocity();
 
     // Check each event to see if its late via velocity timings.
     Object.keys(VELOCITY_EVENTS).map(eventType => {

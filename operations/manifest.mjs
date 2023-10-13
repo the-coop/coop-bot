@@ -84,6 +84,18 @@ export const VELOCITY_EVENTS = {
   },
 };
 
+export const onNewMonth = () => {
+  // Coin auction
+};
+
+export const onNewWeek = () => {
+  
+};
+
+export const onNewDay = () => {
+
+};
+
 // Events manifest should load baseTickDuration from COOP.STATE (which loads from database of community set values)
 export default function eventsManifest() {
 

@@ -345,7 +345,7 @@ export default class SacrificeHelper {
                 
                 const discordID = /<@(\d*)>/.exec(desc)[1];
     
-                sacrificee = USERS._getMemberByID(discordID);
+                sacrificee = USERS._get(discordID);
 
             } catch(e) {
                 // TODO: May need to remove the temporary message.

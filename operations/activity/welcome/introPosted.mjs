@@ -8,7 +8,7 @@ export default async (msg) => {
     if (msg.author.bot) return false;
 
     // Access the full featured member object for the user.
-    const memberSubject = USERS._getMemberByID(msg.author.id);
+    const memberSubject = USERS._get(msg.author.id);
 
     // Check they haven't already posted an intro
     const savedUser = await USERS.loadSingle(memberSubject.user.id);

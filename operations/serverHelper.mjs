@@ -15,6 +15,7 @@ export default class ServerHelper {
     static _count(numBots = 1) { return this._coop().memberCount - numBots || 0; }
 
     static checkMissingChannels() {
+        console.log('Checking for missing channels');
         Object.keys(CHANNELS.config).map(ck => {
             if (!CHANNELS._get(CHANNELS.config[ck].id)) 
                 console.log('No channel ' + ck);

@@ -7,6 +7,9 @@ import Database from 'coop-shared/setup/database.mjs';
 import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, POINTS, REACTIONS, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
 import CompetitionHelper, { COMPETITION_ROLES } from '../operations/social/competitionHelper.mjs';
 import DatabaseHelper from 'coop-shared/helper/databaseHelper.mjs';
+import FoxHuntMinigame from '../operations/minigames/small/foxhunt.mjs';
+import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
+import MiningMinigame from '../operations/minigames/small/mining.mjs';
 
 
 // Commonly useful.
@@ -42,7 +45,7 @@ const shallowBot = async () => {
     await COOP.STATE.CLIENT.login(process.env.DISCORD_TOKEN);
 
     // Common checks:
-    // COOP.STATE.CLIENT.on('ready', () => ServerHelper.checkMissingChannels());
+    COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingChannels());
     // COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingRoles());
 
     // setupCommands(COOP.STATE.CLIENT);
@@ -63,12 +66,8 @@ const shallowBot = async () => {
         // Get them into the game
         // TODO: Acorn spawning trees
 
-
-
         // const msg = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/723660447508725806/1141169580081954916');
         // console.log(msg);
-        
-        
         
         // const talk = await COOP.CHANNELS._getCode('TALK');
         // setInterval(async () => {
@@ -148,9 +147,11 @@ const shallowBot = async () => {
         //     winners[index].rewards = rewards;
         // });
 
+        // const message = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/723660447508725806/1158797679065841725');
+        // message.reply('Thank you, Wyan!');
 
-        const message = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/723660447508725806/1158797679065841725');
-        message.reply('Thank you, Wyan!');
+        // FoxHuntMinigame.run();
+        // listenReactions(FoxHuntMinigame.onReaction);
     });
 };
 

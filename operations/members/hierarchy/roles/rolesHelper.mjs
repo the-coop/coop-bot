@@ -87,7 +87,7 @@ export default class RolesHelper {
         try {
             const guild = SERVER._coop();
             const role = this.getRoleByID(guild, ROLES_CONFIG[roleCode].id);
-            const member = COOP.USERS._getMemberByID(userID);
+            const member = COOP.USERS._get(userID);
 
             if (role && member) return member.roles.add(role);
             else {
@@ -101,7 +101,7 @@ export default class RolesHelper {
     }
 
     static _addCodes(userID, roleCodes) {
-        const member = COOP.USERS._getMemberByID(userID);
+        const member = COOP.USERS._get(userID);
         const roleIDs = RolesHelper._idsByCodes(roleCodes);
         return member.roles.add(roleIDs);
     }
@@ -110,7 +110,7 @@ export default class RolesHelper {
         try {
             if (!Object.keys(ROLES_CONFIG).includes(roleCode)) return false;
 
-            const member = COOP.USERS._getMemberByID(userID);
+            const member = COOP.USERS._get(userID);
 
             // TODO: Track roles self-changed as statistic.
             if (!member) return false;
@@ -137,7 +137,7 @@ export default class RolesHelper {
         try {
             const guild = SERVER._coop();
             const role = this.getRoleByID(guild, ROLES_CONFIG[roleCode].id);
-            const user = COOP.USERS._getMemberByID(userID);
+            const user = COOP.USERS._get(userID);
             if (role && user) return await user.roles.remove(role);
         } catch(e) {
             console.log('Error removing role');
@@ -146,7 +146,7 @@ export default class RolesHelper {
     }
 
     static _idHasCode(userID, roleCode) {
-        const member = USERS._getMemberByID(userID);
+        const member = USERS._get(userID);
         return this._has(member, roleCode);
     }
 

@@ -79,7 +79,6 @@ export default class StockHelper {
 
             CHANNELS._send('STOCKS_VC_TEXT', "https://cdn.discordapp.com/attachments/748649755965522031/1136026746450350200/market-closed.png");
             CHANNELS._send('STOCKS_VC_TEXT', "Stock market closed");
-            // Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/close-market.mp3');
         }
 
         // Detect and handle market closing.
@@ -103,16 +102,13 @@ export default class StockHelper {
 
             // Give them 15 seconds to join before announcing after ping so they can catch it.
             // Update: Don't wait for them, be fast.
-            // Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/open-market.mp3')
         }
         
         // Check if power hour needs starting (stopped when market closes).
         const isPowerHourTime = date.hours() >= 15;
         if (currentlyOpen && isPowerHourTime && !isPowerHourRunning) {
             CHANNELS._send('STOCKS_VC_TEXT', "https://cdn.discordapp.com/attachments/748649755965522031/1136026402211250227/power-hour.png");
-            // CHANNELS._send('STOCKS_VC_TEXT', "Power hour detection?");
             this.setPowerHour(true);
-            // Chicken.joinAndPlay('STOCKS_VC', 'https://www.thecoop.group/powerhour1.mp3');
         }
     }
 

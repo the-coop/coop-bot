@@ -1,6 +1,7 @@
 import moment from 'moment';
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
+
 import Election from "coop-shared/services/election.mjs";
 
 import Chicken from "../../../chicken.mjs";
@@ -11,7 +12,7 @@ import { CHANNELS, SERVER, MESSAGES, ROLES, USERS, ITEMS, TIME, STATE } from '..
 import VotingHelper from '../../../activity/redemption/votingHelper.mjs';
 import EventsHelper from '../../../eventsHelper.mjs';
 
-import { baseTickDur } from '../../../manifest.mjs';
+import { baseTickDur, onNewMonth } from '../../../manifest.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import { PermissionsBitField } from 'discord.js';
 
@@ -169,6 +170,7 @@ export default class ElectionHelper {
 
             const announceRole = ROLES._getByCode('SUBSCRIBER');
 
+            CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/723660447508725806/1093965248467304528/sacrifice-ritual-3.png');
             const msg = await CHANNELS._send(
                 'TALK', 
                 `${ROLES._textRef('SUBSCRIBER')}, ${electionText}`,
@@ -464,6 +466,9 @@ export default class ElectionHelper {
             if (isVotingPeriod && !isElecOn) {
                 await this.startElection();
                 electionJustStarted = true;
+
+                // Trigger new month in events manifest.
+                onNewMonth();
             }
             
             // Code to only run until after the first time after election start, not before.

@@ -15,7 +15,7 @@ export default class CleanupHandler {
 
         // Prevent non-members trying to delete content.
         const memberReqText = `<@${user.id}>, <@&${ROLES_CONFIG.MEMBER.id}> role is required for that action. ${cleanEmoji}`;
-        const member = USERS._getMemberByID(user.id);
+        const member = USERS._get(user.id);
         if (!ROLES._has(member, 'MEMBER'))
             return MESSAGES.silentSelfDestruct(reaction.message, memberReqText);
 

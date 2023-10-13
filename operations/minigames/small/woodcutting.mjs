@@ -147,29 +147,34 @@ export default class WoodcuttingMinigame {
     }
 
     static async run() {
-        const base = Math.max(1, Statistics.calcCommunityVelocity());
+        try {
+            const base = Math.max(1, await Statistics.calcCommunityVelocity());
 
-        let multiplier = STATE.CHANCE.natural({ min: base, max: base * 5 });
-
-        if (STATE.CHANCE.bool({ likelihood: 5 }))
-            multiplier = STATE.CHANCE.natural({ min: base * 5, max: base * 20 });
-
-        if (STATE.CHANCE.bool({ likelihood: 1 }))
-            multiplier = STATE.CHANCE.natural({ min: base * 7, max: base * 35 });
-
-        const eventChannel = CHANNELS._randomSpammable();
-        const woodMsg = await eventChannel.send(EMOJIS.WOOD.repeat(multiplier));
-            
-        // Post a message for collecting events against.
-        const updatesMsg = await eventChannel.send('**WOODCUTTING IN PROGRESS**');
-
-        // TODO: Count as ungathered wood in activity messages.
-        TemporaryMessages.add(woodMsg, 30 * 60);
-
-        MESSAGES.delayReact(woodMsg, '🪓', 666);
-
-        const branchText = multiplier > 1 ? `${multiplier} branches` : `a branch`;
-        const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(multiplier))} ${ROLES._textRef('MINIGAME_PING')}, a tree with ${branchText} to fell!`;
-        CHANNELS._send('TALK', woodcuttingEventText, {});
+            let multiplier = STATE.CHANCE.natural({ min: base, max: base * 5 });
+    
+            if (STATE.CHANCE.bool({ likelihood: 5 }))
+                multiplier = STATE.CHANCE.natural({ min: base * 5, max: base * 20 });
+    
+            if (STATE.CHANCE.bool({ likelihood: 1 }))
+                multiplier = STATE.CHANCE.natural({ min: base * 7, max: base * 35 });
+    
+            const eventChannel = CHANNELS._randomSpammable();
+            const woodMsg = await eventChannel.send(EMOJIS.WOOD.repeat(multiplier));
+                
+            // Post a message for collecting events against.
+            eventChannel.send('*Woodcutting needs image here');
+            const updatesMsg = await eventChannel.send('**WOODCUTTING IN PROGRESS**');
+    
+            // TODO: Count as ungathered wood in activity messages (when cleaning up)
+            TemporaryMessages.add(woodMsg, 30 * 60);
+    
+            MESSAGES.delayReact(woodMsg, '🪓', 666);
+    
+            const branchText = multiplier > 1 ? `${multiplier} branches` : `a branch`;
+            const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(multiplier))} ${ROLES._textRef('MINIGAME_PING')}, a tree with ${branchText} to fell!`;
+            CHANNELS._send('TALK', woodcuttingEventText, {});
+        } catch(e) {
+            console.log('above error occurred trying to start woodcutting minigame');
+        }
     }
 }
