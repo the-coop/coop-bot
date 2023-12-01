@@ -27,14 +27,18 @@ export default class StockHelper {
     static async getEST() {
         try {
             const { data } = await axios.get('https://worldtimeapi.org/api/timezone/EST');
-    
+
+            
             let date = moment.parseZone(data.datetime);
+            // console.log(date);
             
             if (data.dst)
                 date.add(data.dst_offset, 'h');
 
+            // console.log(date);
+
             // For some reason it's an hour slow on the API.
-            date.add(1, 'h');
+            // date.add(1, 'h');
 
             return date;
         } catch(e) {

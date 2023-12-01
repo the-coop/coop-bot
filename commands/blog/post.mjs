@@ -33,7 +33,7 @@ export const data = new SlashCommandBuilder()
 			.addStringOption(option => 
 				option
 					.setName('deadline')
-					.setDescription('How long will the post take to write?')
+					.setDescription('How many days will it take to write?')
 					.setRequired(true))
 	)
 	
@@ -67,8 +67,8 @@ const post = async interaction => {
 
 	// Calculate the price.
 	const basePrice = await ITEMS.perBeakRelativePrice('GOLD_COIN', 0.05);
-	const numWeeks = Math.max(1, deadline);
-	const price = basePrice * numWeeks;
+	const numDays = Math.max(1, deadline);
+	const price = basePrice * numDays;
 
 	// Check the user can afford to pay the price!
 	const userCoinQty = await ItemsShared.getUserItemQty(interaction.user.id, 'GOLD_COIN');

@@ -51,14 +51,11 @@ export default class FoxHuntMinigame {
 
         const lives = CHANCE.natural({ min: 3, max: 12 });
 
-
         // CHANNELS._send('TALK', '🦊');
         const msg = await testChannel.send(`🦊${liveIcon.repeat(lives)}`);
 
         console.log(msg.content);
         this.countLives(msg.content);
-
-
 
         msg.react(slapIcon);
         msg.react(petIcon);
