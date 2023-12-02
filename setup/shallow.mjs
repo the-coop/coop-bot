@@ -11,6 +11,7 @@ import FoxHuntMinigame from '../operations/minigames/small/foxhunt.mjs';
 import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
 import MiningMinigame from '../operations/minigames/small/mining.mjs';
 import StockHelper from '../operations/stock/stockHelper.mjs';
+import ChristmasEggHandler from '../operations/minigames/medium/economy/items/handlers/christmasEggHandler.mjs';
 
 
 // Commonly useful.
@@ -51,15 +52,18 @@ const shallowBot = async () => {
 
     // setupCommands(COOP.STATE.CLIENT);
     
-    COOP.STATE.CLIENT.on("voiceStateUpdate", (prev, curr) => {
-        const channel = curr?.channel || null;
-        console.log(channel.members);
-    });
+    // COOP.STATE.CLIENT.on("voiceStateUpdate", (prev, curr) => {
+    //     const channel = curr?.channel || null;
+    //     console.log(channel.members);
+    // });
 
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-        const est = await StockHelper.getEST();
+        // const est = await StockHelper.getEST();
+
+
+        ChristmasEggHandler.run();
         // console.log(est);
     });
 

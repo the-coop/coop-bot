@@ -142,7 +142,7 @@ export default class UsableItemHelper {
             // If collecting a dropped egg, high chance (40%) of breaking due to having been dropped.
             if (EggHuntMinigame.reactValid(reaction) && STATE.CHANCE.bool({ likelihood: 40 })) {
                 // Clear after a while of showing the edited state.
-                MESSAGES.delayDelete(reaction.message, 10000);
+                // MESSAGES.delayDelete(reaction.message, 10000);
                 return MESSAGES.delayEdit(reaction.message,
                     `${user.username} broke ${reaction.message.content}...`, 0
                 );
@@ -167,7 +167,7 @@ export default class UsableItemHelper {
             const displayItemCode = ITEMS.escCode(itemCode);
 
             // TODO: Replace this so if the channel is spammable it remains as a message.
-            const actionText = `${user.username} picked up ${displayItemCode} ${emojiText} and now has x${addEvent}.`;
+            const actionText = `${user.username} picked up ${displayItemCode} ${emojiText} and now has ${addEvent}.`;
             CHANNELS.propagate(reaction.message, actionText, 'ACTIONS', false);
         } catch(e) {
 			console.log('Error with pickup handler.');
