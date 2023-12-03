@@ -28,7 +28,7 @@ export default class Statistics {
             const connected = member?.presence?.status;
             if (connected) velocity++;
         });
-        return velocity / 10;
+        return velocity / 75;
     }
 
     // Use this to calculate and update community velocity.
