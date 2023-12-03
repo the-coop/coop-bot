@@ -1,10 +1,6 @@
-import MessageNotifications from "./messageNotifications.mjs";
-
-import ServerHelper from "../../serverHelper.mjs";
-
 import STATE from "../../../state.mjs";
 
-import COOP, { ITEMS, USERS } from "../../../coop.mjs";
+import COOP, { ITEMS, SERVER, USERS } from "../../../coop.mjs";
 
 export default class Statistics {
 
@@ -28,8 +24,8 @@ export default class Statistics {
             const connected = member?.presence?.status;
             if (connected) velocity++;
         });
-        return velocity / 75;
-    }
+        return velocity / SERVER._count();
+    };
 
     // Use this to calculate and update community velocity.
     // TODO: Drop rates command and velocity command for comparison.
