@@ -17,14 +17,14 @@ export default class Statistics {
     }
 
     static async calcCommunityVelocity() {
-        let velocity = 0;
+        let active = 0;
         const tophun = await USERS.loadTopHundredUsers();
         tophun.map(u => {
             const member = USERS._get(u.discord_id);
             const connected = member?.presence?.status;
-            if (connected) velocity++;
+            if (connected) active++;
         });
-        return velocity / SERVER._count();
+        return (active / SERVER._count()) / 100;
     };
 
     // Use this to calculate and update community velocity.
