@@ -130,27 +130,27 @@ export default class ItemsHelper {
             if (usable === key) match = usable;
         });
         return match;
-    }
+    };
 
     static async getUserWithItem(itemCode) {
         const query = {
             name: "get-user-with-item",
-            text: `SELECT * FROM "items" WHERE quantity > 0 AND item_code = $1`,
+            text: `SELECT * FROM items WHERE quantity > 0 AND item_code = $1`,
             values: [itemCode]
         };
         const result = await Database.query(query);
         return DatabaseHelper.single(result);
-    }
+    };
 
     static async getUsersWithItem(itemCode) {
         const query = {
             name: "get-users-with-item",
-            text: `SELECT * FROM "items" WHERE quantity > 0 AND item_code = $1`,
+            text: `SELECT * FROM items WHERE quantity > 0 AND item_code = $1`,
             values: [itemCode]
         };
         const result = await Database.query(query);
         return DatabaseHelper.many(result);
-    }
+    };
     
     static itemEmojiQtyStr(itemCode, itemQty = 1) {
         return `${COOP.MESSAGES.emojiCodeText(itemCode)}x${itemQty}`;

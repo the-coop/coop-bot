@@ -16,9 +16,7 @@ import { baseTickDur, onNewMonth } from '../../../manifest.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import { PermissionsBitField } from 'discord.js';
 
-
 export const LEADERS_RATIO_PERC = .025;
-
 
 export default class ElectionHelper {
 
@@ -910,4 +908,4 @@ export default class ElectionHelper {
             }
         }
     }
-}
+};

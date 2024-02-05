@@ -5,6 +5,7 @@ import COOP, { STATE, USABLE } from '../../coop.mjs';
 import EggHuntMinigame from '../../operations/minigames/small/egghunt.mjs';
 
 import { usedOwnedUsableGuard } from '../../operations/minigames/medium/economy/itemCmdGuards.mjs';
+import ElectionHelper from "../../operations/members/hierarchy/election/electionHelper.mjs";
 
 export const name = 'drop';
 
@@ -18,7 +19,12 @@ export const data = new SlashCommandBuilder()
 				.setName('item_code')
 				.setDescription('Item code to drop?')
 				.setRequired(true)
-		)
+		);
+
+const ELECTION_ITEM_SECURITY_ERR_MESSAGE = { 
+	content: 'Cannot drop election items until election over, nice try.', 
+	ephemeral: true 
+};
 
 
 export const execute = async (interaction) => {	
@@ -34,6 +40,11 @@ export const execute = async (interaction) => {
 		// Check item code is usable, was used, and valid with multi-guard.
 		const used = await usedOwnedUsableGuard(interaction.user, itemCode, 1, interaction.channel);
 		if (!used) return await interaction.reply({ content: 'Failed to drop item', ephemeral: true });
+
+		// TODO: If election is on, do not allow dropping election items.c
+		const electionOn = await ElectionHelper.isElectionOn();
+		if (electionOn && ['LEADERS_SWORD', 'ELECTION_CROWN'].includes(itemCode))
+			return await interaction.reply(ELECTION_ITEM_SECURITY_ERR_MESSAGE);
 
 		// TODO: Don't allow in direct messages.
 		

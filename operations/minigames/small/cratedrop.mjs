@@ -239,7 +239,7 @@ export default class CratedropMinigame {
             const random = COOP.CHANNELS._randomSpammable();
             if (random) {
                 // Drop the crate via emoji.
-                const crateMsg = await random.send(COOP.MESSAGES.emojifyID(EMOJIS[rarity]));
+                const crateMsg = await COOP.CHANNELS._send('TALK', COOP.MESSAGES.emojifyID(EMOJIS[rarity]));
                 TemporaryMessages.add(crateMsg, 60 * 60 * 125, 'CRATE');
 
                 // Format rarity text and provide a record.

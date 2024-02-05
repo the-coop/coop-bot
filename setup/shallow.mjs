@@ -63,9 +63,13 @@ const shallowBot = async () => {
         // const est = await StockHelper.getEST();
 
 
+        
+
         ChristmasEggHandler.run();
         // console.log(est);
     });
+
+
 
     //     // const agency = CHANNELS._get('1097911978560856165');
     //     // console.log(agency.name, agency.id);
