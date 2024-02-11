@@ -67,13 +67,14 @@ export default class SocialHelper {
             if (channel.type === ChannelType.GuildText)
                 return false;
 
-            // If create-yours channel, filter out.
-            if (channel.id === CHANNELS_CONFIG.CREATE_SOCIAL.id)
-                return false;
+            // Prevent deletion of create-yours vc.
+            if (channel.id === CHANNELS_CONFIG.CREATE_SOCIAL.id) return false;
 
-            // If it has members (active), filter out.
-            if (channel.members.size > 0)
-                return false;
+            // Prevent deletion of public VC. TODO: Refactor add to config file.
+            if (channel.id === '1200884411135168583') return false;
+
+            // Prevent deletion of an active custom VC.
+            if (channel.members.size > 0) return false;
 
             return true;
         });
