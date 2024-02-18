@@ -12,6 +12,7 @@ import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
 import MiningMinigame from '../operations/minigames/small/mining.mjs';
 import StockHelper from '../operations/stock/stockHelper.mjs';
 import ChristmasEggHandler from '../operations/minigames/medium/economy/items/handlers/christmasEggHandler.mjs';
+import Items from 'coop-shared/services/items.mjs';
 
 
 // Commonly useful.
@@ -62,10 +63,15 @@ const shallowBot = async () => {
 
         // const est = await StockHelper.getEST();
 
+        // 200657841676222465
 
-        
 
-        ChristmasEggHandler.run();
+
+        // Items.subtract('200657841676222465', 'ELECTION_CROWN', 1, 'Cheating fucker');
+
+
+
+        // ChristmasEggHandler.run();
         // console.log(est);
     });
 
