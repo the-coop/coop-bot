@@ -11,8 +11,7 @@ export default class ChannelHelper {
 
     static config = CHANNELS_CONFIG;
 
-    static SPAMMABLE = Object.keys(CHANNELS_CONFIG)
-        .filter(chanKey => CHANNELS_CONFIG[chanKey].spammable);
+    static SPAMMABLE = Object.keys(CHANNELS_CONFIG).filter(chanKey => CHANNELS_CONFIG[chanKey].spammable);
 
     static textRef(code) { return `<#${CHANNELS_CONFIG[code].id}>`; }
 

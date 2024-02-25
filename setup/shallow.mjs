@@ -13,6 +13,7 @@ import MiningMinigame from '../operations/minigames/small/mining.mjs';
 import StockHelper from '../operations/stock/stockHelper.mjs';
 import ChristmasEggHandler from '../operations/minigames/medium/economy/items/handlers/christmasEggHandler.mjs';
 import Items from 'coop-shared/services/items.mjs';
+import EggHuntMinigame from '../operations/minigames/small/egghunt.mjs';
 
 
 // Commonly useful.
@@ -48,7 +49,7 @@ const shallowBot = async () => {
     await COOP.STATE.CLIENT.login(process.env.DISCORD_TOKEN);
 
     // Common checks:
-    COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingChannels());
+    // COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingChannels());
     // COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingRoles());
 
     // setupCommands(COOP.STATE.CLIENT);
@@ -65,6 +66,8 @@ const shallowBot = async () => {
 
         // 200657841676222465
 
+
+        EggHuntMinigame.run();
 
 
         // Items.subtract('200657841676222465', 'ELECTION_CROWN', 1, 'Cheating fucker');
