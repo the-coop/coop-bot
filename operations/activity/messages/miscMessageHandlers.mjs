@@ -98,6 +98,11 @@ export default class MiscMessageHandlers {
                 COOP.MESSAGES.delayReact(msg, '🏔️', 333);
         }
 
+        if (msg.author.id === '401136463808561162') {
+            if (STATE.CHANCE.bool({ likelihood: 2.5 }))
+                COOP.MESSAGES.delayReact(msg, '🏔️', 333);
+        }
+
         // Random encouragement for ZeePheesh
         if (msg.author.id === '272479872792920065') {
             if (STATE.CHANCE.bool({ likelihood: 2.5 }) && msg.channel.id === CHANNELS.DIFFRACTION.id)
