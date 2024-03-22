@@ -26,14 +26,13 @@ export default class StockHelper {
 
     static async getEST() {
         try {
-            const { data } = await axios.get('https://worldtimeapi.org/api/timezone/EST');
+            // const { data } = await axios.get('https://worldtimeapi.org/api/timezone/EST');
 
             
-            let date = moment.parseZone(data.datetime);
-            // console.log(date);
+            let date =  moment().tz('America/New_York');
             
-            if (data.dst)
-                date.add(data.dst_offset, 'h');
+            // if (data.dst === 'true')
+            //     date.add(data.dst_offset, 'h');
 
             // console.log(date);
 
