@@ -577,52 +577,34 @@ export default class ElectionHelper {
         return hierarchy;
     }
 
-    static async loadAllCampaigns() {
-        const candidates = await this.getAllCandidates();
-        let preloadMsgIDSets = await Promise.all(candidates.map(async candidate => {
-            const userStillExists = !!(await USERS.loadSingle(candidate.candidate_id))
+    static deleteCandidateByLink(link) {
+        return Database.query({ text: `DELETE FROM candidates WHERE campaign_msg_link = '${link}'` });
+    }
 
+    static async loadAllCampaignMsgs() {
+        const candidates = await this.getAllCandidates();
+        const campaigns = await Promise.all(candidates.map(async candidate => {
             // Attempt to clear up if they have left etc.
+            const userStillExists = !!(await USERS.loadSingle(candidate.candidate_id));
             if (!userStillExists) {
-                Database.query({ text: `DELETE FROM candidates WHERE campaign_msg_link = '${candidate.campaign_msg_link}'` });
-                MESSAGES.deleteByLink(candidate.campaign_msg_link);
-                return false;
+                await this.deleteCandidateByLink(candidate.campaign_msg_link);
+                await MESSAGES.deleteByLink(candidate.campaign_msg_link);
+                return null;
             }
 
             // Return formatted.
-            return MESSAGES.parselink(candidate.campaign_msg_link);
-        }));
+            const msg = await MESSAGES.getByLink(candidate.campaign_msg_link);
+            if (!msg) {
+                await this.deleteCandidateByLink(candidate.campaign_msg_link);
+                return null;
+            }
 
-        // Filter out the potentially expired(kicked/left/banned user) IDs.
-        preloadMsgIDSets = preloadMsgIDSets.filter(idSet => !!idSet);
-
-        // Preload each candidate message.
-        let campaigns = await Promise.allSettled(preloadMsgIDSets.map((idSet, index) => {
-            const guild = SERVER._coop();
-            return new Promise((resolve) => {
-                setTimeout(async () => {
-                    try {
-                        // This could be more efficient.
-                        const chan = guild.channels.cache.get(idSet.channel);
-                        if (chan) {
-                            const msg = await chan.messages.fetch(idSet.message);
-                            if (msg) resolve(msg);
-                        }
-                    } catch(e) {
-                        console.log('Error loading campaign message');
-                        console.log(idSet);
-                    }
-                }, 666 * index);
-            });
-        }));
-
-        // take only the fulfilled ones, let the rest keep failing until they're cleaned up.
-        campaigns = campaigns
-            .filter(campaign => campaign.status === 'fulfilled')
-            .map(campaign => campaign.value);
+            return msg;
+        }))
+            .filter(c => !!c);
 
         return campaigns;
-    }
+    };
 
     static async getCandByMsgLink(msgLink) {
         const query = {
@@ -639,7 +621,7 @@ export default class ElectionHelper {
         const votes = [];
 
         // Calculate votes and map author data.
-        const campaignMsgs = await this.loadAllCampaigns();
+        const campaignMsgs = await this.loadAllCampaignMsgs();
         await Promise.all(campaignMsgs.map(async campaignMsg => {
             // Find the candidate for these reactions.
             let candidate = null;
@@ -699,7 +681,7 @@ export default class ElectionHelper {
     static async preloadIfNecessary() {
         const isElectionOn = await this.isVotingPeriod();
         if (isElectionOn) {
-            await this.loadAllCampaigns();
+            await this.loadAllCampaignMsgs();
             console.warn('Cached election candidates.');
         }
     }
