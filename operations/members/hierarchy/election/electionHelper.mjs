@@ -1,6 +1,8 @@
 import moment from 'moment';
+import { PermissionsBitField } from 'discord.js';
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
+import Items from 'coop-shared/services/items.mjs';
 
 import Election from "coop-shared/services/election.mjs";
 
@@ -8,13 +10,11 @@ import Chicken from "../../../chicken.mjs";
 
 import { CHANNELS, SERVER, MESSAGES, ROLES, USERS, ITEMS, TIME, STATE } from '../../../../coop.mjs';
 
-
 import VotingHelper from '../../../activity/redemption/votingHelper.mjs';
 import EventsHelper from '../../../eventsHelper.mjs';
 
 import { baseTickDur, onNewMonth } from '../../../manifest.mjs';
-import Items from 'coop-shared/services/items.mjs';
-import { PermissionsBitField } from 'discord.js';
+
 
 export const LEADERS_RATIO_PERC = .025;
 
@@ -141,10 +141,26 @@ export default class ElectionHelper {
 
             const everyoneRole = SERVER._coop().roles.everyone;
             CHANNELS._getCode('ELECTION').permissionOverwrites.set(
-                [{
-                   id: everyoneRole.id,
-                   deny: [PermissionsBitField.Flags.SendMessages]
-                }], 
+                [
+                    {
+                        id: everyoneRole.id,
+                        deny: [PermissionsBitField.Flags.SendMessages]
+                    },
+                    {
+                        id: ROLES._getByCode('COMMANDER').id,
+                        deny: [
+                            PermissionsBitField.Flags.ManageMessages,
+                            PermissionsBitField.Flags.ManageChannels
+                        ]
+                    },
+                    {
+                        id: ROLES._getByCode('LEADER').id,
+                        deny: [
+                            PermissionsBitField.Flags.ManageMessages,
+                            PermissionsBitField.Flags.ManageChannels
+                        ]
+                    },
+                ], 
                 'Disallow messages, elect/nominate slash command input only.'
             );
 
@@ -583,7 +599,7 @@ export default class ElectionHelper {
 
     static async loadAllCampaignMsgs() {
         const candidates = await this.getAllCandidates();
-        const campaigns = await Promise.all(candidates.map(async candidate => {
+        let campaigns = await Promise.all(candidates.map(async candidate => {
             // Attempt to clear up if they have left etc.
             const userStillExists = !!(await USERS.loadSingle(candidate.candidate_id));
             if (!userStillExists) {
@@ -592,7 +608,7 @@ export default class ElectionHelper {
                 return null;
             }
 
-            // Return formatted.
+            // Filter out deleted messages, remove the candidate for it.
             const msg = await MESSAGES.getByLink(candidate.campaign_msg_link);
             if (!msg) {
                 await this.deleteCandidateByLink(candidate.campaign_msg_link);
@@ -601,7 +617,9 @@ export default class ElectionHelper {
 
             return msg;
         }))
-            .filter(c => !!c);
+
+        // Filter null campaigns.
+        campaigns = campaigns.filter(c => !!c);
 
         return campaigns;
     };
