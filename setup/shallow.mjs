@@ -65,9 +65,9 @@ const shallowBot = async () => {
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-
         // TODO: Check past 24 egg count
-
+        CHANNELS._show(CHANNELS.config.SPOTLIGHT.id);
+        
 
         // const txsPrevDay = await Chicken.getTransactionsPreviousDay();
         // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);

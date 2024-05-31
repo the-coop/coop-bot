@@ -226,16 +226,16 @@ export default class EggHuntMinigame {
             // Ignore later reactions than the first one.
             if (reaction.count > 2) return null;
 
-            // Small chance of being stolen by a fox.
-            if (STATE.CHANCE.bool({ likelihood: 5 })) {
-                reaction.message.edit('Stolen by fox 🦊');
-                return ReactionHelper.removeAll(reaction.message);
-            }
-
             const rarity = this.calculateRarityFromMessage(reaction.message);
             const reward = EGG_DATA[rarity].points;
             const rewardPolarity = reward > 0 ? '+' : '';
             const emoji = EGG_DATA[rarity].emoji;
+
+            // Small chance of being stolen by a fox.
+            if (STATE.CHANCE.bool({ likelihood: 5 })) {
+                reaction.message.edit(`${user.username}'s ${emoji} was stolen by a fox 🦊`);
+                return ReactionHelper.removeAll(reaction.message);
+            }
 
             // Check the channel type or location of the action.
             let location = null;
