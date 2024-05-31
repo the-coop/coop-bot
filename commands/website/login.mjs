@@ -17,12 +17,12 @@ export const execute = async (interaction) => {
 	const link = await AccessCodes._createLink(interaction.user.id);
 
 	// DM the login code to the user
-	USERS._dm(interaction.user.id, 
-		`**Your temporary login code (expiring link) is here, use it within the next 5 minutes:**\n\n` +
-		'||' + link + '||'
-	);
+	// USERS._dm(interaction.user.id, 
+	// 	`**Your temporary login code (expiring link) is here, use it within the next 5 minutes:**\n\n` +
+	// 	'||' + link + '||'
+	// );
 
 	// Indicate success.
-	return await interaction.reply({ content: 'Login link was securely DMed to you.', ephemeral: true });
+	return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
 };
 

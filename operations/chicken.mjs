@@ -113,8 +113,7 @@ export default class Chicken {
             // Check the most important things at the beginning of a new day.
             ElectionHelper.checkProgress();
             
-            // Update the current day record.
-            await this.setConfig('current_day', '' + TIME._secs());
+
 
             // Send the conquest visuals!
             // await VisualisationHelper.record("https://www.thecoop.group/conquest/world");
@@ -146,6 +145,9 @@ export default class Chicken {
 
             await CHANNELS._getCode('TALK').send('https://cdn.discordapp.com/attachments/723660447508725806/1056735020036935760/new-coop-day.png');
             CHANNELS._getCode('TALK').send(newDayMessage);
+
+            // Update the current day record.
+            await this.setConfig('current_day', '' + TIME._secs());
 
             // Try to attempt a giveaway based on random roll.
             if (STATE.CHANCE.bool({ likelihood: 5 })) 

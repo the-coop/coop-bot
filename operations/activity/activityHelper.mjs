@@ -92,8 +92,17 @@ export default class ActivityHelper {
 
         txs.map(t => {
             const activityKey = t.note.split(' ')[0];
+            if (activityKey === 'EGGHUNT_COLLECTED_TOXIC_EGG')
+                activityModel.egghunt.collected.TOXIC_EGG++;
+            
             if (activityKey === 'EGGHUNT_COLLECTED_AVERAGE_EGG')
                 activityModel.egghunt.collected.AVERAGE_EGG++;
+
+            if (activityKey === 'EGGHUNT_COLLECTED_RARE_EGG')
+                activityModel.egghunt.collected.RARE_EGG++;
+
+            if (activityKey === 'EGGHUNT_COLLECTED_LEGENDARY_EGG')
+                activityModel.egghunt.collected.LEGENDARY_EGG++;
         });
 
         return activityModel;

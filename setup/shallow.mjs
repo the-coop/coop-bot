@@ -14,6 +14,9 @@ import StockHelper from '../operations/stock/stockHelper.mjs';
 import ChristmasEggHandler from '../operations/minigames/medium/economy/items/handlers/christmasEggHandler.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import EggHuntMinigame from '../operations/minigames/small/egghunt.mjs';
+import Chicken from '../operations/chicken.mjs';
+import ActivityHelper from '../operations/activity/activityHelper.mjs';
+import TimeHelper from '../operations/timeHelper.mjs';
 
 
 // Commonly useful.
@@ -62,12 +65,32 @@ const shallowBot = async () => {
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
+
+        // TODO: Check past 24 egg count
+
+
+        // const txsPrevDay = await Chicken.getTransactionsPreviousDay();
+        // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
+        // console.log(txsPrevDay);
+
+        // console.log(TimeHelper._secs(), 86400);
+        const query = {
+            // text: `SELECT * FROM item_qty_change_history WHERE occurred_secs > $1`,
+            text: `SELECT * FROM item_qty_change_history ORDER BY occurred_secs DESC`,
+            // values: [TimeHelper._secs() - 86400]
+        };
+        const result = await DatabaseHelper.manyQuery(query);
+        console.log(result[0], result[1], result[2], result[3], result[5]);
+
+
+
+
         // const est = await StockHelper.getEST();
 
         // 200657841676222465
 
 
-        EggHuntMinigame.run();
+        // EggHuntMinigame.run();
 
 
         // Items.subtract('200657841676222465', 'ELECTION_CROWN', 1, 'Cheating fucker');
