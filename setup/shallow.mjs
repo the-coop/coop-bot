@@ -74,13 +74,13 @@ const shallowBot = async () => {
         // console.log(txsPrevDay);
 
         // console.log(TimeHelper._secs(), 86400);
-        const query = {
-            // text: `SELECT * FROM item_qty_change_history WHERE occurred_secs > $1`,
-            text: `SELECT * FROM item_qty_change_history ORDER BY occurred_secs DESC`,
-            // values: [TimeHelper._secs() - 86400]
-        };
-        const result = await DatabaseHelper.manyQuery(query);
-        console.log(result[0], result[1], result[2], result[3], result[5]);
+        // const query = {
+        //     // text: `SELECT * FROM item_qty_change_history WHERE occurred_secs > $1`,
+        //     text: `SELECT * FROM item_qty_change_history ORDER BY occurred_secs DESC`,
+        //     // values: [TimeHelper._secs() - 86400]
+        // };
+        // const result = await DatabaseHelper.manyQuery(query);
+        // console.log(result[0], result[1], result[2], result[3], result[5]);
 
 
 
