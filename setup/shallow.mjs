@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import _ from 'lodash';
-import { GatewayIntentBits, Client } from 'discord.js';
+import { GatewayIntentBits, Client, Poll } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
 import COOP, { CHANNELS, CHICKEN, ITEMS, MESSAGES, POINTS, REACTIONS, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
 import CompetitionHelper, { COMPETITION_ROLES } from '../operations/social/competitionHelper.mjs';
@@ -17,6 +17,7 @@ import EggHuntMinigame from '../operations/minigames/small/egghunt.mjs';
 import Chicken from '../operations/chicken.mjs';
 import ActivityHelper from '../operations/activity/activityHelper.mjs';
 import TimeHelper from '../operations/timeHelper.mjs';
+import SpotlightHelper from '../operations/members/spotlightHelper.mjs';
 
 
 // Commonly useful.
@@ -66,7 +67,35 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // TODO: Check past 24 egg count
-        CHANNELS._show(CHANNELS.config.SPOTLIGHT.id);
+        // CHANNELS._show(CHANNELS.config.SPOTLIGHT.id);
+
+        // SpotlightHelper.end();
+        SpotlightHelper.start();
+
+        // const channel = CHANNELS._getCode('SPOTLIGHT');
+        // const msgs = await channel.messages.fetch({ limit: 100 });
+        // console.log(msgs);
+        // console.log(channel.bulkDelete);
+        // await channel.bulkDelete(100);
+
+        // const p = new Poll()
+        // console.log(p);
+
+        // try {
+
+
+        // } catch(e) {
+        //     console.error(e);
+        //     // console.log(e.rawError.errors.poll);
+        //     // console.log(e.rawError.errors.poll.question._errors);
+        //     // console.log(e.rawError.errors.poll.answers[0].poll_media._errors);
+        //     // console.log('test');
+        // }
+
+        // question	Poll Media Object	The question of the poll. Only text is supported.
+        // answers	List of Poll Answer Objects	Each of the answers available in the poll, up to 10
+        // duration	integer	Number of hours the poll should be open for, up to 7 days
+        // allow_multiselect	boolean	Whether a user can select multiple answers
         
 
         // const txsPrevDay = await Chicken.getTransactionsPreviousDay();
