@@ -21,6 +21,11 @@ export default async function memberJoined(member) {
 
     // Add the intro poster role.
     RolesHelper.add(member, 'POST_INTRO');
+    RolesHelper.add(member, 'SUBSCRIBER');
+    RolesHelper.add(member, 'SOCIAL');
+    RolesHelper.add(member, 'BEGINNER');
+    RolesHelper.add(member, 'PROJECTS');
+
 
     const gameLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
       "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=game";

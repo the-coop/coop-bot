@@ -192,12 +192,15 @@ export default class EggHuntMinigame {
                     `Resulting in ${actionReward} point(s) change (now ${ITEMS.displayQty(updatedPoints)}) and 5 cooking XP!`;
                 
                 // Modify fried egg.
-                await reaction.message.edit(reaction.message.content + '\n' + feedbackText); 
+                await reaction.message.edit(feedbackText); 
+
+                // Remove the emojis
+                REACTIONS.removeAll(reaction.message);
 
             } else {
                 const unableMsg = await reaction.message.channel.send('Unable to use FRYING_PAN, you own none. :/');
                 setTimeout(() => reaction.users.remove(user.id), 666);
-                MESSAGES.delayReact(unableMsg, EMOJIS.FRYING_PAN, 1333);
+                // MESSAGES.delayReact(unableMsg, EMOJIS.FRYING_PAN, 1333);
                 MESSAGES.delayDelete(unableMsg, 10000);
             }
         } catch(e) {
@@ -233,7 +236,7 @@ export default class EggHuntMinigame {
 
             // Small chance of being stolen by a fox.
             if (STATE.CHANCE.bool({ likelihood: 5 })) {
-                reaction.message.edit(`${user.username}'s ${emoji} was stolen by a fox 🦊`);
+                reaction.message.edit(`${user.username}'s ${MESSAGES.emojiText(emoji)} was stolen by a fox 🦊`);
                 return ReactionHelper.removeAll(reaction.message);
             }
 
@@ -270,7 +273,7 @@ export default class EggHuntMinigame {
                 const basketEmojiText = MESSAGES.emojiText(RAW_EMOJIS.BASKET);
                 MESSAGES.delayEdit(
                     reaction.message, 
-                    `${MESSAGES.emojiText(EGG_DATA[rarity].emoji)}${basketEmojiText}💨 ${acknowledgementMsgText}`, 
+                    `${MESSAGES.emojiText(emoji)}${basketEmojiText}💨 ${acknowledgementMsgText}`, 
                     0
                 );
 
