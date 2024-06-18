@@ -401,7 +401,7 @@ export default class EggHuntMinigame {
         }
 
         // Small chance of bonus eggs being released.     
-        if (STATE.CHANCE.bool({ likelihood: 4.5 })) {        
+        if (STATE.CHANCE.bool({ likelihood: 1.5 })) {        
             const bonusEggRolePing = ROLES._textRef('MINIGAME_PING');
             let bonusEggStatus = ' bonus eggs rolling!';
 

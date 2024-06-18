@@ -14,7 +14,7 @@ export default class Statistics {
 
         // STATE.MESSAGE_HISTORY
         // STATE.REACTION_HISTORY
-    }
+    };
 
     static async calcCommunityVelocity() {
         let active = 0;
@@ -24,7 +24,7 @@ export default class Statistics {
             const connected = member?.presence?.status;
             if (connected) active++;
         });
-        return (active / SERVER._count()) / 3;
+        return active / SERVER._count();
     };
 
     // Use this to calculate and update community velocity.
@@ -42,6 +42,6 @@ export default class Statistics {
         const roundedVel = await ITEMS.displayQty(await this.calcCommunityVelocity());
         const velocityText = `Community velocity is ${roundedVel}.`
         COOP.CHANNELS._tempSend('ACTIONS', velocityText, 0, 60000);
-    }
+    };
 
-}
+};

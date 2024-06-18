@@ -37,7 +37,7 @@ export default class MiningMinigame {
         const isRocksMsg = firstEmojiUni === rockEmojiUni;
 
         if (isRocksMsg) this.chip(reaction, user);
-    }
+    };
 
     // TODO: Bomb skips a few places at random
     static async chip(reaction, user) {
@@ -144,7 +144,7 @@ export default class MiningMinigame {
             else 
                 updateMsg.edit(updateMsg.content + '\n' + `${actionText} ${rewardText}`);
         }
-    }
+    };
 
     static async run() {
         const base = Math.max(1, await Statistics.calcCommunityVelocity());
@@ -174,5 +174,5 @@ export default class MiningMinigame {
         MESSAGES.delayReact(rockMsg, '⛏️');
 
         CHANNELS._send('TALK', `${ROLES._textRef('MINIGAME_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
-    }
+    };
 }
