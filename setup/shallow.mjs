@@ -85,9 +85,12 @@ const shallowBot = async () => {
 
         // slush.voice.setMute(true);
 
-        const LEADERS_RATIO_PERC = .0125;
-        const num = VotingHelper.getNumRequired(LEADERS_RATIO_PERC);
-        console.log(num);
+        // const LEADERS_RATIO_PERC = .0125;
+        // const num = VotingHelper.getNumRequired(LEADERS_RATIO_PERC);
+        // console.log(num);
+
+        const msg = await COOP.CHANNELS._send('TALK', 'TESTING');
+        console.log(msg);
 
         // SERVER._coop().members.unban('429199371582832641', 'Skill issue');
         // 429199371582832641

@@ -114,8 +114,21 @@ export default class RedemptionHelper {
                 });
 
                 // Provide feedback for user who is not currently protected or sacrificed.
-                if (!updatingMsgInstead)
-                    COOP.CHANNELS._send('TALK', votingStatusText);
+                if (!updatingMsgInstead) {
+                    const msg = await COOP.CHANNELS._send('TALK', votingStatusText);
+                    msg.edit({ 
+                        components: [
+                            new ActionRowBuilder().addComponents([
+                                new ButtonBuilder()
+                                .setEmoji('👋')
+                                .setLabel("Vote!")
+                                .setURL(MESSAGES.link(msg))
+                                .setStyle(ButtonStyle.Link)
+                            ])
+                        ]
+                    });
+
+                }
             }
                 
         } catch(e) {
