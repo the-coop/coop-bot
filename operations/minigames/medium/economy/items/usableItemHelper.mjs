@@ -148,15 +148,15 @@ export default class UsableItemHelper {
                 );
             }
 
-            // Remove the emojis
-            REACTIONS.removeAll(reaction.message);
-
             // Add recalculated item ownership to user.
             const addEvent = await Items.add(user.id, itemCode, 1, 'USABLE_PICKUP - Picked up in ' + reaction.message.channel.name);
 
             // Add user's item counts to message.
             const editText = `${reaction.message.content} collected by ${user.username}, now has x${addEvent}.`;
             MESSAGES.delayEdit(reaction.message, editText, 0);
+
+            // Remove the emojis
+            REACTIONS.removeAll(reaction.message);
 
 			// Intercept the giving of election items.
 			if (itemCode === 'LEADERS_SWORD' || itemCode === 'ELECTION_CROWN')

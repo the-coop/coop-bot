@@ -133,7 +133,6 @@ export default class ElectionHelper {
         EventsHelper.runInterval(() => this.trackHierarchy(), baseTickDur * 5);
     }
 
-
     static async startElection() {
         try {
             // Show the channel.
@@ -693,7 +692,6 @@ export default class ElectionHelper {
 
         return candidate;
     }
-
 
     // Preload campaign messages into cache so they are always reactable.
     static async preloadIfNecessary() {
