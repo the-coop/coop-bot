@@ -4,7 +4,6 @@ import COOP, { STATE, CHANNELS, MESSAGES } from "../../../coop.mjs";
 import { RAW_EMOJIS, ROLES, CHANNELS as CHANNELS_CONFIG } from 'coop-shared/config.mjs';
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from "discord.js";
 
-
 export const STARTING_ROLES = [
     'MEMBER', 'BEGINNER', 'SUBSCRIBER', 'SOCIAL',
     'PROSPECT', 'PROJECTS'
@@ -14,7 +13,7 @@ export default class RedemptionHelper {
 
     static announce() {
         console.log('Announce pending intros');
-    }
+    };
 
     static async onReaction(reaction, user) {
         const emoji = reaction.emoji.name;
@@ -27,7 +26,7 @@ export default class RedemptionHelper {
 
         // Process the vote
         this.processVote(reaction, user);
-    }
+    };
 
     static async processVote(reaction, user) {
         const targetUser = reaction.message.author;
@@ -122,7 +121,7 @@ export default class RedemptionHelper {
                                 new ButtonBuilder()
                                 .setEmoji('👋')
                                 .setLabel("Vote!")
-                                .setURL(MESSAGES.link(msg))
+                                .setURL(CHANNELS.link('INTRO'))
                                 .setStyle(ButtonStyle.Link)
                             ])
                         ]
@@ -137,7 +136,7 @@ export default class RedemptionHelper {
 
             // Catch cannot send to user and notify them in approval channel, Cooper is HIGHLY recommended. ;)
         }
-    }
+    };
 
     static handleNewbOutstayedWelcome(member) {
         // Remove all users without member role that have been here for more than 3 days.
@@ -150,7 +149,7 @@ export default class RedemptionHelper {
             CHANNELS._postToChannelCode('TALK', banReason)
             member.ban({ days: 7, reason: banReason });
         }
-    }
+    };
 
     static async approve(targetMember, reaction, votes) {
         // Add to database if not already in it.
@@ -220,6 +219,6 @@ export default class RedemptionHelper {
                         .setStyle(ButtonStyle.Link)
                 ])
         ] });
-    }
+    };
 
-}
+};
