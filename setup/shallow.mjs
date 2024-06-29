@@ -18,6 +18,8 @@ import Chicken from '../operations/chicken.mjs';
 import ActivityHelper from '../operations/activity/activityHelper.mjs';
 import TimeHelper from '../operations/timeHelper.mjs';
 import SpotlightHelper from '../operations/members/spotlightHelper.mjs';
+import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
+import VotingHelper from '../operations/activity/redemption/votingHelper.mjs';
 
 
 // Commonly useful.
@@ -66,11 +68,37 @@ const shallowBot = async () => {
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
+        // console.log();
+
+        // RolesHelper.add(kilo, 'MEMBER');
+        // const kilo = COOP.USERS._get('440631423230279680');
+
+
+        // const worm = COOP.USERS._get('230494953917251584');
+        // const kayla = COOP.USERS._get('1202028076436041780');
+
+        // worm.ban();
+        // kayla.ban();
+
+        // console.log(slush);
+        // console.log(slush.voice.setMute);
+
+        // slush.voice.setMute(true);
+
+        const LEADERS_RATIO_PERC = .0125;
+        const num = VotingHelper.getNumRequired(LEADERS_RATIO_PERC);
+        console.log(num);
+
+        // SERVER._coop().members.unban('429199371582832641', 'Skill issue');
+        // 429199371582832641
+
         // TODO: Check past 24 egg count
         // CHANNELS._show(CHANNELS.config.SPOTLIGHT.id);
 
         // SpotlightHelper.end();
-        SpotlightHelper.start();
+        // SpotlightHelper.start();
+
+        // 953620876685869068
 
         // const channel = CHANNELS._getCode('SPOTLIGHT');
         // const msgs = await channel.messages.fetch({ limit: 100 });
@@ -82,7 +110,6 @@ const shallowBot = async () => {
         // console.log(p);
 
         // try {
-
 
         // } catch(e) {
         //     console.error(e);

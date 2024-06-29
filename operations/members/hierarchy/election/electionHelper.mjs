@@ -16,7 +16,7 @@ import EventsHelper from '../../../eventsHelper.mjs';
 import { baseTickDur, onNewMonth } from '../../../manifest.mjs';
 
 
-export const LEADERS_RATIO_PERC = .025;
+export const LEADERS_RATIO_PERC = .0125;
 
 export default class ElectionHelper {
 
