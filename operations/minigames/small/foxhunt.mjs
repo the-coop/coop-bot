@@ -1,6 +1,5 @@
 import { CHANCE, CHANNELS, USERS } from '../../../coop.mjs';
 
-
 const halflifeicon = '💔';
 const liveIcon = '❤️';
 const slapIcon = '🫱';
@@ -33,7 +32,7 @@ export default class FoxHuntMinigame {
             console.error(e);
             console.log('Above error related to foxhunt reaction handler')
         }
-    }
+    };
 
     static countLives(str) {
         const halfLivesRegex = new RegExp('💔', "g");
@@ -41,24 +40,20 @@ export default class FoxHuntMinigame {
         const fullLives = str.match(fullLivesRegex) || 0;
         const halfLives = str.match(halfLivesRegex) || 0;
         return (halfLives * .5) + fullLives;
-    }
+    };
 
     static async run() {
         // Stop crate drop being based on a fixed time, could do that with chopper minigame instead.
         console.log('running fox hunt minigame');
 
-        const testChannel = CHANNELS._get('1161224626794414172');
-
         const lives = CHANCE.natural({ min: 3, max: 12 });
-
-        // CHANNELS._send('TALK', '🦊');
-        const msg = await testChannel.send(`🦊${liveIcon.repeat(lives)}`);
+        const msg = await CHANNELS.send('TALK', `🦊${liveIcon.repeat(lives)}`);
 
         console.log(msg.content);
         this.countLives(msg.content);
 
         msg.react(slapIcon);
         msg.react(petIcon);
-    }
+    };
 
-}
+};
