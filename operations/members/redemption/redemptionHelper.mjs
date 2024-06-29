@@ -51,8 +51,8 @@ export default class RedemptionHelper {
             }
 
             // Calculate the number of required votes for the redemption poll.
-            const reqForVotes = VotingHelper.getNumRequired(.025);
-            const reqAgainstVotes = VotingHelper.getNumRequired(.015);
+            const reqForVotes = VotingHelper.getNumRequired(.012);
+            const reqAgainstVotes = VotingHelper.getNumRequired(.01);
             
             // TODO: Refactor into a reaction guard! :D
             // Remove invalid reactions.
@@ -220,5 +220,4 @@ export default class RedemptionHelper {
                 ])
         ] });
     };
-
 };
