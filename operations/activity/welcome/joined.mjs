@@ -63,7 +63,7 @@ export default async function memberJoined(member) {
     });
 
     // Low chance of welcome to the server.
-    if (CHANCE.bool({ likelihood: 2.5 })) CHANNELS._send('TALK', imageURL);
+    if (CHANCE.bool({ likelihood: 5 })) CHANNELS._send('TALK', imageURL);
 
   } catch(e) {
     console.error(e)
