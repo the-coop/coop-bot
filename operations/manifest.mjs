@@ -50,17 +50,17 @@ export const VELOCITY_EVENTS = {
   CHESTPOP: { 
     since: 0, 
     handler: () => ChestPop.run(), 
-    interval: (baseTickDur * 2) * 9 
+    interval: baseTickDur * manifestChance.floating({ min: 4, max: 9 })
   },
   INSTANT_FURNACE: { 
     since: 0, 
     handler: () => InstantFurnace.run(), 
-    interval: baseTickDur * 12
+    interval: baseTickDur * manifestChance.floating({ min: 3, max: 8 })
   },
   MINING: {
     since: 0, 
     handler: () => Mining.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: 2, max: 7 })
+    interval: baseTickDur * manifestChance.floating({ min: 2, max: 6 })
   },
   WOODCUTTING: { 
     since: 0, 
@@ -75,12 +75,12 @@ export const VELOCITY_EVENTS = {
   CRATEDROP: { 
     since: 0, 
     handler: () => CrateDrop.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: 4, max: 7 })
+    interval: baseTickDur * manifestChance.floating({ min: 2, max: 8 })
   },
   FOXHUNT: { 
     since: 0, 
     handler: () => FoxHuntMinigame.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: 3, max: 9 })
+    interval: baseTickDur * manifestChance.floating({ min: 4, max: 10 })
   },
 };
 
