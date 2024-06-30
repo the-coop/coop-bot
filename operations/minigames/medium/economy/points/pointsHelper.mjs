@@ -86,7 +86,16 @@ export default class PointsHelper {
         const qty = Math.max(1, await Items.getUserItemQty(userID, 'COOP_POINT'));
         const diff = qty - oldPoints;
         let percChange = (diff / oldPoints) * 100;
-        
+
+        // Compensate users with more basepoints using logarithmic scaling
+        // Logarithmic value that scales up based on user total points
+        const logGain = Math.floor(Math.max(1, Math.min(Math.log10(qty), 100)));
+        // Calculate the amount of extra points gained from difference
+        // based on the total amount of points user has
+        const extraPoints = Math.floor(diff * (logGain / 10));
+
+        percChange += extraPoints;
+
         // Prevent the weird unnecessary result that occurs without it.
         // Defies mathematical/js sense...? Maybe string/int type collision.
         if (isNaN(percChange)) percChange = 0;
