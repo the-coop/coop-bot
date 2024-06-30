@@ -28,6 +28,22 @@ export const data = new SlashCommandBuilder()
 
 
 export const execute = async (interaction) => {
+
+	console.log(interaction);
 	return await interaction.reply({ content: 'Testing condemn command!', ephemeral: false });
+
+	// TODO: Start the poll, should save message ID for later results consideration.
+	await CHANNELS._getCode('TALK').send({
+		poll: {
+			question: { text: `Help evaluate ${user.username}'s rank:` },
+			answers: [
+				current !== 'MASTER' ? { text: `Promote up to ${promotion}`, emoji: '✅' } : null,
+				current !== 'BEGINNER' ? { text: `Demote down to ${demotion}`, emoji: '❌' } : null,
+				{ text: `Stay at current rank ${current}`, emoji: '⚖️' },
+			].filter(i => i),
+			duration: 12,
+			allow_multiselect: false
+		}
+	});
 };
 
