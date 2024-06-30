@@ -69,17 +69,16 @@ const shallowBot = async () => {
     COOP.STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-        // console.log();
-
         // RolesHelper.add(kilo, 'MEMBER');
         // const kilo = COOP.USERS._get('440631423230279680');
-
 
         // const worm = COOP.USERS._get('230494953917251584');
         // const kayla = COOP.USERS._get('1202028076436041780');
 
         // worm.ban();
         // kayla.ban();
+
+        // FoxHuntMinigame.run();
 
         // console.log(slush);
         // console.log(slush.voice.setMute);
@@ -93,10 +92,9 @@ const shallowBot = async () => {
         // const msg = await COOP.CHANNELS._send('TALK', 'TESTING');
         // console.log(msg);
 
-
-        const votes = await ElectionHelper.fetchAllVotes();
-        const hierarchy = ElectionHelper.calcHierarchy(votes);
-        console.log(hierarchy);
+        // const votes = await ElectionHelper.fetchAllVotes();
+        // const hierarchy = ElectionHelper.calcHierarchy(votes);
+        // console.log(hierarchy);
 
         // SERVER._coop().members.unban('429199371582832641', 'Skill issue');
         // 429199371582832641
@@ -148,8 +146,6 @@ const shallowBot = async () => {
         // console.log(result[0], result[1], result[2], result[3], result[5]);
 
 
-
-
         // const est = await StockHelper.getEST();
 
         // 200657841676222465
@@ -165,8 +161,6 @@ const shallowBot = async () => {
         // ChristmasEggHandler.run();
         // console.log(est);
     });
-
-
 
     //     // const agency = CHANNELS._get('1097911978560856165');
     //     // console.log(agency.name, agency.id);
