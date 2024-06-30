@@ -123,9 +123,9 @@ export default class EconomyNotifications {
                 console.log(STATE.EVENTS_HISTORY['CRATE_DROP']);
             }
 
-            const updateMsg = await MESSAGES.getSimilarExistingMsg(CHANNELS._getCode('ABOUT'), postTitle);
+            const updateMsg = await MESSAGES.getSimilarExistingMsg(CHANNELS._getCode('TALK'), postTitle);
             if (!updateMsg) {
-                const msg = await CHANNELS._send('ABOUT', notificationString);
+                const msg = await CHANNELS._send('TALK', notificationString);
                 msg.edit({ components: [
                     new ActionRowBuilder().addComponents([
                         new ButtonBuilder()

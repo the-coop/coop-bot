@@ -26,7 +26,7 @@ export default class SacrificeHelper {
 
         if (user.bot) return false;
         if (!isVoteEmoji) return false;
-        if (channelID !== CHANNELS.ABOUT.id) return false;
+        if (channelID !== CHANNELS.TALK.id) return false;
 
         // Guards passed.
         return true;
@@ -48,7 +48,7 @@ export default class SacrificeHelper {
     static async onReaction(reaction, user) {
         // Process a vote on sacrifice channel itself.
         const channelID = reaction.message.channel.id;
-        const isSacrificeChannel = channelID !== CHANNELS.ABOUT.id;
+        const isSacrificeChannel = channelID !== CHANNELS.TALK.id;
         const isSacrificeVote = this.isReactionSacrificeVote(reaction, user);
         if (isSacrificeChannel && isSacrificeVote)
             return this.processVote(reaction, user);
@@ -296,7 +296,7 @@ export default class SacrificeHelper {
         });
 
         // Schedule end of message and reaction voting (24hr)
-        const sacrificeMsg = await COOP.CHANNELS._postToChannelCode('ABOUT', sacrificeEmbed);
+        const sacrificeMsg = await COOP.CHANNELS._postToChannelCode('TALK', sacrificeEmbed);
         TemporaryMessages.add(sacrificeMsg, sacrificeMsgLifetime, 'SACRIFICE');
 
         // Update the user's latest recorded sacrifice time.
@@ -372,7 +372,7 @@ export default class SacrificeHelper {
                         new ButtonBuilder()
                         .setEmoji('🗡')
                         .setLabel("Vote!")
-                        .setURL(COOP.CHANNELS.link('ABOUT'))
+                        .setURL(COOP.CHANNELS.link('TALK'))
                         .setStyle(ButtonStyle.Link),
                         new ButtonBuilder()
                             .setEmoji('📖')
