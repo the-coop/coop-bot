@@ -193,12 +193,13 @@ export default class CratedropMinigame {
             //     return COOP.MESSAGES.selfDestruct(msg, 'No items were inside this crate! >:D', 0, 5000);
 
             // Post and delete the points reward message feedback.
+            const minigamePingText = `${COOP.ROLES._textRef('MINIGAME_PING')}\n`
             const hitterNamesStr = hitterNames.join(', ');
             const tenseStr = hitterNames.length > 1 ? 'were' : 'was';
             const usersRewardedText = `${hitterNamesStr} ${tenseStr} rewarded ${crate.openingPoints} points`;
             const rewardTypeText = `${!anyRewardGiven ? 'empty ' : ''}${rarity.replace('_', ' ').toLowerCase()}`;
             const pointsRewardString = `**${usersRewardedText} for opening the ${rewardTypeText}!**\n\n`;
-            const crateLootText = pointsRewardString + listLootString;
+            const crateLootText = minigamePingText + pointsRewardString + listLootString;
 
             // Edit the drop into the message content.
             msg.edit(msg.content + '\n' + crateLootText);
