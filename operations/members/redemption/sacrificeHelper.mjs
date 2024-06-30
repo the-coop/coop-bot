@@ -17,20 +17,7 @@ export default class SacrificeHelper {
 
     static loadOffers() {
         return TemporaryMessages.getType('SACRIFICE');
-    }
-
-    static isReactionSacrificeVote(reaction, user) {
-        const emoji = reaction.emoji.name;
-        const isVoteEmoji = [EMOJIS.DAGGER, EMOJIS.SACRIFICE_SHIELD].indexOf(emoji) > -1;
-        const channelID = reaction.message.channel.id;
-
-        if (user.bot) return false;
-        if (!isVoteEmoji) return false;
-        if (channelID !== CHANNELS.TALK.id) return false;
-
-        // Guards passed.
-        return true;
-    }
+    };
 
     static isBackDagger(reaction, user) {
         const emoji = reaction.emoji.name;
@@ -43,134 +30,17 @@ export default class SacrificeHelper {
 
         // Guards passed.
         return true;
-    }
+    };
 
     static async onReaction(reaction, user) {
         // Process a vote on sacrifice channel itself.
         const channelID = reaction.message.channel.id;
         const isSacrificeChannel = channelID !== CHANNELS.TALK.id;
-        const isSacrificeVote = this.isReactionSacrificeVote(reaction, user);
-        if (isSacrificeChannel && isSacrificeVote)
-            return this.processVote(reaction, user);
 
         // Check other channels for backstabbing daggers/ban attempts.
         if (!isSacrificeChannel && this.isBackDagger(reaction, user))
             this.processBackDagger(reaction, user);
-    }
-
-    static async processVote(reaction, user) {
-        const guild = COOP.SERVER._coop();
-
-        // Try to access sacrificee from message
-        try {
-            const sacrificeEmbedDesc = reaction.message?.embeds[0].data.description;
-
-            // Ignore reaction on non-sacrifice message.
-            if (!sacrificeEmbedDesc) return;
-
-            const sacrificeeID = /<@(\d+)>/.exec(sacrificeEmbedDesc)[1];
-
-            if (!sacrificeeID)
-                throw new Error('Could not discern sacrificee from sacrifice embed');
-
-            const targetMember = await COOP.USERS.fetchMemberByID(guild, sacrificeeID);
-            const isProspect = ROLES._idHasCode(sacrificeeID, 'PROSPECT');
-
-            // Prevent trying to sacrifice someone that was already sacrificed.
-            if (!targetMember)
-                return COOP.MESSAGES.selfDestruct(reaction.message, `Member with id ${sacrificeeID} seems not to be present for sacrificing.`);
-
-            // If target member is self, remove vote.
-            if (user.id === sacrificeeID) {
-                // Remove vote.
-                reaction.users.remove(user.id);
-
-                // Warn.
-                return COOP.MESSAGES.selfDestruct(reaction.message, `${user.username} you can't vote for/against yourself. :dagger:`);
-            }
-
-            // Prevent PROSPECTS from kicking people out.
-            if (ROLES._idHasCode(user.id, 'PROSPECT')) {
-                reaction.users.remove(user.id);
-                return COOP.MESSAGES.selfDestruct(reaction.message, `${user.username} you can't vote as a PROSPECT. :dagger:`);
-            }
-
-            // If member left, don't do anything.
-            if (!targetMember) return false;
-            
-            // Calculate the number of required votes for the redemption poll.
-            const reqSacrificeVotes = VotingHelper.getNumRequired(SACRIFICE_RATIO_PERC);
-            const reqKeepVotes = VotingHelper.getNumRequired(KEEP_RATIO_PERC);
-        
-            // Get existing reactions on message.
-            let sacrificeVotes = 0;
-            let keepVotes = 0;
-            reaction.message.reactions.cache.map(reactionType => {
-                if (reactionType.emoji.name === EMOJIS.DAGGER) sacrificeVotes = Math.max(0, reactionType.count - 1);
-                if (reactionType.emoji.name === EMOJIS.SACRIFICE_SHIELD) keepVotes = Math.max(0, reactionType.count - 1);
-            });
-
-
-            // Process votes with feedback for currently unprotected user.
-            const missingKeepVotes = reqKeepVotes - keepVotes;
-            if (missingKeepVotes > 0) {
-                const remainingProtectVotes = Math.max(0, missingKeepVotes);
-                const remainingSacrificeVotes = Math.max(0, reqSacrificeVotes - sacrificeVotes);   
-
-                // Check if enough votes to sacrifice.
-                if (remainingSacrificeVotes <= 0) {
-                    // Notify when user is voted out.
-                    await COOP.CHANNELS._send('TALK',
-                        (isProspect ? 'Prospect ' : '') + `<@${sacrificeeID}> was sacrificed!`);
-                    await targetMember.ban();
-
-                    // User was sacrificed - clear sacrifice message.
-                    MESSAGES.delayDelete(reaction.message, 500);
-
-                } else {
-                    const sacrificeUpdatetitle = `**Remaining votes to sacrifice ${targetMember.user.username}**`;
-                    const sacrificeText = (
-                        sacrificeUpdatetitle +
-                        `\n\n` +
-                        `Protect: ${EMOJIS.SACRIFICE_SHIELD} ${remainingProtectVotes} ${EMOJIS.SACRIFICE_SHIELD}` +
-                        `| Sacrifice: ${EMOJIS.DAGGER} ${remainingSacrificeVotes} ${EMOJIS.DAGGER}`
-                    );
-
-                    // Track whether to post an sacrifice info message or update existing one.
-                    let updatingMsgInstead = false;
-
-                    // Check if the message is already within the past 5 feed messages (if so update it and reduce spam).
-                    const feed = COOP.CHANNELS._getCode('TALK');
-                    const latestMsgs = await feed.messages.fetch({ limit: 10 });
-                    latestMsgs.map(m => {
-                        if (m.content.includes(sacrificeUpdatetitle)) {
-                            m.edit(sacrificeText);
-                            updatingMsgInstead = true;
-                        }
-                    });
-
-                    // Provide feedback for user who is not currently protected or sacrificed.
-                    if (!updatingMsgInstead)
-                        COOP.CHANNELS._send('TALK', sacrificeText);
-                }
-
-            // Intercept latest vote granted protection to user.
-            } else if (missingKeepVotes <= 0 && reaction.emoji.name === EMOJIS.SACRIFICE_SHIELD) {
-                let savedText = `<@${sacrificeeID}> was protected from sacrifice by votes!`;
-                if (isProspect) {
-                    savedText = `Prospect <@${targetMember.id}> survives sacrifice and is no longer marked as PROSPECT!`
-                    ROLES._remove(sacrificeeID, 'PROSPECT');
-                }
-                COOP.CHANNELS._send('TALK', savedText);
-
-                // User survived clear sacrifice message.
-                MESSAGES.delayDelete(reaction.message, 500);
-            } 
-
-        } catch(e) {
-            console.error(e);
-        }
-    }
+    };
 
     static async processBackDagger(reaction) {
         const guild = COOP.SERVER._coop();
@@ -215,12 +85,12 @@ export default class SacrificeHelper {
                 );
             }, 3000);
         }
-    }
+    };
 
     static async getLastSacrificeSecs(userID) {
         const lastSacSecs = await COOP.USERS.getField(userID, 'last_sacrificed_secs');
         return lastSacSecs;
-    }
+    };
 
     static async offer(user) {
         // Check last sacrifice time
@@ -279,24 +149,20 @@ export default class SacrificeHelper {
 
         const isProspect = ROLES._idHasCode(user.id, 'PROSPECT');
 
-        // Add message to sacrifice
-        const sacrificeEmbed = COOP.MESSAGES.embed({ 
-            title: 
-                (isProspect ? `Prospect ` : '') +
-                `${user.username}, you may be sacrificed${moodText}!`,
-            description: 
-                `**Decide <@${user.id}>'s fate**: React to choose! Dagger (remove) OR Shield (keep)!\n` +
-                `\n**Member Stats:**\n` +
-                `_Last message sent: ${lastMessageFmt}_\n` + 
-                // `_Total messages sent: ${totalMsgsSent}_\n` +
-                `_Total points: ${points}_\n` +
-                `_Total items: ${totalItems}_`,
-            thumbnail: COOP.USERS.avatar(user),
-            footerText: 'The best Discord community to be sacrificed from!',
-        });
-
         // Schedule end of message and reaction voting (24hr)
         const sacrificeMsg = await COOP.CHANNELS._postToChannelCode('TALK', sacrificeEmbed);
+        await CHANNELS._getCode('TALK').send({
+            poll: {
+                question: { text: `Sacrifice ${user.id}?` },
+                answers: [
+                    { text: `Keep them`, emoji: '🕊️' },
+                    { text: `Sacrifice ${user.username}`, emoji: '🗡️' }
+                ],
+                duration: 24,
+                allow_multiselect: false
+            }
+        });
+
         TemporaryMessages.add(sacrificeMsg, sacrificeMsgLifetime, 'SACRIFICE');
 
         // Update the user's latest recorded sacrifice time.
@@ -307,7 +173,7 @@ export default class SacrificeHelper {
         COOP.MESSAGES.delayReact(sacrificeMsg, EMOJIS.SACRIFICE_SHIELD, 2000);
 
         return true;
-    }
+    };
 
     // Sacrifice random member if less than five people are being sacrificed and the member exists
     static async random() {
@@ -332,7 +198,7 @@ export default class SacrificeHelper {
             console.log('Error sacrificing random member!');
             console.error(e);
         }
-    }
+    };
 
     // Last sacrifice time, last updated, how it works, current dagger/shield count.
     static async announce() {
@@ -384,6 +250,6 @@ export default class SacrificeHelper {
             });
 
         }
-    }
+    };
     
-}
+};

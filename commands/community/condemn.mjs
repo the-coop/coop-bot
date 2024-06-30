@@ -34,13 +34,16 @@ export const execute = async (interaction) => {
 	const user = interaction.options.get('user')?.user;
 
 	// Start the poll, should save message ID for later results consideration.
+	const text = `Should ${user.username} be condemned${reason ? ` for "${reason.toLowerCase()}"` : ''}?`
+		.replace('.', '');
+		
 	await CHANNELS._getCode('TALK').send({
 		poll: {
-			question: { text: `Should ${user.username} be condemned${reason ? ` for ${reason}` : ''}?` },
+			question: { text },
 			answers: [
 				{ text: `Lenience/Warning only`, emoji: '🕊️' },
 				{ text: `Escalate punishment`, emoji: '🗡️' }
-			].filter(i => i),
+			],
 			duration: 1,
 			allow_multiselect: false
 		}
