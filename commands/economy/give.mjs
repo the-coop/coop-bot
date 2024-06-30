@@ -13,6 +13,12 @@ export const name = 'give';
 
 export const description = 'Gift items to another member';
 
+
+const ELECTION_TRADE_ITEM_SECURITY_ERR_MESSAGE = { 
+	content: 'Cannot trade election items until election over, nice try.', 
+	ephemeral: true 
+};
+
 export const data = new SlashCommandBuilder()
     .setName(name)
     .setDescription(description)
@@ -56,6 +62,11 @@ export const execute = async (interaction) => {
 			EMPTY_GIFTBOX: 1,
 			[itemCode]: qty
 		};
+
+		// If election is on, do not allow dropping election items.c
+		const electionOn = await ElectionHelper.isElectionOn();
+		if (electionOn && ['LEADERS_SWORD', 'ELECTION_CROWN'].includes(itemCode))
+			return await interaction.reply(ELECTION_TRADE_ITEM_SECURITY_ERR_MESSAGE);
 
 		// Check if this item code can be given.		
 		const isUsableCode = usableItemCodeGuard(interaction.channel, itemCode, interaction.user.username);

@@ -17,7 +17,7 @@ try {
     // const appGuildCommands = await rest.get(Routes.applicationGuildCommands(BOTS.COOPER.id, process.env.GUILD_ID));
     const appCommands = await rest.get(Routes.applicationCommands(BOTS.COOPER.id));
 
-    console.log(appGuildCommands);
+    // console.log(appGuildCommands);
     console.log(appCommands);
     
 } catch (error) {

@@ -230,7 +230,6 @@ export default class ElectionHelper {
 
         if (fresh && postUpdate) return false;
 
-        // Note: Votes aren't saved in the database... we rely solely on Discord counts.
         const votes = await this.fetchAllVotes();
 
         const votingPeriodSecs = await this.votingPeriodLeftSecs();

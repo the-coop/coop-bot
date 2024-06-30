@@ -21,11 +21,10 @@ export const data = new SlashCommandBuilder()
 				.setRequired(true)
 		);
 
-const ELECTION_ITEM_SECURITY_ERR_MESSAGE = { 
+const ELECTION_DROP_ITEM_SECURITY_ERR_MESSAGE = { 
 	content: 'Cannot drop election items until election over, nice try.', 
 	ephemeral: true 
 };
-
 
 export const execute = async (interaction) => {	
 	try {
@@ -44,7 +43,7 @@ export const execute = async (interaction) => {
 		// TODO: If election is on, do not allow dropping election items.c
 		const electionOn = await ElectionHelper.isElectionOn();
 		if (electionOn && ['LEADERS_SWORD', 'ELECTION_CROWN'].includes(itemCode))
-			return await interaction.reply(ELECTION_ITEM_SECURITY_ERR_MESSAGE);
+			return await interaction.reply(ELECTION_DROP_ITEM_SECURITY_ERR_MESSAGE);
 
 		// TODO: Don't allow in direct messages.
 		

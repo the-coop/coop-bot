@@ -5,6 +5,9 @@ import { Routes } from 'discord-api-types/v9';
 
 import BOTS from 'coop-shared/config/bots.mjs';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 
 const deploy = async () => {
     const commands = [];

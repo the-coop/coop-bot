@@ -20,6 +20,7 @@ import TimeHelper from '../operations/timeHelper.mjs';
 import SpotlightHelper from '../operations/members/spotlightHelper.mjs';
 import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
 import VotingHelper from '../operations/activity/redemption/votingHelper.mjs';
+import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
 
 
 // Commonly useful.
@@ -89,8 +90,13 @@ const shallowBot = async () => {
         // const num = VotingHelper.getNumRequired(LEADERS_RATIO_PERC);
         // console.log(num);
 
-        const msg = await COOP.CHANNELS._send('TALK', 'TESTING');
-        console.log(msg);
+        // const msg = await COOP.CHANNELS._send('TALK', 'TESTING');
+        // console.log(msg);
+
+
+        const votes = await ElectionHelper.fetchAllVotes();
+        const hierarchy = ElectionHelper.calcHierarchy(votes);
+        console.log(hierarchy);
 
         // SERVER._coop().members.unban('429199371582832641', 'Skill issue');
         // 429199371582832641
