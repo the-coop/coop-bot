@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { CHANNELS } from "../../coop.mjs";
 
 export const name = 'condemn';
 
@@ -28,22 +29,23 @@ export const data = new SlashCommandBuilder()
 
 
 export const execute = async (interaction) => {
+	// Access the campaign text.
+	const reason = interaction.options.get('reason').value ?? '';
+	const user = interaction.options.get('user')?.user;
 
-	console.log(interaction);
-	return await interaction.reply({ content: 'Testing condemn command!', ephemeral: false });
-
-	// TODO: Start the poll, should save message ID for later results consideration.
+	// Start the poll, should save message ID for later results consideration.
 	await CHANNELS._getCode('TALK').send({
 		poll: {
-			question: { text: `Help evaluate ${user.username}'s rank:` },
+			question: { text: `Should ${user.username} be condemned${reason ? ` for ${reason}` : ''}?` },
 			answers: [
-				current !== 'MASTER' ? { text: `Promote up to ${promotion}`, emoji: '✅' } : null,
-				current !== 'BEGINNER' ? { text: `Demote down to ${demotion}`, emoji: '❌' } : null,
-				{ text: `Stay at current rank ${current}`, emoji: '⚖️' },
+				{ text: `Lenience/Warning only`, emoji: '🕊️' },
+				{ text: `Escalate punishment`, emoji: '🗡️' }
 			].filter(i => i),
-			duration: 12,
+			duration: 1,
 			allow_multiselect: false
 		}
 	});
+
+	return await interaction.reply({ content: `Started condemnation of ${user.username}!`, ephemeral: true });
 };
 
