@@ -42,7 +42,8 @@ export const execute = async (interaction) => {
 			question: { text },
 			answers: [
 				{ text: `Lenience/Warning only`, emoji: '🕊️' },
-				{ text: `Escalate punishment`, emoji: '🗡️' }
+				{ text: `Escalate punishment`, emoji: '🗡️' },
+				{ text: `No action`, emoji: '☮️' }
 			],
 			duration: 1,
 			allow_multiselect: false
