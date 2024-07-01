@@ -75,6 +75,9 @@ const shallowBot = async () => {
         // const worm = COOP.USERS._get('230494953917251584');
         // const kayla = COOP.USERS._get('1202028076436041780');
 
+        Items.subtract('287062661483724810', 'LEADERS_SWORD', 1, 'CORRECT_ELECTION');
+        Items.add('287062661483724810', 'ELECTION_CROWN', 1, 'CORRECT_ELECTION');
+
         // worm.ban();
         // kayla.ban();
 

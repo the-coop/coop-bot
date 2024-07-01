@@ -4,7 +4,7 @@ import introPostedHandler from "./welcome/introPosted.mjs";
 
 // import MessageSpamHelper from "./messages/messageSpamHelper.mjs";
 // import LinkPreviewFilter from "./messages/linkPreviewFilter.mjs";
-import ConfessionHandler from "./messages/confessionHandler.mjs";
+// import ConfessionHandler from "./messages/confessionHandler.mjs";
 import MiscMessageHandlers from "./messages/miscMessageHandlers.mjs";
 
 import SuggestionsHelper from "./suggestions/suggestionsHelper.mjs";
@@ -28,7 +28,7 @@ export default async function messageAddedHandler(msg) {
         MessageNotifications.add(msg);
     
         // Handle reports to leaders.
-        ConfessionHandler.onMessage(msg);
+        // ConfessionHandler.onMessage(msg);
         
         // Add newsletter subscription handler/email accepter.
         SubscriptionHelper.onMessage(msg);

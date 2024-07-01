@@ -132,11 +132,6 @@ export default class ChannelHelper {
             .map(channel => channel.send(message, opts));
     }
 
-    static _randomText() {
-        const server = SERVER._coop();
-        return this.fetchRandomTextChannel(server);
-    }
-
     static _randomOnlyActive() {
         let selection = null;
 
@@ -199,23 +194,6 @@ export default class ChannelHelper {
         );
      }
 
-    // Implement as part of community velocity reform.
-    static _randomSomewhatActive() {
-        // Only run this half the time, so we don't only drop in active channels.
-        // TODO: Implement this
-        if (STATE.CHANCE.bool({ likelihood: 50 })) {
-            // Try to select a random active text channel.
-            const actives = MessageNotifications.getActiveChannels();
-
-            // If there are any active channels return first of them! :D
-            if (actives.size > 0) 
-                return actives.entries().next().value;
-        }
-
-        // Default to basic random channel.
-        return this._randomText();
-    }
-
     static _randomSpammable() {
         const randomSpammableCode = STATE.CHANCE.pickone(this.SPAMMABLE);
         return this._getCode(randomSpammableCode);
@@ -259,30 +237,6 @@ export default class ChannelHelper {
         return this
             .filterByCodes(guild, codes)
             .map(channel => channel.send(message, opts));
-    }
-
-    static fetchRandomTextChannel(guild) {       
-        let result = null;
-
-        // List of channels to not post to, maybe should reuse somewhere.
-        const filteredChannels = ['INTRO', 'LEADERS', 'STREAM_NOMIC'];
-
-        // Prevent egg and crate drops in unverified channels.
-        const filteredKeys = Object.keys(CHANNELS_CONFIG)
-            .filter(key => !filteredChannels.includes(key));
-
-        const channelKey = STATE.CHANCE.pickone(filteredKeys);
-        const channelID = CHANNELS_CONFIG[channelKey].id;
-        const channel = guild.channels.cache.get(channelID);
-        
-        // Filter invalid/deleted channels out, but notify of existence.
-        if (channel) result = channel;
-        else {
-            // Added to debug.
-            console.log('Could not find channel', channel, channelID, channelKey);
-        }
-
-        return result;
     }
 
     static checkIsByCode(id, code) {
