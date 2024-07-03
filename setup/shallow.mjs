@@ -75,8 +75,8 @@ const shallowBot = async () => {
         // const worm = COOP.USERS._get('230494953917251584');
         // const kayla = COOP.USERS._get('1202028076436041780');
 
-        Items.subtract('287062661483724810', 'LEADERS_SWORD', 1, 'CORRECT_ELECTION');
-        Items.add('287062661483724810', 'ELECTION_CROWN', 1, 'CORRECT_ELECTION');
+        // Items.subtract('287062661483724810', 'LEADERS_SWORD', 1, 'CORRECT_ELECTION');
+        // Items.add('287062661483724810', 'ELECTION_CROWN', 1, 'CORRECT_ELECTION');
 
         // worm.ban();
         // kayla.ban();
@@ -88,9 +88,9 @@ const shallowBot = async () => {
 
         // slush.voice.setMute(true);
 
-        // const LEADERS_RATIO_PERC = .0125;
-        // const num = VotingHelper.getNumRequired(LEADERS_RATIO_PERC);
-        // console.log(num);
+        const LEADERS_RATIO_PERC = .008175;
+        const num = VotingHelper.getNumRequired(LEADERS_RATIO_PERC);
+        console.log(num);
 
         // const msg = await COOP.CHANNELS._send('TALK', 'TESTING');
         // console.log(msg);
