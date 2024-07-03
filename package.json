@@ -15,7 +15,7 @@
   "dependencies": {
     "axios": "^0.21.2",
     "chance": "^1.1.7",
-    "coop-shared": "git+https://github.com/the-coop/coop-shared.git#ee71df7dc71dfd5dc51e700a96a895afacf9ccb6",
+    "coop-shared": "git+https://github.com/the-coop/coop-shared.git#e8b2fb7df7be82e919728cd8c34c4e55daa60041",
     "discord.js": "^14.15.2",
     "dotenv": "^16.0.3",
     "jsonwebtoken": "^8.5.1",

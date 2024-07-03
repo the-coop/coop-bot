@@ -40,7 +40,7 @@ export default class SocialHelper {
         return {
             name: `${member.displayName}'s VC`,
             type: ChannelType.GuildVoice,
-            parent: CATEGORIES.SOCIAL.id,
+            // parent: CATEGORIES.SOCIAL.id,
 
             // Set the owner and their permissons.
             permissionOverwrites: [
@@ -71,11 +71,14 @@ export default class SocialHelper {
             // Prevent deletion of create-yours vc.
             if (channel.id === CHANNELS_CONFIG.CREATE_SOCIAL.id) return false;
 
-            // Prevent deletion of public VC. TODO: Refactor add to config file.
+            // Prevent deletion of public VC.
             if (channel.id === '1200884411135168583') return false;
+            // CHANNELS_CONFIG.PUBLIC_VC
 
             // Prevent deletion of an active custom VC.
             if (channel.members.size > 0) return false;
+
+            
 
             return true;
         });
