@@ -76,7 +76,7 @@ export default class SocialHelper {
                 if (channel.members.size > 0) return false;
 
                 // Limit clean up to top level.
-                if (channel?.parent.id) return false;
+                if (channel?.parent?.id) return false;
 
                 return true;
             })
