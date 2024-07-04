@@ -29,20 +29,17 @@ export default class SocialHelper {
             console.error(e);
             console.log('Error with create your own channel state change ^');
         }
-    }
+    };
 
     static createVC(member) {
         const config = this.calcConfig(member);
         return SERVER._coop().channels.create(config);
-    }
+    };
 
     static calcConfig(member) {
         return {
             name: `${member.displayName}'s VC`,
             type: ChannelType.GuildVoice,
-            // parent: CATEGORIES.SOCIAL.id,
-
-            // Set the owner and their permissons.
             permissionOverwrites: [
                 {
                     id: member.id,
@@ -59,31 +56,32 @@ export default class SocialHelper {
             reason: 'Custom VC',
             position: 9999
         }
-    }
+    };
 
     static async cleanupUnused() {
-        const category = CHANNELS._get(CATEGORIES.SOCIAL.id);
-        const unusedVCs = category.children.cache.filter(channel => {
-            // If text channel, filter out.
-            if (channel.type === ChannelType.GuildText)
-                return false;
+        SERVER._coop().channels.cache
 
-            // Prevent deletion of create-yours vc.
-            if (channel.id === CHANNELS_CONFIG.CREATE_SOCIAL.id) return false;
+            // Filter to custom created VCs.
+            .filter(channel => {
+                // If text channel, filter out.
+                if (channel.type === ChannelType.GuildText) return false;
 
-            // Prevent deletion of public VC.
-            if (channel.id === '1200884411135168583') return false;
-            // CHANNELS_CONFIG.PUBLIC_VC
+                // Prevent deletion of create-yours vc.
+                if (channel.id === CHANNELS_CONFIG.CREATE_SOCIAL.id) return false;
 
-            // Prevent deletion of an active custom VC.
-            if (channel.members.size > 0) return false;
+                // Prevent deletion of public VC.
+                if (channel.id === CHANNELS_CONFIG.PUBLIC_VC.id) return false;
 
-            
+                // Prevent deletion of an active custom VC.
+                if (channel.members.size > 0) return false;
 
-            return true;
-        });
+                // Limit clean up to top level.
+                if (channel?.parent.id) return false;
 
-        // Delete all of the unused VCs.
-        unusedVCs.map(vc => vc.delete());
-    }
-}
+                return true;
+            })
+
+            // Delete all of the unused VCs.
+            .map(vc => vc.delete());
+    };
+};
