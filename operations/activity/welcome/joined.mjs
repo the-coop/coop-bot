@@ -3,8 +3,6 @@ import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from 'discord.js';
 import { CHANNELS, MESSAGES, USERS, CHANCE } from '../../../coop.mjs';
 import RolesHelper from '../../members/hierarchy/roles/rolesHelper.mjs';
 
-const imageURL = 'https://cdn.discordapp.com/attachments/723660447508725806/1253829509367726162/welcome.png?ex=66812a7a&is=667fd8fa&hm=3705cd275a393c9703dd817faf9c04442903b1f5b18b9e61a04af491282c59f4&';
-
 export default async function memberJoined(member) {
 
   try {
@@ -62,8 +60,7 @@ export default async function memberJoined(member) {
       ])]
     });
 
-    // Low chance of welcome to the server.
-    if (CHANCE.bool({ likelihood: 5 })) CHANNELS._send('TALK', imageURL);
+    // TODO: Could trigger events
 
   } catch(e) {
     console.error(e)

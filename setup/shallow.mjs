@@ -5,6 +5,8 @@ import _ from 'lodash';
 import { GatewayIntentBits, Client } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
 import { SERVER, STATE } from '../coop.mjs';
+import Items from 'coop-shared/services/items.mjs';
+import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
 
 
 // Commonly useful.
@@ -50,8 +52,6 @@ const shallowBot = async () => {
 
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
-
-        SERVER._coop().channels.cache.map(c => console.log(c.parent?.id));
     });
 };
 
