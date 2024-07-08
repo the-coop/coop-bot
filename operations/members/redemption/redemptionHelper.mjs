@@ -184,12 +184,15 @@ export default class RedemptionHelper {
             MONEY: ['stocks', 'finance', 'business', 'invest', 'gambl'],
             ART: ['painting', 'drawing', '3d modelling', 'game', 'design'],
             TECH: ['coding', 'program', 'tech', 'dev', 'game design'],
-        }
+        };
 
-        // Check
+        // Check if they would want any role 
         const desiredRoles = Object.keys(roleMatches).filter(roleKey => {
-            const roleMatches = roleMatches[roleKey].some(roleWord => reaction.message.content.includes(roleWord));
-            return roleMatches;
+            const identified = roleMatches[roleKey].some(roleWord => reaction.message.content.includes(roleWord));
+
+            if (!rolesData[roleKey]?.locked) return false;
+
+            return identified;
         });
 
         COOP.CHANNELS._send('TALK', 'Could have detected desired roles' + desiredRoles);

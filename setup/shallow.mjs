@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import _ from 'lodash';
-import { GatewayIntentBits, Client } from 'discord.js';
+import { GatewayIntentBits, Client, time } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
 import { SERVER, STATE } from '../coop.mjs';
 import Items from 'coop-shared/services/items.mjs';
@@ -52,6 +52,14 @@ const shallowBot = async () => {
 
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
+
+        // const compInfoMsg = await MESSAGES.getByLink(comp.message_link);
+
+        // comp time
+
+        // comp last 
+
+        // comp registration status
     });
 };
 

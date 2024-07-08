@@ -26,7 +26,7 @@ export default class CompetitionHelper {
             text: `SELECT * FROM events WHERE event_code IN ($1, $2, $3)`,
             values: Object.keys(COMPETITION_ROLES).map(kc => kc.toLowerCase())
         });
-    }
+    };
 
     static async get(code) {
         const competitions = await DatabaseHelper.singleQuery({
@@ -35,7 +35,7 @@ export default class CompetitionHelper {
             values: [code]
         });
         return competitions;
-    }
+    };
 
     static async load() {
         const competitions = await DatabaseHelper.manyQuery({
@@ -44,11 +44,11 @@ export default class CompetitionHelper {
                 IN ('technology_competition', 'art_competition', 'MONEY_competition')`,
             });
         return competitions;
-    }
+    };
 
     static formatCode(code) {
         return code.replace('_', ' ').toLowerCase();
-    }
+    };
 
     static saveEntrant(code, user) {
         return Database.query({
@@ -56,7 +56,7 @@ export default class CompetitionHelper {
             text: 'INSERT INTO competition_entries (entrant_id, competition) VALUES ($1, $2)',
             values: [user.id, code]
         });
-    }
+    };
 
     static loadEntrant(code, user) {
         return DatabaseHelper.singleQuery({
@@ -64,7 +64,7 @@ export default class CompetitionHelper {
             text: 'SELECT * FROM competition_entries WHERE entrant_id = $1 AND competition = $2',
             values: [user.id, code]
         });
-    }
+    };
 
     static loadEntrants(code) {
         return DatabaseHelper.manyQuery({
@@ -72,7 +72,7 @@ export default class CompetitionHelper {
             text: 'SELECT * FROM competition_entries WHERE competition = $1',
             values: [code]
         });
-    }
+    };
 
     static async setTitle(code, title) {
         return await DatabaseHelper.singleQuery({
@@ -80,7 +80,7 @@ export default class CompetitionHelper {
             text: 'UPDATE events SET title = $2 WHERE event_code = $1',
             values: [code, title]
         });
-    }
+    };
 
     static async setDescription(code, description) {
         return await DatabaseHelper.singleQuery({
@@ -88,7 +88,7 @@ export default class CompetitionHelper {
             text: 'UPDATE events SET description = $2 WHERE event_code = $1',
             values: [code, description]
         });
-    }
+    };
 
     static async setMessageLink(code, link) {
         return await DatabaseHelper.singleQuery({
@@ -96,13 +96,13 @@ export default class CompetitionHelper {
             text: 'UPDATE events SET message_link = $2 WHERE event_code = $1',
             values: [code, link]
         });
-    }
+    };
 
     static isCompetitionChnanel(id) {
         const { TECHNOLOGY_COMPETITION, ART_COMPETITION, MONEY_COMPETITION } = CHANNELS_CONFIG;
         const compChannels = [TECHNOLOGY_COMPETITION, ART_COMPETITION, MONEY_COMPETITION];
         return compChannels.some(c => c.id === id);
-    }
+    };
 
     static compCodeFromChannelID(id) {
         let competitionCode = null;
@@ -111,21 +111,21 @@ export default class CompetitionHelper {
                 competitionCode = k.toLowerCase();
         });
         return competitionCode;
-    }
+    };
 
     static setEntryMessageID(entryID, messageID) {
         return Database.query({
             text: 'UPDATE competition_entries SET entry_msg_id = $2 WHERE id = $1',
             values: [entryID, messageID]
         });
-    }
+    };
 
     static clearCompetitionEntrants(code) {
         return Database.query({
             text: 'DELETE FROM competition_entries WHERE competition = $1',
             values: [code]
         });
-    }
+    };
 
     // Calculate the votes present on a competition entry.
     static async countEntryVotes(entry) {
@@ -168,7 +168,7 @@ export default class CompetitionHelper {
         } catch(e) {
             return 0;
         }
-    }
+    };
 
     // Check the most important things at the beginning of a new day.
     static async check(competition) {
@@ -186,7 +186,7 @@ export default class CompetitionHelper {
 
         // Return the result in the check.
         return competition;
-    }
+    };
 
     static async start(code) {
         // Show the channel
@@ -217,7 +217,7 @@ export default class CompetitionHelper {
 
         // Add the reaction which will allow launching the competition when reacted with.
         MESSAGES.delayReact(initialMsg, '▶');
-    }
+    };
 
     static async clear(code) {
         try {
@@ -235,7 +235,7 @@ export default class CompetitionHelper {
             console.error(e);
             return false;
         }
-    }
+    };
 
     // Trigger this with a mod reaction (emoji)
     // Launch to the relevant population (this gives mods some time to fill in competition details).
@@ -283,7 +283,7 @@ export default class CompetitionHelper {
 
         // Explicitly declare event started.
         await EventsHelper.setActive(code, true);
-    }
+    };
 
     static async register(code, reaction, user) {
         // Check not already registered on this competition.
@@ -302,7 +302,7 @@ export default class CompetitionHelper {
 
         // Add four leaf clover so people can wish good luck
         MESSAGES.delayReact(registeredFeedMsg, '🍀');
-    }
+    };
 
     static async end(competionCode) {
         // Load the competition.
@@ -412,7 +412,7 @@ export default class CompetitionHelper {
 
         // Set competition is not active.
         await EventsHelper.setActive(competionCode, false);
-    }
+    };
 
     static async track() {
         // Time reference ms.
@@ -528,7 +528,7 @@ export default class CompetitionHelper {
                 compInfoMsg.edit(competitionUpdateText);
             }
         });
-    } 
+    } ;
 
     static async onChannelUpdate(chanUpdate) {
         // Ensure it's a competition channel.
@@ -550,7 +550,7 @@ export default class CompetitionHelper {
             await this.setTitle(competitionCode, title);
             await this.setDescription(competitionCode, description);
         }
-    }
+    };
 
     static async onReaction(reaction, user) {
         try {
@@ -581,7 +581,7 @@ export default class CompetitionHelper {
             console.log('Error handling competition reaction.');
             console.error(e);
         }
-    }
+    };
 
     static async onMessage(msg) {
         // Check if it's a competition channel.
@@ -620,7 +620,7 @@ export default class CompetitionHelper {
 
         // Add the trophy emoji for voting
         MESSAGES.delayReact(msg, '🏆');
-    }
+    };
 
     static async buildBlogPost(competionCode) {
         console.log("Building blog post for " + competionCode);
@@ -628,6 +628,6 @@ export default class CompetitionHelper {
         // Build the blog post for the competition
         // Sort the messages by most votes
         return true;
-    }
+    };
 
-}
+};
