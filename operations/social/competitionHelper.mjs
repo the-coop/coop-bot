@@ -189,34 +189,39 @@ export default class CompetitionHelper {
     };
 
     static async start(code) {
-        // Show the channel
-        const channel = CHANNELS._getCode(code.toUpperCase());
-        const channelID = channel.id;
+        try {
+            // Show the channel
+            const channel = CHANNELS._getCode(code.toUpperCase());
+            const channelID = channel.id;
 
-        // CHANNELS._show(channelID);
+            // CHANNELS._show(channelID);
 
-        const commanderRole = ROLES._getByCode('COMMANDER');
-        const leaderRole = ROLES._getByCode('LEADER');
+            const commanderRole = ROLES._getByCode('COMMANDER');
+            const leaderRole = ROLES._getByCode('LEADER');
 
-        // Show to commander and leaders.
-        CHANNELS._showTo(channelID, [commanderRole, leaderRole])
+            // Show to commander and leaders.
+            CHANNELS._showTo(channelID, [commanderRole, leaderRole])
 
-        // Notify commands and leaeders that competition should receive details quickly.
-        const initialMsgText = `**🏆 ${ROLES._textRef('COMMANDER')} & ${ROLES._textRef('LEADER')}, the ${this.formatCode(code)} will start here shortly! 🏆**\n\n` +
-            `Leadership should add rules/details to channel description then press start ▶ below [will ping users - be ready]!`;
+            // Notify commands and leaeders that competition should receive details quickly.
+            const initialMsgText = `**🏆 ${ROLES._textRef('COMMANDER')} & ${ROLES._textRef('LEADER')}, the ${this.formatCode(code)} will start here shortly! 🏆**\n\n` +
+                `Leadership should add rules/details to channel description then press start ▶ below [will ping users - be ready]!`;
 
-        // Add the initial message and the start reaction (with ping).
-        const initialMsg = await CHANNELS._send(code.toUpperCase(), initialMsgText, {});
+            // Add the initial message and the start reaction (with ping).
+            const initialMsg = await CHANNELS._send(code.toUpperCase(), initialMsgText, {});
 
-        // Reset the title/description.
-        await channel.setTopic("COMPETITION_TITLE_HERE\nNEW_LINE_COMPETITION_DESCRIPTION_HERE");
+            // Reset the title/description.
+            await channel.setTopic("COMPETITION_TITLE_HERE\nNEW_LINE_COMPETITION_DESCRIPTION_HERE");
 
-        // Capture and store/attach the competition main message link.
-        const compMsgLink = MESSAGES.link(initialMsg);
-        await this.setMessageLink(code, compMsgLink);
+            // Capture and store/attach the competition main message link.
+            const compMsgLink = MESSAGES.link(initialMsg);
+            await this.setMessageLink(code, compMsgLink);
 
-        // Add the reaction which will allow launching the competition when reacted with.
-        MESSAGES.delayReact(initialMsg, '▶');
+            // Add the reaction which will allow launching the competition when reacted with.
+            MESSAGES.delayReact(initialMsg, '▶');
+        } catch(e) {
+            console.error(e);
+            console.log('Tried to start competition and failed');
+        }
     };
 
     static async clear(code) {
@@ -250,11 +255,11 @@ export default class CompetitionHelper {
 
         // Require multiple leaders to launch it?
 
-        // Remove the launch message that is intended for leadership.
-        await reaction.message.delete();
-
         // Access the channel to extract the details.
         const channel = await reaction.message.channel.fetch();
+
+        // Remove the launch message that is intended for leadership.
+        await reaction.message.delete();
 
         // Show to all relevant members based on syncing roles.
         CHANNELS._show(channel.id)
@@ -474,7 +479,7 @@ export default class CompetitionHelper {
                 const competitionDetailsText = `🏆 **__Competition details__** 🏆\n` +
                     (comp.title ? comp.title : ('Working Title...' + '\n')) +
                     (comp.description ? comp.description : ('Campaign managers should edit channel description to competition outline.' + '\n\n'));
-
+                    
                 // If during registration stage, show most recent registrants.
                 if (isRegistrationPeriod) {
                     // Edit the message to contain registration period content.
