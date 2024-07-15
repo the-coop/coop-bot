@@ -95,10 +95,10 @@ export const execute = async (interaction) => {
 	const action = interaction.options.getSubcommand();
 
 	if (action === 'create') return await createTrade(interaction);
-	if (action === 'cancel') return await tradeCancel(interaction);
-	if (action === 'accept') return await tradeAccept(interaction);
-	
-	return await interaction.reply({ content: 'Trading action failed.', ephemeral: true });
+	else if (action === 'cancel') return await tradeCancel(interaction);
+	else if (action === 'accept') return await tradeAccept(interaction);
+	else
+		return await interaction.reply({ content: 'Trading action failed.', ephemeral: true });
 };
 
 const createTrade = async interaction => {

@@ -56,14 +56,21 @@ const shallowBot = async () => {
 
         // const compInfoMsg = await MESSAGES.getByLink(comp.message_link);
 
-        // Time reference ms.
-        const now = TIME._secs();
+        // CompetitionHelper.track();
 
-        // Load all competitions.
-        const competitions = await CompetitionHelper.load();
 
-        // Initial count of running competitions.
-        let numRunning = competitions.reduce(comp => comp.active ? 1 : 0, 0);
+        // CompetitionHelper.unsetEntryByMessageID('1262199719418007605');
+
+        
+
+        // // Time reference ms.
+        // const now = TIME._secs();
+
+        // // Load all competitions.
+        // const competitions = await CompetitionHelper.load();
+
+        // // Initial count of running competitions.
+        // let numRunning = competitions.reduce(comp => comp.active ? 1 : 0, 0);
 
         // Check if any of the competitions need starting/overdue.
         // competitions.map(async comp => {
@@ -79,10 +86,10 @@ const shallowBot = async () => {
         //     console.log(comp, isRegistrationPeriod);
         // });
 
-        console.log(competitions);
+        // console.log(competitions);
 
 
-        await CompetitionHelper.setMessageLink('art_competition', 'https://discordapp.com/channels/723660447508725802/845603527836303380/1258462660660559922');
+        // await CompetitionHelper.setMessageLink('art_competition', 'https://discordapp.com/channels/723660447508725802/845603527836303380/1258462660660559922');
 
         // comp time
         // comp last 

@@ -525,6 +525,7 @@ export default class CompetitionHelper {
                         firstFiveEntrantsByVotes.map(e => (
                             `<@${e.entrant_id}> - ${e.votes} vote(s)`
                         )).join('\n') +
+                        
                         `\n\n_For more information/details check website: link soon_`
                     );
                 }
@@ -603,11 +604,11 @@ export default class CompetitionHelper {
         // Access the entrant.
         const entrant = await this.loadEntrant(code, msg.author);
         if (!entrant) {
-            // Warn them about registering before posting.
-            MESSAGES.selfDestruct(msg, 'You must register to submit your entry.', 0, 5000);
-
             // Make sure their unauthorized submission (message) will be removed.
-            return MESSAGES.ensureDeletion(msg);
+            MESSAGES.ensureDeletion(msg);
+
+            // Warn them about registering before posting.
+            return MESSAGES.selfDestruct(msg, 'You must register to submit your entry.', 0, 5000);
         }
 
         // Ensure no existing entry already.
@@ -633,6 +634,13 @@ export default class CompetitionHelper {
         // Build the blog post for the competition
         // Sort the messages by most votes
         return true;
+    };
+
+    static async unsetEntryByMessageID(messageID) {
+        return Database.query({
+            text: 'UPDATE competition_entries SET entry_msg_id = NULL WHERE entry_msg_id = $1',
+            values: [messageID]
+        });
     };
 
 };

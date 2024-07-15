@@ -247,7 +247,7 @@ export default class MessagesHelper {
     static ensureDeletion(messageRef, fuseMs = 0) {
         this.delayDelete(messageRef, fuseMs);
         TemporaryMessages.add(messageRef);
-    }
+    };
 
     static selfDestruct(msgOrChannelRef, content, delayMs = 666, fuseMs = 30000) {
         return new Promise((resolve, reject) => {

@@ -9,7 +9,7 @@
     "shallow": "nodemon ./setup/shallow.mjs",
     "deploy-commands": "node ./operations/patching/deploy-commands.mjs",
     "check-commands": "node ./operations/patching/check-commands.mjs",
-    "database": "heroku pg:psql --app thecoop"
+    "db": "heroku pg:psql --app thecoop"
   },
   "author": "the-coop",
   "dependencies": {
