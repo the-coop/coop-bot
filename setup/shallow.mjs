@@ -55,13 +55,16 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // const compInfoMsg = await MESSAGES.getByLink(comp.message_link);
-
         // CompetitionHelper.track();
-
-
-        // CompetitionHelper.unsetEntryByMessageID('1262199719418007605');
+        // CompetitionHelper.unsetEntryByMessageID('1262180844823642223');
 
         
+
+        // CompetitionHelper.setEntryMessageID(49, '1262180844823642223');
+
+        // 1262180844823642223
+
+        // 1262180844823642223
 
         // // Time reference ms.
         // const now = TIME._secs();

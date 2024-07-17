@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { RAW_EMOJIS, EMOJIS } from 'coop-shared/config.mjs';
+import { RAW_EMOJIS, EMOJIS, CHANNELS as CHANNELS_CONFIG } from 'coop-shared/config.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import Useable from 'coop-shared/services/useable.mjs';
 
@@ -14,6 +14,9 @@ import SkillsHelper from '../medium/skills/skillsHelper.mjs';
 
 import { isRegisteredUserGuard } from '../medium/economy/itemCmdGuards.mjs';
 import ReactionHelper from '../../activity/messages/reactionHelper.mjs';
+
+
+
 
 
 export const EGG_DATA = {
@@ -199,15 +202,15 @@ export default class EggHuntMinigame {
 
             } else {
                 const unableMsg = await reaction.message.channel.send('Unable to use FRYING_PAN, you own none. :/');
-                setTimeout(() => reaction.users.remove(user.id), 666);
+                reaction.users.remove(user.id);
                 // MESSAGES.delayReact(unableMsg, EMOJIS.FRYING_PAN, 1333);
-                MESSAGES.delayDelete(unableMsg, 10000);
+                MESSAGES.delayDelete(unableMsg, 900);
             }
         } catch(e) {
             console.log('Frying egg failed...');
             console.error(e);
         }
-    }
+    };
 
     static handleChristmasRelease(reaction, user) {
         // Limit Christmas egg releases.
@@ -222,7 +225,7 @@ export default class EggHuntMinigame {
 
         // Add the item to the user's ownership.
         Items.add(user.id, 'CHRISTMAS_EGG', 1, `EGGHUNT_REWARD_CHRISTMAS - Christmas egg release.`);
-    }
+    };
 
     static async collect(reaction, user) {
         try {
@@ -288,13 +291,13 @@ export default class EggHuntMinigame {
             }
 
             // Sometimes tell the-barn that an egg was collected and where.
-            if (STATE.CHANCE.bool({ likelihood: .5 })) 
+            if (STATE.CHANCE.bool({ likelihood: .5 }) && reaction.message.channel.id !== CHANNELS_CONFIG.TALK.id)
                 CHANNELS._send('TALK', activityFeedMsgText);
 
         } catch(e) {
             console.error(e);
         }
-    }
+    };
 
     static async break(msg, user, rarity, intentional = false) {
         try {
@@ -323,37 +326,35 @@ export default class EggHuntMinigame {
             console.log('Break failed');
             console.error(e);
         }
-    }
+    };
 
     static async drop(rarity, dropText = null) {
         const dropChannel = CHANNELS._randomSpammable();
         
         if (dropChannel) {
-            const randomDelayBaseMs = 3000;
-            setTimeout(async () => {
-                try {
-                    const eggMsg = await dropChannel.send(MESSAGES.emojiText(EGG_DATA[rarity].emoji));
+            try {
+                // 
+                const eggMsg = await dropChannel.send(MESSAGES.emojiText(EGG_DATA[rarity].emoji));
 
-                    // Add collection action emoji.
-                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BASKET, STATE.CHANCE.integer({ min: 0, max: 50 }));
-                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.HAMMER, STATE.CHANCE.integer({ min: 25, max: 50 }));
-                    MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BOMB, 100);
+                // Add collection action emoji.
+                MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BASKET, STATE.CHANCE.integer({ min: 0, max: 50 }));
+                MESSAGES.delayReact(eggMsg, RAW_EMOJIS.HAMMER, STATE.CHANCE.integer({ min: 25, max: 50 }));
+                MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BOMB, 100);
 
-                    // If TOXIC_EGG add a frying pan emoji
-                    if (rarity === 'TOXIC_EGG')
-                        MESSAGES.delayReact(eggMsg, EMOJIS.FRYING_PAN, 150);
+                // If TOXIC_EGG add a frying pan emoji
+                if (rarity === 'TOXIC_EGG')
+                    MESSAGES.delayReact(eggMsg, EMOJIS.FRYING_PAN, 150);
 
-                    // If an annotation for the egg drop was provided, use it.
-                    const fivePercentRoll = STATE.CHANCE.bool({ likelihood: 7.5 });
-                    if (dropText && fivePercentRoll) 
-                        CHANNELS._send('TALK', dropText);
+                // If an annotation for the egg drop was provided, use it.
+                const fivePercentRoll = STATE.CHANCE.bool({ likelihood: 7.5 });
+                if (dropText && fivePercentRoll && dropChannel.id !== CHANNELS_CONFIG.TALK.id)
+                    CHANNELS._send('TALK', dropText);
 
-                } catch(e) {
-                    console.error(e);
-                }
-            }, STATE.CHANCE.natural({ min: 0, max: randomDelayBaseMs * 4 }));
+            } catch(e) {
+                console.error(e);
+            }
         }
-    }
+    };
 
     static async dmDrop(rarity) {
         try {
@@ -375,48 +376,48 @@ export default class EggHuntMinigame {
             console.error(e);
             console.log('Tried to drop an egg in DMs ^');
         }
-    }
+    };
 
     static run() {        
         console.log('Egghunt running.');
-        if (STATE.CHANCE.bool({ likelihood: 60 }))
-            this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg, but where...?');
+        if (STATE.CHANCE.bool({ likelihood: 80 }))
+            this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg,');
 
-        if (STATE.CHANCE.bool({ likelihood: 25 }))
-            this.drop('TOXIC_EGG', 'I dropped an egg, but where...? Tsk.');
+        if (STATE.CHANCE.bool({ likelihood: 20 }))
+            this.drop('TOXIC_EGG', 'I dropped an egg...');
 
-        if (STATE.CHANCE.bool({ likelihood: 5 }))
+        if (STATE.CHANCE.bool({ likelihood: 7 }))
             this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
 
-        if (STATE.CHANCE.bool({ likelihood: .3 })) {
-            CHANNELS._postToChannelCode('TALK', ROLES._textRef('MINIGAME_PING') + ', a legendary egg was dropped! Find and grab it before others can!');
+        if (STATE.CHANCE.bool({ likelihood: .5 })) {
+            CHANNELS._postToChannelCode('TALK', ROLES._textRef('MINIGAME_PING') + ', a legendary egg was dropped! Grab it before others can!');
             this.drop('LEGENDARY_EGG');
         }
 
         // Small chance of rolling for a direct message egg.
-        if (STATE.CHANCE.bool({ likelihood: 10 })) {
-            if (STATE.CHANCE.bool({ likelihood: 3.85 })) this.dmDrop('AVERAGE_EGG');
-            if (STATE.CHANCE.bool({ likelihood: 2.45 })) this.dmDrop('RARE_EGG');
-            if (STATE.CHANCE.bool({ likelihood: 0.025 })) this.dmDrop('LEGENDARY_EGG');
-        }
+        // if (STATE.CHANCE.bool({ likelihood: 10 })) {
+        //     if (STATE.CHANCE.bool({ likelihood: 3.85 })) this.dmDrop('AVERAGE_EGG');
+        //     if (STATE.CHANCE.bool({ likelihood: 2.45 })) this.dmDrop('RARE_EGG');
+        //     if (STATE.CHANCE.bool({ likelihood: 0.025 })) this.dmDrop('LEGENDARY_EGG');
+        // }
 
         // Small chance of bonus eggs being released.     
-        if (STATE.CHANCE.bool({ likelihood: 1.5 })) {        
+        if (STATE.CHANCE.bool({ likelihood: 3.5 })) {        
             const bonusEggRolePing = ROLES._textRef('MINIGAME_PING');
             let bonusEggStatus = ' bonus eggs rolling!';
 
             // Calculate a number of bonus eggs.
-            let bonusEggsNum = STATE.CHANCE.natural({ min: 5, max: 25 });
+            let bonusEggsNum = STATE.CHANCE.natural({ min: 8, max: 40 });
 
             // Even rare chance of mass release.
             if (STATE.CHANCE.bool({ likelihood: 1.5 })) {
-                bonusEggsNum = STATE.CHANCE.natural({ min: 10, max: 45 });
+                bonusEggsNum = STATE.CHANCE.natural({ min: 30, max: 88 });
                 bonusEggStatus = ' bonus eggs hurtling!';
             }
             
             // Even rare(er) chance of mass(er) release.
             if (STATE.CHANCE.bool({ likelihood: .075 })) {
-                bonusEggsNum = STATE.CHANCE.natural({ min: 20, max: 70 });
+                bonusEggsNum = STATE.CHANCE.natural({ min: 50, max: 150 });
                 bonusEggStatus = ' bonus eggs bonusing!';
             }
 
@@ -431,13 +432,13 @@ export default class EggHuntMinigame {
 
             // Drop the bonus average eggs.
             for (let i = 0; i < bonusEggsNum; i++) {
-                setTimeout(() => this.drop('AVERAGE_EGG', null), i * 3333);
+                setTimeout(() => this.drop('AVERAGE_EGG', null), i * 1225);
             }
 
             // Add in a mixture of toxic eggs.
-            const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 1, max: Math.floor(bonusEggsNum / 2.5) });
+            const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 3, max: Math.floor(bonusEggsNum / 1.25) });
             for (let i = 0; i < toxicEggsMixupNum; i++) {
-                setTimeout(() => this.drop('TOXIC_EGG', null), i * 3333);
+                setTimeout(() => this.drop('TOXIC_EGG', null), i * 1225);
             }
         }
     }
@@ -461,13 +462,13 @@ export default class EggHuntMinigame {
 
             await Items.add(STATE.CLIENT.user.id, eggRarity, 1, 'EGGHUNT_ANTITROLL_TAKEN - Stolen trolling egg, karma');
             
-            MESSAGES.selfDestruct(msg, 'Thanks for the egg! ;)', 0, 333);
+            MESSAGES.selfDestruct(msg, 'Thanks for the egg! ;)', 0, 900);
             
             CHANNELS.propagate(msg, 'Cooper collected (stole) an egg.', 'ACTIONS', true);
 
             MESSAGES.delayReact(msg, RAW_EMOJIS.BASKET, 333);
 
-            MESSAGES.delayDelete(msg, 222);
+            MESSAGES.delayDelete(msg, 0);
         }
 
         
