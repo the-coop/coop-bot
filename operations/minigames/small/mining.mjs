@@ -159,12 +159,15 @@ export default class MiningMinigame {
         if (STATE.CHANCE.bool({ likelihood: 1 }))
             magnitude = STATE.CHANCE.natural({ min: base * 7, max: base * 35 });
 
-        
         const eventChannel = CHANNELS._randomSpammable();
         const rockMsg = await eventChannel.send(EMOJIS.ROCK.repeat(magnitude));
 
+        // Notification message.
+        CHANNELS._send('TALK', `${ROLES._textRef('MINIGAME_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
+
         // Post a message for collecting events against.
-        await eventChannel.send('**MINING IN PROGRESS**');
+        eventChannel.send('*Mining needs image here');
+        eventChannel.send('**MINING IN PROGRESS**');
 
         // Ensure message is stored in database for clear up.
         // TODO: Count as ungathered rock in activity messages.
@@ -172,7 +175,5 @@ export default class MiningMinigame {
 
         // Add the prompt for mining the rock.
         MESSAGES.delayReact(rockMsg, '⛏️');
-
-        CHANNELS._send('TALK', `${ROLES._textRef('MINIGAME_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
     };
 }

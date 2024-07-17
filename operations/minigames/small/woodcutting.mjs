@@ -162,6 +162,10 @@ export default class WoodcuttingMinigame {
             const woodMsg = await eventChannel.send(EMOJIS.WOOD.repeat(multiplier));
                 
             // Post a message for collecting events against.
+            const branchText = multiplier > 1 ? `${multiplier} branches` : `a branch`;
+            const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(multiplier))} ${ROLES._textRef('MINIGAME_PING')}, a tree with ${branchText} to fell!`;
+            CHANNELS._send('TALK', woodcuttingEventText, {});
+
             eventChannel.send('*Woodcutting needs image here');
             const updatesMsg = await eventChannel.send('**WOODCUTTING IN PROGRESS**');
     
@@ -170,9 +174,7 @@ export default class WoodcuttingMinigame {
     
             MESSAGES.delayReact(woodMsg, '🪓', 666);
     
-            const branchText = multiplier > 1 ? `${multiplier} branches` : `a branch`;
-            const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(multiplier))} ${ROLES._textRef('MINIGAME_PING')}, a tree with ${branchText} to fell!`;
-            CHANNELS._send('TALK', woodcuttingEventText, {});
+
         } catch(e) {
             console.log('above error occurred trying to start woodcutting minigame');
         }
