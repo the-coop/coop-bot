@@ -15,21 +15,21 @@ const CRATE_DATA = {
         emoji: EMOJIS.AVERAGE_CRATE,
         maxReward: 4,
         openingPoints: 2,
-        percHitsReq: .015,
+        percHitsReq: .0125,
         rewards: DropTable.TIERS.AVERAGE
     },
     RARE_CRATE: {
         emoji: EMOJIS.RARE_CRATE,
         maxReward: 5,
         openingPoints: 5,
-        percHitsReq: .02,
+        percHitsReq: .0175,
         rewards: DropTable.TIERS.RARE
     },
     LEGENDARY_CRATE: {
         emoji: EMOJIS.LEGENDARY_CRATE,
         maxReward: 3,
         openingPoints: 25,
-        percHitsReq: .04,
+        percHitsReq: .03,
         rewards: DropTable.TIERS.LEGENDARY
     }
 };
