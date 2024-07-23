@@ -11,6 +11,7 @@ import CompetitionHelper from "../operations/social/competitionHelper.mjs";
 import ProjectsHelper from "../operations/productivity/projects/projectsHelper.mjs";
 import BlogHelper from "../operations/marketing/blog/blogHelper.mjs";
 import SocialHelper from "../operations/social/socialHelper.mjs";
+import messageDeletedHandler from "../operations/activity/messageDeleted.mjs";
 
 export default async () => {
     // Instantiate the client.
@@ -35,12 +36,11 @@ export default async () => {
 
     // Handler for a new member has joined
     client.on("guildMemberAdd", joined);
-
-    // Member left handler.
     client.on('guildMemberRemove', left);
 
     // Message interceptors.
     client.on("messageCreate", messageAddedHandler);
+    client.on('messageDelete', messageDeletedHandler);
 
     // Social VC connection interception.
     client.on("voiceStateUpdate", (prev, curr) => SocialHelper.onStateChange(prev, curr));

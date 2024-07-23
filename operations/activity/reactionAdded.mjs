@@ -6,7 +6,6 @@ import WoodcuttingMinigame from "../minigames/small/woodcutting.mjs";
 import InstantFurnaceMinigame from "../minigames/small/instantfurnace.mjs";
 
 
-
 import RedemptionHelper from "../members/redemption/redemptionHelper.mjs";
 import SacrificeHelper from "../members/redemption/sacrificeHelper.mjs";
 import ElectionHelper from "../members/hierarchy/election/electionHelper.mjs";

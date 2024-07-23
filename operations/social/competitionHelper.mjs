@@ -10,7 +10,7 @@ import EventsHelper from "../eventsHelper.mjs";
 import DropTable from '../minigames/medium/economy/items/droptable.mjs';
 import Items from 'coop-shared/services/items.mjs';
 
-export const COMPETITION_DUR = 3600 * 24 * 30;
+export const COMPETITION_DUR = 3600 * 24 * 7;
 
 export const COMPETITION_ROLES = {
     TECHNOLOGY_COMPETITION: 'TECH',
@@ -324,7 +324,6 @@ export default class CompetitionHelper {
 
         // Limit winners to first 3.
         winners = winners.slice(0, 3);
-
 
         // Handle rewards and notifications for each winner.
         winners.map((w, index) => {
@@ -643,4 +642,14 @@ export default class CompetitionHelper {
         });
     };
 
+    static async onDelete(msg) {
+        // Check if it's a competition message.
+         if (!this.isCompetitionChnanel(msg.channel.id)) return;
+
+         // Remove the entry ID.
+         await this.unsetEntryByMessageID(msg.id);
+
+        // TODO: Should also check when it's being processed incase this misses it.
+    };
+    
 };

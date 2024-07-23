@@ -7,7 +7,7 @@ import Database from 'coop-shared/setup/database.mjs';
 import { SERVER, STATE, TIME } from '../coop.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
-import CompetitionHelper from '../operations/social/competitionHelper.mjs';
+import CompetitionHelper, { COMPETITION_DUR } from '../operations/social/competitionHelper.mjs';
 
 
 // Commonly useful.
@@ -15,6 +15,7 @@ import CompetitionHelper from '../operations/social/competitionHelper.mjs';
 // const listenChannelUpdates = (fn) => COOP.STATE.CLIENT.on('channelUpdate', fn);
 // const listenMessages = (fn) => COOP.STATE.CLIENT.on('messageCreate', fn);
 // const listenVoiceState = (fn) => COOP.STATE.CLIENT.on('voiceStateUpdate', fn);
+const listenDeleteions = (fn) => STATE.CLIENT.on('messageDelete', fn);
 
 const shallowBot = async () => {
     console.log('Starting shallow bot');
@@ -54,11 +55,18 @@ const shallowBot = async () => {
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
+        // listenDeleteions(ev => console.log(ev));
+
+        // TODO: Why hasn't art competition ended?
+
+        // TODO: Deleted entries handling?
+
+        // TODO: Add competition ready message to general
+
+
         // const compInfoMsg = await MESSAGES.getByLink(comp.message_link);
         // CompetitionHelper.track();
         // CompetitionHelper.unsetEntryByMessageID('1262180844823642223');
-
-        
 
         // CompetitionHelper.setEntryMessageID(49, '1262180844823642223');
 
@@ -69,8 +77,17 @@ const shallowBot = async () => {
         // // Time reference ms.
         // const now = TIME._secs();
 
-        // // Load all competitions.
-        // const competitions = await CompetitionHelper.load();
+        // Load all competitions.
+        // const now = TIME._secs();
+        // const artComp = await CompetitionHelper.get('art_competition');
+        // const compLastOccurred = parseInt(artComp.last_occurred);
+        // const hasExpired = now - compLastOccurred > COMPETITION_DUR;
+
+        // console.log(artComp);
+        // console.log(compLastOccurred);
+        // console.log(hasExpired);
+
+        // art_competition
 
         // // Initial count of running competitions.
         // let numRunning = competitions.reduce(comp => comp.active ? 1 : 0, 0);

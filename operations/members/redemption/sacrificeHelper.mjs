@@ -207,18 +207,21 @@ export default class SacrificeHelper {
             let sacrificee = null;
             try {
                 const message = await MESSAGES.getByLink(offer.message_link);
-                const desc = message?.embeds[0].data.description;
+
+                // TODO: Need new poll loading, maybe a database table for sacrifices?
                 
-                const discordID = /<@(\d*)>/.exec(desc)[1];
+                // const desc = message?.embeds[0].data.description;
+                
+                // const discordID = /<@(\d*)>/.exec(desc)[1];
     
-                sacrificee = USERS._get(discordID);
+                // sacrificee = USERS._get(discordID);
 
             } catch(e) {
                 // TODO: May need to remove the temporary message.
             }
 
             return {
-                sacrificee
+                // sacrificee
             };
         }));
         const validSacrifices = sacrifices.filter(v => v.sacrificee !== null);
