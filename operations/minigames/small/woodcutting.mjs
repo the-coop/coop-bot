@@ -63,7 +63,7 @@ export default class WoodcuttingMinigame {
         const extractedWoodNum = Math.max(0, Math.ceil(rewardRemaining / 1.25) * numCutters);
 
         // Clamp lower and upper boundary for chance of pickaxe breaking
-        const axeBreakPerc = Math.min(75, Math.max(25, extractedWoodNum));
+        const axeBreakPerc = Math.min(15, Math.max(15, extractedWoodNum));
 
         const didBreak = STATE.CHANCE.bool({ likelihood: axeBreakPerc });
         if (didBreak) {

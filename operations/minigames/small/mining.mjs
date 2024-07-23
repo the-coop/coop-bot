@@ -63,7 +63,7 @@ export default class MiningMinigame {
         const extractedOreNum = Math.max(0, Math.ceil(rewardRemaining / 1.5) * numCutters);
 
         // Clamp lower and upper boundary for chance of pickaxe breaking
-        const pickaxeBreakPerc = Math.min(75, Math.max(25, extractedOreNum));
+        const pickaxeBreakPerc = Math.min(15, Math.max(15, extractedOreNum));
 
         // Attempt to access the mining message.
         let updateMsg = await MESSAGES.getSimilarExistingMsg(msg.channel, '**MINING IN PROGRESS**');
