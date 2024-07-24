@@ -399,7 +399,7 @@ export default class CompetitionHelper {
         // Annouce publicly (with pings).
         CHANNELS._send('TALK', publicPrizeText);
 
-        this.buildBlogPost();
+        // this.buildBlogPost();
 
         // Clear the messages.
         this.clear(competionCode);
