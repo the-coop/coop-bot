@@ -4,7 +4,7 @@ dotenv.config();
 import _ from 'lodash';
 import { GatewayIntentBits, Client, time } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
-import { CHANNELS, SERVER, STATE, TIME } from '../coop.mjs';
+import { CHANNELS, SERVER, STATE, TIME, USERS } from '../coop.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
 import CompetitionHelper, { COMPETITION_DUR } from '../operations/social/competitionHelper.mjs';
@@ -52,6 +52,14 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // TODO: Add competition ready message to general
+
+        // Items.add('590920403438927964', 'METAL_ORE', 50, 'Competition winnings');
+        // Items.add('590920403438927964', 'AVERAGE_EGG', 15, 'Competition winnings');
+        // Items.add('590920403438927964', 'RARE_EGG', 5, 'Competition winnings');
+
+
+        // CompetitionHelper.ready('art_competition');
+
 
     });
 };

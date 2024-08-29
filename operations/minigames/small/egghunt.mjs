@@ -333,8 +333,9 @@ export default class EggHuntMinigame {
         
         if (dropChannel) {
             try {
-                // 
-                const eggMsg = await dropChannel.send(MESSAGES.emojiText(EGG_DATA[rarity].emoji));
+                // Make egg messages clear up/temporary to avoid caching issues and improve challenge.
+                const eggText = MESSAGES.emojiText(EGG_DATA[rarity].emoji);
+                const eggMsg = await MESSAGES.selfDestruct(dropChannel, eggText);
 
                 // Add collection action emoji.
                 MESSAGES.delayReact(eggMsg, RAW_EMOJIS.BASKET, STATE.CHANCE.integer({ min: 0, max: 50 }));

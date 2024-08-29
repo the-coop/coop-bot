@@ -188,7 +188,7 @@ export default class CompetitionHelper {
         return competition;
     };
 
-    static async start(code) {
+    static async ready(code) {
         try {
             // Show the channel
             const channel = CHANNELS._getCode(code.toUpperCase());
@@ -304,6 +304,8 @@ export default class CompetitionHelper {
 
         // Make sure to post it to feed, add some nice reactions (with ping).
         const registeredFeedMsg = await CHANNELS._send('TALK', registerCompMsgText, {});
+
+        // TODO: Update the registrants text.
 
         // Add four leaf clover so people can wish good luck
         MESSAGES.delayReact(registeredFeedMsg, '🍀');
@@ -444,7 +446,7 @@ export default class CompetitionHelper {
                 // Attempt to start a competition if required.
                 if (isDue && numRunning < 2 && !comp.message_link) {
                     // Handle competition announcements and channels.
-                    await this.start(comp.event_code);
+                    await this.ready(comp.event_code);
 
                     // Make other checks aware this is starting and counted.
                     numRunning++;
@@ -476,8 +478,8 @@ export default class CompetitionHelper {
 
                 // Shared competition details text.
                 const competitionDetailsText = `🏆 **__Competition details__** 🏆\n` +
-                    (comp.title ? comp.title : ('Working Title...' + '\n')) +
-                    (comp.description ? comp.description : ('Campaign managers should edit channel description to competition outline.' + '\n\n'));
+                    ( comp.title ? comp.title : ('Working Title...' + '\n')) +
+                    ( comp.description ? comp.description : ('Campaign managers should edit channel description to competition outline.' + '\n\n'));
                     
                 // If during registration stage, show most recent registrants.
                 if (isRegistrationPeriod) {
@@ -494,7 +496,7 @@ export default class CompetitionHelper {
 
                         firstFiveEntrantsByLatestFirst.map(e => `<@${e.entrant_id}>`).join('\n') +
 
-                        `_To register press the clipboard emoji on this message!_`
+                        `\n\n_To register press the clipboard emoji on this message!_`
                         
 
                 // If after registration stage, show current votes/winning users.
@@ -510,10 +512,10 @@ export default class CompetitionHelper {
                         });
 
                     // Edit the message to contain registration period content.
-                    const firstFiveEntrantsByVotes = progress.entries;
+                    const rankedEntrants = progress.entries;
 
                     // Sort the entrants by largest id
-                    firstFiveEntrantsByVotes.sort((a, b) => a.votes > b.votes);
+                    rankedEntrants.sort((a, b) => a.votes > b.votes);
 
                     // Edit the message to contain post-registration period content.
                     competitionUpdateText = (
@@ -521,7 +523,7 @@ export default class CompetitionHelper {
                         `**${this.formatCode(comp.event_code)} continues!**\n\n` +
 
                         `**Currently winning:** \n\n` +
-                        firstFiveEntrantsByVotes.map(e => (
+                        rankedEntrants.map(e => (
                             `<@${e.entrant_id}> - ${e.votes} vote(s)`
                         )).join('\n') +
                         

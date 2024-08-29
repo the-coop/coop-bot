@@ -249,7 +249,7 @@ export default class MessagesHelper {
         TemporaryMessages.add(messageRef);
     };
 
-    static selfDestruct(msgOrChannelRef, content, delayMs = 666, fuseMs = 30000) {
+    static selfDestruct(msgOrChannelRef, content, delayMs = 0, fuseMs = 30000) {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
                 try {
