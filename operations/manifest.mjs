@@ -60,12 +60,12 @@ export const VELOCITY_EVENTS = {
   MINING: {
     since: 0, 
     handler: () => Mining.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: .8, max: 6 })
+    interval: baseTickDur * manifestChance.floating({ min: .25, max: 2 })
   },
   WOODCUTTING: { 
     since: 0, 
     handler: () => Woodcutting.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: .5, max: 7 })
+    interval: baseTickDur * manifestChance.floating({ min: .25, max: 2 })
   },
   EGGHUNT: { 
     since: 0, 
