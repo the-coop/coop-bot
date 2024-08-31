@@ -6,6 +6,7 @@ import BlogHelper from "../../marketing/blog/blogHelper.mjs";
 import ProjectsHelper from "../../productivity/projects/projectsHelper.mjs";
 
 import VotingHelper from "../redemption/votingHelper.mjs";
+import ReactionHelper from "../messages/reactionHelper.mjs";
 
 
 // TODO: Make sure when adding to roadmap, talk, and feed that the votes are displayed to indicate mandate!
@@ -15,14 +16,14 @@ export default class SuggestionsHelper {
         // Activate it with Cooper's reactions.
         if (CHANNELS.checkIsByCode(msg.channel.id, 'SUGGESTIONS') && !msg.author.bot)
             this.activateSuggestion(msg);
-    }
+    };
 
     // Make sure not to apply to the initial suggestions message lol...
     static onReaction(reaction, user) {
         const msg = reaction.message;    
         if (CHANNELS.checkIsByCode(msg.channel.id, 'SUGGESTIONS') && !user.bot)
             SuggestionsHelper.checkSingle(msg);   
-    }
+    };
 
     static async check() {
         // Get last 25 suggestions to check through.
@@ -37,7 +38,10 @@ export default class SuggestionsHelper {
             if (!processedOne && suggestion && this.checkSingle(suggestion, index))
                 processedOne = true;
         });
-    }
+
+        // Cleanup road map suggestions that have been completed.
+        this.cleanup();
+    };
 
     static checkSingle(suggestion, index = 1) {
         // Suggestion may have already been processed and deleted.
@@ -72,7 +76,7 @@ export default class SuggestionsHelper {
 
         // Default to assuming failure.
         return false;
-    }
+    };
 
     // Post a link in feed and talk to try to break the deadlock.
     static tied(suggestion, votes, index) {
@@ -93,7 +97,7 @@ export default class SuggestionsHelper {
                 console.error(e);
             }
         }, index * 5000);
-    }
+    };
 
     static invalidate(suggestion, index) {
         setTimeout(async () => {
@@ -113,7 +117,7 @@ export default class SuggestionsHelper {
                 console.error(e);
             } 
         }, 5555 * index);
-    }
+    };
 
     static parseVotes(msg) {
         const votes = {
@@ -150,7 +154,7 @@ export default class SuggestionsHelper {
         }
 
         return votes;
-    }
+    };
 
     static async pass(suggestion, votes, index) {
         setTimeout(() => {
@@ -183,12 +187,12 @@ export default class SuggestionsHelper {
                 console.error(e);
             }
         }, index * 5000);
-    }
+    };
 
     static async activateSuggestion(suggestionMsg) {
         MESSAGES.delayReact(suggestionMsg, EMOJIS.POLL_FOR, 333);
         MESSAGES.delayReact(suggestionMsg, EMOJIS.POLL_AGAINST, 666);
-    }
+    };
 
     static async reject(suggestion, votes, index) {
         setTimeout(() => {
@@ -212,7 +216,29 @@ export default class SuggestionsHelper {
                 console.error(e);
             }
         }, index * 5000);
-    }
+    };
+
+    static async cleanup() {
+        try {
+            const msgs = await CHANNELS._getCode('ROADMAP').messages.fetch({ limit: 100 });
+            msgs.map(async m => {
+                // Consider as complete, inform community and delete.
+                const completed = await ReactionHelper.userReactedWith(m, '786671654721683517', '✅');
+                if (completed) {
+                    await CHANNELS._send('TALK', `## Roadmap Item Fulfilled:\n "${m.content}"`);
+                    return m.delete();
+                }
+
+                // Consider as spam and delete.
+                const remove = await ReactionHelper.userReactedWith(m, '786671654721683517', '❎');
+                if (remove) return m.delete();
+            });
+
+        } catch(e) {
+            console.error(e);
+            console.log('Error while cleaning up roadmap messages.');
+        }
+    };
 
     // static async onReaction() {
     //     // console.log('Suggestion reaction');
@@ -222,4 +248,4 @@ export default class SuggestionsHelper {
     //     // Validate a suggestion when it is originally added, part of house cleaning.   
     // }
 
-}
+};

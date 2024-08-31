@@ -177,4 +177,4 @@ export default function eventsManifest() {
 
   // Check stocks functionality pretty often.
   EventsHelper.runInterval(() => StockHelper.update(), 30000);
-}
+};

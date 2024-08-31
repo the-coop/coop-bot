@@ -1,5 +1,5 @@
 import { ROLES as ROLES_CONFIG } from "coop-shared/config.mjs";
-import { MESSAGES, REACTIONS, ROLES, USERS } from "../../../coop.mjs";
+import { MESSAGES, REACTIONS, ROLES, USERS, CHANNELS } from "../../../coop.mjs";
 import VotingHelper from "../redemption/votingHelper.mjs";
 
 export const cleanEmoji = '❎';
@@ -28,6 +28,9 @@ export default class CleanupHandler {
         //     reaction.remove();
         //     return MESSAGES.silentSelfDestruct(reaction.message, protectKeyText);
         // }
+
+        // Prevent it applying in roadmap to reduce notification spam, different usage there.
+        if (CHANNELS.checkIsByCode(reaction.channel.id, 'ROADMAP')) return false;
 
         // Count votes and delete, less votes required if leader votes, even less if commander votes.
         const countVotes = REACTIONS.countType(reaction.message, cleanEmoji);
