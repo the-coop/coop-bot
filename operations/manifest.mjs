@@ -144,11 +144,11 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 3);
 
   // Sacrifice, moderation related.
-  EventsHelper.chanceRunInterval(() => SacrificeHelper.random(), 25, baseTickDur * 20);
+  EventsHelper.chanceRunInterval(() => SacrificeHelper.random(), 25, baseTickDur * 50);
 
   // Announce pending intros and sacifices, 2-3 tiems a day.
   EventsHelper.runInterval(() => RedemptionHelper.announce(), baseTickDur * 13);  
-  EventsHelper.runInterval(() => SacrificeHelper.announce(), baseTickDur * 15);
+  EventsHelper.runInterval(() => SacrificeHelper.announce(), baseTickDur * 30);
 
   EventsHelper.chanceRunInterval(() => ProspectHelper.randomReady(), 20, baseTickDur * 14);
 

@@ -12,6 +12,7 @@ import EventsHelper from '../operations/eventsHelper.mjs';
 import EggHuntMinigame from '../operations/minigames/small/egghunt.mjs';
 import SuggestionsHelper from '../operations/activity/suggestions/suggestionsHelper.mjs';
 import ReactionHelper from '../operations/activity/messages/reactionHelper.mjs';
+import SacrificeHelper from '../operations/members/redemption/sacrificeHelper.mjs';
 
 
 // Commonly useful.
@@ -54,14 +55,13 @@ const shallowBot = async () => {
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-        // TODO: Add competition ready message to general
 
+        // TODO: Test sacrifice mechanism
+        // SacrificeHelper.random();
 
-        SuggestionsHelper.cleanup();
+        // TODO: Load/track sacrifices?
 
-        // const completed = await ReactionHelper.userReactedWith(m, '786671654721683517', ':negative_squared_cross_mark:');
-        // const msg = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/748649755965522031/1279240813800460350');
-        // console.log(msg.reactions.cache);
+        // TODO: Intercept sacrifice ended?
     });
 };
 

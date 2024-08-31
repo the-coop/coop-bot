@@ -92,7 +92,7 @@ export default class SacrificeHelper {
         return lastSacSecs;
     };
 
-    static async offer(user) {
+    static async offer(user, reason = null) {
         // Check last sacrifice time
         const lastSacSecs = await this.getLastSacrificeSecs(user.id);
         
@@ -120,8 +120,8 @@ export default class SacrificeHelper {
         const lastMsgSecs = await COOP.USERS.getField(user.id, 'last_msg_secs');
         if (lastMsgSecs) lastMessageFmt = COOP.TIME.secsLongFmt(lastMsgSecs);
 
-        const points = await Items.getUserItemQty(user.id, 'COOP_POINT');
-        const totalItems = await COOP.ITEMS.getUserTotal(user.id);
+        // const points = await Items.getUserItemQty(user.id, 'COOP_POINT');
+        // const totalItems = await COOP.ITEMS.getUserTotal(user.id);
 
         const cooperMood = await CooperMorality.load();
 
@@ -147,30 +147,29 @@ export default class SacrificeHelper {
         if (oneRoll && cooperMood === 'NEUTRAL') moodText = ' just awaiting the paperwork';
         if (oneRoll && twentyRoll && cooperMood === 'NEUTRAL') moodText = ' all sacrificial rights reserved, The Coop';
 
-        const isProspect = ROLES._idHasCode(user.id, 'PROSPECT');
+        // const isProspect = ROLES._idHasCode(user.id, 'PROSPECT');
 
-        // Schedule end of message and reaction voting (24hr)
-        const sacrificeMsg = await COOP.CHANNELS._postToChannelCode('TALK', sacrificeEmbed);
-        await CHANNELS._getCode('TALK').send({
+        // Start the poll, should save message ID for later results consideration.
+        const msg = await COOP.CHANNELS._getCode('TALK').send({
             poll: {
-                question: { text: `Sacrifice ${user.id}?` },
+                question: { text: `${user.username} was ${!reason ? 'randomly ': ''} selected for sacrifice...` },
                 answers: [
                     { text: `Keep them`, emoji: '🕊️' },
-                    { text: `Sacrifice ${user.username}`, emoji: '🗡️' }
+                    { text: `Sacrifice them`, emoji: '🗡️' },
                 ],
                 duration: 24,
                 allow_multiselect: false
             }
         });
 
-        TemporaryMessages.add(sacrificeMsg, sacrificeMsgLifetime, 'SACRIFICE');
+        TemporaryMessages.add(msg, sacrificeMsgLifetime, 'SACRIFICE');
 
         // Update the user's latest recorded sacrifice time.
         await COOP.USERS.updateField(user.id, 'last_sacrificed_secs', COOP.TIME._secs());
 
         // Add reactions for voting
-        COOP.MESSAGES.delayReact(sacrificeMsg, EMOJIS.DAGGER, 1500);
-        COOP.MESSAGES.delayReact(sacrificeMsg, EMOJIS.SACRIFICE_SHIELD, 2000);
+        // COOP.MESSAGES.delayReact(msg, EMOJIS.DAGGER, 1500);
+        // COOP.MESSAGES.delayReact(msg, EMOJIS.SACRIFICE_SHIELD, 2000);
 
         return true;
     };

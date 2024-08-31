@@ -30,7 +30,7 @@ export default class CleanupHandler {
         // }
 
         // Prevent it applying in roadmap to reduce notification spam, different usage there.
-        if (CHANNELS.checkIsByCode(reaction.channel.id, 'ROADMAP')) return false;
+        if (CHANNELS.checkIsByCode(reaction.message.channel.id, 'ROADMAP')) return false;
 
         // Count votes and delete, less votes required if leader votes, even less if commander votes.
         const countVotes = REACTIONS.countType(reaction.message, cleanEmoji);
