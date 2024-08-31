@@ -56,8 +56,10 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
 
-        // TODO: Test sacrifice mechanism
-        // SacrificeHelper.random();
+        // TODO: Test sacrifice mechanism   
+
+        // const msg = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/723660447508725806/1279259746515292261');
+        // console.log(msg.poll);
 
         // TODO: Load/track sacrifices?
 

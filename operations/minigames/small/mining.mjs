@@ -166,7 +166,7 @@ export default class MiningMinigame {
         CHANNELS._send('TALK', `${ROLES._textRef('MINIGAME_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
 
         // Post a message for collecting events against.
-        eventChannel.send('*Mining needs image here');
+        eventChannel.send('https://cdn.discordapp.com/attachments/1200884411135168583/1279503397791469701/mining-ready.png');
         eventChannel.send('**MINING IN PROGRESS**');
 
         // Ensure message is stored in database for clear up.
