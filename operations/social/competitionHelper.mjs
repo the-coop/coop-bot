@@ -448,6 +448,9 @@ export default class CompetitionHelper {
                     // Handle competition announcements and channels.
                     await this.ready(comp.event_code);
 
+                    // Notify leaders
+                    await CHANNELS._send('TALK', `${CHANNELS.textRef(comp.event_code.toUpperCase())} is ready to be configured and launched.`);
+
                     // Make other checks aware this is starting and counted.
                     numRunning++;
                 }
