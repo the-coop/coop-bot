@@ -8,6 +8,7 @@ import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 export default class WoodcuttingMinigame {
 
@@ -16,30 +17,29 @@ export default class WoodcuttingMinigame {
         // High chance of preventing any Woodcutting at all to deal with rate limiting.
         if (STATE.CHANCE.bool({ likelihood: 50 })) return false;
 
+        // Woodcutting minigame guards.
         const isOnlyEmojis = MESSAGES.isOnlyEmojisOrIDs(reaction.message.content);
         const isAxeReact = reaction.emoji.name === '🪓';
         const isCooperMsg = USERS.isCooperMsg(reaction.message);
         const isUserReact = !USERS.isCooper(user.id);
-        
-        // Woodcutting minigame guards.
         if (!isUserReact) return false;
         if (!isCooperMsg) return false;
         if (!isAxeReact) return false;
         if (!isOnlyEmojis) return false;
-
+        
+        // Check this character is wood emoji and from cooper.
         const msgContent = reaction.message.content;
-
         const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
         const firstEmojiUni = MESSAGES.emojiToUni(firstEmojiString);
         const rockEmojiUni = MESSAGES.emojiToUni(EMOJIS.WOOD);
         const isWoodMsg = firstEmojiUni === rockEmojiUni;
-
         if (!isWoodMsg) return false;
 
-        this.chip(reaction, user);
-    }
+        // Allow user to cut the wood.
+        this.cut(reaction, user);
+    };
 
-    static async chip(reaction, user) {
+    static async cut(reaction, user) {
         const msg = reaction.message;
 
         // Do this in mining also!
@@ -106,12 +106,14 @@ export default class WoodcuttingMinigame {
                 CHANNELS.propagate(msg, `${user.username} catches an average egg as it falls from a tree! (${addDiamond})`, 'ACTIONS');
             }
             
+            // Rarer events from woodcutting.
             if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
                 const branchQty = STATE.CHANCE.natural({ min: 5, max: 25 });
                 await Items.add(user.id, 'RARE_EGG', branchQty, 'Woodcutting rare event');
                 CHANNELS.propagate(msg, `${user.username} triggered a chain branch reaction, ${branchQty} rare eggs found!`, 'ACTIONS');
             }
 
+            // Rarest events from woodcutting.
             if (STATE.CHANCE.bool({ likelihood: 0.0525 })) {
                 const legendaryNestQty = STATE.CHANCE.natural({ min: 2, max: 4 });
                 await Items.add(user.id, 'LEGENDARY_EGG', legendaryNestQty, 'Woodcutting, very rare event');
@@ -123,20 +125,49 @@ export default class WoodcuttingMinigame {
             else await msg.delete();
             
             // Provide feedback.
-            const actionText = `${user.username} successfully chopped wood.`;
-            const ptsText = ITEMS.displayQty(addPoints);
-            const rewardText = `+1xp, +1 point (${ptsText}), +${extractedWoodNum} wood (${addedWood})!`;
-            
+            const ptsEmoji = MESSAGES.emojiCodeText('COOP_POINT');
+            const actionText = `${user.username} +${addedWood}${EMOJIS.WOOD} +${addPoints}${ptsEmoji}`;
 
-            if (!updateMsg)
-                CHANNELS.propagate(msg, `${actionText} ${rewardText}`, 'ACTIONS');
-            else 
-                updateMsg.edit(updateMsg.content + '\n' + `${actionText} ${rewardText}`);
+            // Either update message or create a new one.
+            CHANNELS.propagate(msg, `${actionText}`, 'ACTIONS');
 
+            // Edit and update the message if found
+            if (updateMsg) {
+                // Update the matching line.
+                let matchingAction = false;
+                const updatedContent = updateMsg.content.split('\n').map(l => {
+                    const regex = new RegExp(`\\b${user.username}\\b \\+(\\d+)${EMOJIS.WOOD} \\+(\\d+)${ptsEmoji}`, 'i');
+                    const match = l.match(regex);
+
+                    if (match) {
+                        // Parse existing values from the text.
+                        const wood = parseInt(match[1], 10);
+                        const pts = parseInt(match[2], 10);
+
+                        // Need to know if there is a match to prevent new line being added.
+                        matchingAction = true;
+
+                        // Update the line with new wood and coop points
+                        return `${user.username} +${wood + addedWood}${EMOJIS.WOOD} +${pts + addPoints}${ptsEmoji}`;
+                    }
+
+                    // Return the original line if no match
+                    return l;
+                }).join('\n');
+
+                // Edit the message with updated content
+                if (matchingAction)
+                    updateMsg.edit(updatedContent);
+
+                // Add woodcut stats with no matching existing row.
+                else
+                    updateMsg.edit(updateMsg.content + '\n' + `${actionText}`);
+            }
             
+            // Store to track latest woodcutting stats.
             EconomyNotifications.add('WOODCUTTING', {
                 pointGain: 1,
-                recWood: extractedWoodNum,
+                recWood: addedWood,
                 playerID: user.id,
                 username: user.username
             });
@@ -158,22 +189,34 @@ export default class WoodcuttingMinigame {
             if (STATE.CHANCE.bool({ likelihood: 1 }))
                 multiplier = STATE.CHANCE.natural({ min: base * 7, max: base * 35 });
     
+            // Calculate the random channel to drop wood in.
             const eventChannel = CHANNELS._randomSpammable();
+
+            // Send the promotion and notification image first, with the stats table.
+            eventChannel.send('*Woodcutting needs image here');
+            const updatesMsg = await eventChannel.send('🪓 **WOODCUTTING IN PROGRESS** 🪓');
+
+            // Send the wood to cut with the chop action.
             const woodMsg = await eventChannel.send(EMOJIS.WOOD.repeat(multiplier));
-                
+            woodMsg.edit({ 
+                components: [
+                    new ActionRowBuilder().addComponents([
+                        new ButtonBuilder()
+                            .setEmoji('🪓')
+                            .setLabel("Chop")
+                            .setCustomId('chop')
+                            .setStyle(ButtonStyle.Primary)
+                    ])
+                ]
+            });
+
+            // TODO: Count as ungathered wood in activity messages (when cleaning up)
+            TemporaryMessages.add(woodMsg, 30 * 60);
+
             // Post a message for collecting events against.
             const branchText = multiplier > 1 ? `${multiplier} branches` : `a branch`;
             const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(multiplier))} ${ROLES._textRef('MINIGAME_PING')}, a tree with ${branchText} to fell!`;
             CHANNELS._send('TALK', woodcuttingEventText, {});
-
-            eventChannel.send('*Woodcutting needs image here');
-            const updatesMsg = await eventChannel.send('**WOODCUTTING IN PROGRESS**');
-    
-            // TODO: Count as ungathered wood in activity messages (when cleaning up)
-            TemporaryMessages.add(woodMsg, 30 * 60);
-    
-            MESSAGES.delayReact(woodMsg, '🪓', 666);
-    
 
         } catch(e) {
             console.log('above error occurred trying to start woodcutting minigame');

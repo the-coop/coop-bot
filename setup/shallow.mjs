@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import _ from 'lodash';
-import { GatewayIntentBits, Client, time } from 'discord.js';
+import { GatewayIntentBits, Client, time, ActionRow, ActionRowBuilder, ButtonBuilder } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
 import { CHANNELS, MESSAGES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
 import Items from 'coop-shared/services/items.mjs';
@@ -13,6 +13,7 @@ import EggHuntMinigame from '../operations/minigames/small/egghunt.mjs';
 import SuggestionsHelper from '../operations/activity/suggestions/suggestionsHelper.mjs';
 import ReactionHelper from '../operations/activity/messages/reactionHelper.mjs';
 import SacrificeHelper from '../operations/members/redemption/sacrificeHelper.mjs';
+import { EMOJIS } from 'coop-shared/config.mjs';
 
 
 // Commonly useful.
@@ -47,13 +48,45 @@ const shallowBot = async () => {
     await STATE.CLIENT.login(process.env.DISCORD_TOKEN);
 
     // Common checks:
-    // COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingChannels());
+    // STATE.CLIENT.on('ready', () => SERVER.checkMissingChannels());
     // COOP.STATE.CLIENT.on('ready', () => SERVER.checkMissingRoles());
 
     // setupCommands(COOP.STATE.CLIENT);
 
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
+
+        // TODO: Test this
+        
+        // // CHANNELS._send('TALK', actionText);
+        // console.log(actionText);
+
+        // const msg = await MESSAGES.getByLink('https://discord.com/channels/723660447508725802/723660447508725806/1279259746515292261');
+
+        // const regex = new RegExp(`\\b${'_lmf_'}\\b \\+(\\d+)${EMOJIS.WOOD} \\+(\\d+)${ptsEmoji}`, 'i');
+        // const match = l.match(regex);
+        // console.log(match);
+
+        //     const wood = parseInt(match[1], 10);
+        //     const pts = parseInt(match[2], 10);
+
+        // const actionText = `${'testing'} +${10}${EMOJIS.WOOD} +${10}${MESSAGES.emojiCodeText('COOP_POINT')}`;
+        // const msg = await CHANNELS._send('TALK', actionText);
+        // msg.edit({ 
+        //     components: [
+        //         new ActionRowBuilder().addComponents([
+        //             new ButtonBuilder()
+        //                 .setEmoji('🪓')
+        //                 .setLabel("Chop")
+        //                 .setCustomId('chop')
+        //                 .setStyle('Primary')
+        //         ])
+        //     ]
+        // });
+
+
+
+
 
 
         // TODO: Test sacrifice mechanism   

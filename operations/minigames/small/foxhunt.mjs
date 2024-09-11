@@ -26,7 +26,10 @@ export default class FoxHuntMinigame {
             const isFoxhuntAction = [slapIcon, petIcon].includes(reaction.emoji.name);
             if (!isFoxhuntAction) return false;
 
+            // Add viisble response to prove it's hooked up.
             console.log('is fox hunt action');
+            if (CHANCE.natural({ min: 1, max: 12 }) > 6)
+                await CHANNELS._send('TALK', `Careful the 🦊 bites.`);
 
         } catch(e) {
             console.error(e);

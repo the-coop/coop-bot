@@ -2,7 +2,10 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 export default class InteractionHelper {
 
-    
+    static async onInteract(interaction) {
+
+    };
+
     static confirm(interaction, texts) {
         return new Promise((resolve, reject) => {
             // Show confirmation and prompt.
@@ -17,8 +20,6 @@ export default class InteractionHelper {
                         .setLabel('Cancel')
                         .setStyle(ButtonStyle.Danger)
                 );
-
-
 
             interaction.reply({ content: texts.preconfirmationText, components: [ConfirmationActions], ephemeral: true });
 
@@ -38,6 +39,6 @@ export default class InteractionHelper {
             // Handle timeout (no selection).
             collector.on('end', () => resolve(false));
         });
-    }
+    };
 
-}
+};

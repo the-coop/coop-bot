@@ -380,7 +380,6 @@ export default class EggHuntMinigame {
     };
 
     static run() {        
-        console.log('Egghunt running.');
         if (STATE.CHANCE.bool({ likelihood: 80 }))
             this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg,');
 

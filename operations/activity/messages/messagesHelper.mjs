@@ -354,4 +354,4 @@ export default class MessagesHelper {
         }));
     }
 
-}
+};
