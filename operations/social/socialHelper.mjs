@@ -82,9 +82,9 @@ export default class SocialHelper {
             })
 
             // Delete all of the unused VCs.
-            .map(vc => {
+            .map(async vc => {
                 try {
-                    vc.delete();
+                    await vc.delete();
                 } catch(e) {
                     console.error(e);
                     console.log('Error deleting social custom channel');
