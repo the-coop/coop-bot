@@ -193,7 +193,7 @@ export default class WoodcuttingMinigame {
             const eventChannel = CHANNELS._randomSpammable();
 
             // Send the promotion and notification image first, with the stats table.
-            eventChannel.send('*Woodcutting needs image here');
+            const announcementMsg = await eventChannel.send('*Woodcutting needs image here');
             const updatesMsg = await eventChannel.send('🪓 **WOODCUTTING IN PROGRESS** 🪓');
 
             // Send the wood to cut with the chop action.
@@ -211,6 +211,8 @@ export default class WoodcuttingMinigame {
             });
 
             // TODO: Count as ungathered wood in activity messages (when cleaning up)
+            TemporaryMessages.add(announcementMsg, 30 * 60);
+            TemporaryMessages.add(updatesMsg, 30 * 60);
             TemporaryMessages.add(woodMsg, 30 * 60);
 
             // Post a message for collecting events against.

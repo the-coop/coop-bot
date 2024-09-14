@@ -166,12 +166,14 @@ export default class MiningMinigame {
         CHANNELS._send('TALK', `${ROLES._textRef('MINIGAME_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
 
         // Post a message for collecting events against.
-        eventChannel.send('https://cdn.discordapp.com/attachments/1200884411135168583/1279503397791469701/mining-ready.png');
-        eventChannel.send('**MINING IN PROGRESS**');
+        const announcementMsg = await  eventChannel.send('https://cdn.discordapp.com/attachments/1200884411135168583/1279503397791469701/mining-ready.png');
+        const updatesMsg = await eventChannel.send('**MINING IN PROGRESS**');
 
         // Ensure message is stored in database for clear up.
         // TODO: Count as ungathered rock in activity messages.
         TemporaryMessages.add(rockMsg, 30 * 60);
+        TemporaryMessages.add(announcementMsg, 30 * 60);
+        TemporaryMessages.add(updatesMsg, 30 * 60);
 
         // Add the prompt for mining the rock.
         MESSAGES.delayReact(rockMsg, '⛏️');
