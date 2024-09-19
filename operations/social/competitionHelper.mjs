@@ -194,13 +194,13 @@ export default class CompetitionHelper {
             const channel = CHANNELS._getCode(code.toUpperCase());
             const channelID = channel.id;
 
-            // CHANNELS._show(channelID);
-
-            const commanderRole = ROLES._getByCode('COMMANDER');
-            const leaderRole = ROLES._getByCode('LEADER');
+            // Add the initial message and the start reaction (with ping).
+            await CHANNELS._send('TALK', `${code.toUpperCase()} ready! LINK`, {});
 
             // Show to commander and leaders.
-            CHANNELS._showTo(channelID, [commanderRole, leaderRole])
+            const commanderRole = ROLES._getByCode('COMMANDER');
+            const leaderRole = ROLES._getByCode('LEADER');
+            CHANNELS._showTo(channelID, [commanderRole, leaderRole]);
 
             // Notify commands and leaeders that competition should receive details quickly.
             const initialMsgText = `**🏆 ${ROLES._textRef('COMMANDER')} & ${ROLES._textRef('LEADER')}, the ${this.formatCode(code)} will start here shortly! 🏆**\n\n` +
@@ -306,6 +306,7 @@ export default class CompetitionHelper {
         const registeredFeedMsg = await CHANNELS._send('TALK', registerCompMsgText, {});
 
         // TODO: Update the registrants text.
+        
 
         // Add four leaf clover so people can wish good luck
         MESSAGES.delayReact(registeredFeedMsg, '🍀');

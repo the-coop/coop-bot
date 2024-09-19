@@ -14,6 +14,7 @@ import SkillsHelper from '../medium/skills/skillsHelper.mjs';
 
 import { isRegisteredUserGuard } from '../medium/economy/itemCmdGuards.mjs';
 import ReactionHelper from '../../activity/messages/reactionHelper.mjs';
+import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
 
 
 
@@ -379,7 +380,7 @@ export default class EggHuntMinigame {
         }
     };
 
-    static run() {        
+    static async run() {        
         if (STATE.CHANCE.bool({ likelihood: 80 }))
             this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg,');
 
@@ -425,20 +426,23 @@ export default class EggHuntMinigame {
             bonusEggStatus += ' Search the channels for the eggs!'
 
             // Announce bonus eggs socially.
-            CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/723660447508725806/1066971754725126174/bonus-eggs.png');
-            CHANNELS._send('TALK', bonusEggRolePing + bonusEggStatus, 0, {});
+            const bannerMsg = await CHANNELS._send('TALK', 'https://cdn.discordapp.com/attachments/723660447508725806/1066971754725126174/bonus-eggs.png');
+            const infoMsg = await CHANNELS._send('TALK', bonusEggRolePing + bonusEggStatus, 0, {});
+
+            TemporaryMessages.add(bannerMsg, 30 * 60);
+            TemporaryMessages.add(infoMsg, 30 * 60);
 
             // TODO: Add guide information button
 
             // Drop the bonus average eggs.
             for (let i = 0; i < bonusEggsNum; i++) {
-                setTimeout(() => this.drop('AVERAGE_EGG', null), i * 1225);
+                setTimeout(() => this.drop('AVERAGE_EGG', null), i * 444);
             }
 
             // Add in a mixture of toxic eggs.
-            const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 3, max: Math.floor(bonusEggsNum / 1.25) });
+            const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 3, max: Math.floor(bonusEggsNum / 1.5) });
             for (let i = 0; i < toxicEggsMixupNum; i++) {
-                setTimeout(() => this.drop('TOXIC_EGG', null), i * 1225);
+                setTimeout(() => this.drop('TOXIC_EGG', null), i * 444);
             }
         }
     }
