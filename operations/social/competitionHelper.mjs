@@ -437,7 +437,7 @@ export default class CompetitionHelper {
             const compLastOccurred = parseInt(comp.last_occurred);
 
             // Check if within registration period.
-            const isRegistrationPeriod = compLastOccurred + 3600 * 24 <= now;
+            // const isRegistrationPeriod = compLastOccurred + 3600 * 24 <= now;
 
             // Check if inactive competition should start.
             if (!comp.active) {
@@ -484,56 +484,51 @@ export default class CompetitionHelper {
                 const competitionDetailsText = `🏆 **__Competition details__** 🏆\n` +
                     ( comp.title ? comp.title : ('Working Title...' + '\n')) +
                     ( comp.description ? comp.description : ('Campaign managers should edit channel description to competition outline.' + '\n\n'));
+                
+                // Edit the message to contain registration period content.
+                const firstFiveEntrantsByLatestFirst = progress.entries;
+
+                // Sort the entrants by largest id
+                firstFiveEntrantsByLatestFirst.sort((a, b) => a.id > b.id);
+
+                competitionUpdateText = competitionDetailsText + '\n\n' +
+
+                    `**Registration open!**\n\n` +
+                    `**Registrants:** \n` +
+
+                    firstFiveEntrantsByLatestFirst.map(e => `<@${e.entrant_id}>`).join('\n') +
+
+                    `\n\n_To register press the clipboard emoji on this message!_`
                     
-                // If during registration stage, show most recent registrants.
-                if (isRegistrationPeriod) {
-                    // Edit the message to contain registration period content.
-                    const firstFiveEntrantsByLatestFirst = progress.entries;
 
-                    // Sort the entrants by largest id
-                    firstFiveEntrantsByLatestFirst.sort((a, b) => a.id > b.id);
+                // Remove registration emoji trigger if still visible.
+                // if (await REACTIONS.userReactedWith(compInfoMsg, STATE.CLIENT.user.id, '📋')) 
+                //     compInfoMsg.reactions.cache.map(async r => {
+                //         // Ignore non-reaction emojis.
+                //         if (r.emoji.name !== '📋') return;
 
-                    competitionUpdateText = competitionDetailsText + '\n\n' +
+                //         // Remove it since it's matching.
+                //         r.remove();
+                //     });
 
-                        `**Registration open!**\n\n` +
-                        `**Registrants:** \n` +
+                // Edit the message to contain registration period content.
+                const rankedEntrants = progress.entries;
 
-                        firstFiveEntrantsByLatestFirst.map(e => `<@${e.entrant_id}>`).join('\n') +
+                // Sort the entrants by largest id
+                rankedEntrants.sort((a, b) => a.votes > b.votes);
 
-                        `\n\n_To register press the clipboard emoji on this message!_`
-                        
+                // Edit the message to contain post-registration period content.
+                competitionUpdateText = (
+                    competitionDetailsText +
+                    `**${this.formatCode(comp.event_code)} continues!**\n\n` +
 
-                // If after registration stage, show current votes/winning users.
-                } else {
-                    // Remove registration emoji trigger if still visible.
-                    if (await REACTIONS.userReactedWith(compInfoMsg, STATE.CLIENT.user.id, '📋')) 
-                        compInfoMsg.reactions.cache.map(async r => {
-                            // Ignore non-reaction emojis.
-                            if (r.emoji.name !== '📋') return;
-    
-                            // Remove it since it's matching.
-                            r.remove();
-                        });
-
-                    // Edit the message to contain registration period content.
-                    const rankedEntrants = progress.entries;
-
-                    // Sort the entrants by largest id
-                    rankedEntrants.sort((a, b) => a.votes > b.votes);
-
-                    // Edit the message to contain post-registration period content.
-                    competitionUpdateText = (
-                        competitionDetailsText +
-                        `**${this.formatCode(comp.event_code)} continues!**\n\n` +
-
-                        `**Currently winning:** \n\n` +
-                        rankedEntrants.map(e => (
-                            `<@${e.entrant_id}> - ${e.votes} vote(s)`
-                        )).join('\n') +
-                        
-                        `\n\n_For more information/details check website: link soon_`
-                    );
-                }
+                    `**Currently winning:** \n\n` +
+                    rankedEntrants.map(e => (
+                        `<@${e.entrant_id}> - ${e.votes} vote(s)`
+                    )).join('\n') +
+                    
+                    `\n\n_For more information/details check website: link soon_`
+                );
 
                 // Edit the first message that has been posted at top of comp channel.
                 compInfoMsg.edit(competitionUpdateText);
