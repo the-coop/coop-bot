@@ -10,6 +10,7 @@ import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 export default class MiningMinigame {
     
@@ -147,12 +148,12 @@ export default class MiningMinigame {
     };
 
     static async run() {
-        const base = Math.max(1, await Statistics.calcCommunityVelocity());
-
-        let magnitude = STATE.CHANCE.natural({ min: base, max: base * 3 });
-
+        const channel = CHANNELS._randomSpammable();
+        
         // TODO: Adjust points and diamond rewards if more rocks
         // Add rare chances of a lot of rocks
+        const base = Math.max(1, await Statistics.calcCommunityVelocity());
+        let magnitude = STATE.CHANCE.natural({ min: base, max: base * 3 });
         if (STATE.CHANCE.bool({ likelihood: 5 }))
             magnitude = STATE.CHANCE.natural({ min: base * 5, max: base * 20 });
 
@@ -160,19 +161,28 @@ export default class MiningMinigame {
             magnitude = STATE.CHANCE.natural({ min: base * 7, max: base * 35 });
 
         // Post a message for collecting events against.
-        const announcementMsg = await  eventChannel.send('https://cdn.discordapp.com/attachments/1200884411135168583/1279503397791469701/mining-ready.png');
-        const updatesMsg = await eventChannel.send('**MINING IN PROGRESS**');
-
-        const eventChannel = CHANNELS._randomSpammable();
-        const rockMsg = await eventChannel.send(EMOJIS.ROCK.repeat(magnitude));
+        const announce = await  channel.send('https://cdn.discordapp.com/attachments/1200884411135168583/1279503397791469701/mining-ready.png');
+        const updates = await channel.send('**MINING IN PROGRESS**');
+        const rocks = await channel.send(EMOJIS.ROCK.repeat(magnitude));
+        rocks.edit({ 
+            components: [
+                new ActionRowBuilder().addComponents([
+                    new ButtonBuilder()
+                        .setEmoji('⛏️')
+                        .setLabel("Mine")
+                        .setCustomId('mine')
+                        .setStyle(ButtonStyle.Primary)
+                ])
+            ]
+        });
 
         // Ensure message is stored in database for clear up.
         // TODO: Count as ungathered rock in activity messages.
-        TemporaryMessages.add(rockMsg, 30 * 60);
-        TemporaryMessages.add(announcementMsg, 30 * 60);
-        TemporaryMessages.add(updatesMsg, 30 * 60);
+        TemporaryMessages.add(rocks, 30 * 60);
+        TemporaryMessages.add(announce, 30 * 60);
+        TemporaryMessages.add(updates, 30 * 60);
 
         // Add the prompt for mining the rock.
-        MESSAGES.delayReact(rockMsg, '⛏️');
+        MESSAGES.delayReact(rocks, '⛏️');
     };
 }
