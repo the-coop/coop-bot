@@ -159,7 +159,9 @@ export default class MiningMinigame {
         if (STATE.CHANCE.bool({ likelihood: 1 }))
             magnitude = STATE.CHANCE.natural({ min: base * 7, max: base * 35 });
 
+         // Calculate the random channel to drop rocks in.
         const eventChannel = CHANNELS._randomSpammable();
+        
         // Post a message for collecting events against.
         const announcementMsg = await eventChannel.send('https://cdn.discordapp.com/attachments/1200884411135168583/1279503397791469701/mining-ready.png');
         const updatesMsg = await eventChannel.send('**MINING IN PROGRESS**');
