@@ -13,22 +13,20 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 export default class WoodcuttingMinigame {
 
     // Reaction interceptor to check if user is attempting to interact.
-    static async onReaction(reaction, user) {
+    static async onInteract(interaction) {
+        const { message, channel, user } = interaction;
+
         // High chance of preventing any Woodcutting at all to deal with rate limiting.
         if (STATE.CHANCE.bool({ likelihood: 50 })) return false;
 
         // Woodcutting minigame guards.
-        const isOnlyEmojis = MESSAGES.isOnlyEmojisOrIDs(reaction.message.content);
-        const isAxeReact = reaction.emoji.name === '🪓';
-        const isCooperMsg = USERS.isCooperMsg(reaction.message);
-        const isUserReact = !USERS.isCooper(user.id);
-        if (!isUserReact) return false;
+        const isOnlyEmojis = MESSAGES.isOnlyEmojisOrIDs(message.content);
+        const isCooperMsg = USERS.isCooperMsg(message);
         if (!isCooperMsg) return false;
-        if (!isAxeReact) return false;
         if (!isOnlyEmojis) return false;
         
         // Check this character is wood emoji and from cooper.
-        const msgContent = reaction.message.content;
+        const msgContent = message.content;
         const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
         const firstEmojiUni = MESSAGES.emojiToUni(firstEmojiString);
         const rockEmojiUni = MESSAGES.emojiToUni(EMOJIS.WOOD);
@@ -36,12 +34,11 @@ export default class WoodcuttingMinigame {
         if (!isWoodMsg) return false;
 
         // Allow user to cut the wood.
-        this.cut(reaction, user);
+        this.cut(message, channel, user, interaction);
     };
 
-    static async cut(reaction, user) {
-        const msg = reaction.message;
-
+    // TODO: Broken axe should go in the interaction response?
+    static async cut(msg, channel, user, interaction) {
         // Do this in mining also!
         // Check for an existing update message to append to!
 
@@ -52,11 +49,13 @@ export default class WoodcuttingMinigame {
         // Check if has a axe
         const userAxesNum = await Items.getUserItemQty(user.id, 'AXE');
         const noText = `${user.username} tried to cut wood, but doesn't have an axe.`;
-        if (userAxesNum <= 0) 
+        if (userAxesNum <= 0) {
+            await interaction.reply({ content: noText, ephemeral: true });
             return MESSAGES.silentSelfDestruct(msg, noText, 0, 3333);
+        }
 
         // Check for existing update message.
-        let updateMsg = await MESSAGES.getSimilarExistingMsg(msg.channel, '**WOODCUTTING IN PROGRESS**');
+        let updateMsg = await MESSAGES.getSimilarExistingMsg(channel, '**WOODCUTTING IN PROGRESS**');
 
         // Calculate number of extracted wood with applied collab buff/modifier.
         const numCutters = REACTIONS.countType(msg, '🪓') - 1;
@@ -93,7 +92,7 @@ export default class WoodcuttingMinigame {
                     updateMsg.edit(updateMsg.content + '\n' + `${actionText} ${damageText}`);
 
                 // Remove axe reaction
-                MESSAGES.delayReactionRemoveUser(reaction, user.id, 111);
+                // MESSAGES.delayReactionRemoveUser(reaction, user.id, 111);
             }
         } else {
             // See if updating the item returns the item and quantity.

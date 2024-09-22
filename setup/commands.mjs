@@ -5,6 +5,7 @@ import { Collection } from "discord.js";
 import { CHANNELS } from "coop-shared/config.mjs";
 import AccessCodes from "coop-shared/services/access-codes.mjs";
 import TradingHelper from "../operations/minigames/medium/economy/items/tradingHelper.mjs";
+import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
 
 
 // https://discordjs.guide/creating-your-bot/command-handling.html#reading-command-files
@@ -44,9 +45,10 @@ export default async function setupCommands(client) {
         }
 
         // Handle trading buttons (accept_trade, trade_cancel).
-        TradingHelper.onInteractionCreate(interaction, client);
+        TradingHelper.onInteractionCreate(interaction);
 
         // TODO: Add woodcutting/mining and new interaction handlers.
+        WoodcuttingMinigame.onInteract(interaction)
 
         const command = client.commands.get(interaction.commandName);
         if (!command) return;

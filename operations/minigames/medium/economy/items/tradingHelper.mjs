@@ -26,7 +26,7 @@ export default class TradingHelper {
     // TODO: Refactor, this kind of thing should be isolated to a file, it is an action and not core to the service - but an implementation
     // of the service.
 
-    static async onInteractionCreate(interaction, client) {
+    static async onInteractionCreate(interaction) {
         // console.log('trade_interaction', interaction);
 
         // TODO: Filter out trades by user (won't want to accept their own trades);
