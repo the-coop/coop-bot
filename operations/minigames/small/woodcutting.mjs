@@ -140,14 +140,14 @@ export default class WoodcuttingMinigame {
 
                     if (match) {
                         // Parse existing values from the text.
-                        const wood = parseInt(match[1], 10);
-                        const pts = parseInt(match[2], 10);
+                        const wood = parseInt(match[1]);
+                        const pts = parseInt(match[2]);
 
                         // Need to know if there is a match to prevent new line being added.
                         matchingAction = true;
-
+                        
                         // Update the line with new wood and coop points
-                        return `${user.username} +${wood + addedWood}${EMOJIS.WOOD} +${pts + addPoints}${ptsEmoji}`;
+                        return `${user.username} +${wood + extractedWoodNum}${EMOJIS.WOOD} +${pts + 1}${ptsEmoji}`;
                     }
 
                     // Return the original line if no match
