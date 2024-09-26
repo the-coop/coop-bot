@@ -7,6 +7,9 @@ import MessageNotifications from './activity/information/messageNotifications.mj
 
 export const silentOpts = { allowedMentions: { users: [], roles: [] }};
 
+export const _fmt = channelKey => channelKey.replace('_', ' ').toLowerCase();
+export const _unfmt = channelKey => channelKey.replace(' ', '_').toUpperCase();
+
 export default class ChannelHelper {
 
     static config = CHANNELS_CONFIG;
@@ -247,4 +250,6 @@ export default class ChannelHelper {
         return result;
     };
 
+    static formatIDName = id => Object.entries(CHANNELS_CONFIG)
+        .reduce((a, [k, v]) => v.id === id ? _fmt(k) : a, null);
 };
