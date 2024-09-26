@@ -263,7 +263,7 @@ export default class CompetitionHelper {
             // Sort the entrants by largest id
             firstFiveEntrantsByLatestFirst.sort((a, b) => a.id > b.id);
 
-            competitionUpdateText = competitionDetailsText + '\n\n' +
+            competitionUpdateText = (competitionDetailsText + '\n\n' +
 
                 `**Registration open!**\n\n` +
                 `**Registrants:** \n` +
@@ -271,7 +271,7 @@ export default class CompetitionHelper {
                 firstFiveEntrantsByLatestFirst.map(e => `<@${e.entrant_id}>`).join('\n') +
 
                 `\n\n_To register press the clipboard emoji on this message!_`
-                
+            );
             // Edit the message to contain registration period content.
             const rankedEntrants = progress.entries;
 
@@ -279,9 +279,8 @@ export default class CompetitionHelper {
             rankedEntrants.sort((a, b) => a.votes > b.votes);
 
             // Edit the message to contain post-registration period content.
-            competitionUpdateText = (
-                competitionDetailsText +
-                `**${_fmt(comp.event_code)} continues!**\n\n` +
+            competitionUpdateText += (
+                `\n**${_fmt(comp.event_code)} continues!**\n\n` +
 
                 `**Currently winning:** \n\n` +
                 rankedEntrants.map(e => (
