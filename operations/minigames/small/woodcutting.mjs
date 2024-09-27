@@ -49,10 +49,7 @@ export default class WoodcuttingMinigame {
         // Check if has a axe
         const userAxesNum = await Items.getUserItemQty(user.id, 'AXE');
         const noText = `${user.username} tried to cut wood, but doesn't have an axe.`;
-        if (userAxesNum <= 0) {
-            await interaction.reply({ content: noText, ephemeral: true });
-            return MESSAGES.silentSelfDestruct(msg, noText, 0, 3333);
-        }
+        if (userAxesNum <= 0) return await interaction.reply({ content: noText, ephemeral: true });
 
         // Check for existing update message.
         let updateMsg = await MESSAGES.getSimilarExistingMsg(channel, '**WOODCUTTING IN PROGRESS**');
@@ -82,13 +79,8 @@ export default class WoodcuttingMinigame {
                 // Add the experience.
                 SkillsHelper.addXP(user.id, 'woodcutting', 2);
                 
-                const actionText = `${user.username} broke an axe trying to cut wood, ${userAxesNum - 1} remaining!`;
-                const damageText = `${brokenDamage} points (${ptsDmgText}) but gained 2xp in woodcutting for trying.`;
-
-                if (!updateMsg)
-                    MESSAGES.silentSelfDestruct(msg, `${actionText} ${damageText}`, 0, 10000);
-                else 
-                    updateMsg.edit(updateMsg.content + '\n' + `${actionText} ${damageText}`);
+                const actionText = `${user.username} broke an axe and ${ptsDmgText}, ${userAxesNum - 1} axes remaining!`;
+                return await interaction.reply({ content: actionText, ephemeral: true });
             }
         } else {
             // See if updating the item returns the item and quantity.

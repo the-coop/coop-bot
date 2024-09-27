@@ -14,12 +14,6 @@ export default class InteractionHelper {
             const link = await AccessCodes._createLink(interaction.user.id);
             return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
         }
-    
-        // Check if competition channler.
-        if (infoChannel && interaction.customId === 'login') {
-            const link = await AccessCodes._createLink(interaction.user.id);
-            return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
-        }
 
         // Handle competition buttons and modal.
         CompetitionHelper.onInteraction(interaction);
