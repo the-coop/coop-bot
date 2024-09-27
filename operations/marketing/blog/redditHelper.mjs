@@ -23,11 +23,11 @@ export default class RedditHelper {
         });
 
         console.log(`https://www.reddit.com/api/v1/authorize?${params}`);
-    }
+    };
 
     static onAccessCode(code) {
         // Receive access come from user.
-    }
+    };
 
     static async codeToToken(code) {
         const basicAuth = Buffer.from(`${'6__IrFgjs6cRXNkwgMwB7w'}:${'uaDwAitDl3j8bxRtbR2zWHdm7S5Gww'}`).toString('base64');
@@ -64,13 +64,11 @@ export default class RedditHelper {
             console.log('error');
         }
         console.log(body);
-    }
+    };
 
-    static saveRefreshToken(refreshToken) {}
+    static saveRefreshToken(refreshToken) {};
 
     // static saveAccessCode?(refreshToken) {}
-
-
 
     // static async redditAccessToken() {
     //     let token = null;

@@ -202,4 +202,5 @@ export default class MiningMinigame {
         TemporaryMessages.add(announce, 30 * 60);
         TemporaryMessages.add(updates, 30 * 60);
     };
+
 };
