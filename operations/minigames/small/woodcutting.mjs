@@ -212,4 +212,5 @@ export default class WoodcuttingMinigame {
             console.log('above error occurred trying to start woodcutting minigame');
         }
     };
+    
 };

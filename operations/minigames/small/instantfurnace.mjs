@@ -88,7 +88,7 @@ export default class InstantFurnaceMinigame {
             const msg = await CHANNELS._postToChannelCode('TALK', '🌋');
             
             // TODO: Animate flame out like egg collect.
-            MESSAGES.delayDelete(msg, 60000);
+            MESSAGES.delayDelete(msg, 160000);
             TemporaryMessages.add(msg, 60);
 
             // Add reaction for action suggestion/tip.

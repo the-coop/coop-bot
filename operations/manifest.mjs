@@ -50,12 +50,12 @@ export const VELOCITY_EVENTS = {
   CHESTPOP: { 
     since: 0, 
     handler: () => ChestPop.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: 4, max: 9 })
+    interval: baseTickDur * manifestChance.floating({ min: 1.5, max: 4.5 })
   },
   INSTANT_FURNACE: { 
     since: 0, 
     handler: () => InstantFurnace.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: 1, max: 7 })
+    interval: baseTickDur * manifestChance.floating({ min: .8, max: 3.4 })
   },
   MINING: {
     since: 0, 
