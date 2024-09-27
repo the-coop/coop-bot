@@ -1,5 +1,5 @@
 import db from "coop-shared/helper/databaseHelper.mjs";
-import { _fmt, _unfmt } from '../channelHelper.mjs';
+import { _fmt, _unfmt } from '../../channelHelper.mjs';
 import { COMPETITION_ROLES } from '../competitionHelper.mjs';
 
 export default class CompetitionModel {

@@ -794,10 +794,13 @@ export default class ElectionHelper {
             const nextElecReadable = await this.nextElecFmt();
 
             const hierarchy = this._roleHierarchy();
+
             const commander = hierarchy?.commander?.user || null;
 
+            console.log('electin feedback hierachy missing leaders', hierarchy);
+
             await this.editElectionInfoMsg(
-                `**Election is over, here are your current officials:** \n\n` +
+                `**Current elected officials:** \n\n` +
                 ( !commander && hierarchy.leaders.size === 0 ?
                     '_No hierarchy currently exists until the next election..._\n\n'
                     :

@@ -2,18 +2,19 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import _ from 'lodash';
-import { GatewayIntentBits, Client, time, ActionRow, ActionRowBuilder, ButtonBuilder } from 'discord.js';
+import { GatewayIntentBits, Client, time, ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionsBitField } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
 import { CHANNELS, MESSAGES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
-import CompetitionHelper, { COMPETITION_DUR } from '../operations/social/competitionHelper.mjs';
+import CompetitionHelper from '../operations/social/competitionHelper.mjs';
 import EventsHelper from '../operations/eventsHelper.mjs';
 import EggHuntMinigame from '../operations/minigames/small/egghunt.mjs';
 import SuggestionsHelper from '../operations/activity/suggestions/suggestionsHelper.mjs';
 import ReactionHelper from '../operations/activity/messages/reactionHelper.mjs';
 import SacrificeHelper from '../operations/members/redemption/sacrificeHelper.mjs';
 import { EMOJIS } from 'coop-shared/config.mjs';
+import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
 
 
 // Commonly useful.
@@ -21,7 +22,9 @@ import { EMOJIS } from 'coop-shared/config.mjs';
 // const listenChannelUpdates = (fn) => COOP.STATE.CLIENT.on('channelUpdate', fn);
 // const listenMessages = (fn) => COOP.STATE.CLIENT.on('messageCreate', fn);
 // const listenVoiceState = (fn) => COOP.STATE.CLIENT.on('voiceStateUpdate', fn);
-const listenDeleteions = (fn) => STATE.CLIENT.on('messageDelete', fn);
+// const listenDeleteions = (fn) => STATE.CLIENT.on('messageDelete', fn);
+const listenInteractions = (fn) => STATE.CLIENT.on('interactionCreate', fn);
+
 
 const shallowBot = async () => {
     console.log('Starting shallow bot');
@@ -55,6 +58,34 @@ const shallowBot = async () => {
 
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
+
+        // TODO: Test premium button with an SKU?
+
+        // const msg = await MESSAGES.selfDestruct(CHANNELS._getCode('TALK'), 'Testing competition improvements.');
+        // msg.edit({ 
+        //     components: [
+        //         new ActionRowBuilder().addComponents([
+        //             new ButtonBuilder()
+        //                 .setEmoji('⚙️')
+        //                 .setLabel("Setup")
+        //                 .setCustomId('setup_competition')
+        //                 .setStyle(ButtonStyle.Secondary),
+        //             new ButtonBuilder()
+        //                 .setEmoji('📝')
+        //                 .setLabel("Register")
+        //                 .setCustomId('join_competition')
+        //                 .setStyle(ButtonStyle.Success),
+        //             new ButtonBuilder()
+        //                 .setEmoji('⏸️')
+        //                 .setLabel("Finish")
+        //                 .setCustomId('end_competition')
+        //                 .setStyle(ButtonStyle.Danger)
+        //         ])
+        //     ]
+        // });
+
+        // listenInteractions(CompetitionHelper.onInteraction);
+
 
         // TODO: Test this
         

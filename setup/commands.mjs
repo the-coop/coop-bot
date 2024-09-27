@@ -6,6 +6,7 @@ import { CHANNELS } from "coop-shared/config.mjs";
 import AccessCodes from "coop-shared/services/access-codes.mjs";
 import TradingHelper from "../operations/minigames/medium/economy/items/tradingHelper.mjs";
 import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
+import InteractionHelper from '../operations/activity/messages/interactionHelper.mjs';
 
 
 // https://discordjs.guide/creating-your-bot/command-handling.html#reading-command-files
@@ -31,27 +32,10 @@ export default async function setupCommands(client) {
         }
     });
 
-    // Could also handle another kind of command here based on text.
-    // µµ
-
-    // Dynamically load and execute the command based on the interaction command name/key.
+    // Handle commands and interaction interceptors command name/key/button ids.
     client.on('interactionCreate', async interaction => {
-        // console.log(interaction);
-
-        const infoChannel = interaction.channelId === CHANNELS.TALK.id;
-        if (infoChannel && interaction.customId === 'login') {
-            const link = await AccessCodes._createLink(interaction.user.id);
-            return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
-        }
-
-        // Handle trading buttons (accept_trade, trade_cancel).
-        TradingHelper.onInteractionCreate(interaction);
-
-        // TODO: Add woodcutting/mining and new interaction handlers.
-        WoodcuttingMinigame.onInteract(interaction)
-
         const command = client.commands.get(interaction.commandName);
-        if (!command) return;
+        if (!command) return InteractionHelper.onInteract(interaction);
 
         try {
             await command.execute(interaction);

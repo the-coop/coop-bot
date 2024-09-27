@@ -6,45 +6,47 @@ export default class RolesHelper {
 
     static _textRef(code) {
         return `<@&${ROLES_CONFIG[code].id}>`;
-    }
+    };
 
     static _allWith(roleCode) {
         const role = ROLES_CONFIG[roleCode].id || null;
         if (!role) return [];
         return COOP.USERS._cache()
             .filter(member => member.roles.cache.has(role));
-    }
+    };
 
     static _allWithout(roleCode) {
         const role = ROLES_CONFIG[roleCode].id || null;
         if (!role) return [];
         return COOP.USERS._cache()
             .filter(member => !member.roles.cache.has(role));
-    }
+    };
 
     static getRoles(guild, rolesSelection) {
         return guild.roles.cache.filter(r => rolesSelection.includes(r.name));
-    }
+    };
+
     static getRolesByID(guild, rolesSelection) {
         return guild.roles.cache.filter(r => rolesSelection.includes(r.id));
-    }
+    };
+
     static getRoleByID(guild, roleID) {
         return guild.roles.cache.get(roleID);
-    }
+    };
 
     static _all = () => SERVER._coop().roles.cache || [];
 
     static _get(roleID) {
         return this.getRoleByID(SERVER._coop(), roleID);
-    }
+    };
 
     static _getByCode(roleCode) {
         return this.getRoleByID(SERVER._coop(), ROLES_CONFIG[roleCode].id);
-    }
+    };
 
     static _idsByCodes(codes = []) {
         return codes.map(code => ROLES_CONFIG[code].id);
-    }
+    };
 
     static _getCoopRoleCodeByID(roleID) {
         let defaultCode = 'UNKNOWN_COOP_ROLE_CODE';
@@ -57,7 +59,7 @@ export default class RolesHelper {
             throw new Error(roleID + ' ' + defaultCode);
 
         return code;
-    }
+    };
 
     static _getCodes(roleCodes = []) {
         let roles = [];
@@ -75,13 +77,17 @@ export default class RolesHelper {
 
         });
         return roles;
-    }
+    };
 
     static add(member, roleCode) {
         const guild = SERVER._coop();
         const role = this.getRoleByID(guild, ROLES_CONFIG[roleCode].id);
         return member.roles.add(role);
-    }
+    };
+
+    static addByID(member, id) {
+        return member.roles.add(id);
+    };
 
     static _add(userID, roleCode) {
         try {
@@ -98,13 +104,13 @@ export default class RolesHelper {
             console.log('Error adding role');
             console.error(e);
         }
-    }
+    };
 
     static _addCodes(userID, roleCodes) {
         const member = COOP.USERS._get(userID);
         const roleIDs = RolesHelper._idsByCodes(roleCodes);
         return member.roles.add(roleIDs);
-    }
+    };
 
     static async toggle(userID, roleCode) {
         try {
@@ -131,7 +137,7 @@ export default class RolesHelper {
             console.log('Error with toggle role ' + roleCode);
             console.error(e);
         }
-    }
+    };
 
     static async _remove(userID, roleCode) {
         try {
@@ -143,12 +149,12 @@ export default class RolesHelper {
             console.log('Error removing role');
             console.error(e);
         }
-    }
+    };
 
     static _idHasCode(userID, roleCode) {
         const member = USERS._get(userID);
         return this._has(member, roleCode);
-    }
+    };
 
     static _has(member, roleCode) {
         try {
@@ -159,7 +165,7 @@ export default class RolesHelper {
             console.error(e);
             return false;
         }
-    }
+    };
     
     static _getUsersWithRoleCodes(roleCodes) {
         const guild = SERVER._coop();
@@ -174,7 +180,7 @@ export default class RolesHelper {
 
             return match;
         });
-    }
+    };
 
     static _getUserWithCode(code) {
         let user = null;
@@ -186,9 +192,7 @@ export default class RolesHelper {
         if (filterUsers.size > 0) user = filterUsers.first();
 
         return user;
-    }
-
-
+    };
 
     static async onWebookMessage(msg) {
         const birdfeedWebhookID = '817551615095078913';
@@ -201,5 +205,6 @@ export default class RolesHelper {
         const userID = msg.content.match(/<@(\d+)>/)?.[1];
         if (userID)
             await USERS.syncRoles(userID);
-    }
-}
+    };
+
+};

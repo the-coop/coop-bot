@@ -13,7 +13,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 export default class WoodcuttingMinigame {
 
     // Reaction interceptor to check if user is attempting to interact.
-    static async onInteract(interaction) {
+    static async onInteraction(interaction) {
         const { message, channel, user } = interaction;
 
         // High chance of preventing any Woodcutting at all to deal with rate limiting.

@@ -1,9 +1,34 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import { CHANNELS } from 'coop-shared/config.mjs';
+
+import WoodcuttingMinigame from '../../minigames/small/woodcutting.mjs';
+import TradingHelper from '../../minigames/medium/economy/items/tradingHelper.mjs';
+import AccessCodes from 'coop-shared/services/access-codes.mjs';
+import CompetitionHelper from '../../social/competitionHelper.mjs';
 
 export default class InteractionHelper {
 
     static async onInteract(interaction) {
+        const infoChannel = interaction.channelId === CHANNELS.TALK.id;
+        if (infoChannel && interaction.customId === 'login') {
+            const link = await AccessCodes._createLink(interaction.user.id);
+            return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
+        }
+    
+        // Check if competition channler.
+        if (infoChannel && interaction.customId === 'login') {
+            const link = await AccessCodes._createLink(interaction.user.id);
+            return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
+        }
 
+        // Handle competition buttons and modal.
+        CompetitionHelper.onInteraction(interaction);
+
+        // Handle trading buttons (accept_trade, trade_cancel).
+        TradingHelper.onInteraction(interaction);
+    
+        // TODO: Add woodcutting/mining and new interaction handlers.
+        WoodcuttingMinigame.onInteraction(interaction);
     };
 
     static confirm(interaction, texts) {
@@ -21,8 +46,10 @@ export default class InteractionHelper {
                         .setStyle(ButtonStyle.Danger)
                 );
 
+            // Send the confirm/reject prompt.
             interaction.reply({ content: texts.preconfirmationText, components: [ConfirmationActions], ephemeral: true });
 
+            // Setup a collector awaiting confirmation/rejection.
             const collector = interaction.channel.createMessageComponentCollector(
                 { filter: i => !!i, time: 15000 }
             );
