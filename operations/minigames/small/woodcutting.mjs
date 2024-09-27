@@ -81,11 +81,11 @@ export default class WoodcuttingMinigame {
                 
                 const actionText = `${user.username} broke an axe and ${ptsDmgText}, ${userAxesNum - 1} axes remaining!`;
                 return await interaction.reply({ content: actionText, ephemeral: true });
-            }
+            }x
         } else {
             // See if updating the item returns the item and quantity.
-            const addedWood = await Items.add(user.id, 'WOOD', extractedWoodNum, 'Woodcutting');
             const pointGain = 1;
+            const addedWood = await Items.add(user.id, 'WOOD', extractedWoodNum, 'Woodcutting');
             const addPoints = await Items.add(user.id, 'COOP_POINT', pointGain, 'Woodcutting');
 
             // Rare events from woodcutting.
@@ -117,7 +117,7 @@ export default class WoodcuttingMinigame {
             const actionText = `${user.username} +${extractedWoodNum}${EMOJIS.WOOD} +${pointGain}${ptsEmoji}`;
 
             // Either update message or create a new one.
-            CHANNELS.propagate(msg, `${actionText}`, 'ACTIONS');
+            // CHANNELS.propagate(msg, `${actionText}`, 'ACTIONS');
 
             // Edit and update the message if found
             if (updateMsg) {
