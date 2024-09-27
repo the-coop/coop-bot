@@ -16,6 +16,7 @@ import SacrificeHelper from '../operations/members/redemption/sacrificeHelper.mj
 import { EMOJIS } from 'coop-shared/config.mjs';
 import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
 import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
+import MiningMinigame from '../operations/minigames/small/mining.mjs';
 
 
 // Commonly useful.
@@ -59,6 +60,10 @@ const shallowBot = async () => {
 
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
+
+
+        // MiningMinigame.run();
+
 
         // TODO: Test premium button with an SKU?
 
