@@ -237,16 +237,16 @@ export default class ElectionHelper {
 
         const hierarchy = this.calcHierarchy(votes);
         const maxNumLeaders = this.getMaxNumLeaders();
-        const numLeaders = hierarchy.leaders.length;
+        const numLeaders = hierarchy.leaders.size;
 
         const electionProgressText = `**Election is still running for ${readableElecLeft}, latest vote results:**` +
             `\n\n` +
             `**Commander:** ${hierarchy.commander ? 
-                `${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)` : ''}` +
+                `${hierarchy.commander.username}` : ''}` +
             `\n\n` +
             `**Leaders ${numLeaders}/${maxNumLeaders}:**\n${
                 hierarchy.leaders
-                    .map(leader => `${leader.username} (${leader.votes} Votes)`)
+                    .map(leader => `${leader.user.username}`)
                     .join('\n')
             }` +
             `\n\n`;
