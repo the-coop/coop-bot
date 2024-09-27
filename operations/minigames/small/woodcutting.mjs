@@ -97,7 +97,8 @@ export default class WoodcuttingMinigame {
         } else {
             // See if updating the item returns the item and quantity.
             const addedWood = await Items.add(user.id, 'WOOD', extractedWoodNum, 'Woodcutting');
-            const addPoints = await Items.add(user.id, 'COOP_POINT', 1, 'Woodcutting');
+            const pointGain = 1;
+            const addPoints = await Items.add(user.id, 'COOP_POINT', pointGain, 'Woodcutting');
 
             // Rare events from woodcutting.
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
@@ -125,7 +126,7 @@ export default class WoodcuttingMinigame {
             
             // Provide feedback.
             const ptsEmoji = MESSAGES.emojiCodeText('COOP_POINT');
-            const actionText = `${user.username} +${addedWood}${EMOJIS.WOOD} +${addPoints}${ptsEmoji}`;
+            const actionText = `${user.username} +${extractedWoodNum}${EMOJIS.WOOD} +${pointGain}${ptsEmoji}`;
 
             // Either update message or create a new one.
             CHANNELS.propagate(msg, `${actionText}`, 'ACTIONS');
