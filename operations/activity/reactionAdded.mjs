@@ -42,8 +42,7 @@ export default async function reactAddedHandler(reaction, user) {
         EggHuntMinigame.onReaction(reaction, user);
         FoxHuntMinigame.onReaction(reaction, user);
         CratedropMinigame.onReaction(reaction, user);
-        MiningMinigame.onReaction(reaction, user);
-        WoodcuttingMinigame.onReaction(reaction, user);
+
         InstantFurnaceMinigame.onReaction(reaction, user);
         EasterEggHandler.onReaction(reaction, user);
         TradingHelper.onReaction(reaction, user);
@@ -52,7 +51,7 @@ export default async function reactAddedHandler(reaction, user) {
         CleanupHandler.onReaction(reaction, user);
 
         // Prevent and toggle link previews.
-        LinkPreviewFilter.onReaction(reaction, user);
+        // LinkPreviewFilter.onReaction(reaction, user);
 
         // Random point spawn.
         if (reaction.emoji.name === 'coop' && isUser) {

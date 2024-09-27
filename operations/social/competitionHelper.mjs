@@ -7,7 +7,7 @@ import DropTable from '../minigames/medium/economy/items/droptable.mjs';
 
 import Competition from './competition/competition.mjs';
 import { _fmt, _unfmt } from '../channelHelper.mjs';
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 
 export const COMPETITION_ROLES = {
     TECHNOLOGY_COMPETITION: 'TECH',
@@ -54,7 +54,7 @@ export default class CompetitionHelper {
         return competition;
     };
 
-    static async clear(code) {
+    static async cleanEntries(code) {
         try {
             const channel = CHANNELS._getCode(code.toUpperCase());
 
@@ -72,65 +72,58 @@ export default class CompetitionHelper {
         }
     };
 
-    // Trigger this with a mod reaction (emoji)
-    // Launch to the relevant population (this gives mods some time to fill in competition details).
-    static async launch(code, reaction, user) {
+    static async launch(code, interaction, user) {
+        // Identify the competition's relevant channel.
+        const channel = CHANNELS._get(interaction.channelId);
+
         // Need to check if user is commander/leader
         const member = await USERS._fetch(user.id);
         if (!ROLES._has(member, 'COMMANDER') && !ROLES._has(member, 'LEADER'))
             return MESSAGES.selfDestruct(reaction.message, 'Only the commander/leaders may start a competition', 0, 5000);
 
+        // Clear the previous competition entrants.
+        Competition.clearEntrants(competionCode);
+        
         console.log(user, 'trying to launch', code);
         console.log(user, 'leadership trying to launch', code);
 
         // Require multiple leaders to launch it?
 
         // Access the channel to extract the details.
-        const channel = await reaction.message.channel.fetch();
-
-        // Remove the launch message that is intended for leadership.
-        await reaction.message.delete();
+        
 
         // Show to all relevant members based on syncing roles.
-        CHANNELS._show(channel.id)
+        CHANNELS._show(channel.id);
 
         // Don't ping feed, ping relevant role population instead.
         const relevantRoleCode = COMPETITION_ROLES[code.toUpperCase()];
         const pingableRoleText = ROLES._textRef(relevantRoleCode);
 
         // Add details on how to join the competition 
-        const launchedCompMsgText = `**🏆 ${pingableRoleText} users, register soon, ${_fmt(code)} officially launched! 🏆**\n\n` +
-            `**Details:** \n` +
-            channel.topic + '\n\n';
+        const launchedCompMsgText = `**🏆 ${pingableRoleText} users, register soon, ${_fmt(code)} officially launched! 🏆**\n\n`;
 
         // The copy of the message with registering.
         const launchedCompRegisterMsgText = launchedCompMsgText +
-            `_Join the ${_fmt(code)} now by reacting with 📋!_`;
+            `_Join the ${_fmt(code)} now by pressing the register buttoon 📋!_`;
 
-        // Notify the relevant people for this competition (with ping).
-        const launchedCompMsg = await CHANNELS._send(code.toUpperCase(), launchedCompRegisterMsgText, {});
-
-        // Add the join reaction emoji/ability.
-        // MESSAGES.delayReact(launchedCompMsg, '📋');
-
-        // TODO: When competition started, it needs register and end buttons
-        // const msg = await MESSAGES.selfDestruct(CHANNELS._getCode('TALK'), 'Testing competition improvements.');
-        // msg.edit({ 
-        //     components: [
-        //         new ActionRowBuilder().addComponents([
-        //             new ButtonBuilder()
-        //                 .setEmoji('⏸️')
-        //                 .setLabel("End")
-        //                 .setCustomId('end_competition')
-        //                 .setStyle(ButtonStyle.Danger),
-        //             new ButtonBuilder()
-        //                 .setEmoji('📝')
-        //                 .setLabel("Register")
-        //                 .setCustomId('register_competition')
-        //                 .setStyle(ButtonStyle.Premium)
-        //         ])
-        //     ]
-        // });
+        // When competition started, it needs register and end buttons, remove start button.
+        const msg = await channel.send(launchedCompRegisterMsgText);
+        msg.edit({ 
+            components: [
+                new ActionRowBuilder().addComponents([
+                    new ButtonBuilder()
+                        .setEmoji('📝')
+                        .setLabel("Register")
+                        .setCustomId('register_competition')
+                        .setStyle(ButtonStyle.Success),
+                    new ButtonBuilder()
+                        .setEmoji('⏸️')
+                        .setLabel("End")
+                        .setCustomId('end_competition')
+                        .setStyle(ButtonStyle.Danger),
+                ])
+            ]
+        });
 
         // Explicitly declare event started.
         await EventsHelper.setActive(code, true);
@@ -161,6 +154,7 @@ export default class CompetitionHelper {
     static async end(competionCode) {
         // Load the competition.
         const competition = await Competition.get(competionCode);
+        const channel = CHANNELS._getCode(competionCode.toUpperCase());
 
         // Calculate the winner by votes.
         const progress = await this.check(competition);
@@ -232,8 +226,6 @@ export default class CompetitionHelper {
             }
         });
 
-        console.log(winners);
-
         // Declare the competition winner publicly showing prizes.
         const publicPrizeText = `:trophy: Congratulations! ` +
             `Announcing the ${_fmt(competionCode)} winners! :trophy:\n\n` +
@@ -252,30 +244,30 @@ export default class CompetitionHelper {
         this.blog();
 
         // Clear the messages.
-        this.clear(competionCode);
+        this.cleanEntries(competionCode);
 
         // Remove the message link from the event.
         await Competition.setLink(competionCode, null);
 
-        // Clear the entrants.
-        Competition.clearEntrants(competionCode);
+        // TODO: Hide the channel except for commanders and leaders so they can set it up.
+        CHANNELS._hide(interaction.channelId, competionCode + ' is over, hiding until next time!');
 
-        // Hide the channel until next time
-        const channelID = CHANNELS._getCode(competionCode.toUpperCase()).id;
-        CHANNELS._hide(channelID, competionCode + ' is over, hiding until next time!');
+        // Send the next competition's starting message with setup button.
+        const newCompMsg = await channel.send('Competition ready to be setup and launched.');
+        newCompMsg.edit({
+            components: [
+                new ActionRowBuilder().addComponents([
+                    new ButtonBuilder()
+                        .setEmoji('⚙️')
+                        .setLabel("Setup")
+                        .setCustomId('setup_competition')
+                        .setStyle(ButtonStyle.Secondary)
+                ])
+            ]
+        });
 
-        // TODO: Send the next competition's starting message with play button.
-        // const msg = await MESSAGES.selfDestruct(CHANNELS._getCode('TALK'), 'Testing competition improvements.');
-        // msg.edit({ 
-        //     components: [
-        //         new ActionRowBuilder().addComponents([
-        //             new ButtonBuilder()
-        //                 .setEmoji('⚙️')
-        //                 .setLabel("Setup")
-        //                 .setCustomId('setup_competition')
-        //                 .setStyle(ButtonStyle.Secondary),
-        //     ]
-        // });
+        // Update the message link with new one.
+        await Competition.setLink(competionCode, MESSAGES.link(newCompMsg));
 
         // Set competition is not active.
         await EventsHelper.setActive(competionCode, false);
@@ -497,40 +489,6 @@ export default class CompetitionHelper {
         }
     };
 
-    static async onReaction(reaction, user) {
-        try {
-            const channelID = reaction.message.channel.id;
-            const channelName = CHANNELS.formatIDName(channelID);
-            const code = _unfmt(channelName);
-
-            // Check if it's a competition channel.
-            if (!this.isCompChannel(channelID)) 
-                return false;
-
-            // Check it's not Cooper.
-            if (USERS.isCooper(user.id))
-                return false;
-
-            // Handle launch action.
-            if (reaction.emoji.name === '▶') return this.launch(code, reaction, user);
-
-            // Handle register action.
-            if (reaction.emoji.name === '📋') {
-                // Stop author voting for their self and from registering when not applicable.
-                const cooperRegisterEmoji = await REACTIONS.userReactedWith(reaction.message, STATE.CLIENT.user.id, '📋');
-                const selfVote = reaction.message.author.id === user.id;
-                if (selfVote || !cooperRegisterEmoji)
-                    return await reaction.remove();
-
-                // Register the user for the competition!
-                return this.register(code, reaction, user);
-            }
-        } catch (e) {
-            console.log('Error handling competition reaction.');
-            console.error(e);
-        }
-    };
-
     static async onMessage(msg) {
         // Check if it's a competition channel.
         if (!this.isCompChannel(msg.channel.id)) return false;
@@ -589,41 +547,3 @@ export default class CompetitionHelper {
     };
     
 };
-
-
-
-// static async ready(code) {
-//     try {
-//         // Show the channel
-//         const channel = CHANNELS._getCode(code.toUpperCase());
-//         const channelID = channel.id;
-
-//         // Add the initial message and the start reaction (with ping).
-//         await CHANNELS._send('TALK', `${code.toUpperCase()} ready! LINK`, {});
-
-//         // Show to commander and leaders.
-//         const commanderRole = ROLES._getByCode('COMMANDER');
-//         const leaderRole = ROLES._getByCode('LEADER');
-//         CHANNELS._showTo(channelID, [commanderRole, leaderRole]);
-
-//         // Notify commands and leaeders that competition should receive details quickly.
-//         const initialMsgText = `**🏆 ${ROLES._textRef('COMMANDER')} & ${ROLES._textRef('LEADER')}, the ${_fmt(code)} will start here shortly! 🏆**\n\n` +
-//             `Leadership should add rules/details to channel description then press start ▶ below [will ping users - be ready]!`;
-
-//         // Add the initial message and the start reaction (with ping).
-//         const initialMsg = await CHANNELS._send(code.toUpperCase(), initialMsgText, {});
-
-//         // Reset the title/description.
-//         await channel.setTopic("COMPETITION_TITLE_HERE\nNEW_LINE_COMPETITION_DESCRIPTION_HERE");
-
-//         // Capture and store/attach the competition main message link.
-//         const compMsgLink = MESSAGES.link(initialMsg);
-//         await Competition.setLink(code, compMsgLink);
-
-//         // Add the reaction which will allow launching the competition when reacted with.
-//         MESSAGES.delayReact(initialMsg, '▶');
-//     } catch(e) {
-//         console.error(e);
-//         console.log('Tried to start competition and failed');
-//     }
-// };

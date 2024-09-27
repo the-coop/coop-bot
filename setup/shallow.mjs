@@ -67,28 +67,21 @@ const shallowBot = async () => {
 
         // TODO: Test premium button with an SKU?
 
-        // const msg = await MESSAGES.selfDestruct(CHANNELS._getCode('TALK'), 'Testing competition improvements.');
-        // msg.edit({ 
-        //     components: [
-        //         new ActionRowBuilder().addComponents([
-        //             new ButtonBuilder()
-        //                 .setEmoji('⚙️')
-        //                 .setLabel("Setup")
-        //                 .setCustomId('setup_competition')
-        //                 .setStyle(ButtonStyle.Secondary),
-        //             new ButtonBuilder()
-        //                 .setEmoji('📝')
-        //                 .setLabel("Register")
-        //                 .setCustomId('join_competition')
-        //                 .setStyle(ButtonStyle.Success),
-        //             new ButtonBuilder()
-        //                 .setEmoji('⏸️')
-        //                 .setLabel("Finish")
-        //                 .setCustomId('end_competition')
-        //                 .setStyle(ButtonStyle.Danger)
-        //         ])
-        //     ]
-        // });
+
+        const channel = CHANNELS._getCode('ART_COMPETITION');
+        const newCompMsg = await channel.send('Competition ready to be setup and launched.');
+        newCompMsg.edit({
+            components: [
+                new ActionRowBuilder().addComponents([
+                    new ButtonBuilder()
+                        .setEmoji('⚙️')
+                        .setLabel("Setup")
+                        .setCustomId('setup_competition')
+                        .setStyle(ButtonStyle.Secondary)
+                ])
+            ]
+        });
+
 
         // listenInteractions(CompetitionHelper.onInteraction);
 
