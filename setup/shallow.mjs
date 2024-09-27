@@ -61,9 +61,9 @@ const shallowBot = async () => {
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-
         // MiningMinigame.run();
 
+        // Items.add('238043760766877697', 'PICK_AXE', 5);
 
         // TODO: Test premium button with an SKU?
 
@@ -121,10 +121,7 @@ const shallowBot = async () => {
         //     ]
         // });
 
-        WoodcuttingMinigame.run();
-
-
-
+        // WoodcuttingMinigame.run();
 
 
 

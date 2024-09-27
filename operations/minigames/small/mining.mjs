@@ -116,10 +116,7 @@ export default class MiningMinigame {
             else await msg.delete();
             
             // Provide feedback.
-            const metalOreEmoji = MESSAGES.emojiCodeText('METAL_ORE');
-            const actionText = `${user.username} successfully mined a rock.`;
-            const ptsText = ITEMS.displayQty(addPoints);
-            const rewardText = `+1 point (${ptsText}), +${extractedOreNum} ${metalOreEmoji} (${addMetalOre})!`;
+            const actionText = `${user.username} +${extractedOreNum}${EMOJIS.ROCK} +${1}${ptsEmoji}`;
 
             // Edit and update the message if found
             if (updateMsg) {
@@ -166,7 +163,7 @@ export default class MiningMinigame {
             SkillsHelper.addXP(user.id, 'mining', 1);
 
             // Show user success message.
-            return await interaction.reply({ content: rewardText, ephemeral: true });
+            return await interaction.reply({ content: actionText, ephemeral: true });
         }
     };
 
