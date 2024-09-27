@@ -162,6 +162,9 @@ export default class WoodcuttingMinigame {
 
             // Add the experience.
             SkillsHelper.addXP(user.id, 'woodcutting', 1);
+
+            // Show user success message.
+            return await interaction.reply({ content: `You successfully cut ${extractedWoodNum}x${EMOJIS.WOOD}`, ephemeral: true });
         }
     };
 
