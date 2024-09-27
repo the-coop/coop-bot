@@ -14,168 +14,61 @@ import Useable from "coop-shared/services/useable.mjs";
 export default class ChestPopMinigame {
     
     // Reaction interceptor to check if user is attempting to interact.
-    static async onReaction(reaction, user) {
-        // High chance of preventing any mining at all to deal with rate limiting.
+    static async onInteraction(interaction) {
+        const { message, channel, user } = interaction;
+
+        // High chance of preventing any Woodcutting at all to deal with rate limiting.
         if (STATE.CHANCE.bool({ likelihood: 50 })) return false;
 
-        const isOnlyEmojis = MESSAGES.isOnlyEmojis(reaction.message.content);
-        const isPickaxeReact = reaction.emoji.name === '⛏️';
-        const isCooperMsg = USERS.isCooperMsg(reaction.message);
-        const isUserReact = !USERS.isCooper(user.id);
-        
-        // Mining minigame guards.
-        if (!isUserReact) return false;
+        // Chest Pop minigame guards.
+        const isCooperMsg = USERS.isCooperMsg(message);
         if (!isCooperMsg) return false;
-        if (!isPickaxeReact) return false;
-        if (!isOnlyEmojis) return false;
-
-        const msgContent = reaction.message.content;
-
-        const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
-        const firstEmojiUni = MESSAGES.emojiToUni(firstEmojiString);
-        const rockEmojiUni = MESSAGES.emojiToUni(EMOJIS.ROCK);
-        const isRocksMsg = firstEmojiUni === rockEmojiUni;
-
-        if (isRocksMsg) this.chip(reaction, user);
-    }
-
-    // TODO: Bomb skips a few places at random
-    static async chip(reaction, user) {
-        const msg = reaction.message;
-
-        // Calculate magnitude from message: more rocks, greater reward.
-        const textMagnitude = Math.floor(msg.content.length / 2);
-        const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 2 });
-
-        // Check if has a pickaxe
-        const userPickaxesNum = await Items.getUserItemQty(user.id, 'PICK_AXE');
-        const noPickText = `<@${user.id}> tried to mine the rocks, but doesn't have a pickaxe.`;
-
-        // Remove reaction and warn.
-        // DELETE REACTION
-        if (userPickaxesNum <= 0) 
-            return MESSAGES.silentSelfDestruct(msg, noPickText, 0, 5000);
-
-        // Count the number of people mining to apply a multipler/bonus.
-        const numCutters = REACTIONS.countType(msg, '⛏️') - 1;
         
-        // Adjust extracted ore by buffs and adjust to clamp above > 0.
-        const extractedOreNum = Math.max(0, Math.ceil(rewardRemaining / 1.5) * numCutters);
+        // Check this message content is correct and from cooper.
+        const msgContent = message.content;
+        const isChestPopMsg = msgContent.includes("ChestPop?");
+        const isInteractionButton = interaction.customId === "open_chest";
+        if (!isChestPopMsg || !isInteractButton) return false;
 
-        // Clamp lower and upper boundary for chance of pickaxe breaking
-        const pickaxeBreakPerc = Math.min(75, Math.max(25, extractedOreNum));
-
-        // Attempt to access the mining message.
-        let updateMsg = await MESSAGES.getSimilarExistingMsg(msg.channel, '**MINING IN PROGRESS**');
-            
-        // Test the pickaxe for breaking.
-        const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
-        if (didBreak) {
-            const pickaxeUpdate = await Useable.use(user.id, 'PICK_AXE', 1);
-            if (pickaxeUpdate) {
-                const brokenPickDamage = -2;
-                const pointsDamageResult = await Items.subtract(user.id, 'COOP_POINT', Math.abs(brokenPickDamage), 'Broken pickaxe damage');
-                const ptsDmgText = ITEMS.displayQty(pointsDamageResult);
-                
-                // Update mining economy statistics.
-                EconomyNotifications.add('MINING', {
-                    playerID: user.id,
-                    username: user.username,
-                    brokenPickaxes: 1,
-                    pointGain: brokenPickDamage
-                });    
-
-                // Add the experience.
-                SkillsHelper.addXP(user.id, 'mining', 2);
-
-                const actionText = `${user.username} broke a pickaxe trying to mine, ${userPickaxesNum - 1} remaining!`;
-                const damageText = `${brokenPickDamage} points (${ptsDmgText}) but gained mining 2xp for trying!.`;
-
-                if (!updateMsg)
-                    MESSAGES.silentSelfDestruct(msg, `${actionText} ${damageText}`, 0, 10000);
-                else 
-                    updateMsg.edit(updateMsg.content + '\n' + `${actionText} ${damageText}`);
-
-                // Remove pickaxe reaction.
-                MESSAGES.delayReactionRemoveUser(reaction, user.id, 111);
-            }
-        } else {
-            // See if updating the item returns the item and quantity.
-            const addMetalOre = await Items.add(user.id, 'METAL_ORE', extractedOreNum, 'Mining');
-            const addPoints = await Items.add(user.id, 'COOP_POINT', 1, 'Mining');
-            let diamondsFound = 0;
-
-            if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
-                diamondsFound = 1;
-                const addDiamond = await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining rare event');
-                CHANNELS.propagate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
-            }
-            
-            if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
-                diamondsFound = STATE.CHANCE.natural({ min: 5, max: 25 });
-                await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining very rare event');
-                CHANNELS.propagate(msg, `${user.username} hit a major diamond vein, ${diamondsFound}xDIAMOND found!`, 'TALK');
-            }
-
-            // Add the experience.
-            SkillsHelper.addXP(user.id, 'mining', 1);
-
-            EconomyNotifications.add('MINING', {
-                pointGain: 1,
-                recOre: extractedOreNum,
-                playerID: user.id,
-                username: user.username,
-                diamondsFound
-            });
-
-            // Reduce the number of rocks in the message.
-            if (textMagnitude > 1) await msg.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));
-            else await msg.delete();
-            
-            // Provide feedback.
-            const metalOreEmoji = MESSAGES.emojiCodeText('METAL_ORE');
-            const actionText = `${user.username} successfully mined a rock.`;
-            const ptsText = ITEMS.displayQty(addPoints);
-            const rewardText = `+1 point (${ptsText}), +${extractedOreNum} ${metalOreEmoji} (${addMetalOre})!`;
-
-            // No need for this any more due to the totals.
-            if (!updateMsg)
-                MESSAGES.silentSelfDestruct(msg, `${actionText} ${rewardText}`, 0, 10000);
-            else 
-                updateMsg.edit(updateMsg.content + '\n' + `${actionText} ${rewardText}`);
-        }
+        // Allow user to cut the open the chest.
+        this.open(message, channel, user, interaction);
     }
+
+    static async open(msg, channel, user, interaction) {
+
+        // Check if has a key
+        const userKeysNum = await Items.getUserItemQty(user.id, 'KEY');
+        const noText = `${user.username} tried to open the chest, but doesn't have a key.`;
+        if (userKeysNum <= 0) {
+            await interaction.reply({ content: noText, ephemeral: true });
+            return MESSAGES.silentSelfDestruct(msg, noText, 0, 3333);
+        }
+
+        // TODO: Rewards from opening with key
+        
+    };
 
     static async run() {
-        CHANNELS._send('TALK', 'ChestPop? 💰');
-        return true;
+        try {
+            const eventChannel = CHANNELS._randomSpammable();
 
-        const base = Math.max(1, await Statistics.calcCommunityVelocity());
-
-        let magnitude = STATE.CHANCE.natural({ min: base, max: base * 3 });
-
-        // TODO: Adjust points and diamond rewards if more rocks
-        // Add rare chances of a lot of rocks
-        if (STATE.CHANCE.bool({ likelihood: 5 }))
-            magnitude = STATE.CHANCE.natural({ min: base * 5, max: base * 20 });
-
-        if (STATE.CHANCE.bool({ likelihood: 1 }))
-            magnitude = STATE.CHANCE.natural({ min: base * 7, max: base * 35 });
-
-        
-        const eventChannel = CHANNELS._randomSpammable();
-        const rockMsg = await eventChannel.send(EMOJIS.ROCK.repeat(magnitude));
-
-        // Post a message for collecting events against.
-        await eventChannel.send('**MINING IN PROGRESS**');
-
-        // Ensure message is stored in database for clear up.
-        // TODO: Count as ungathered rock in activity messages.
-        TemporaryMessages.add(rockMsg, 30 * 60);
-
-        // Add the prompt for mining the rock.
-        MESSAGES.delayReact(rockMsg, '⛏️');
-
-        CHANNELS._send('TALK', `${ROLES._textRef('MINIGAME_PING')} - Rockslide! Magnitude ${magnitude}!`, {});
-    }
+            const chestPopMsg = await eventChannel.send('ChestPop? 💰');
+            chestPopMsg.edit({ 
+                components: [
+                    new ActionRowBuilder().addComponents([
+                        new ButtonBuilder()
+                            .setEmoji('🔑')
+                            .setLabel("Open")
+                            .setCustomId('open_chest')
+                            .setStyle(ButtonStyle.Primary)
+                    ])
+                ]
+            });
+            // Ensure message is stored in database for clear up.
+            // TODO: Count as ungathered chest pop in activity messages
+            TemporaryMessages.add(chestPopMsg, 30 * 60);
+        } catch(e) {
+            console.log('above error occurred trying to start chest pop minigame');
+        }
+    };
 }
