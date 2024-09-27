@@ -15,6 +15,7 @@ import ReactionHelper from '../operations/activity/messages/reactionHelper.mjs';
 import SacrificeHelper from '../operations/members/redemption/sacrificeHelper.mjs';
 import { EMOJIS } from 'coop-shared/config.mjs';
 import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
+import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
 
 
 // Commonly useful.
@@ -114,6 +115,8 @@ const shallowBot = async () => {
         //         ])
         //     ]
         // });
+
+        WoodcuttingMinigame.run();
 
 
 

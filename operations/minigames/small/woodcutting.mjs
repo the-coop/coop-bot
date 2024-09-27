@@ -2,7 +2,7 @@ import EconomyNotifications from "../../activity/information/economyNotification
 
 import SkillsHelper from "../medium/skills/skillsHelper.mjs";
 
-import { STATE, REACTIONS, USABLE, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
+import { STATE, ITEMS, MESSAGES, USERS, CHANNELS } from "../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
@@ -57,9 +57,8 @@ export default class WoodcuttingMinigame {
         // Check for existing update message.
         let updateMsg = await MESSAGES.getSimilarExistingMsg(channel, '**WOODCUTTING IN PROGRESS**');
 
-        // Calculate number of extracted wood with applied collab buff/modifier.
-        const numCutters = REACTIONS.countType(msg, '🪓') - 1;
-        const extractedWoodNum = Math.max(0, Math.ceil(rewardRemaining / 1.25) * numCutters);
+        // Calculate number of extracted wood based on complexity.
+        const extractedWoodNum = Math.max(0, Math.ceil(rewardRemaining / 1.25));
 
         // Clamp lower and upper boundary for chance of pickaxe breaking
         const axeBreakPerc = Math.min(15, Math.max(15, extractedWoodNum));
@@ -90,9 +89,6 @@ export default class WoodcuttingMinigame {
                     MESSAGES.silentSelfDestruct(msg, `${actionText} ${damageText}`, 0, 10000);
                 else 
                     updateMsg.edit(updateMsg.content + '\n' + `${actionText} ${damageText}`);
-
-                // Remove axe reaction
-                // MESSAGES.delayReactionRemoveUser(reaction, user.id, 111);
             }
         } else {
             // See if updating the item returns the item and quantity.
@@ -175,7 +171,7 @@ export default class WoodcuttingMinigame {
             // Add the experience.
             SkillsHelper.addXP(user.id, 'woodcutting', 1);
         }
-    }
+    };
 
     static async run() {
         try {
@@ -223,5 +219,5 @@ export default class WoodcuttingMinigame {
         } catch(e) {
             console.log('above error occurred trying to start woodcutting minigame');
         }
-    }
-}
+    };
+};
