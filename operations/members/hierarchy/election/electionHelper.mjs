@@ -787,7 +787,7 @@ export default class ElectionHelper {
     static async countdownFeedback() {
         const elecMsg = await this.getElectionMsg();
         const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
-        const hour = 3600;
+        const hour = 3600 * 1000;
 
         if (diff > hour * 4) {
             const humanRemaining = await this.humanRemainingNext();
@@ -810,7 +810,7 @@ export default class ElectionHelper {
                         ) 
                         +
                         ( 
-                            hierarchy.leaders.length ?
+                            hierarchy.leaders.size ?
                                 `**${ROLES._textRef('LEADER')}:**\n` +
                                     `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords:`).join('\n')}\n\n`
                                     :
