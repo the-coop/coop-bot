@@ -149,15 +149,15 @@ export default class MiningMinigame {
                 if (matchingAction)
                     updateMsg.edit(updatedContent);
 
-                // Add woodcut stats with no matching existing row.
+                // Add mining stats with no matching existing row.
                 else
                     updateMsg.edit(updateMsg.content + '\n' + `${actionText}`);
             }
             
-            // Store to track latest woodcutting stats.
+            // Store to track latest mining stats.
             EconomyNotifications.add('MINING', {
                 pointGain: 1,
-                recWood: extractedWoodNum,
+                recRock: extractedOreNum,
                 playerID: user.id,
                 username: user.username
             });
