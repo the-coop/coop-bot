@@ -2,8 +2,6 @@ import EconomyNotifications from "../../activity/information/economyNotification
 
 import SkillsHelper from "../medium/skills/skillsHelper.mjs";
 
-import UsableItemHelper from "../medium/economy/items/usableItemHelper.mjs";
-
 import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
@@ -13,21 +11,19 @@ import Useable from "coop-shared/services/useable.mjs";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 export default class MiningMinigame {
-    
+
     // Reaction interceptor to check if user is attempting to interact.
-    static async onReaction(reaction, user) {
+    static async onInteraction(interaction) {
+        const { message, channel, user } = interaction;
+
         // High chance of preventing any mining at all to deal with rate limiting.
         if (STATE.CHANCE.bool({ likelihood: 50 })) return false;
 
         const isOnlyEmojis = MESSAGES.isOnlyEmojis(reaction.message.content);
-        const isPickaxeReact = reaction.emoji.name === '⛏️';
         const isCooperMsg = USERS.isCooperMsg(reaction.message);
-        const isUserReact = !USERS.isCooper(user.id);
         
         // Mining minigame guards.
-        if (!isUserReact) return false;
         if (!isCooperMsg) return false;
-        if (!isPickaxeReact) return false;
         if (!isOnlyEmojis) return false;
 
         const msgContent = reaction.message.content;
@@ -37,13 +33,11 @@ export default class MiningMinigame {
         const rockEmojiUni = MESSAGES.emojiToUni(EMOJIS.ROCK);
         const isRocksMsg = firstEmojiUni === rockEmojiUni;
 
-        if (isRocksMsg) this.chip(reaction, user);
+        if (isRocksMsg)
+            this.chip(message, channel, user, interaction);
     };
 
-    // TODO: Bomb skips a few places at random
-    static async chip(reaction, user) {
-        const msg = reaction.message;
-
+    static async chip(msg, channel, user, interaction) {
         // Calculate magnitude from message: more rocks, greater reward.
         const textMagnitude = Math.floor(msg.content.length / 2);
         const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 2 });
@@ -51,23 +45,20 @@ export default class MiningMinigame {
         // Check if has a pickaxe
         const userPickaxesNum = await Items.getUserItemQty(user.id, 'PICK_AXE');
         const noPickText = `<@${user.id}> tried to mine the rocks, but doesn't have a pickaxe.`;
-
-        // Remove reaction and warn.
-        // DELETE REACTION
         if (userPickaxesNum <= 0) 
-            return MESSAGES.silentSelfDestruct(msg, noPickText, 0, 5000);
+            return await interaction.reply({ content: noPickText, ephemeral: true });
 
         // Count the number of people mining to apply a multipler/bonus.
-        const numCutters = REACTIONS.countType(msg, '⛏️') - 1;
-        
+        const ptsEmoji = MESSAGES.emojiCodeText('COOP_POINT');
+
         // Adjust extracted ore by buffs and adjust to clamp above > 0.
-        const extractedOreNum = Math.max(0, Math.ceil(rewardRemaining / 1.5) * numCutters);
+        const extractedOreNum = Math.max(0, Math.ceil(rewardRemaining / 1.5));
 
         // Clamp lower and upper boundary for chance of pickaxe breaking
         const pickaxeBreakPerc = Math.min(15, Math.max(15, extractedOreNum));
 
         // Attempt to access the mining message.
-        let updateMsg = await MESSAGES.getSimilarExistingMsg(msg.channel, '**MINING IN PROGRESS**');
+        let updateMsg = await MESSAGES.getSimilarExistingMsg(channel, '**MINING IN PROGRESS**');
             
         // Test the pickaxe for breaking.
         const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
@@ -89,16 +80,8 @@ export default class MiningMinigame {
                 // Add the experience.
                 SkillsHelper.addXP(user.id, 'mining', 2);
 
-                const actionText = `${user.username} broke a pickaxe trying to mine, ${userPickaxesNum - 1} remaining!`;
-                const damageText = `${brokenPickDamage} points (${ptsDmgText}) but gained mining 2xp for trying!.`;
-
-                if (!updateMsg)
-                    MESSAGES.silentSelfDestruct(msg, `${actionText} ${damageText}`, 0, 10000);
-                else 
-                    updateMsg.edit(updateMsg.content + '\n' + `${actionText} ${damageText}`);
-
-                // Remove pickaxe reaction.
-                MESSAGES.delayReactionRemoveUser(reaction, user.id, 111);
+                const actionText = `${user.username} broke a pickaxe trying to mine, ${userPickaxesNum - 1} remaining! Gained 2xp in mining for trying!.`;
+                return await interaction.reply({ content: actionText, ephemeral: true });
             }
         } else {
             // See if updating the item returns the item and quantity.
@@ -139,11 +122,52 @@ export default class MiningMinigame {
             const ptsText = ITEMS.displayQty(addPoints);
             const rewardText = `+1 point (${ptsText}), +${extractedOreNum} ${metalOreEmoji} (${addMetalOre})!`;
 
-            // No need for this any more due to the totals.
-            if (!updateMsg)
-                MESSAGES.silentSelfDestruct(msg, `${actionText} ${rewardText}`, 0, 10000);
-            else 
-                updateMsg.edit(updateMsg.content + '\n' + `${actionText} ${rewardText}`);
+            // Edit and update the message if found
+            if (updateMsg) {
+                // Track matching lines.
+                let matchingAction = false;
+                const updatedContent = updateMsg.content.split('\n').map(l => {
+                    const regex = new RegExp(`\\b${user.username}\\b \\+(\\d+)${EMOJIS.ROCK} \\+(\\d+)${ptsEmoji}`, 'i');
+                    const match = l.match(regex);
+
+                    if (match) {
+                        // Parse existing values from the text.
+                        const rock = parseInt(match[1]);
+                        const pts = parseInt(match[2]);
+
+                        // Need to know if there is a match to prevent new line being added.
+                        matchingAction = true;
+                        
+                        // Update the line with new rock and coop points
+                        return `${user.username} +${rock + extractedOreNum}${EMOJIS.ROCK} +${pts + 1}${ptsEmoji}`;
+                    }
+
+                    // Return the original line if no match
+                    return l;
+                }).join('\n');
+
+                // Edit the message with updated content
+                if (matchingAction)
+                    updateMsg.edit(updatedContent);
+
+                // Add woodcut stats with no matching existing row.
+                else
+                    updateMsg.edit(updateMsg.content + '\n' + `${actionText}`);
+            }
+            
+            // Store to track latest woodcutting stats.
+            EconomyNotifications.add('MINING', {
+                pointGain: 1,
+                recWood: extractedWoodNum,
+                playerID: user.id,
+                username: user.username
+            });
+
+            // Add the experience.
+            SkillsHelper.addXP(user.id, 'mining', 1);
+
+            // Show user success message.
+            return await interaction.reply({ content: rewardText, ephemeral: true });
         }
     };
 
@@ -181,8 +205,5 @@ export default class MiningMinigame {
         TemporaryMessages.add(rocks, 30 * 60);
         TemporaryMessages.add(announce, 30 * 60);
         TemporaryMessages.add(updates, 30 * 60);
-
-        // Add the prompt for mining the rock.
-        MESSAGES.delayReact(rocks, '⛏️');
     };
-}
+};

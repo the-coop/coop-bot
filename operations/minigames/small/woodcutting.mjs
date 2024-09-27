@@ -116,12 +116,9 @@ export default class WoodcuttingMinigame {
             const ptsEmoji = MESSAGES.emojiCodeText('COOP_POINT');
             const actionText = `${user.username} +${extractedWoodNum}${EMOJIS.WOOD} +${pointGain}${ptsEmoji}`;
 
-            // Either update message or create a new one.
-            // CHANNELS.propagate(msg, `${actionText}`, 'ACTIONS');
-
             // Edit and update the message if found
             if (updateMsg) {
-                // Update the matching line.
+                // Track matching lines.
                 let matchingAction = false;
                 const updatedContent = updateMsg.content.split('\n').map(l => {
                     const regex = new RegExp(`\\b${user.username}\\b \\+(\\d+)${EMOJIS.WOOD} \\+(\\d+)${ptsEmoji}`, 'i');

@@ -5,6 +5,7 @@ import WoodcuttingMinigame from '../../minigames/small/woodcutting.mjs';
 import TradingHelper from '../../minigames/medium/economy/items/tradingHelper.mjs';
 import AccessCodes from 'coop-shared/services/access-codes.mjs';
 import CompetitionHelper from '../../social/competitionHelper.mjs';
+import MiningMinigame from '../../minigames/small/mining.mjs';
 
 export default class InteractionHelper {
 
@@ -21,8 +22,10 @@ export default class InteractionHelper {
         // Handle trading buttons (accept_trade, trade_cancel).
         TradingHelper.onInteraction(interaction);
     
-        // TODO: Add woodcutting/mining and new interaction handlers.
+        // Add woodcutting/mining and new interaction handlers.
         WoodcuttingMinigame.onInteraction(interaction);
+        MiningMinigame.onInteraction(interaction);
+
     };
 
     static confirm(interaction, texts) {
