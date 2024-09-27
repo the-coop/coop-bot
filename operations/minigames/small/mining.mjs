@@ -2,7 +2,7 @@ import EconomyNotifications from "../../activity/information/economyNotification
 
 import SkillsHelper from "../medium/skills/skillsHelper.mjs";
 
-import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
+import { STATE, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
 import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
@@ -19,14 +19,13 @@ export default class MiningMinigame {
         // High chance of preventing any mining at all to deal with rate limiting.
         if (STATE.CHANCE.bool({ likelihood: 50 })) return false;
 
-        const isOnlyEmojis = MESSAGES.isOnlyEmojis(reaction.message.content);
-        const isCooperMsg = USERS.isCooperMsg(reaction.message);
+        const msgContent = message.content;
+        const isOnlyEmojis = MESSAGES.isOnlyEmojis(message.content);
+        const isCooperMsg = USERS.isCooperMsg(message);
         
         // Mining minigame guards.
         if (!isCooperMsg) return false;
         if (!isOnlyEmojis) return false;
-
-        const msgContent = reaction.message.content;
 
         const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
         const firstEmojiUni = MESSAGES.emojiToUni(firstEmojiString);
