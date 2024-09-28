@@ -138,7 +138,7 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => USERS.updateSavedIntros(), baseTickDur * 10);
 
   // Election related
-  ElectionHelper.setupIntervals();
+  ElectionHelper.intervals();
   
   // Above is unfinished
   EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 3);

@@ -36,7 +36,7 @@ export default class ElectionHelper {
         
         const result = await Database.query(query);
         return result;
-    }
+    };
     
     static async clearVotes() {
         const query = {
@@ -46,13 +46,13 @@ export default class ElectionHelper {
         
         const result = await Database.query(query);
         return result;
-    }
+    };
 
     static async clearElection() {
         // vv same as below but for votes.
         await this.clearVotes();
         await this.clearCandidates();
-    }
+    };
 
     static async clearCandidates() {
         const candidates = await this.getAllCandidates();
@@ -73,7 +73,7 @@ export default class ElectionHelper {
         };
         const result = await Database.query(query);
         return result;
-    }
+    };
 
     static async votingPeriodLeftSecs() {
         let leftSecs = 0;
@@ -86,7 +86,7 @@ export default class ElectionHelper {
         }
 
         return leftSecs;
-    }
+    };
     
     // Calculate if current moment in seconds is a voting period.
     static async isVotingPeriod() {
@@ -119,10 +119,10 @@ export default class ElectionHelper {
             // Don't start any elections if this is throwing errors, lol.
             return false;
         }
-    }
+    };
 
     // Setup the intervals needed for detection.
-    static setupIntervals() {
+    static intervals() {
         // Processes announcements and election events.
         EventsHelper.runInterval(() => this.checkProgress(), baseTickDur);
 
@@ -131,9 +131,9 @@ export default class ElectionHelper {
 
         // Ensure leadership and commander based on items so they are treated seriously.
         EventsHelper.runInterval(() => this.trackHierarchy(), baseTickDur * 5);
-    }
+    };
 
-    static async startElection() {
+    static async start() {
         try {
             // Show the channel.
             CHANNELS._show(CHANNELS._getCode('ELECTION').id);
@@ -197,11 +197,11 @@ export default class ElectionHelper {
             console.log('Starting the election failed... :\'(');
             console.error(e);
         }
-    }
+    };
 
     static getMaxNumLeaders() {
         return VotingHelper.getNumRequired(LEADERS_RATIO_PERC);
-    }
+    };
 
     // Provide updates and functionality for an ongoing election.
     static async commentateElectionProgress(postUpdate = true) {
@@ -260,7 +260,7 @@ export default class ElectionHelper {
         // Post an update if chosen.
         if (postUpdate)
             CHANNELS._codes(['TALK', 'ACTIONS'], electionProgressText);
-    }
+    };
 
     static async endElection() {
         console.log('Ending the election.')
@@ -326,11 +326,11 @@ export default class ElectionHelper {
             console.log('Something went wrong ending the election...');
             console.error(e);
         }
-    }
+    };
 
     static async resetHierarchyData() {
         return Database.query("DELETE FROM hierarchy");
-    }
+    };
 
     static async resetHierarchyRoles(hierarchy) {
         try {
@@ -373,7 +373,7 @@ export default class ElectionHelper {
             console.log('Error resetting hierarchy roles.');
             console.error(e);
         }
-    }
+    };
 
     static async resetHierarchyItems(hierarchy) {
         try {
@@ -417,7 +417,7 @@ export default class ElectionHelper {
             console.log('Error resetting hierarchy items');
             console.error(e);
         }
-    }
+    };
 
     static async ensureItemSeriousness() {
         try {
@@ -463,7 +463,7 @@ export default class ElectionHelper {
             console.log('Error ensuring item seriousness.');
             console.error(e);
         }
-    }
+    };
 
     static async checkProgress() {
         // A variable used for tracking election before/after (start).
@@ -476,7 +476,7 @@ export default class ElectionHelper {
 
             // Election needs to be started?
             if (isVotingPeriod && !isElecOn) {
-                await this.startElection();
+                await this.start();
                 electionJustStarted = true;
 
                 // Trigger new month in events manifest.
@@ -506,7 +506,7 @@ export default class ElectionHelper {
             console.log('SOMETHING WENT WRONG WITH CHECKING ELECTION!');
             console.error(e);
         }
-    }
+    };
 
     static async getElectionMsg() {
         const electionInfoMsgLink = await Chicken.getConfigVal('election_message_link');
@@ -514,13 +514,13 @@ export default class ElectionHelper {
         const channel = CHANNELS._get(msgData.channel);
         const msg = await channel.messages.fetch(msgData.message);
         return msg;
-    }
+    };
 
     static async editElectionInfoMsg(text) {
         const msg = await this.getElectionMsg();
         const editedMsg = await msg.edit(text);
         return editedMsg;
-    }
+    };
 
     static async getVoteByVoterID(voterID) {
         const query = {
@@ -533,7 +533,7 @@ export default class ElectionHelper {
         const voter = DatabaseHelper.single(result);
 
         return voter;
-    }
+    };
 
     // Check if this reaction applies to elections.
     static async onReaction(reaction, user) {
@@ -579,7 +579,7 @@ export default class ElectionHelper {
             console.log('Could not process election vote.');
             console.error(e);
         }
-    }
+    };
 
     static calcHierarchy(votes) {
         const commander = votes[0];
@@ -589,11 +589,11 @@ export default class ElectionHelper {
         const hierarchy = { commander, leaders, numLeaders };
 
         return hierarchy;
-    }
+    };
 
     static deleteCandidateByLink(link) {
         return Database.query({ text: `DELETE FROM candidates WHERE campaign_msg_link = '${link}'` });
-    }
+    };
 
     static async loadAllCampaignMsgs() {
         const candidates = await this.getAllCandidates();
@@ -630,7 +630,7 @@ export default class ElectionHelper {
         };
 
         return await DatabaseHelper.singleQuery(query);
-    }
+    };
 
     // TODO: could use this feature/data to direct message the candidates an update
     static async fetchAllVotes() {
@@ -678,7 +678,7 @@ export default class ElectionHelper {
         });
 
         return votes;
-    }
+    };
 
     static async getCandidate(userID) {
         const query = {
@@ -690,7 +690,7 @@ export default class ElectionHelper {
         const candidate = await DatabaseHelper.singleQuery(query);
 
         return candidate;
-    }
+    };
 
     // Preload campaign messages into cache so they are always reactable.
     static async preloadIfNecessary() {
@@ -699,7 +699,7 @@ export default class ElectionHelper {
             await this.loadAllCampaignMsgs();
             console.warn('Cached election candidates.');
         }
-    }
+    };
 
     static async addCandidate(userID, msgLink) {
         const query = {
@@ -711,7 +711,7 @@ export default class ElectionHelper {
         
         const result = await Database.query(query);
         return result;
-    }
+    };
 
     static async getAllCandidates() {
         const query = {
@@ -724,38 +724,38 @@ export default class ElectionHelper {
         if (result.rows) candidates = result.rows;
 
         return candidates;
-    }
+    };
 
     static async lastElecSecs() {
         const lastElecSecsVal = await Chicken.getConfigVal('last_election');
         const lastElecSecs = parseInt(lastElecSecsVal);
         return lastElecSecs;        
-    }
+    };
 
     static async lastElecFmt() {
         const lastElecSecs = await this.lastElecSecs();
         const lastElecMoment = moment.unix(lastElecSecs);
         return lastElecMoment.format('dddd, MMMM Do YYYY, h:mm:ss a');
-    }
+    };
 
     static async nextElecFmt() {
         const nextElecSecs = await this.nextElecSecs();
         const nextElecMoment = moment.unix(nextElecSecs);
         
         return nextElecMoment.format('dddd, MMMM Do YYYY, h:mm:ss a');
-    }
+    };
 
     static async nextElecSecs() {
         const lastElecSecs = await this.lastElecSecs();
         const nextElecSecs = lastElecSecs + this.TERM_DUR_SECS;
         return nextElecSecs;
-    }
+    };
 
     // This is only active from next election interval moment to a week after that
     static async isElectionOn() {
         const electionOnVal = await Chicken.getConfigVal('election_on');
         return electionOnVal === 'true';
-    }
+    };
 
     static async isElectionTime() {
         const lastElecSecs = await this.lastElecSecs();
@@ -767,7 +767,7 @@ export default class ElectionHelper {
         if (nowSecs >= nextElecSecs && nowSecs <= nextDeclareSecs) return true;
 
         return false;
-    }
+    };
 
     static _roleHierarchy() {
         const hierarchy = {
@@ -776,13 +776,13 @@ export default class ElectionHelper {
             motw: ROLES._getUserWithCode('MEMBEROFWEEK')
         };
         return hierarchy;
-    }
+    };
 
     static async humanRemainingNext() {
         const diff = await this.nextElecSecs() - parseInt(Date.now() / 1000)
         const humanRemaining = TIME.humaniseSecs(diff);
         return humanRemaining;
-    }
+    };
 
     static async countdownFeedback() {
         const elecMsg = await this.getElectionMsg();
@@ -827,14 +827,14 @@ export default class ElectionHelper {
         }
 
         // TODO: Post the occassional reminder too...
-    }
+    };
 
     static removeIDFromTrackedHierarchy(userID) {
         return Database.query({ 
             text: "DELETE FROM hierarchy WHERE discord_id = $1",
             values: [userID] 
         })
-    }
+    };
 
     static trackHierarchicalEntity(userID, username, avatar, type) {
         const image = USERS.avatar({ id: userID, avatar });
@@ -842,7 +842,7 @@ export default class ElectionHelper {
             text: "INSERT INTO hierarchy(discord_id, username, image, type) VALUES ($1, $2, $3, $4)",
             values: [userID, username, image, type]
         });
-    }
+    };
 
     static async trackHierarchy() {
         const savedHierarchy = await Election.loadHierarchy();
@@ -907,5 +907,5 @@ export default class ElectionHelper {
                 this.trackHierarchicalEntity(motw.id, motw.username, motw.avatar, 'MEMBEROFWEEK');
             }
         }
-    }
+    };
 };
