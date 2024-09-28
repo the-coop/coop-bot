@@ -72,6 +72,11 @@ export default class CompetitionHelper {
         }
     };
 
+    static async configure() {
+        // If not started, configure and start it.
+        // If started, just change the title/description.
+    };
+
     static async launch(code, interaction, user) {
         // Identify the competition's relevant channel.
         const channel = CHANNELS._get(interaction.channelId);
@@ -337,10 +342,8 @@ export default class CompetitionHelper {
 
     static async onInteraction(interaction) {
         try {
-            // TODO: Check competition channel
-            // if (!this.isCompChannel(channelId)) return;
-
-            console.log(interaction);
+            // Ensure it's a competition channel.
+            if (!this.isCompChannel(channelId)) return;
 
             // TODO: Need to get the competition_form modal submission too.
 
@@ -356,18 +359,20 @@ export default class CompetitionHelper {
             // if (!ROLES._has(member, 'COMMANDER') && !ROLES._has(member, 'LEADER'))
 
             // Find competition code from channelID.
-            // const code = CHANNELS.idToCode(interaction.channelId);
-            // TODO: Hardcoded for testing
-            const code = 'ART_COMPETITION';
+            const code = CHANNELS.idToCode(interaction.channelId);
             const fmtCode = _fmt(code);
             const fmtTitle = fmtCode.charAt(0).toUpperCase() + fmtCode.slice(1);
 
             // Handle the competition launch form.
             if (interaction.customId === 'competition_form') {
-                console.log(interaction.fields);
                 const title = interaction.fields.getTextInputValue('competition_title');
                 const description = interaction.fields.getTextInputValue('competition_description');
+
+                // TODO: 
+                console.log('Should setup competition.');
                 console.log(title, description);
+
+                // await this.configure(code, title, description);
 
                 // Starting the competition assumes the message was already created.
                 // Clear the previous entrants now
@@ -408,7 +413,6 @@ export default class CompetitionHelper {
 
             // Handle user registering for competition.
             if (interaction.customId === 'register_competition') {
-
                 // TODO: Limit to 100 entrants.
                 // MAX_ENTRANTS
                 return await interaction.reply({ content: 'REGISTER_COMPETITION', ephemeral: true });

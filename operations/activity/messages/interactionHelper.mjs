@@ -25,7 +25,6 @@ export default class InteractionHelper {
         // Add woodcutting/mining and new interaction handlers.
         WoodcuttingMinigame.onInteraction(interaction);
         MiningMinigame.onInteraction(interaction);
-
     };
 
     static confirm(interaction, texts) {

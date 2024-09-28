@@ -2,12 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Collection } from "discord.js";
-import { CHANNELS } from "coop-shared/config.mjs";
-import AccessCodes from "coop-shared/services/access-codes.mjs";
-import TradingHelper from "../operations/minigames/medium/economy/items/tradingHelper.mjs";
-import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
 import InteractionHelper from '../operations/activity/messages/interactionHelper.mjs';
-
 
 // https://discordjs.guide/creating-your-bot/command-handling.html#reading-command-files
 export default async function setupCommands(client) {    
@@ -44,4 +39,4 @@ export default async function setupCommands(client) {
             await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
     });
-}
+};
