@@ -10,15 +10,13 @@ import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
+import DropTable from "../medium/economy/items/droptable.mjs";
 
 export default class ChestPopMinigame {
     
     // Reaction interceptor to check if user is attempting to interact.
     static async onInteraction(interaction) {
         const { message, channel, user } = interaction;
-
-        // High chance of preventing any Woodcutting at all to deal with rate limiting.
-        if (STATE.CHANCE.bool({ likelihood: 50 })) return false;
 
         // Chest Pop minigame guards.
         const isCooperMsg = USERS.isCooperMsg(message);
@@ -27,12 +25,13 @@ export default class ChestPopMinigame {
         // Check this message content is correct and from cooper.
         const msgContent = message.content;
         const isChestPopMsg = msgContent.includes("ChestPop?");
+        if (!isChestPopMsg) return false;
         const isInteractionButton = interaction.customId === "open_chest";
-        if (!isChestPopMsg || !isInteractButton) return false;
+        if (!isInteractButton) return false;
 
-        // Allow user to cut the open the chest.
+        // Allow user the open the chest.
         this.open(message, channel, user, interaction);
-    }
+    };
 
     static async open(msg, channel, user, interaction) {
 
@@ -44,8 +43,39 @@ export default class ChestPopMinigame {
             return MESSAGES.silentSelfDestruct(msg, noText, 0, 3333);
         }
 
-        // TODO: Rewards from opening with key
-        
+        const keyBreakPerc = 15;
+        const didBreak = STATE.CHANCE.bool({ likelihood: keyBreakPerc });
+        if (didBreak) {
+            const keyUpdate = await Useable.use(user.id, 'KEY', 1);
+            if (keyUpdate) {
+                const actionText = `${user.username} broke a key while trying to open a chest, ${userKeysNum - 1} remaining!`;
+                return await interaction.reply({ content: actionText, ephemeral: true });
+            }
+        } else {
+            // Delete the chestpop message
+            await msg.delete();
+
+            // Pick rewards from opening with key
+            const maxRewardAmount = 4;
+            const rewardAmount = COOP.STATE.CHANCE.natural({ min: 1, max: maxRewardAmount });
+            const drops = DropTable.getRandomWithQtyMany(rewardAmount);
+
+            // Add the items to user
+            await Promise.all(drops.map(drop =>
+                Items.add(user.id, drop.item, drop.qty, 'ChestPop')
+            ));
+
+            // Declare feedback.
+            const chestOpenText = `You successfully opened the chest and found the following items\n\n` +
+                drops.map(drop => 
+                    `${COOP.MESSAGES.emojiCodeText(drop.item)}x${drop.qty}`
+                ).join(', ');
+
+            // TODO: Track chestpop drops in economy statistics?
+                
+            // Show user success message.
+            return await interaction.reply({ content: chestOpenText, ephemeral: true });
+        }
     };
 
     static async run() {
