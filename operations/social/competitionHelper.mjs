@@ -23,7 +23,6 @@ const MAX_ENTRANTS = 2;
 // TODO: Add organiser field to events table and set creator on setup and check afterwards, and clear it at the end
 
 
-
 export default class CompetitionHelper {
 
     static async onInteraction(interaction) {
@@ -46,12 +45,10 @@ export default class CompetitionHelper {
 
             // Find competition code from channelID.
             const code = CHANNELS.idToCode(interaction.channelId);
-            const fmtCode = _fmt(code);
-            
 
             // Handle setup competition button.
             if (interaction.customId === 'setup_competition')
-                return await this.setup();
+                return await this.setup(code, interaction);
 
             // Handle the competition launch form.
             if (interaction.customId === 'competition_form') 
@@ -226,8 +223,6 @@ export default class CompetitionHelper {
         // TODO: Otherwise launch
         // await this.launch();
 
-
-
         const title = interaction.fields.getTextInputValue('competition_title');
         const description = interaction.fields.getTextInputValue('competition_description');
 
@@ -238,8 +233,8 @@ export default class CompetitionHelper {
         console.log(title, description);
 
 
-    //         await Competition.setTitle(fmtCompCode, title);
-    //         await Competition.setDescription(fmtCompCode, description);
+        //         await Competition.setTitle(fmtCompCode, title);
+        //         await Competition.setDescription(fmtCompCode, description);
 
         // await this.configure(code, title, description);
 
