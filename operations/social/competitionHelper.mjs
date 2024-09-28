@@ -231,7 +231,6 @@ export default class CompetitionHelper {
         const title = interaction.fields.getTextInputValue('competition_title');
         const description = interaction.fields.getTextInputValue('competition_description');
 
-        const code = CHANNELS.idToCode(interaction.channelId);
         const fmtCode = _fmt(code);
 
         // TODO: 
