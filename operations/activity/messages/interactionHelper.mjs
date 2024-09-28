@@ -26,10 +26,6 @@ export default class InteractionHelper {
         // Add woodcutting/mining and new interaction handlers.
         WoodcuttingMinigame.onInteraction(interaction);
         MiningMinigame.onInteraction(interaction);
-<<<<<<< HEAD
-=======
-        ChestPopMinigame.onInteraction(interaction);
->>>>>>> 53cea36de74ecc306bb1facaca86206a0c7a9b64
     };
 
     static confirm(interaction, texts) {

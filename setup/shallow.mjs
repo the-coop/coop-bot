@@ -68,19 +68,22 @@ const shallowBot = async () => {
         // TODO: Test premium button with an SKU?
 
 
-        const channel = CHANNELS._getCode('ART_COMPETITION');
-        const newCompMsg = await channel.send('Competition ready to be setup and launched.');
-        newCompMsg.edit({
-            components: [
-                new ActionRowBuilder().addComponents([
-                    new ButtonBuilder()
-                        .setEmoji('⚙️')
-                        .setLabel("Setup")
-                        .setCustomId('setup_competition')
-                        .setStyle(ButtonStyle.Secondary)
-                ])
-            ]
-        });
+        // const channel = CHANNELS._getCode('ART_COMPETITION');
+        // const newCompMsg = await channel.send('Competition ready to be setup and launched.');
+        // newCompMsg.edit({
+        //     components: [
+        //         new ActionRowBuilder().addComponents([
+        //             new ButtonBuilder()
+        //                 .setEmoji('⚙️')
+        //                 .setLabel("Setup")
+        //                 .setCustomId('setup_competition')
+        //                 .setStyle(ButtonStyle.Secondary)
+        //         ])
+        //     ]
+        // });
+
+
+        // WoodcuttingMinigame.run();
 
 
         // listenInteractions(CompetitionHelper.onInteraction);
