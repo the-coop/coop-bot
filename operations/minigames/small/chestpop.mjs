@@ -1,12 +1,4 @@
-import EconomyNotifications from "../../activity/information/economyNotifications.mjs";
-
-import SkillsHelper from "../medium/skills/skillsHelper.mjs";
-
-import UsableItemHelper from "../medium/economy/items/usableItemHelper.mjs";
-
 import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
-import { EMOJIS } from "coop-shared/config.mjs";
-import Statistics from "../../activity/information/statistics.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
@@ -101,4 +93,4 @@ export default class ChestPopMinigame {
             console.log('above error occurred trying to start chest pop minigame');
         }
     };
-}
+};
