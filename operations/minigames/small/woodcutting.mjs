@@ -81,7 +81,7 @@ export default class WoodcuttingMinigame {
                 
                 const actionText = `${user.username} broke an axe and ${ptsDmgText}, ${userAxesNum - 1} axes remaining!`;
                 return await interaction.reply({ content: actionText, ephemeral: true });
-            }x
+            }
         } else {
             // See if updating the item returns the item and quantity.
             const pointGain = 1;
