@@ -51,19 +51,19 @@ export default class CompetitionModel {
         return competitions;
     };
 
-    static saveEntrant(code, user) {
+    static saveEntrant(code, userID) {
         return db.singleQuery({
             name: 'add-competition-entrant',
             text: 'INSERT INTO competition_entries (entrant_id, competition) VALUES ($1, $2)',
-            values: [user.id, code]
+            values: [userID, code]
         });
     };
 
-    static loadEntrant(code, user) {
+    static loadEntrant(code, userID) {
         return db.singleQuery({
             name: 'load-competition-entrant',
             text: 'SELECT * FROM competition_entries WHERE entrant_id = $1 AND competition = $2',
-            values: [user.id, code]
+            values: [userID, code]
         });
     };
 

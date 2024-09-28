@@ -32,9 +32,6 @@ export default async function reactAddedHandler(reaction, user) {
         RedemptionHelper.onReaction(reaction, user);
         ElectionHelper.onReaction(reaction, user);
 
-        // Competition reactions/abilities.
-        CompetitionHelper.onReaction(reaction, user);
-
         // Check for usable items being exercised.
         USABLE.onReaction(reaction, user);
 

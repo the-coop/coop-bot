@@ -30,7 +30,7 @@ export default async function setupCommands(client) {
     // Handle commands and interaction interceptors command name/key/button ids.
     client.on('interactionCreate', async interaction => {
         const command = client.commands.get(interaction.commandName);
-        if (!command) return InteractionHelper.onInteract(interaction);
+        if (!command) return InteractionHelper._onInteraction(interaction);
 
         try {
             await command.execute(interaction);

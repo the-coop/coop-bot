@@ -20,142 +20,58 @@ export const COMPETITION_ROLES = {
 const MAX_ENTRANTS = 2;
 
 // All competitions can run at same time
-// TODO: Leaders/commander ONLY can see channel when not launched
-// TODO: Leaders/commander ONLY can end competition
+// TODO: Add organiser field to events table and set creator on setup and check afterwards, and clear it at the end
 
-// TODO: Rewards scale on total number of votes, incase it's ended early.
-
-// TODO: It would be better if setup was separate from start
-// Then you could reuse setup to edit the details incase of mistake
-// Explicit start button and flow?
-
-// TODO: Add explicit limit due to Discord API guard
 
 
 export default class CompetitionHelper {
 
-    // Check the most important things at the beginning of a new day.
-    static async check(competition) {
-        // Get entries for competition.
-        let entries = await Competition.loadEntrants(competition.event_code);
-
-        // Count votes and attach to competition checking result.
-        await Promise.all(entries.map(async e => {
-            const entrantIndex = entries.findIndex(se => se.entrant_id === e.entrant_id);
-            entries[entrantIndex].votes = await this.countVotes(e);
-        }));
-
-        // TODO: Should also check when it's being processed incase this misses it.
-
-        // Attach entries object.
-        competition.entries = entries;
-
-        // Return the result in the check.
-        return competition;
-    };
-
-    static async cleanEntries(code) {
+    static async onInteraction(interaction) {
         try {
-            const channel = CHANNELS._getCode(code.toUpperCase());
+            // Ensure it's a competition channel.
+            if (!this.isCompChannel(interaction.channelId)) return;
 
-            // This won't work with over 100 entries in a competition...
-            // Swap to this loop method if this happens...
-            // https://stackoverflow.com/questions/48228702/deleting-all-messages-in-discord-js-text-channel
-            const msgs = await channel.messages.fetch({ limit: MAX_ENTRANTS });
-            await channel.bulkDelete(msgs);
-            return true;
+            // TODO: Need to get the competition_form modal submission too.
 
+            // Whitelist used buttons.
+            if (!['setup_competition', 'end_competition', 'competition_form'].includes(interaction?.customId))
+                return;
+            
+            console.log('competition interaction');
+
+            // TODO: Need to guard to leaders/commander
+
+            // const member = await USERS._fetch(user.id);
+            // if (!ROLES._has(member, 'COMMANDER') && !ROLES._has(member, 'LEADER'))
+
+            // Find competition code from channelID.
+            const code = CHANNELS.idToCode(interaction.channelId);
+            const fmtCode = _fmt(code);
+            
+
+            // Handle setup competition button.
+            if (interaction.customId === 'setup_competition')
+                return await this.setup();
+
+            // Handle the competition launch form.
+            if (interaction.customId === 'competition_form') 
+                return this.configure(code, interaction);
+
+            // Handle user registering for competition.
+            if (interaction.customId === 'register_competition')
+                return await this.register(code, interaction);
+
+            // Handle finalising the results.
+            if (interaction.customId === 'end_competition')
+                return await this.end(code, interaction);
+                
         } catch(e) {
-            console.log('Error clearing competition ' + code);
             console.error(e);
-            return false;
+            console.log('Error handling competition interaction.');
         }
     };
 
-    static async configure() {
-        // If not started, configure and start it.
-        // If started, just change the title/description.
-    };
-
-    static async launch(code, interaction, user) {
-        // Identify the competition's relevant channel.
-        const channel = CHANNELS._get(interaction.channelId);
-
-        // Need to check if user is commander/leader
-        const member = await USERS._fetch(user.id);
-        if (!ROLES._has(member, 'COMMANDER') && !ROLES._has(member, 'LEADER'))
-            return MESSAGES.selfDestruct(reaction.message, 'Only the commander/leaders may start a competition', 0, 5000);
-
-        // Clear the previous competition entrants.
-        Competition.clearEntrants(competionCode);
-        
-        console.log(user, 'trying to launch', code);
-        console.log(user, 'leadership trying to launch', code);
-
-        // Require multiple leaders to launch it?
-
-        // Access the channel to extract the details.
-        
-
-        // Show to all relevant members based on syncing roles.
-        CHANNELS._show(channel.id);
-
-        // Don't ping feed, ping relevant role population instead.
-        const relevantRoleCode = COMPETITION_ROLES[code.toUpperCase()];
-        const pingableRoleText = ROLES._textRef(relevantRoleCode);
-
-        // Add details on how to join the competition 
-        const launchedCompMsgText = `**🏆 ${pingableRoleText} users, register soon, ${_fmt(code)} officially launched! 🏆**\n\n`;
-
-        // The copy of the message with registering.
-        const launchedCompRegisterMsgText = launchedCompMsgText +
-            `_Join the ${_fmt(code)} now by pressing the register buttoon 📋!_`;
-
-        // When competition started, it needs register and end buttons, remove start button.
-        const msg = await channel.send(launchedCompRegisterMsgText);
-        msg.edit({ 
-            components: [
-                new ActionRowBuilder().addComponents([
-                    new ButtonBuilder()
-                        .setEmoji('📝')
-                        .setLabel("Register")
-                        .setCustomId('register_competition')
-                        .setStyle(ButtonStyle.Success),
-                    new ButtonBuilder()
-                        .setEmoji('⏸️')
-                        .setLabel("End")
-                        .setCustomId('end_competition')
-                        .setStyle(ButtonStyle.Danger),
-                ])
-            ]
-        });
-
-        // Explicitly declare event started.
-        await EventsHelper.setActive(code, true);
-    };
-
-    static async register(code, reaction, user) {
-        // Check not already registered on this competition.
-        const entrant = await Competition.loadEntrant(code, user);
-        if (entrant)
-            return MESSAGES.selfDestruct(reaction.message, 'You are already registered to this competition.', 0, 5000);
-
-        // Store in database table for competition.
-        await Competition.saveEntrant(code, user);
-
-        // Add details on how to join the competition 
-        const registerCompMsgText = `📋 <@${user.id}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`;
-
-        // Make sure to post it to feed, add some nice reactions (with ping).
-        const registeredFeedMsg = await CHANNELS._send('TALK', registerCompMsgText, {});
-
-        // TODO: Update the registrants text.
-        
-
-        // Add four leaf clover so people can wish good luck
-        MESSAGES.delayReact(registeredFeedMsg, '🍀');
-    };
-
+    // Also entry point for next competition, adds competition channel message with setup button.
     static async end(competionCode) {
         // Load the competition.
         const competition = await Competition.get(competionCode);
@@ -166,26 +82,24 @@ export default class CompetitionHelper {
 
         // Calculate the rightful winners.
         let winners = progress.entries.filter(participant => participant.votes > 0);
-
+        
         // Sort entries into vote order.
         winners.sort((a, b) => a.votes > b.votes);
-
+        
         // Limit winners to first 3.
         winners = winners.slice(0, 3);
-
-        // Handle rewards and notifications for each winner.
+        
+        // Handle rewards scaled by number of votes and notifications for each winner
+        const totalVotes = winners.reduce((sum, participant) => sum + participant.votes, 0);
         winners.map((w, index) => {
             // Reward amount.
-            const baseRewardAmount = 4 / (index + 1);
-            const rewardAmount = STATE.CHANCE.natural({ 
-                min: baseRewardAmount, 
-                max: baseRewardAmount * 3
-            });
+            const min = 10 / (index + 1);
+            const numRewards = STATE.CHANCE.natural({ min, max: min * totalVotes });
 
             // Generate the rewards for the player.
             const rawRewards = [];
             const rewards = [];
-            for (let r = 0; r < rewardAmount; r++) {
+            for (let r = 0; r < numRewards; r++) {
                 // Random roll for rarity.
                 let accessibleTiers = ['AVERAGE'];
                 
@@ -254,9 +168,6 @@ export default class CompetitionHelper {
         // Remove the message link from the event.
         await Competition.setLink(competionCode, null);
 
-        // TODO: Hide the channel except for commanders and leaders so they can set it up.
-        CHANNELS._hide(interaction.channelId, competionCode + ' is over, hiding until next time!');
-
         // Send the next competition's starting message with setup button.
         const newCompMsg = await channel.send('Competition ready to be setup and launched.');
         newCompMsg.edit({
@@ -276,6 +187,172 @@ export default class CompetitionHelper {
 
         // Set competition is not active.
         await EventsHelper.setActive(competionCode, false);
+    };
+
+    static async setup(code, interaction) {
+        const fmtCode = _fmt(code);
+        const fmtTitle = fmtCode.charAt(0).toUpperCase() + fmtCode.slice(1);
+
+        // Create the form.
+        const modal = new ModalBuilder()
+            .setCustomId('competition_form')
+            .setTitle(`${fmtTitle} details`);
+
+        // Create the text input components
+        const titleInput = new TextInputBuilder()
+            .setCustomId('competition_title')
+            .setLabel("Competition title:")
+            .setStyle(TextInputStyle.Short);
+
+        const descriptionInput = new TextInputBuilder()
+            .setCustomId('competition_description')
+            .setLabel("Details for the competition:")
+            .setStyle(TextInputStyle.Paragraph);
+
+        // Add inputs to the modal
+        modal.addComponents(
+            new ActionRowBuilder().addComponents(titleInput),
+            new ActionRowBuilder().addComponents(descriptionInput)
+        );
+
+        // Show the modal to the user.
+        return await interaction.showModal(modal);
+    };
+
+    static async configure(code, interaction) {
+        // If not started, configure and start it.
+        // If started, just change the title/description.
+        // TODO: Check if competition active
+        // TODO: Otherwise launch
+        // await this.launch();
+
+
+
+        const title = interaction.fields.getTextInputValue('competition_title');
+        const description = interaction.fields.getTextInputValue('competition_description');
+
+        const code = CHANNELS.idToCode(interaction.channelId);
+        const fmtCode = _fmt(code);
+
+        // TODO: 
+        console.log('Should setup competition.');
+        console.log(title, description);
+
+
+    //         await Competition.setTitle(fmtCompCode, title);
+    //         await Competition.setDescription(fmtCompCode, description);
+
+        // await this.configure(code, title, description);
+
+        // Starting the competition assumes the message was already created.
+        // Clear the previous entrants now
+
+        // TODO: Add the register button
+
+        return await interaction.reply({ content: `Starting ${fmtCode}: ${title}.`, ephemeral: true });
+    };
+
+    // Launch the competition
+    static async launch(code, interaction) {
+        // Identify the competition's relevant channel.
+        const channel = CHANNELS._get(interaction.channelId);
+
+        // Clear the previous competition entrants.
+        Competition.clearEntrants(code);
+        
+        // Add details on how to join the competition 
+        const pingableRoleText = ROLES._textRef(COMPETITION_ROLES[code.toUpperCase()]);
+        const launchedCompMsgText = `**🏆 ${pingableRoleText} users, register soon, ${_fmt(code)} officially launched! 🏆**\n\n`;
+
+        // TODO: Add title and description
+        // The copy of the message with registering.
+        const launchedCompRegisterMsgText = launchedCompMsgText +
+            `_Join the ${_fmt(code)} now by pressing the register buttoon 📋!_`;
+
+        // When competition started, it needs register and end buttons, remove start button.
+        const msg = await channel.send(launchedCompRegisterMsgText);
+        msg.edit({ 
+            components: [
+                new ActionRowBuilder().addComponents([
+                    new ButtonBuilder()
+                        .setEmoji('📝')
+                        .setLabel("Register")
+                        .setCustomId('register_competition')
+                        .setStyle(ButtonStyle.Success),
+                    new ButtonBuilder()
+                        .setEmoji('⏸️')
+                        .setLabel("End")
+                        .setCustomId('end_competition')
+                        .setStyle(ButtonStyle.Danger),
+                ])
+            ]
+        });
+
+        // Explicitly declare event started.
+        await EventsHelper.setActive(code, true);
+    };
+
+    // Check the most important things at the beginning of a new day.
+    static async check(competition) {
+        // Get entries for competition.
+        let entries = await Competition.loadEntrants(competition.event_code);
+
+        // Count votes and attach to competition checking result.
+        await Promise.all(entries.map(async e => {
+            const entrantIndex = entries.findIndex(se => se.entrant_id === e.entrant_id);
+            entries[entrantIndex].votes = await this.countVotes(e);
+        }));
+
+        // TODO: Should also check when it's being processed incase this misses it.
+
+        // Attach entries object.
+        competition.entries = entries;
+
+        // Return the result in the check.
+        return competition;
+    };
+
+    static async cleanEntries(code) {
+        try {
+            const channel = CHANNELS._getCode(code.toUpperCase());
+
+            // This won't work with over 100 entries in a competition...
+            // Swap to this loop method if this happens...
+            // https://stackoverflow.com/questions/48228702/deleting-all-messages-in-discord-js-text-channel
+            const msgs = await channel.messages.fetch({ limit: MAX_ENTRANTS });
+            await channel.bulkDelete(msgs);
+            return true;
+
+        } catch(e) {
+            console.log('Error clearing competition ' + code);
+            console.error(e);
+            return false;
+        }
+    };
+
+    static async register(code, interaction) {
+
+        // Limit to 100 entrants.
+        const entrants = await Competition.loadEntrants(code);
+        if (entrants.length >= MAX_ENTRANTS)
+            return await interaction.reply({ content: `${entrants.length}/${MAX_ENTRANTS} registered, please try again next time.`, ephemeral: true });
+
+        // TODO: Check they aren't already an entrant.
+        // return await interaction.reply({ content: `You are already registered.`, ephemeral: true });
+
+        // Check not already registered on this competition.
+        const entrant = await Competition.loadEntrant(code, interaction.userId);
+        if (entrant)
+            return MESSAGES.selfDestruct(reaction.message, 'You are already registered to this competition.', 0, 5000);
+
+        // Store in database table for competition.
+        await Competition.saveEntrant(code, interaction.userId);
+
+        // Publicly announce to bring attention to competition.
+        const registerCompMsgText = `📋 <@${interaction.userId}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`;
+        await CHANNELS._send('TALK', registerCompMsgText, {});
+
+        return MESSAGES.selfDestruct(reaction.message, 'You are already registered to this competition.', 0, 5000);
     };
 
     static async track() {
@@ -340,94 +417,6 @@ export default class CompetitionHelper {
         });
     };
 
-    static async onInteraction(interaction) {
-        try {
-            // Ensure it's a competition channel.
-            if (!this.isCompChannel(channelId)) return;
-
-            // TODO: Need to get the competition_form modal submission too.
-
-            // Whitelist used buttons.
-            if (!['setup_competition', 'end_competition', 'competition_form'].includes(interaction?.customId))
-                return;
-            
-            console.log('competition interaction');
-
-            // TODO: Need to guard to leaders/commander
-
-            // const member = await USERS._fetch(user.id);
-            // if (!ROLES._has(member, 'COMMANDER') && !ROLES._has(member, 'LEADER'))
-
-            // Find competition code from channelID.
-            const code = CHANNELS.idToCode(interaction.channelId);
-            const fmtCode = _fmt(code);
-            const fmtTitle = fmtCode.charAt(0).toUpperCase() + fmtCode.slice(1);
-
-            // Handle the competition launch form.
-            if (interaction.customId === 'competition_form') {
-                const title = interaction.fields.getTextInputValue('competition_title');
-                const description = interaction.fields.getTextInputValue('competition_description');
-
-                // TODO: 
-                console.log('Should setup competition.');
-                console.log(title, description);
-
-                // await this.configure(code, title, description);
-
-                // Starting the competition assumes the message was already created.
-                // Clear the previous entrants now
-
-                // TODO: Add the register button
-
-                return await interaction.reply({ content: `Starting ${fmtCode}: ${title}.`, ephemeral: true });
-            }
-
-            // Handle setup competition button.
-            if (interaction.customId === 'setup_competition') {
-
-                // Create the form.
-                const modal = new ModalBuilder()
-                    .setCustomId('competition_form')
-                    .setTitle(`${fmtTitle} details`);
-
-                // Create the text input components
-                const titleInput = new TextInputBuilder()
-                    .setCustomId('competition_title')
-                    .setLabel("Competition title:")
-                    .setStyle(TextInputStyle.Short);
-
-                const descriptionInput = new TextInputBuilder()
-                    .setCustomId('competition_description')
-                    .setLabel("Details for the competition:")
-                    .setStyle(TextInputStyle.Paragraph);
-
-                // Add inputs to the modal
-                modal.addComponents(
-                    new ActionRowBuilder().addComponents(titleInput),
-                    new ActionRowBuilder().addComponents(descriptionInput)
-                );
-
-                // Show the modal to the user.
-                return await interaction.showModal(modal);
-            }
-
-            // Handle user registering for competition.
-            if (interaction.customId === 'register_competition') {
-                // TODO: Limit to 100 entrants.
-                // MAX_ENTRANTS
-                return await interaction.reply({ content: 'REGISTER_COMPETITION', ephemeral: true });
-            }
-
-            // Handle finalising the results.
-            if (interaction.customId === 'end_competition') {
-                return await interaction.reply({ content: 'END_COMPETITION', ephemeral: true });
-            }
-        } catch(e) {
-            console.error(e);
-            console.log('Error handling competition interaction.');
-        }
-    };
-
     // Calculate the votes present on a competition entry.
     static async countVotes(entry) {
         try {
@@ -468,28 +457,6 @@ export default class CompetitionHelper {
 
         } catch(e) {
             return 0;
-        }
-    };
-
-    static async onChannelUpdate(chanUpdate) {
-        // Ensure it's a competition channel.
-        if (!this.isCompChannel(chanUpdate.id)) return false;
-
-        // Make sure to request the most up to date channel data.
-        const freshChan = await chanUpdate.fetch();
-
-        // Figure out which competition it is from the ID.
-        const fmtCompCode = CHANNELS.formatIDName(chanUpdate.id);
-
-        // Get the new title and description.
-        if (freshChan.topic) {
-            const topicParts = freshChan.topic.split('\n');
-            const title = topicParts[0];
-            const description = topicParts.slice(1).join('\n');
-    
-            // Store it in the database to make viewable from the website?
-            await Competition.setTitle(fmtCompCode, title);
-            await Competition.setDescription(fmtCompCode, description);
         }
     };
 

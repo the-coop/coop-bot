@@ -10,7 +10,7 @@ import ChestPopMinigame from '../../minigames/small/chestpop.mjs';
 
 export default class InteractionHelper {
 
-    static async onInteract(interaction) {
+    static async _onInteract(interaction) {
         const infoChannel = interaction.channelId === CHANNELS.TALK.id;
         if (infoChannel && interaction.customId === 'login') {
             const link = await AccessCodes._createLink(interaction.user.id);

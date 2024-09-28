@@ -48,7 +48,7 @@ export default async () => {
     // Channel modification interceptors.
     client.on('channelUpdate', chanUpdate => {
         // Persist competition channel topic title and topic descriotion.
-        CompetitionHelper.onChannelUpdate(chanUpdate);
+        // CompetitionHelper.onChannelUpdate(chanUpdate);
 
         // Persist project channel topic title and topic descriotion.
         ProjectsHelper.onChannelUpdate(chanUpdate);
