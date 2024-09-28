@@ -6,6 +6,7 @@ import TradingHelper from '../../minigames/medium/economy/items/tradingHelper.mj
 import AccessCodes from 'coop-shared/services/access-codes.mjs';
 import CompetitionHelper from '../../social/competitionHelper.mjs';
 import MiningMinigame from '../../minigames/small/mining.mjs';
+import ChestPopMinigame from '../../minigames/small/chestpop.mjs';
 
 export default class InteractionHelper {
 
@@ -25,6 +26,10 @@ export default class InteractionHelper {
         // Add woodcutting/mining and new interaction handlers.
         WoodcuttingMinigame.onInteraction(interaction);
         MiningMinigame.onInteraction(interaction);
+<<<<<<< HEAD
+=======
+        ChestPopMinigame.onInteraction(interaction);
+>>>>>>> 53cea36de74ecc306bb1facaca86206a0c7a9b64
     };
 
     static confirm(interaction, texts) {
