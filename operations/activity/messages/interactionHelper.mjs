@@ -7,15 +7,13 @@ import AccessCodes from 'coop-shared/services/access-codes.mjs';
 import CompetitionHelper from '../../social/competitionHelper.mjs';
 import MiningMinigame from '../../minigames/small/mining.mjs';
 import ChestPopMinigame from '../../minigames/small/chestpop.mjs';
+import UsersHelper from '../../members/usersHelper.mjs';
 
 export default class InteractionHelper {
 
     static async _onInteract(interaction) {
-        const infoChannel = interaction.channelId === CHANNELS.TALK.id;
-        if (infoChannel && interaction.customId === 'login') {
-            const link = await AccessCodes._createLink(interaction.user.id);
-            return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
-        }
+        // Login button handler.
+        UsersHelper.onInteraction(interaction);
 
         // Handle competition buttons and modal.
         CompetitionHelper.onInteraction(interaction);

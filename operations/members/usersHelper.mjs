@@ -8,6 +8,7 @@ import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 
 // import RedemptionHelper from "./redemption/redemptionHelper.mjs";
 import UserRoles from "coop-shared/services/userRoles.mjs";
+import AccessCodes from 'coop-shared/services/access-codes.mjs';
 
 export default class UsersHelper {
 
@@ -404,7 +405,7 @@ export default class UsersHelper {
                 console.error(e);
             }
         });
-    }
+    };
 
     static async updateSavedIntros() {
         const savedUsers = await this.load();
@@ -431,5 +432,18 @@ export default class UsersHelper {
         }));
 
         return result;
-    }
-}
+    };
+
+
+    // Login button handler.
+    static async onInteraction(interaction) {
+        const buttonChannel = interaction.channelId === CHANNELS.TALK.id;
+        if (!buttonChannel || interaction.customId === 'login') return false;
+
+        // Create an access code to login and show the user.
+        const link = await AccessCodes._createLink(interaction.user.id);
+        return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
+    };
+
+
+};

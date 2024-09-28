@@ -9,6 +9,7 @@ import Database from 'coop-shared/setup/database.mjs';
 // import VisualisationHelper from './minigames/medium/conquest/visualisationHelper.mjs';
 
 import ActivityHelper from './activity/activityHelper.mjs';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 
 
@@ -144,7 +145,17 @@ export default class Chicken {
                 // `Add commands usage stats`;
 
             await CHANNELS._getCode('TALK').send('https://cdn.discordapp.com/attachments/723660447508725806/1056735020036935760/new-coop-day.png');
-            CHANNELS._getCode('TALK').send(newDayMessage);
+            const newDayMsg = await CHANNELS._getCode('TALK').send({
+                content: newDayMessage,
+                components: [
+                    new ActionRowBuilder().addComponents(
+                        new ButtonBuilder()
+                            .setCustomId('login')
+                            .setLabel('Login')
+                            .setStyle(ButtonStyle.Secondary)
+                    )
+                ]
+            });
 
             // Update the current day record.
             await this.setConfig('current_day', '' + TIME._secs());

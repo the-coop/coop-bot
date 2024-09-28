@@ -30,16 +30,12 @@ export default class CompetitionHelper {
             // Ensure it's a competition channel.
             if (!this.isCompChannel(interaction.channelId)) return;
 
-            // TODO: Need to get the competition_form modal submission too.
-
             // Whitelist used buttons.
             if (!['setup_competition', 'end_competition', 'competition_form'].includes(interaction?.customId))
                 return;
             
-            console.log('competition interaction');
-
-            // TODO: Need to guard to leaders/commander
-
+            // TODO: Guard to member's role
+            
             // const member = await USERS._fetch(user.id);
             // if (!ROLES._has(member, 'COMMANDER') && !ROLES._has(member, 'LEADER'))
 
