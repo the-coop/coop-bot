@@ -35,9 +35,7 @@ export default class CompetitionHelper {
                 return;
             
             // TODO: Guard to member's role
-            
-            // const member = await USERS._fetch(user.id);
-            // if (!ROLES._has(member, 'COMMANDER') && !ROLES._has(member, 'LEADER'))
+            console.log(interaction.userId, ROLES._has(interaction.userId, 'MEMBER'));
 
             // Find competition code from channelID.
             const code = CHANNELS.idToCode(interaction.channelId);
@@ -181,7 +179,8 @@ export default class CompetitionHelper {
         // Set competition is not active.
         await EventsHelper.setActive(competionCode, false);
     };
-
+    
+    // Displays required fields for competition information.
     static async setup(code, interaction) {
         const fmtCode = _fmt(code);
         const fmtTitle = fmtCode.charAt(0).toUpperCase() + fmtCode.slice(1);
@@ -212,33 +211,29 @@ export default class CompetitionHelper {
         return await interaction.showModal(modal);
     };
 
+    // Set the title and description and start competition if needed.
     static async configure(code, interaction) {
-        // If not started, configure and start it.
-        // If started, just change the title/description.
-        // TODO: Check if competition active
-        // TODO: Otherwise launch
-        // await this.launch();
-
+        // Extract values from setup modal form.
         const title = interaction.fields.getTextInputValue('competition_title');
         const description = interaction.fields.getTextInputValue('competition_description');
-
-        const fmtCode = _fmt(code);
 
         // TODO: 
         console.log('Should setup competition.');
         console.log(title, description);
 
-
         //         await Competition.setTitle(fmtCompCode, title);
         //         await Competition.setDescription(fmtCompCode, description);
 
-        // await this.configure(code, title, description);
+        // TODO: Check if competition active
+        // TODO: Otherwise launch
+        // await this.launch();
 
-        // Starting the competition assumes the message was already created.
+        // The button message exists since this was triggered.
         // Clear the previous entrants now
 
         // TODO: Add the register button
 
+        const fmtCode = _fmt(code);
         return await interaction.reply({ content: `Starting ${fmtCode}: ${title}.`, ephemeral: true });
     };
 

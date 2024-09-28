@@ -113,36 +113,16 @@ export default class Chicken {
 
             // Check the most important things at the beginning of a new day.
             ElectionHelper.checkProgress();
-            
-
 
             // Send the conquest visuals!
             // await VisualisationHelper.record("https://www.thecoop.group/conquest/world");
             // CHANNELS._getCode('TALK').send(newDayText, new MessageAttachment('/tmp/video.webm'));
             // + new AttachmentBuilder(buffer, { name: 'image.png' });
 
-            const txsPrevDay = await this.getTransactionsPreviousDay();
-            const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
+            // const txsPrevDay = await this.getTransactionsPreviousDay();
+            // const summarisedTxs = ActivityHelper.summariseTransactions(txsPrevDay);
 
-            const newDayMessage = `${ROLES._textRef('NEW_COOP_DAY')}\n\n` +
-
-                `__**Egghunt past 24hr:**__\n` +
-                    Object.keys(summarisedTxs.egghunt.collected)
-                    .filter(eggCode => summarisedTxs.egghunt.collected[eggCode] > 0)
-                    .map(eggCode => {
-                        const count = summarisedTxs.egghunt.collected[eggCode];
-                        return `${MESSAGES.emojiCodeText(eggCode)} ${eggCode} x ${count}`;
-                    }).join('\n');
-
-                // const txs = await this.getTransactionsPreviousDay();
-                // console.log(txs);
-                // console.log('Previous is the txs for previous day.')
-                // console.log('Show above transactions in the right channel formatted');
-
-                // Parse this economy information - started somewhere already.
-
-                // `__Command usage__\n` +
-                // `Add commands usage stats`;
+            const newDayMessage = `${ROLES._textRef('NEW_COOP_DAY')}\n\n`
 
             await CHANNELS._getCode('TALK').send('https://cdn.discordapp.com/attachments/723660447508725806/1056735020036935760/new-coop-day.png');
             const newDayMsg = await CHANNELS._getCode('TALK').send({

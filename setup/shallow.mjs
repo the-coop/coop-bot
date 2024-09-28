@@ -61,6 +61,25 @@ const shallowBot = async () => {
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
+
+        CompetitionHelper.configure('art_competition', undefined);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // MiningMinigame.run();
 
         // Items.add('238043760766877697', 'PICK_AXE', 5);
