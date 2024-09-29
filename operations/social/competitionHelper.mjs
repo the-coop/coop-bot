@@ -30,7 +30,7 @@ export default class CompetitionHelper {
                 return;
             
             // Guard to member role.
-            const member = USERS._fetch(interaction.userId);
+            const member = await USERS._fetch(interaction.userId);
             if (!ROLES._has(member, 'MEMBER'))
                 return await interaction.reply({ content: `Only members can use competition features.`, ephemeral: true });
 
