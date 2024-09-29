@@ -299,7 +299,7 @@ export default class CompetitionHelper {
         
         // Format message for active competitions.
         // TODO: Add number registered after in progress (5 registered example)
-        if (comp.active) content = `# **🏆 ${title} 🏆**\n` +
+        if (comp.active) content = `# **🏆 ${comp.title} 🏆**\n` +
             `## ${comp.description}\n` +
             progress.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
 
