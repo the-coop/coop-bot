@@ -281,7 +281,7 @@ export default class CompetitionHelper {
         progress.entries.sort((a, b) => a.votes > b.votes);
 
         // Add details on how to join the competition 
-        const pingableRoleText = ROLES._textRef(COMPETITION_ROLES[comp.code.toUpperCase()]);
+        const pingableRoleText = ROLES._textRef(COMPETITION_ROLES[comp.event_code.toUpperCase()]);
 
         // Format the message for the competition summary message.
         // TODO: Add number registered after in progress (5 registered example)
@@ -293,7 +293,7 @@ export default class CompetitionHelper {
                 `<@${e.entrant_id}> - ${e.votes} vote(s)`
             )).join('\n') +
 
-            `_Join the ${_fmt(comp.code)} now by pressing the register buttoon 📋!_`;
+            `_Join the ${_fmt(comp.event_code)} now by pressing the register buttoon 📋!_`;
 
         // Only inactive competitions need the buttons adding.
         const components = comp.active ? {} : { 
