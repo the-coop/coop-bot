@@ -34,8 +34,7 @@ export default class CompetitionHelper {
                 return await interaction.reply({ content: `Only members can use competition features.`, ephemeral: true });
 
             // Find competition code from channelID.
-            const code = CHANNELS.idToCode(interaction.channelId);
-            console.log(code);
+            const code = CHANNELS.idToCode(interaction.channelId).toLowerCase();
 
             // Handle setup competition button.
             if (interaction.customId === 'setup_competition')
