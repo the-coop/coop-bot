@@ -66,13 +66,13 @@ const shallowBot = async () => {
 
 
 
-        const member = await USERS._fetch('786671654721683517');
-        console.log(member);
-        console.log(ROLES._has(member, 'MEMBER'));
+        // const member = await USERS._fetch('786671654721683517');
+        // console.log(member);
+        // console.log(ROLES._has(member, 'MEMBER'));
 
 
 
-
+        listenInteractions(ev => console.log(ev));
 
 
 

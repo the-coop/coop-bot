@@ -30,12 +30,12 @@ export default class CompetitionHelper {
                 return;
             
             // Guard to member role.
-            const member = await USERS._fetch(interaction.user.id);
-            if (!ROLES._has(member, 'MEMBER'))
+            if (!ROLES._has(interaction.member, 'MEMBER'))
                 return await interaction.reply({ content: `Only members can use competition features.`, ephemeral: true });
 
             // Find competition code from channelID.
             const code = CHANNELS.idToCode(interaction.channelId);
+            console.log(code);
 
             // Handle setup competition button.
             if (interaction.customId === 'setup_competition')
@@ -184,7 +184,9 @@ export default class CompetitionHelper {
     // Displays required fields for competition information.
     static async setup(code, interaction) {
         // Check if competition already active and they are the organiser interaction.user.id
+        console.log(code);
         const comp = await Competition.get(code);
+        console.log(comp);
         if (comp.active && comp.organiser !== interaction.user.id)
             return await interaction.reply({ content: `Only the organisar can edit the competition.`, ephemeral: true });
 
