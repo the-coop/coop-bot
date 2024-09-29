@@ -26,14 +26,14 @@ export default class ItemsHelper {
 
         // Return matches as canonical item codes
         return matches.map(x => x.replace(/\s/g, '_'));
-    }
+    };
 
     static beautifyItemCode(itemCode) {
         const lowerName = itemCode.replace("_", " ").toLowerCase();
         const nameCapitalized = lowerName.charAt(0).toUpperCase() + lowerName.slice(1);
         const emoji = COOP.MESSAGES.emojifyID(EMOJIS[itemCode]);
         return emoji + " " + nameCapitalized + " ";
-    }
+    };
 
     static async getTransactionsSince(secs) {
         const since = TIME._secs() - secs;
@@ -43,7 +43,7 @@ export default class ItemsHelper {
         };  
         const result = await DatabaseHelper.manyQuery(query);
         return result;
-    }
+    };
 
     static async getTransactions(limit = 100) {
         const query = {
@@ -54,7 +54,7 @@ export default class ItemsHelper {
 
         const result = await DatabaseHelper.manyQuery(query);
         return result;
-    }
+    };
 
     static async getAllItemOwners(itemCode) {
         const query = {
@@ -64,7 +64,7 @@ export default class ItemsHelper {
         };
 
         return DatabaseHelper.many(await Database.query(query));
-    }
+    };
     
     static async getUserItems(userID) {
         const query = {
@@ -74,19 +74,19 @@ export default class ItemsHelper {
         };
 
         return DatabaseHelper.many(await Database.query(query));
-    }
+    };
 
     static async perBeakRelativePrice(code, percPrice, min = 0.01) {
         const avg = await this.perBeak(code);
 		const price = Math.max(min, (avg * percPrice).toFixed(2));
         return price;
-    }
+    };
     
     static async perBeak(itemCode) {
         const userCount = SERVER._coop().memberCount || 0;
         const total = await Items.count(itemCode);
         return total / userCount;
-    }
+    };
 
     static async read(userID, itemCode) {
         const query = {
@@ -95,7 +95,7 @@ export default class ItemsHelper {
             values: [userID, itemCode]
         };
         return await Database.query(query);
-    }
+    };
 
     static async update(userID, itemCode, quantity) {
         const query = {
@@ -105,7 +105,7 @@ export default class ItemsHelper {
             values: [userID, itemCode, quantity]
         };
         return await Database.query(query);
-    }
+    };
     
     static formItemDropText(user, items) {
         let itemDisplayMsg = `${user.username}'s items:`;
@@ -116,11 +116,11 @@ export default class ItemsHelper {
             itemDisplayMsg += itemText;
         });
         return itemDisplayMsg;
-    }
+    };
 
     static escCode(itemCode) {
         return `**${itemCode.replace('_', '\\_')}**`;
-    }
+    };
 
     static parseFromStr(str) {
         let match = null;
@@ -154,19 +154,19 @@ export default class ItemsHelper {
     
     static itemEmojiQtyStr(itemCode, itemQty = 1) {
         return `${COOP.MESSAGES.emojiCodeText(itemCode)}x${itemQty}`;
-    }
+    };
 
     static gainItemQtyStr(itemCode, itemQty = 1) {
         return `:arrow_right: ${this.itemEmojiQtyStr(itemCode, itemQty)}`;
-    }
+    };
 
     static lossItemQtyStr(itemCode, itemQty = 1) {
         return `:arrow_left: ${this.itemEmojiQtyStr(itemCode, itemQty)}`;
-    }
+    };
 
     static exchangeItemsQtysStr(lossItem, lossQty, gainItem, gainQty) {
         return `${this.lossItemQtyStr(lossItem, lossQty)} ${this.gainItemQtyStr(gainItem, gainQty)}`;
-    }
+    };
 
     static emojiToItemCode(emoji) {
         let itemCode = null;
@@ -174,7 +174,7 @@ export default class ItemsHelper {
             if (EMOJIS[emojiName] === emoji) itemCode = emojiName;
         });
         return itemCode;
-    }
+    };
 
     // Try to parse item codes.
     static interpretItemCodeArg(text = '') {
@@ -193,7 +193,7 @@ export default class ItemsHelper {
         if (rawToItem) itemCode = rawToItem;
 
         return itemCode;
-    }
+    };
 
     // Get the total count of user's items.
     static async getUserTotal(id) {
@@ -212,11 +212,11 @@ export default class ItemsHelper {
         if (userItemsSum) total = userItemsSum.total;
 
         return total;
-    }
+    };
 
     static codeToFlake(code) {
         return EMOJIS[code] || null;
-    }
+    };
 
     static async getRichest() {
         return await DatabaseHelper.singleQuery({
@@ -225,7 +225,7 @@ export default class ItemsHelper {
                 WHERE item_code = 'GOLD_COIN'
                 GROUP BY owner_id ORDER BY total DESC LIMIT 1`
         });
-    }
+    };
 
 
     // Calculating person with most items and rewarding them.
@@ -267,7 +267,7 @@ export default class ItemsHelper {
             successText += ` Given RICHEST reward role and 100 points (${pointsAfter})!`;
             COOP.CHANNELS._send('TALK', successText);
         }
-    }
+    };
 
     // Calculating person with most items and rewarding them.
     static async getBiggestWhale() {
@@ -281,7 +281,7 @@ export default class ItemsHelper {
         const mostItems = DatabaseHelper.single(result);
 
         return mostItems;
-    }
+    };
 
 
     // Calculating person with most items and rewarding them.
@@ -323,7 +323,7 @@ export default class ItemsHelper {
             successText += ` Given MOST ITEMS reward role and 50 points (${pointsAfter})!`;
             COOP.CHANNELS._send('TALK', successText);
         }
-    }
+    };
 
 
     // Drop an item.
@@ -341,14 +341,14 @@ export default class ItemsHelper {
         // Only mark it as dropped if not specified otherwise.
         if (!unmarked)
             COOP.MESSAGES.delayReact(msgRef, RAW_EMOJIS.DROPPED, 333);
-    }
+    };
 
     // Round in a way that works for display.
     static displayQty(num) {
         const rounded = Math.round((num + Number.EPSILON) * 100) / 100;
         const noZeroes = rounded.toString();
         return noZeroes;
-    }
+    };
 
 
-}
+};

@@ -217,15 +217,20 @@ export default class CompetitionHelper {
         const title = interaction.fields.getTextInputValue('competition_title');
         const description = interaction.fields.getTextInputValue('competition_description');
 
+        // Load competition.
+        const comp = await Competition.get(code);
+
         // Update the competition data based on inputs
         await Competition.setTitle(code, title);
         await Competition.setDescription(code, description);
 
+        // Update information since it's passed to sync method.
+        comp.title = title;
+        comp.description = description;
+
         console.log('Should setup competition.');
         console.log(title, description);
-
         // Decide whether to start the competition or edit.
-        const comp = await Competition.get(code);
         if (!comp.active) {
             // Clear the previous competition entrants.
             await Competition.clearEntrants(code);
@@ -286,8 +291,8 @@ export default class CompetitionHelper {
         // Format the message for the competition summary message.
         // TODO: Add number registered after in progress (5 registered example)
         const content = `**🏆 ${pingableRoleText} competition in progress! 🏆**\n\n` +
-            `${title}\n` +
-            `${description}\n` +
+            `${comp.title}\n` +
+            `${comp.description}\n` +
 
             progress.entries.map(e => (
                 `<@${e.entrant_id}> - ${e.votes} vote(s)`
