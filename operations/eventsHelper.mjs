@@ -1,6 +1,6 @@
 import db from "coop-shared/helper/databaseHelper.mjs";
 import STATE from "../state.mjs";
-    
+
 export const numberEnding = number => (number > 1) ? 's' : '';
 
 export default class EventsHelper {
@@ -25,7 +25,7 @@ export default class EventsHelper {
 
     static async setOrganiser(code, organiser) {
         return await db._sq({
-            name: "set-event-status",
+            name: "set-event-organiser",
             text: 'UPDATE events SET organiser = $2 WHERE event_code = $1',
             values: [code, organiser]
         });

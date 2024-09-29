@@ -66,7 +66,7 @@ const shallowBot = async () => {
         // CompetitionHelper.configure('art_competition', undefined);
 
 
-        ChestPopMinigame.run();
+        // ChestPopMinigame.run();
 
         // const member = await USERS._fetch('786671654721683517');
         // console.log(member);
@@ -74,7 +74,7 @@ const shallowBot = async () => {
 
 
 
-        listenInteractions(ev => console.log(ev));
+        // listenInteractions(ev => console.log(ev));
 
 
 
