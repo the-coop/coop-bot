@@ -1,6 +1,6 @@
 import Items from 'coop-shared/services/items.mjs';
 import { CHANNELS as CHANNELS_CONFIG } from "coop-shared/config.mjs";
-import { STATE, CHANNELS, MESSAGES, USERS, ROLES, REACTIONS, TIME, ITEMS, SERVER } from "../../coop.mjs";
+import { STATE, CHANNELS, MESSAGES, USERS, ROLES } from "../../coop.mjs";
 
 import EventsHelper from "../eventsHelper.mjs";
 import DropTable from '../minigames/medium/economy/items/droptable.mjs';
@@ -30,7 +30,7 @@ export default class CompetitionHelper {
                 return;
             
             // Guard to member role.
-            const member = await USERS._fetch(interaction.userId);
+            const member = await USERS._fetch(interaction.user.id);
             if (!ROLES._has(member, 'MEMBER'))
                 return await interaction.reply({ content: `Only members can use competition features.`, ephemeral: true });
 
@@ -66,7 +66,7 @@ export default class CompetitionHelper {
         const channel = CHANNELS._getCode(code.toUpperCase());
 
         // Ensure only organiser can end it.
-        if (comp.organiser !== interaction.userId)
+        if (comp.organiser !== interaction.user.id)
             return await interaction.reply({ content: `Only the organisar can end the competition.`, ephemeral: true });
 
         // Calculate the winner by votes.
@@ -183,9 +183,9 @@ export default class CompetitionHelper {
     
     // Displays required fields for competition information.
     static async setup(code, interaction) {
-        // Check if competition already active and they are the organiser interaction.userId
+        // Check if competition already active and they are the organiser interaction.user.id
         const comp = await Competition.get(code);
-        if (comp.active && comp.organiser !== interaction.userId)
+        if (comp.active && comp.organiser !== interaction.user.id)
             return await interaction.reply({ content: `Only the organisar can edit the competition.`, ephemeral: true });
 
         // Format competition info for form display.
@@ -233,7 +233,7 @@ export default class CompetitionHelper {
             await EventsHelper.setActive(code, true);
 
             // Explicitly declare event started.
-            await EventsHelper.setOrganiser(code, interaction.userId);
+            await EventsHelper.setOrganiser(code, interaction.user.id);
         }
 
         // Update the competition summary.
@@ -251,15 +251,15 @@ export default class CompetitionHelper {
             return await interaction.reply({ content: `${entrants.length}/${MAX_ENTRANTS} registered, please try again next time.`, ephemeral: true });
 
         // Check not already registered on this competition.
-        const entrant = await Competition.loadEntrant(code, interaction.userId);
+        const entrant = await Competition.loadEntrant(code, interaction.user.id);
         if (entrant)
             return await interaction.reply({ content: `You're already registered to the ${_fmt(code)}.`, ephemeral: true });
 
         // Store in database table for competition.
-        await Competition.saveEntrant(code, interaction.userId);
+        await Competition.saveEntrant(code, interaction.user.id);
 
         // Publicly announce to bring attention to competition.
-        const registerCompMsgText = `📋 <@${interaction.userId}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`;
+        const registerCompMsgText = `📋 <@${interaction.user.id}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`;
         await CHANNELS._send('TALK', registerCompMsgText, {});
 
         // Update the competition messages

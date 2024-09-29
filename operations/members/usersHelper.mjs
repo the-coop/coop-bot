@@ -47,7 +47,7 @@ export default class UsersHelper {
         };
         const result = await Database.query(query);        
         return DatabaseHelper.many(result);
-    }
+    };
 
     static getMemberByID = (guild, id) => guild.members.cache.get(id);
 
@@ -69,7 +69,7 @@ export default class UsersHelper {
 
     static count(guild, includeCooper = false) {
         return guild.memberCount - (includeCooper ? 0 : 1);
-    }
+    };
 
     static directMSG = (guild, userID, msg) => {
         const member = USERS.getMemberByID(guild, userID);
@@ -109,11 +109,11 @@ export default class UsersHelper {
             const isOnline = member.presence.status === 'online';
             return matchingRoles && isOnline;
         });
-    }
+    };
 
     static getMembersByRoleID(guild, roleID) {
         return guild.members.cache.filter(member => member.roles.cache.has(roleID));
-    }
+    };
 
     static async removeFromDatabase(member) {
         console.log('Member removed', member.user.username, member.user.id);
@@ -123,7 +123,7 @@ export default class UsersHelper {
             values: [member.user.id]
         };
         return await Database.query(query);
-    }
+    };
 
     static async addToDatabase(userID, username, joindate, intro_time = null, intro_link = null, intro_content = null) {
         const query = {
@@ -132,7 +132,7 @@ export default class UsersHelper {
             values: [userID, username, joindate, intro_time, intro_link, intro_content]
         };
         return await Database.query(query);
-    }
+    };
 
     static async setIntro(userID, introContent, link, time) {
         const query = {
@@ -141,7 +141,7 @@ export default class UsersHelper {
             values: [time, link, introContent, userID],
         };
         return await Database.query(query);
-    }
+    };
 
     static async load() {
         const query = {
@@ -150,7 +150,7 @@ export default class UsersHelper {
         };
         const result = await Database.query(query);        
         return DatabaseHelper.many(result);
-    }
+    };
 
     static async loadSortedHistoricalPoints(offset = 0, limit = 15) {
         const query = {
@@ -168,7 +168,7 @@ export default class UsersHelper {
         const rows = DatabaseHelper.many(result);
 
         return rows;
-    }
+    };
 
     static async updateField(id, field, value) {
         const query = {
@@ -176,7 +176,7 @@ export default class UsersHelper {
             values: [value, id]
         };
         return await Database.query(query);
-    }
+    };
 
     static async getField(id, field) {
         try {
@@ -196,11 +196,11 @@ export default class UsersHelper {
             console.log('getField error ' + field);
             console.error(e);
         }
-    }
+    };
 
     static _id2username(id) {
         return this._get(id).user.username;
-    }
+    };
     
     static async loadSingle(id) {
         const query = {
@@ -211,18 +211,18 @@ export default class UsersHelper {
 
         const result = await Database.query(query);
         return DatabaseHelper.single(result);
-    }
+    };
     
     static async isRegistered(discordID) {
         return !!(await this.loadSingle(discordID));
-    }
+    };
 
     static async random() {
         const membersManager = SERVER._coop().members;
         const randomUser = await this._random();
         const member = await membersManager.fetch(randomUser.discord_id);
         return member;
-    }
+    };
 
     static async _random() {
         const query = {
@@ -231,15 +231,15 @@ export default class UsersHelper {
         };
         const result = DatabaseHelper.single(await Database.query(query));
         return result;
-    }
+    };
 
     static isCooper(id) {
         return STATE.CLIENT.user.id === id;
-    }
+    };
 
     static isCooperMsg(msg) {
         return this.isCooper(msg.author.id);
-    }
+    };
 
     static async getIntro(member) {
         const query = {
@@ -250,7 +250,7 @@ export default class UsersHelper {
         
         const result = await Database.query(query);
         return DatabaseHelper.single(result);
-    }
+    };
     
     static async getLastUser() {
         const query = {
@@ -259,7 +259,7 @@ export default class UsersHelper {
         };
         const result = await Database.query(query);
         return DatabaseHelper.single(result);
-    }
+    };
 
     static getHierarchy() {
         const guild = SERVER._coop();
@@ -268,7 +268,7 @@ export default class UsersHelper {
             leaders: this.getMembersByRoleID(guild, ROLES_CONFIG.LEADER.id),
             memberCount: guild.memberCount
         };
-    }
+    };
 
     static async cleanupUsers() {
         const allUsers = await this.load();
@@ -344,7 +344,7 @@ export default class UsersHelper {
             // if (!member.user.bot)
                 // RedemptionHelper.handleNewbOutstayedWelcome(member);
         });
-    }
+    };
 
     static async syncRoles(discordID) {
         const tracked = Object.keys(ROLES_CONFIG).map(roleKey => ROLES_CONFIG[roleKey].id);
@@ -368,7 +368,7 @@ export default class UsersHelper {
             if (!ROLES._has(member, code))
                 ROLES._add(discordID, code);
         });
-    }
+    };
 
     static async register(id, username, joinedTimestamp) {
         // Insert and respond to successful/failed insertion.
@@ -377,7 +377,7 @@ export default class UsersHelper {
             CHANNELS._send('ACTIONS',`${username} is officially recognised by The Coop ${MESSAGES.emojiCodeText('COOP')}!`);
         else
             CHANNELS._send('TALK',`<@${id}> failed to be recognised by The Coop ${MESSAGES.emojiCodeText('COOP')}...?`);
-    }
+    };
 
     static async populateUsers() {
         // Load all recognised users.

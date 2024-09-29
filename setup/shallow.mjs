@@ -4,7 +4,7 @@ dotenv.config();
 import _ from 'lodash';
 import { GatewayIntentBits, Client, time, ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionsBitField } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
-import { CHANNELS, MESSAGES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
+import { CHANNELS, MESSAGES, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
 import CompetitionHelper from '../operations/social/competitionHelper.mjs';
@@ -62,11 +62,13 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
 
-        CompetitionHelper.configure('art_competition', undefined);
+        // CompetitionHelper.configure('art_competition', undefined);
 
 
 
-
+        const member = await USERS._fetch('786671654721683517');
+        console.log(member);
+        console.log(ROLES._has(member, 'MEMBER'));
 
 
 
