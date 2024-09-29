@@ -1,81 +1,59 @@
 import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
-import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 import DropTable from "../medium/economy/items/droptable.mjs";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import EconomyNotifications from '../../activity/information/economyNotifications.mjs';
 
 export default class ChestPopMinigame {
     
     // Reaction interceptor to check if user is attempting to interact.
     static async onInteraction(interaction) {
-        const { message, channel, user } = interaction;
-
         // Chest Pop minigame guards.
-        const isCooperMsg = USERS.isCooperMsg(message);
-        if (!isCooperMsg) return false;
-        
-        // Check this message content is correct and from cooper.
-        const msgContent = message.content;
-        const isChestPopMsg = msgContent.includes("ChestPop?");
-        if (!isChestPopMsg) return false;
-        const isInteractionButton = interaction.customId === "open_chest";
-        if (!isInteractButton) return false;
+        if (!USERS.isCooperMsg(interaction.message)) return false;
+        if (interaction.customId !== "open_chest") return false;
 
         // Allow user the open the chest.
-        this.open(message, channel, user, interaction);
+        this.open(interaction);
     };
 
-    static async open(msg, channel, user, interaction) {
-
-        // Check if has a key
-        const userKeysNum = await Items.getUserItemQty(user.id, 'KEY');
-        const noText = `${user.username} tried to open the chest, but doesn't have a key.`;
-        if (userKeysNum <= 0) {
-            await interaction.reply({ content: noText, ephemeral: true });
-            return MESSAGES.silentSelfDestruct(msg, noText, 0, 3333);
-        }
-
-        const keyBreakPerc = 15;
-        const didBreak = STATE.CHANCE.bool({ likelihood: keyBreakPerc });
-        if (didBreak) {
-            const keyUpdate = await Useable.use(user.id, 'KEY', 1);
-            if (keyUpdate) {
-                const actionText = `${user.username} broke a key while trying to open a chest, ${userKeysNum - 1} remaining!`;
-                return await interaction.reply({ content: actionText, ephemeral: true });
-            }
-        } else {
-            // Delete the chestpop message
-            await msg.delete();
-
+    static async open(interaction) {
+        try {
+            // Use a key attempting to open the chest.
+            const paid = await Useable.use(interaction.user.id, 'KEY', 1);
+            if (!paid) return await interaction.reply({ content: 'You have no keys.', ephemeral: true });
+    
+            // Handle broken key possibility.
+            if (STATE.CHANCE.bool({ likelihood: 15 })) 
+                return await interaction.reply({ content: 'You broke a key attemping to open it.', ephemeral: true });
+    
             // Pick rewards from opening with key
-            const maxRewardAmount = 4;
+            const maxRewardAmount = COOP.STATE.CHANCE.natural({ min: 3, max: 7 });
             const rewardAmount = COOP.STATE.CHANCE.natural({ min: 1, max: maxRewardAmount });
             const drops = DropTable.getRandomWithQtyMany(rewardAmount);
-
-            // Add the items to user
-            await Promise.all(drops.map(drop =>
-                Items.add(user.id, drop.item, drop.qty, 'ChestPop')
-            ));
-
+    
             // Declare feedback.
-            const chestOpenText = `You successfully opened the chest and found the following items\n\n` +
-                drops.map(drop => 
-                    `${COOP.MESSAGES.emojiCodeText(drop.item)}x${drop.qty}`
-                ).join(', ');
-
-            // TODO: Track chestpop drops in economy statistics?
+            const dropsText = drops.map(drop => COOP.MESSAGES.emojiCodeText(drop.item).repeat(drop.qty));
+            await interaction.message.edit(dropsText);
+    
+            // Track chestpop drops in economy statistics.
+            EconomyNotifications.add('CHEST_POP', {
+                loot: drops.length
+            });
                 
             // Show user success message.
-            return await interaction.reply({ content: chestOpenText, ephemeral: true });
+            return await interaction.reply({ content: `You successfully opened the chest.`, ephemeral: true });
+
+        } catch(e) {
+            console.error(e);
+            console.log('Error opening chestpop');
         }
     };
 
     static async run() {
         try {
-            const eventChannel = CHANNELS._randomSpammable();
-            const chestPopMsg = await eventChannel.send('ChestPop? 💰');
-            chestPopMsg.edit({ 
+            const msg = await CHANNELS._randomSpammable().send('ChestPop? 💰');
+            msg.edit({ 
                 components: [
                     new ActionRowBuilder().addComponents([
                         new ButtonBuilder()
@@ -88,7 +66,7 @@ export default class ChestPopMinigame {
             });
 
             // Ensure message is stored in database for clear up.
-            TemporaryMessages.add(chestPopMsg, 30 * 60);
+            TemporaryMessages.add(msg, 30 * 60);
         } catch(e) {
             console.error(e);
             console.log('Chestpop error running.');
