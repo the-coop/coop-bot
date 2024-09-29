@@ -65,10 +65,11 @@ export default class ChestPopMinigame {
         }
     };
 
+    
     static async pickup(interaction) {
         try {
             // Parse first emoji back to item
-            const firstItem = interaction.message.content.match(/(:\w+:)/gm)[0];
+            const firstItem = interaction.message.content.match(/([\p{Emoji}]|:\w+:(\d+)?)/gu)[0];
             // TODO: end minigame if no more items can be picked up
             if (firstItem === null) return await interaction.reply({ content: 'There are no items to be picked up', ephemeral: true });
 
