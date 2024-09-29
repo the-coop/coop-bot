@@ -11,13 +11,13 @@ import Database from 'coop-shared/setup/database.mjs';
 import ActivityHelper from './activity/activityHelper.mjs';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
-
+const OAUTH_LOGIN_URL = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify';
 
 export default class Chicken {
 
     static getDiscordID() {
         return STATE.CLIENT.user.id;
-    }
+    };
 
     static async getConfig(key) {
         let value = null;
@@ -38,7 +38,7 @@ export default class Chicken {
         }
 
         return value;
-    }
+    };
 
     static async getConfigVal(key) {
         let val = null;
@@ -47,7 +47,7 @@ export default class Chicken {
         if (configEntry) val = configEntry.value;
 
         return val;
-    }
+    };
 
     static async setConfig(key, value) {
         const query = {
@@ -62,13 +62,13 @@ export default class Chicken {
         };
         const result = await Database.query(query);
         return result;
-    }
+    };
 
     static async _nextdayis() {
         const remainingMoment = await this._nextdayisMoment();
         const remainingReadable = moment.utc(remainingMoment).format("HH:mm:ss");
         return remainingReadable;
-    }
+    };
 
     static async _nextdayisMoment() {
         const latestSecs = await this.getCurrentDaySecs();
@@ -80,14 +80,14 @@ export default class Chicken {
         const remainingMoment = latestMoment.diff(currentMoment);
 
         return remainingMoment;
-    }
+    };
 
     static async getCurrentDaySecs() {
         let secs = null;
         const currentDaySecs = await this.getConfigVal('current_day');
         if (currentDaySecs) secs = parseInt(currentDaySecs);
         return secs;
-    }
+    };
     
     // TODO: Consider adding observable for checkIfNewDay (provide events)
     static async isNewDay() {
@@ -97,13 +97,13 @@ export default class Chicken {
         const isNewDay = nowSecs >= currentDaySecs + dayDurSecs;
 
         return isNewDay;
-    }
+    };
 
     static async getTransactionsPreviousDay() {
         const twentyFourHourSecs = 86400;
         const txs = await ITEMS.getTransactionsSince(twentyFourHourSecs);
         return txs;
-    }
+    };
 
     static async checkIfNewDay() {
         try {
@@ -132,7 +132,8 @@ export default class Chicken {
                         new ButtonBuilder()
                             .setCustomId('login')
                             .setLabel('Login')
-                            .setStyle(ButtonStyle.Secondary)
+                            .setURL(OAUTH_LOGIN_URL)
+                            .setStyle(ButtonStyle.Link)
                     )
                 ]
             });
@@ -150,6 +151,6 @@ export default class Chicken {
             console.log('New day detection failed.')
             console.error(e);
         }
-    }
+    };
 
-}
+};

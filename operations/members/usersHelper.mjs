@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { SERVER, STATE, CHANNELS, USERS, MESSAGES, ROLES, TIME } from "../../coop.mjs";
-import { ROLES as ROLES_CONFIG } from "coop-shared/config.mjs";
+import { ROLES as ROLES_CONFIG, CHANNELS as CHANNELS_CONFIG } from "coop-shared/config.mjs";
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
@@ -433,17 +433,5 @@ export default class UsersHelper {
 
         return result;
     };
-
-
-    // Login button handler.
-    static async onInteraction(interaction) {
-        const buttonChannel = interaction.channelId === CHANNELS.TALK.id;
-        if (!buttonChannel || interaction.customId === 'login') return false;
-
-        // Create an access code to login and show the user.
-        const link = await AccessCodes._createLink(interaction.user.id);
-        return await interaction.reply({ content: '||' + link + '||', ephemeral: true });
-    };
-
 
 };

@@ -1,20 +1,14 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
-import { CHANNELS } from 'coop-shared/config.mjs';
 
 import WoodcuttingMinigame from '../../minigames/small/woodcutting.mjs';
 import TradingHelper from '../../minigames/medium/economy/items/tradingHelper.mjs';
-import AccessCodes from 'coop-shared/services/access-codes.mjs';
 import CompetitionHelper from '../../social/competitionHelper.mjs';
 import MiningMinigame from '../../minigames/small/mining.mjs';
 import ChestPopMinigame from '../../minigames/small/chestpop.mjs';
-import UsersHelper from '../../members/usersHelper.mjs';
 
 export default class InteractionHelper {
 
-    static async _onInteract(interaction) {
-        // Login button handler.
-        UsersHelper.onInteraction(interaction);
-
+    static async _onInteraction(interaction) {
         // Handle competition buttons and modal.
         CompetitionHelper.onInteraction(interaction);
 
