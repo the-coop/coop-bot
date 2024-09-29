@@ -291,8 +291,7 @@ export default class CompetitionHelper {
 
             progress.entries.map(e => (
                 `<@${e.entrant_id}> - ${e.votes} vote(s)`
-            )).join('\n')
-
+            )).join('\n') +
 
             `_Join the ${_fmt(comp.code)} now by pressing the register buttoon 📋!_`;
 
