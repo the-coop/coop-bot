@@ -17,6 +17,26 @@ export const COMPETITION_ROLES = {
 
 const MAX_ENTRANTS = 100;
 
+const SetupButton = new ActionRowBuilder().addComponents([
+    new ButtonBuilder()
+        .setEmoji('⚙️')
+        .setLabel("Setup")
+        .setCustomId('setup_competition')
+        .setStyle(ButtonStyle.Secondary)
+]);
+
+const RegisterButton = new ButtonBuilder()
+        .setEmoji('📝')
+        .setLabel("Register")
+        .setCustomId('register_competition')
+        .setStyle(ButtonStyle.Success);
+
+const EndButton = new ButtonBuilder()
+        .setEmoji('⏸️')
+        .setLabel("End")
+        .setCustomId('end_competition')
+        .setStyle(ButtonStyle.Danger);
+
 export default class CompetitionHelper {
 
     // Handle all the button interactions, setup, configure, end.
@@ -160,18 +180,7 @@ export default class CompetitionHelper {
         await Competition.setLink(code, null);
 
         // Send the next competition's starting message with setup button.
-        const newCompMsg = await channel.send('Competition ready to be setup and launched.');
-        newCompMsg.edit({
-            components: [
-                new ActionRowBuilder().addComponents([
-                    new ButtonBuilder()
-                        .setEmoji('⚙️')
-                        .setLabel("Setup")
-                        .setCustomId('setup_competition')
-                        .setStyle(ButtonStyle.Secondary)
-                ])
-            ]
-        });
+        await this.sync(comp);
 
         // Update the message link with new one.
         await Competition.setLink(code, MESSAGES.link(newCompMsg));
@@ -285,45 +294,19 @@ export default class CompetitionHelper {
         // Sort the entrants by largest id
         progress.entries.sort((a, b) => a.votes > b.votes);
 
-        // Add details on how to join the competition 
-        const pingableRoleText = ROLES._textRef(COMPETITION_ROLES[comp.event_code.toUpperCase()]);
-
         // Format the message for the competition summary message.
+        let content = 'Competition ready to be setup and launched.';
+        
+        // Format message for active competitions.
         // TODO: Add number registered after in progress (5 registered example)
-        const content = `**🏆 ${pingableRoleText} competition in progress! 🏆**\n\n` +
-            `${comp.title}\n` +
-            `${comp.description}\n` +
-
-            progress.entries.map(e => (
-                `<@${e.entrant_id}> - ${e.votes} vote(s)`
-            )).join('\n') +
-
-            `_Join the ${_fmt(comp.event_code)} now by pressing the register buttoon 📋!_`;
-
-        // Only inactive competitions need the buttons adding.
-        const components = comp.active ? {} : { 
-            components: [
-                // Add button for registering.
-                new ActionRowBuilder().addComponents([
-                    new ButtonBuilder()
-                        .setEmoji('📝')
-                        .setLabel("Register")
-                        .setCustomId('register_competition')
-                        .setStyle(ButtonStyle.Success),
-
-                    // Add button for ending the competition when it's over.
-                    new ButtonBuilder()
-                        .setEmoji('⏸️')
-                        .setLabel("End")
-                        .setCustomId('end_competition')
-                        .setStyle(ButtonStyle.Danger)
-                ])
-            ]
-        };
+        if (comp.active) content = `# **🏆 ${title} 🏆**\n` +
+            `## ${comp.description}\n` +
+            progress.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
 
         // Edit the competition summary message with formatted information.
         const msg = await MESSAGES.getByLink(comp.message_link);
-        msg.edit({ content, ...(comp.active ? {} : components) });
+        const options = { components: [SetupButton, ...( comp.active ? [RegisterButton, EndButton] : [] )] };
+        msg.edit({ content, options });
     };
 
     // Attach the entries and votes to the competition.
@@ -383,6 +366,8 @@ export default class CompetitionHelper {
             return votes;
 
         } catch(e) {
+            console.error(e);
+            console.log('Error counting competition message votes.');
             return 0;
         }
     };
