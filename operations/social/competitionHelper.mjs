@@ -1,13 +1,13 @@
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import Items from 'coop-shared/services/items.mjs';
 import { CHANNELS as CHANNELS_CONFIG } from "coop-shared/config.mjs";
 import { STATE, CHANNELS, MESSAGES, USERS, ROLES } from "../../coop.mjs";
+import { _fmt, _unfmt } from '../channelHelper.mjs';
 
 import EventsHelper from "../eventsHelper.mjs";
-import DropTable from '../minigames/medium/economy/items/droptable.mjs';
-
 import Competition from './competition/competition.mjs';
-import { _fmt, _unfmt } from '../channelHelper.mjs';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+
+import DropTable from '../minigames/medium/economy/items/droptable.mjs';
 
 export const COMPETITION_ROLES = {
     TECHNOLOGY_COMPETITION: 'TECH',
@@ -192,9 +192,7 @@ export default class CompetitionHelper {
     // Displays required fields for competition information.
     static async setup(code, interaction) {
         // Check if competition already active and they are the organiser interaction.user.id
-        console.log(code);
         const comp = await Competition.get(code);
-        console.log(comp);
         if (comp.active && comp.organiser !== interaction.user.id)
             return await interaction.reply({ content: `Only the organisar can edit the competition.`, ephemeral: true });
 
@@ -237,8 +235,6 @@ export default class CompetitionHelper {
         comp.title = title;
         comp.description = description;
 
-        console.log('Should setup competition.');
-        console.log(title, description);
         // Decide whether to start the competition or edit.
         if (!comp.active) {
             // Clear the previous competition entrants.
@@ -250,6 +246,8 @@ export default class CompetitionHelper {
             // Explicitly declare event started.
             await EventsHelper.setOrganiser(code, interaction.user.id);
         }
+
+        console.log(comp);
 
         // Update the competition summary.
         await this.sync(comp);
@@ -285,9 +283,6 @@ export default class CompetitionHelper {
 
     // Ensure the competition summary messages stay up to date.
     static async sync(comp) {
-        // Nothing to check with inactive competitions.
-        if (!comp.active) return;
-
         // Check the competition.
         const progress = await this.attachSubmissions(comp);
 
@@ -296,11 +291,15 @@ export default class CompetitionHelper {
 
         // Format the message for the competition summary message.
         let content = 'Competition ready to be setup and launched.';
+
+        // TODO: If no submissions show registration information
+        // TODO: If submissions start to show voting information
         
         // Format message for active competitions.
         // TODO: Add number registered after in progress (5 registered example)
         if (comp.active) content = `# **🏆 ${comp.title} 🏆**\n` +
             `## ${comp.description}\n` +
+
             progress.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
 
         // Edit the competition summary message with formatted information.
