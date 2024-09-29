@@ -76,17 +76,17 @@ const shallowBot = async () => {
         // CompetitionHelper.end('art_competition');
 
 
-        console.log(await CompetitionModel.getAll());
+        // console.log(await CompetitionModel.getAll());
 
         // listenInteractions(ev => console.log(ev));
 
-        // const channel = CHANNELS._getCode('MONEY_COMPETITION');
+        // const channel = CHANNELS._getCode('BUSINESS_COMPETITION');
 
         // // Clear the messages.
-        // CompetitionHelper.clean('money_competition');
+        // CompetitionHelper.clean('business_competition');
 
         // // Remove the message link from the event.
-        // await CompetitionModel.setLink('money_competition', null);
+        // await CompetitionModel.setLink('business_competition', null);
 
         // // Send the next competition's starting message with setup button.
         // const newCompMsg = await channel.send('Competition ready to be setup and launched.');
@@ -103,10 +103,10 @@ const shallowBot = async () => {
         // });
 
         // // Update the message link with new one.
-        // await CompetitionModel.setLink('money_competition', MESSAGES.link(newCompMsg));
+        // await CompetitionModel.setLink('business_competition', MESSAGES.link(newCompMsg));
 
         // // Set competition is not active.
-        // await EventsHelper.setActive('money_competition', false);
+        // await EventsHelper.setActive('business_competition', false);
 
 
 
