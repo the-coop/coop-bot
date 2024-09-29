@@ -18,6 +18,7 @@ import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
 import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
 import MiningMinigame from '../operations/minigames/small/mining.mjs';
 import ChestPopMinigame from '../operations/minigames/small/chestpop.mjs';
+import CompetitionModel from '../operations/social/competition/competition.mjs';
 
 
 // Commonly useful.
@@ -72,10 +73,40 @@ const shallowBot = async () => {
         // console.log(member);
         // console.log(ROLES._has(member, 'MEMBER'));
 
+        // CompetitionHelper.end('art_competition');
 
+
+        console.log(await CompetitionModel.getAll());
 
         // listenInteractions(ev => console.log(ev));
 
+        // const channel = CHANNELS._getCode('MONEY_COMPETITION');
+
+        // // Clear the messages.
+        // CompetitionHelper.clean('money_competition');
+
+        // // Remove the message link from the event.
+        // await CompetitionModel.setLink('money_competition', null);
+
+        // // Send the next competition's starting message with setup button.
+        // const newCompMsg = await channel.send('Competition ready to be setup and launched.');
+        // newCompMsg.edit({
+        //     components: [
+        //         new ActionRowBuilder().addComponents([
+        //             new ButtonBuilder()
+        //                 .setEmoji('⚙️')
+        //                 .setLabel("Setup")
+        //                 .setCustomId('setup_competition')
+        //                 .setStyle(ButtonStyle.Secondary)
+        //         ])
+        //     ]
+        // });
+
+        // // Update the message link with new one.
+        // await CompetitionModel.setLink('money_competition', MESSAGES.link(newCompMsg));
+
+        // // Set competition is not active.
+        // await EventsHelper.setActive('money_competition', false);
 
 
 

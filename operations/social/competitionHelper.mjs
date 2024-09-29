@@ -12,7 +12,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBu
 export const COMPETITION_ROLES = {
     TECHNOLOGY_COMPETITION: 'TECH',
     ART_COMPETITION: 'ART',
-    MONEY_COMPETITION: 'MONEY'
+    BUSINESS_COMPETITION: 'MONEY'
 };
 
 const MAX_ENTRANTS = 100;
@@ -260,8 +260,7 @@ export default class CompetitionHelper {
         await Competition.saveEntrant(code, interaction.user.id);
 
         // Publicly announce to bring attention to competition.
-        const registerCompMsgText = `📋 <@${interaction.user.id}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`;
-        await CHANNELS._send('TALK', registerCompMsgText, {});
+        await CHANNELS._send('TALK', `📋 <@${interaction.user.id}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`, {});
 
         // Update the competition messages
         await this.sync(comp);
@@ -439,7 +438,7 @@ export default class CompetitionHelper {
     // Clean the entry messages from the channel, including the summary.
     static async clean(code) {
         try {
-            const channel = CHANNELS._getCode(code.toUpperCase());l
+            const channel = CHANNELS._getCode(code.toUpperCase());
             const msgs = await channel.messages.fetch({ limit: MAX_ENTRANTS });
             await channel.bulkDelete(msgs);
             return true;
@@ -453,8 +452,8 @@ export default class CompetitionHelper {
 
     // Check if ID is a competition channel ID.
     static isCompChannel(id) {
-        const { TECHNOLOGY_COMPETITION, ART_COMPETITION, MONEY_COMPETITION } = CHANNELS_CONFIG;
-        return [TECHNOLOGY_COMPETITION, ART_COMPETITION, MONEY_COMPETITION]
+        const { TECHNOLOGY_COMPETITION, ART_COMPETITION, BUSINESS_COMPETITION } = CHANNELS_CONFIG;
+        return [TECHNOLOGY_COMPETITION, ART_COMPETITION, BUSINESS_COMPETITION]
             .some(c => c.id === id);
     };
 
