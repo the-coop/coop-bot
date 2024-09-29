@@ -15,13 +15,7 @@ export const COMPETITION_ROLES = {
     MONEY_COMPETITION: 'MONEY'
 };
 
-// const MAX_ENTRANTS = 100;
-// TODO: Set to 2 while testing guard
-const MAX_ENTRANTS = 2;
-
-// All competitions can run at same time
-// TODO: Add organiser field to events table and set creator on setup and check afterwards, and clear it at the end
-
+const MAX_ENTRANTS = 100;
 
 export default class CompetitionHelper {
 
@@ -66,13 +60,17 @@ export default class CompetitionHelper {
     };
 
     // Also entry point for next competition, adds competition channel message with setup button.
-    static async end(competionCode) {
+    static async end(code) {
         // Load the competition.
-        const competition = await Competition.get(competionCode);
-        const channel = CHANNELS._getCode(competionCode.toUpperCase());
+        const comp = await Competition.get(code);
+        const channel = CHANNELS._getCode(code.toUpperCase());
+
+        // Ensure only organiser can end it.
+        if (comp.organiser !== interaction.userId)
+            return await interaction.reply({ content: `Only the organisar can end the competition.`, ephemeral: true });
 
         // Calculate the winner by votes.
-        const progress = await this.check(competition);
+        const progress = await this.check(comp);
 
         // Calculate the rightful winners.
         let winners = progress.entries.filter(participant => participant.votes > 0);
@@ -126,7 +124,7 @@ export default class CompetitionHelper {
             try {
                 const competitionWinDMText = `:trophy: Congratulations! ` +
                     // If not first place then not "winning"
-                    `You were rewarded for winning the ${_fmt(competionCode)}! :trophy:\n\n` +
+                    `You were rewarded for winning the ${_fmt(code)}! :trophy:\n\n` +
 
                     'You received the following items as a prize:\n' +
                     
@@ -141,7 +139,7 @@ export default class CompetitionHelper {
 
         // Declare the competition winner publicly showing prizes.
         const publicPrizeText = `:trophy: Congratulations! ` +
-            `Announcing the ${_fmt(competionCode)} winners! :trophy:\n\n` +
+            `Announcing the ${_fmt(code)} winners! :trophy:\n\n` +
 
             '**The winners and their prizes** are thus:\n\n' +
 
@@ -157,10 +155,10 @@ export default class CompetitionHelper {
         this.blog();
 
         // Clear the messages.
-        this.cleanEntries(competionCode);
+        this.clean(code);
 
         // Remove the message link from the event.
-        await Competition.setLink(competionCode, null);
+        await Competition.setLink(code, null);
 
         // Send the next competition's starting message with setup button.
         const newCompMsg = await channel.send('Competition ready to be setup and launched.');
@@ -177,46 +175,39 @@ export default class CompetitionHelper {
         });
 
         // Update the message link with new one.
-        await Competition.setLink(competionCode, MESSAGES.link(newCompMsg));
+        await Competition.setLink(code, MESSAGES.link(newCompMsg));
 
         // Set competition is not active.
-        await EventsHelper.setActive(competionCode, false);
+        await EventsHelper.setActive(code, false);
     };
     
     // Displays required fields for competition information.
     static async setup(code, interaction) {
-        // TODO: Check if competition already active and they are the organiser interaction.userId
-        // const comp = await Competition.get(code);
-        // if (comp.organiser !== interaction.userId)
-        // return await interaction.reply({ content: `Only the organisar can edit the competition.`, ephemeral: true });
+        // Check if competition already active and they are the organiser interaction.userId
+        const comp = await Competition.get(code);
+        if (comp.active && comp.organiser !== interaction.userId)
+            return await interaction.reply({ content: `Only the organisar can edit the competition.`, ephemeral: true });
 
+        // Format competition info for form display.
         const fmtCode = _fmt(code);
         const fmtTitle = fmtCode.charAt(0).toUpperCase() + fmtCode.slice(1);
 
-        // Create the form.
-        const modal = new ModalBuilder()
-            .setCustomId('competition_form')
-            .setTitle(`${fmtTitle} details`);
-
-        // Create the text input components
-        const titleInput = new TextInputBuilder()
-            .setCustomId('competition_title')
-            .setLabel("Competition title:")
-            .setStyle(TextInputStyle.Short);
-
-        const descriptionInput = new TextInputBuilder()
-            .setCustomId('competition_description')
-            .setLabel("Details for the competition:")
-            .setStyle(TextInputStyle.Paragraph);
-
-        // Add inputs to the modal
-        modal.addComponents(
-            new ActionRowBuilder().addComponents(titleInput),
-            new ActionRowBuilder().addComponents(descriptionInput)
-        );
-
-        // Show the modal to the user.
-        return await interaction.showModal(modal);
+        // Create the text input components form, and show to use.
+        const modal = new ModalBuilder().setCustomId('competition_form').setTitle(`${fmtTitle} details`);
+        return await interaction.showModal(modal.addComponents(
+            new ActionRowBuilder().addComponents(
+                new TextInputBuilder()
+                    .setCustomId('competition_title')
+                    .setLabel("Competition title:")
+                    .setStyle(TextInputStyle.Short)
+            ),
+            new ActionRowBuilder().addComponents(
+                new TextInputBuilder()
+                    .setCustomId('competition_description')
+                    .setLabel("Details for the competition:")
+                    .setStyle(TextInputStyle.Paragraph)
+            )
+        ));
     };
 
     // Set the title and description and start competition if needed.
@@ -229,16 +220,11 @@ export default class CompetitionHelper {
         await Competition.setTitle(code, title);
         await Competition.setDescription(code, description);
 
-        // TODO: Update the channel top message summary/information.
-
         console.log('Should setup competition.');
         console.log(title, description);
 
-        // Load the competition to check its status.
-        const comp = await Competition.get(code);
-        console.log(comp);
-
         // Decide whether to start the competition or edit.
+        const comp = await Competition.get(code);
         if (!comp.active) {
             // Clear the previous competition entrants.
             await Competition.clearEntrants(code);
@@ -247,12 +233,11 @@ export default class CompetitionHelper {
             await EventsHelper.setActive(code, true);
 
             // Explicitly declare event started.
-            // TODO: organiser field needs adding to schema
             await EventsHelper.setOrganiser(code, interaction.userId);
         }
 
         // Update the competition summary.
-        this.syncSummaries();
+        await this.sync(comp);
 
         // Inform organiser the edit is successful.
         return await interaction.reply({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
@@ -278,85 +263,81 @@ export default class CompetitionHelper {
         await CHANNELS._send('TALK', registerCompMsgText, {});
 
         // Update the competition messages
-        await this.syncSummaries();
+        await this.sync(comp);
 
         // Reply to the interaction with feedback.
         return await interaction.reply({ content: `Successfully registered for the ${_fmt(code)}!`, ephemeral: true });
     };
 
     // Ensure the competition summary messages stay up to date.
-    
-    static async syncSummaries() {
-        const competitions = await Competition.load();
-        competitions.map(async comp => {
-            // Nothing to check with inactive competitions.
-            if (!comp.active) return;
+    static async sync(comp) {
+        // Nothing to check with inactive competitions.
+        if (!comp.active) return;
 
-            // Check the competition.
-            const progress = await this.attachSubmissions(comp);
+        // Check the competition.
+        const progress = await this.attachSubmissions(comp);
 
-            // Sort the entrants by largest id
-            progress.entries.sort((a, b) => a.votes > b.votes);
+        // Sort the entrants by largest id
+        progress.entries.sort((a, b) => a.votes > b.votes);
 
-            // Add details on how to join the competition 
-            const pingableRoleText = ROLES._textRef(COMPETITION_ROLES[comp.code.toUpperCase()]);
+        // Add details on how to join the competition 
+        const pingableRoleText = ROLES._textRef(COMPETITION_ROLES[comp.code.toUpperCase()]);
 
-            // Format the message for the competition summary message.
-            // TODO: Add number registered after in progress (5 registered example)
-            const content = `**🏆 ${pingableRoleText} competition in progress! 🏆**\n\n` +
-                `${title}\n` +
-                `${description}\n` +
+        // Format the message for the competition summary message.
+        // TODO: Add number registered after in progress (5 registered example)
+        const content = `**🏆 ${pingableRoleText} competition in progress! 🏆**\n\n` +
+            `${title}\n` +
+            `${description}\n` +
 
-                progress.entries.map(e => (
-                    `<@${e.entrant_id}> - ${e.votes} vote(s)`
-                )).join('\n')
+            progress.entries.map(e => (
+                `<@${e.entrant_id}> - ${e.votes} vote(s)`
+            )).join('\n')
 
 
-                `_Join the ${_fmt(comp.code)} now by pressing the register buttoon 📋!_`;
+            `_Join the ${_fmt(comp.code)} now by pressing the register buttoon 📋!_`;
 
-            // Only inactive competitions need the buttons adding.
-            const components = comp.active ? {} : { 
-                components: [
-                    // Add button for registering.
-                    new ActionRowBuilder().addComponents([
-                        new ButtonBuilder()
-                            .setEmoji('📝')
-                            .setLabel("Register")
-                            .setCustomId('register_competition')
-                            .setStyle(ButtonStyle.Success),
+        // Only inactive competitions need the buttons adding.
+        const components = comp.active ? {} : { 
+            components: [
+                // Add button for registering.
+                new ActionRowBuilder().addComponents([
+                    new ButtonBuilder()
+                        .setEmoji('📝')
+                        .setLabel("Register")
+                        .setCustomId('register_competition')
+                        .setStyle(ButtonStyle.Success),
 
-                        // Add button for ending the competition when it's over.
-                        new ButtonBuilder()
-                            .setEmoji('⏸️')
-                            .setLabel("End")
-                            .setCustomId('end_competition')
-                            .setStyle(ButtonStyle.Danger)
-                    ])
-                ]
-            };
+                    // Add button for ending the competition when it's over.
+                    new ButtonBuilder()
+                        .setEmoji('⏸️')
+                        .setLabel("End")
+                        .setCustomId('end_competition')
+                        .setStyle(ButtonStyle.Danger)
+                ])
+            ]
+        };
 
-            // Edit the competition summary message with formatted information.
-            const msg = await MESSAGES.getByLink(comp.message_link);
-            msg.edit({ content, ...(comp.active ? {} : components) });
-        });
+        // Edit the competition summary message with formatted information.
+        const msg = await MESSAGES.getByLink(comp.message_link);
+        msg.edit({ content, ...(comp.active ? {} : components) });
     };
 
     // Attach the entries and votes to the competition.
-    static async attachSubmissions(competition) {
+    static async attachSubmissions(comp) {
         // Get entries for competition.
-        let entries = await Competition.loadEntrants(competition.event_code);
+        let entrants = await Competition.loadEntrants(comp.event_code);
 
         // Count votes and attach to competition checking result.
-        await Promise.all(entries.map(async e => {
-            const entrantIndex = entries.findIndex(se => se.entrant_id === e.entrant_id);
-            entries[entrantIndex].votes = await this.count(e);
+        await Promise.all(entrants.map(async e => {
+            const entrantIndex = entrants.findIndex(se => se.entrant_id === e.entrant_id);
+            entrants[entrantIndex].votes = await this.count(e);
         }));
 
         // Attach entries object.
-        competition.entries = entries;
+        comp.entries = entrants;
 
         // Return the result in the check.
-        return competition;
+        return comp;
     };
 
     // Calculate the votes present on a competition entry.
@@ -455,7 +436,8 @@ export default class CompetitionHelper {
             await Competition.unsetEntryByMessageID(msg.id);
     };
 
-    static async cleanEntries(code) {
+    // Clean the entry messages from the channel, including the summary.
+    static async clean(code) {
         try {
             const channel = CHANNELS._getCode(code.toUpperCase());l
             const msgs = await channel.messages.fetch({ limit: MAX_ENTRANTS });
@@ -469,14 +451,16 @@ export default class CompetitionHelper {
         }
     };
 
+    // Check if ID is a competition channel ID.
     static isCompChannel(id) {
         const { TECHNOLOGY_COMPETITION, ART_COMPETITION, MONEY_COMPETITION } = CHANNELS_CONFIG;
         return [TECHNOLOGY_COMPETITION, ART_COMPETITION, MONEY_COMPETITION]
             .some(c => c.id === id);
     };
 
-    static async blog(competionCode) {
-        console.log("Building blog post for " + competionCode);
+    // Attempt to build a blogpost from the competition.
+    static async blog(code) {
+        console.log("Building blog post for " + code);
         
         // Build the blog post for the competition
         // Sort the messages by most votes
