@@ -17,6 +17,7 @@ import { EMOJIS } from 'coop-shared/config.mjs';
 import RolesHelper from '../operations/members/hierarchy/roles/rolesHelper.mjs';
 import WoodcuttingMinigame from '../operations/minigames/small/woodcutting.mjs';
 import MiningMinigame from '../operations/minigames/small/mining.mjs';
+import ChestPopMinigame from '../operations/minigames/small/chestpop.mjs';
 
 
 // Commonly useful.
@@ -65,6 +66,7 @@ const shallowBot = async () => {
         // CompetitionHelper.configure('art_competition', undefined);
 
 
+        ChestPopMinigame.run();
 
         // const member = await USERS._fetch('786671654721683517');
         // console.log(member);

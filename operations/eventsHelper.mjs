@@ -1,6 +1,6 @@
 import db from "coop-shared/helper/databaseHelper.mjs";
 import STATE from "../state.mjs";
-
+    
 export const numberEnding = number => (number > 1) ? 's' : '';
 
 export default class EventsHelper {

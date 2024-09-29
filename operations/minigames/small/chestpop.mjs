@@ -3,6 +3,7 @@ import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs"
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 import DropTable from "../medium/economy/items/droptable.mjs";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export default class ChestPopMinigame {
     
@@ -73,7 +74,6 @@ export default class ChestPopMinigame {
     static async run() {
         try {
             const eventChannel = CHANNELS._randomSpammable();
-
             const chestPopMsg = await eventChannel.send('ChestPop? 💰');
             chestPopMsg.edit({ 
                 components: [
@@ -86,11 +86,12 @@ export default class ChestPopMinigame {
                     ])
                 ]
             });
+
             // Ensure message is stored in database for clear up.
-            // TODO: Count as ungathered chest pop in activity messages
             TemporaryMessages.add(chestPopMsg, 30 * 60);
         } catch(e) {
-            console.log('above error occurred trying to start chest pop minigame');
+            console.error(e);
+            console.log('Chestpop error running.');
         }
     };
 };
