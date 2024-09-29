@@ -297,15 +297,18 @@ export default class CompetitionHelper {
         
         // Format message for active competitions.
         // TODO: Add number registered after in progress (5 registered example)
-        if (comp.active) content = `# **🏆 ${comp.title} 🏆**\n` +
-            `## ${comp.description}\n` +
-
-            progress.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
+        if (comp.active)
+            content = `# **🏆 ${comp.title} 🏆**\n## ${comp.description}\n` +
+                progress.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
 
         // Edit the competition summary message with formatted information.
         const msg = await MESSAGES.getByLink(comp.message_link);
         const options = { components: [SetupButton, ...( comp.active ? [RegisterButton, EndButton] : [] )] };
         msg.edit({ content, options });
+
+        // Update channel topic.
+        const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
+        await channel.setTopic(comp.active ? `${comp.title} - ${comp.description}` : content);
     };
 
     // Attach the entries and votes to the competition.
