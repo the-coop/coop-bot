@@ -797,7 +797,7 @@ export default class ElectionHelper {
 
             const commander = hierarchy?.commander?.user || null;
 
-            console.log('electin feedback hierachy missing leaders', hierarchy);
+            // console.log('electin feedback hierachy missing leaders', hierarchy);
 
             await this.editElectionInfoMsg(
                 `**Current elected officials:** \n\n` +
