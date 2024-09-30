@@ -130,7 +130,6 @@ export default class Chicken {
                 components: [
                     new ActionRowBuilder().addComponents(
                         new ButtonBuilder()
-                            .setCustomId('login')
                             .setLabel('Login')
                             .setURL(OAUTH_LOGIN_URL)
                             .setStyle(ButtonStyle.Link)
