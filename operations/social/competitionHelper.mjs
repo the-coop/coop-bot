@@ -220,37 +220,44 @@ export default class CompetitionHelper {
 
     // Set the title and description and start competition if needed.
     static async configure(code, interaction) {
-        // Extract values from setup modal form.
-        const title = interaction.fields.getTextInputValue('competition_title');
-        const description = interaction.fields.getTextInputValue('competition_description');
+        try {
+            // Extract values from setup modal form.
+            const title = interaction.fields.getTextInputValue('competition_title');
+            const description = interaction.fields.getTextInputValue('competition_description');
+    
+            // Load competition.
+            const comp = await Competition.get(code);
+    
+            // Update the competition data based on inputs
+            await Competition.setTitle(code, title);
+            await Competition.setDescription(code, description);
+    
+            // Update information since it's passed to sync method.
+            comp.title = title;
+            comp.description = description;
+    
+            // Decide whether to start the competition or edit.
+            if (!comp.active) {
+                // Clear the previous competition entrants.
+                await Competition.clearEntrants(code);
+    
+                // Explicitly declare event started.
+                await EventsHelper.setActive(code, true);
+    
+                // Explicitly declare event started.
+                await EventsHelper.setOrganiser(code, interaction.user.id);
+            }
+    
+            // Update the competition summary.
+            await this.sync(comp);
+    
+            // Inform organiser the edit is successful.
+            return await interaction.reply({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
 
-        // Load competition.
-        const comp = await Competition.get(code);
+        } catch(e) {
 
-        // Update the competition data based on inputs
-        await Competition.setTitle(code, title);
-        await Competition.setDescription(code, description);
-
-        // Update information since it's passed to sync method.
-        comp.title = title;
-        comp.description = description;
-
-        // Decide whether to start the competition or edit.
-        if (!comp.active) {
-            // Clear the previous competition entrants.
-            await Competition.clearEntrants(code);
-
-            // Explicitly declare event started.
-            await EventsHelper.setActive(code, true);
-
-            // Explicitly declare event started.
-            await EventsHelper.setOrganiser(code, interaction.user.id);
         }
 
-        // Update the competition summary.
-        await this.sync(comp);
-
-        // Inform organiser the edit is successful.
         return await interaction.reply({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
     };
 
@@ -287,8 +294,8 @@ export default class CompetitionHelper {
         } catch(e) {
             console.error(e);
             console.log('Error registering for ' + code);
-            return await interaction.reply({ content: 'Failed to register, please try later.', ephemeral: true });
         }
+        return await interaction.reply({ content: 'Failed to register, please try later.', ephemeral: true });
     };
 
     // Ensure the competition summary messages stay up to date.
@@ -447,11 +454,12 @@ export default class CompetitionHelper {
             const msgs = await channel.messages.fetch({ limit: MAX_ENTRANTS });
 
             const filtered = msgs.filter(m => MESSAGES.link(m) !== comp.message_link);
+            console.log(filtered);
             await channel.bulkDelete(filtered);
             return true;
 
         } catch(e) {
-            console.log('Error clearing competition ' + code);
+            console.log('Error clearing competition ' + comp.event_code);
             console.error(e);
         }
         return false;
