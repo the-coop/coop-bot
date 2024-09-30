@@ -1,5 +1,7 @@
 import { CHANCE, CHANNELS, USERS } from '../../../coop.mjs';
 
+import ItemsHelper from '../medium/economy/items/itemsHelper.mjs';
+
 const halflifeicon = '💔';
 const liveIcon = '❤️';
 const slapIcon = '🫱';
@@ -31,6 +33,11 @@ export default class FoxHuntMinigame {
             if (CHANCE.natural({ min: 1, max: 12 }) > 6)
                 await CHANNELS._send('TALK', `Careful the 🦊 bites.`);
 
+            // 10% Chance to reward user with stolen eggs
+            if (CHANCE.bool({ likelihood: 10 }))
+                // await this.reward(user);
+
+
         } catch(e) {
             console.error(e);
             console.log('Above error related to foxhunt reaction handler')
@@ -43,6 +50,16 @@ export default class FoxHuntMinigame {
         const fullLives = str.match(fullLivesRegex) || 0;
         const halfLives = str.match(halfLivesRegex) || 0;
         return (halfLives * .5) + fullLives;
+    };
+
+    // Get all stolen eggs from database and give them to the user
+    static async reward(user) {
+        const stolenEggs = await ItemsHelper.getStolenEggs();
+        await Promise.all(stolenEggs.map(async egg => {
+            const { rarity, amount } = egg;
+            await Items.add(user.id, rarity, amount, `FOXHUNT_REWARD_${rarity.toUpperCase()}`);
+        }))
+        await ItemsHelper.clearStolenEggs();
     };
 
     static async run() {

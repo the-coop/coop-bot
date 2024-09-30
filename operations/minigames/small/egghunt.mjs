@@ -241,6 +241,8 @@ export default class EggHuntMinigame {
             // Small chance of being stolen by a fox.
             if (STATE.CHANCE.bool({ likelihood: 5 })) {
                 reaction.message.edit(`${user.username}'s ${MESSAGES.emojiText(emoji)} was stolen by a fox 🦊`);
+                // Add the egg to database
+                const amount = ItemsHelper.addStolenEggs(rarity, 1);
                 return ReactionHelper.removeAll(reaction.message);
             }
 
