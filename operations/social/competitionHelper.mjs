@@ -305,10 +305,10 @@ export default class CompetitionHelper {
         const msg = await MESSAGES.getByLink(comp.message_link);
         
         // Buttons dependent on competition state.
-        const components = new ActionRowBuilder().addComponents([
+        const buttons = new ActionRowBuilder().addComponents([
             SetupButton, ...[ comp.active ? [RegisterButton, EndButton] : [] ]
         ]);
-        msg.edit({ content, components });
+        msg.edit({ content, components: [buttons] });
 
         // Update channel topic.
         const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
