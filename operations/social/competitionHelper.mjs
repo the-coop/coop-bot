@@ -303,7 +303,11 @@ export default class CompetitionHelper {
 
         // Edit the competition summary message with formatted information.
         const msg = await MESSAGES.getByLink(comp.message_link);
-        const components = [SetupButton, ...[ comp.active ? [RegisterButton, EndButton] : [] ]];
+        
+        // Buttons dependent on competition state.
+        const components = new ActionRowBuilder().addComponents([
+            SetupButton, ...[ comp.active ? [RegisterButton, EndButton] : [] ]
+        ]);
         msg.edit({ content, components });
 
         // Update channel topic.

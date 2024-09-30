@@ -4,7 +4,7 @@ dotenv.config();
 import _ from 'lodash';
 import { GatewayIntentBits, Client, time, ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionsBitField } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
-import { CHANNELS, MESSAGES, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
+import { CHANNELS, ITEMS, MESSAGES, ROLES, SERVER, STATE, TIME, USERS } from '../coop.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import ElectionHelper from '../operations/members/hierarchy/election/electionHelper.mjs';
 import CompetitionHelper from '../operations/social/competitionHelper.mjs';
@@ -119,7 +119,10 @@ const shallowBot = async () => {
 
         // MiningMinigame.run();
 
-        // Items.add('238043760766877697', 'PICK_AXE', 5);
+        // Items.add('', 'KEY', 5);
+        // let items = await ITEMS.getUserItems('786671654721683517');
+        // console.log(items);
+        
 
         // TODO: Test premium button with an SKU?
 
