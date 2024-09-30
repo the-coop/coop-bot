@@ -17,19 +17,19 @@ export const COMPETITION_ROLES = {
 
 const MAX_ENTRANTS = 100;
 
-const SetupButton = () => new ButtonBuilder()
+const SetupButton = new ButtonBuilder()
         .setEmoji('⚙️')
         .setLabel("Setup")
         .setCustomId('setup_competition')
         .setStyle(ButtonStyle.Secondary);
 
-const RegisterButton = () => new ButtonBuilder()
+const RegisterButton = new ButtonBuilder()
         .setEmoji('📝')
         .setLabel("Register")
         .setCustomId('register_competition')
         .setStyle(ButtonStyle.Success);
 
-const EndButton = () => new ButtonBuilder()
+const EndButton = new ButtonBuilder()
         .setEmoji('⏸️')
         .setLabel("End")
         .setCustomId('end_competition')
@@ -303,10 +303,9 @@ export default class CompetitionHelper {
         const msg = await MESSAGES.getByLink(comp.message_link);
         
         // Buttons dependent on competition state.
-        const buttons = new ActionRowBuilder().addComponents([
-            SetupButton(), ...[ comp.active ? [RegisterButton(), EndButton()] : [] ]
-        ]);
-        msg.edit({ content, components: [buttons] });
+        msg.edit({ content, components: [new ActionRowBuilder().addComponents(
+            SetupButton, ...[ comp.active ? [RegisterButton, EndButton] : [] ]
+        )] });
 
         // Update channel topic.
         const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
