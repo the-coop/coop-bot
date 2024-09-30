@@ -17,13 +17,11 @@ export const COMPETITION_ROLES = {
 
 const MAX_ENTRANTS = 100;
 
-const SetupButton = new ActionRowBuilder().addComponents([
-    new ButtonBuilder()
+const SetupButton = new ButtonBuilder()
         .setEmoji('⚙️')
         .setLabel("Setup")
         .setCustomId('setup_competition')
-        .setStyle(ButtonStyle.Secondary)
-]);
+        .setStyle(ButtonStyle.Secondary);
 
 const RegisterButton = new ButtonBuilder()
         .setEmoji('📝')
