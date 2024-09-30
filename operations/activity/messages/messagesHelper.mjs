@@ -267,7 +267,7 @@ export default class MessagesHelper {
                         
                         if (messageRef) {
                             this.delayDelete(messageRef, fuseMs);
-                            TemporaryMessages.add(messageRef)
+                            TemporaryMessages.add(messageRef, fuseMs / 1000)
                             resolve(messageRef);
                         }
                     }

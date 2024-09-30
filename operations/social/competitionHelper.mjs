@@ -303,9 +303,9 @@ export default class CompetitionHelper {
         const msg = await MESSAGES.getByLink(comp.message_link);
         
         // Buttons dependent on competition state.
-        msg.edit({ content, components: [new ActionRowBuilder().addComponents(
-            SetupButton, ...[ comp.active ? [RegisterButton, EndButton] : [] ]
-        )] });
+        msg.edit({ content, components: [new ActionRowBuilder().addComponents([
+            SetupButton, ...(comp.active ? [RegisterButton, EndButton] : [])
+        ])] });
 
         // Update channel topic.
         const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
@@ -423,8 +423,8 @@ export default class CompetitionHelper {
 
         // Unset their competition entry message if they have one.
         const code = CHANNELS.idToCode(msg.channel.id);
-        const entrant = await Competition.loadEntrant(code.toLowerCase(), msg.user.id);
-        if (entrant.entry_msg_id)
+        const entrant = await Competition.loadEntrant(code.toLowerCase(), msg.author.id);
+        if (entrant?.entry_msg_id)
             await Competition.unsetEntryByMessageID(msg.id);
     };
 
