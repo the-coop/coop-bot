@@ -20,9 +20,6 @@ const EMPTY_COMPETITION_TEXT = 'Competition ready to be setup and launched.';
 
 const MAX_ENTRANTS = 100;
 
-const SetupButton = Button('⚙️', "Setup", 'setup_competition', ButtonStyle.Secondary);
-const RegisterButton = Button('📝', "Register", 'register_competition', ButtonStyle.Success);
-const EndButton = Button("⏸️", "End", 'end_competition', ButtonStyle.Danger);
 
 export default class CompetitionHelper {
 
@@ -314,6 +311,9 @@ export default class CompetitionHelper {
         const msg = await MESSAGES.getByLink(comp.message_link);
         
         // Buttons dependent on competition state.
+        const SetupButton = Button('⚙️', "Setup", 'setup_competition', ButtonStyle.Secondary);
+        const RegisterButton = Button('📝', "Register", 'register_competition', ButtonStyle.Success);
+        const EndButton = Button("⏸️", "End", 'end_competition', ButtonStyle.Danger);
         msg.edit({ content, components: [new ActionRowBuilder().addComponents([
             SetupButton, ...(comp.active ? [RegisterButton, EndButton] : [])
         ])] });
