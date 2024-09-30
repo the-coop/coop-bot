@@ -229,7 +229,7 @@ export default class CompetitionHelper {
                 await Competition.clearEntrants(code);
     
                 // Explicitly declare event started.
-                await EventsHelper.setActive(code, true);
+                comp.active = await EventsHelper.setActive(code, true);
     
                 // Explicitly declare event started.
                 await EventsHelper.setOrganiser(code, interaction.user.id);
@@ -289,6 +289,9 @@ export default class CompetitionHelper {
     // Ensure the competition summary messages stay up to date.
     static async sync(comp) {
         return new Promise((resolve, reject) => {
+
+            // TODO: Now that start explicitly syncs with .active, delay may not be necessary.
+
             // Give interaction time to finish before deleting its button (seems to cause failure).
             setTimeout(async () => {
                 try {
