@@ -11,10 +11,15 @@ export default class ChestPopMinigame {
     static async onInteraction(interaction) {
         // Chest Pop minigame guards.
         if (!USERS.isCooperMsg(interaction.message)) return false;
-        if (interaction.customId !== "open_chest") return false;
+        if (interaction.customId !== "open_chest" && interaction.customId !== "pickup_item") return false;
 
         // Allow user the open the chest.
-        this.open(interaction);
+        if (interaction.customId === 'open_chest')
+            this.open(interaction);
+
+        // Allow user to pick up the first item
+        if (interaction.customId === 'pickup_item')
+            this.pickup(interaction);
     };
 
     static async open(interaction) {
@@ -34,8 +39,19 @@ export default class ChestPopMinigame {
     
             // Declare feedback.
             const dropsText = drops.map(drop => COOP.MESSAGES.emojiCodeText(drop.item).repeat(drop.qty));
-            await interaction.message.edit(dropsText);
-    
+            await interaction.message.edit({
+                content: dropsText,
+                components: [
+                    new ActionRowBuilder().addComponents([
+                        new ButtonBuilder()
+                            .setEmoji('🫳')
+                            .setLabel("Pick up")
+                            .setCustomId('pickup_item')
+                            .setStyle(ButtonStyle.Primary)
+                    ])
+                ]
+            });
+
             // Track chestpop drops in economy statistics.
             EconomyNotifications.add('CHEST_POP', {
                 loot: drops.length
@@ -43,10 +59,33 @@ export default class ChestPopMinigame {
                 
             // Show user success message.
             return await interaction.reply({ content: `You successfully opened the chest.`, ephemeral: true });
-
         } catch(e) {
             console.error(e);
             console.log('Error opening chestpop');
+        }
+    };
+
+    
+    static async pickup(interaction) {
+        try {
+            // Parse first emoji back to item
+            const firstItem = interaction.message.content.match(/([\p{Emoji}]|:\w+:(\d+)?)/gu)[0];
+            // TODO: end minigame if no more items can be picked up
+            if (firstItem === null) return await interaction.reply({ content: 'There are no items to be picked up', ephemeral: true });
+
+            // Parse emoji to item code and give it to user
+            // const emojiID = MESSAGES.getEmojiIdentifier(firstItem);
+            // const itemCode = ITEMS.emojiToItemCode(emojiID);
+            // await Items.add(interaction.user.id, itemCode, 1, `ChestPop Reward`);
+
+            // Remove the item from message content
+            await interaction.message.edit(interaction.message.content.replace(firstItem, ''));
+
+            // Show user success message.
+            return await interaction.reply({ content: `You successfully picked up ${firstItem}`, ephemeral: true });
+        } catch(e) {
+            console.error(e);
+            console.log('Error picking up a chestpop item');
         }
     };
 
