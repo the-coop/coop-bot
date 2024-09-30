@@ -158,15 +158,8 @@ export default class CompetitionHelper {
             this.blog();
     
             // Clear the messages.
-            await this.clean(code);
-            
-            // Update the message link with new one.
-            // const msg = await CHANNELS._send(code.toUpperCase(), 'New message for next competition summary/buttons.');
-            // const newLink = MESSAGES.link(msg);
-            // await Competition.setLink(code, newLink);
-    
-            // Update so sync can add the button.
-            // comp.message_link = newLink;
+            await this.clean(comp);
+
 
             console.log(comp.active);
     
