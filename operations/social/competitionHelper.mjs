@@ -315,7 +315,7 @@ export default class CompetitionHelper {
             const RegisterButton = Button('📝', "Register", 'register_competition', ButtonStyle.Success);
             const EndButton = Button("⏸️", "End", 'end_competition', ButtonStyle.Danger);
             msg.edit({ content, components: [new ActionRowBuilder().addComponents([
-                SetupButton, ...(comp.active ? [RegisterButton, EndButton] : [])
+                SetupButton, ...(comp.active ? [EndButton, RegisterButton] : [])
             ])] });
     
             // Update channel topic.
