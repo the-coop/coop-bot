@@ -288,55 +288,47 @@ export default class CompetitionHelper {
 
     // Ensure the competition summary messages stay up to date.
     static async sync(comp) {
-        return new Promise((resolve, reject) => {
-
-            // TODO: Now that start explicitly syncs with .active, delay may not be necessary.
-
-            // Give interaction time to finish before deleting its button (seems to cause failure).
-            setTimeout(async () => {
-                try {
-                    // Check the competition.
-                    await this.attachSubmissions(comp);
-            
-                    // Sort the entrants by largest id
-                    comp.entries.sort((a, b) => a.votes > b.votes);
-            
-                    // Format the message for the competition summary message.
-                    let content = EMPTY_COMPETITION_TEXT;
-            
-                    // TODO: If no submissions show registration information
-                    // TODO: If submissions start to show voting information
-                    
-                    // Format message for active competitions.
-                    // TODO: Add number registered after in progress (5 registered example)
-                    if (comp.active)
-                        content = `# **🏆 ${comp.title} 🏆**\n## ${comp.description}\n` +
-                            comp.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
-            
-                    // Edit the competition summary message with formatted information.
-                    const msg = await MESSAGES.getByLink(comp.message_link);
-                    
-                    // Buttons dependent on competition state.
-                    const SetupButton = Button('⚙️', "Setup", 'setup_competition', ButtonStyle.Secondary);
-                    const RegisterButton = Button('📝', "Register", 'register_competition', ButtonStyle.Success);
-                    const EndButton = Button("⏸️", "End", 'end_competition', ButtonStyle.Danger);
-                    msg.edit({ content, components: [new ActionRowBuilder().addComponents([
-                        SetupButton, ...(comp.active ? [RegisterButton, EndButton] : [])
-                    ])] });
-            
-                    // Update channel topic.
-                    const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
-                    await channel.setTopic(comp.active ? `${comp.title} - ${comp.description}` : content);
-        
-                    resolve(true);
+        try {
+            // Check the competition.
+            await this.attachSubmissions(comp);
     
-                } catch(e) {
-                    console.error(e);
-                    console.log('Error syncing competition summary message');
-                    reject(false);
-                }
-            }, 1500);
-        });
+            // Sort the entrants by largest id
+            comp.entries.sort((a, b) => a.votes > b.votes);
+    
+            // Format the message for the competition summary message.
+            let content = EMPTY_COMPETITION_TEXT;
+    
+            // TODO: If no submissions show registration information
+            // TODO: If submissions start to show voting information
+            
+            // Format message for active competitions.
+            // TODO: Add number registered after in progress (5 registered example)
+            if (comp.active)
+                content = `# **🏆 ${comp.title} 🏆**\n## ${comp.description}\n` +
+                    comp.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
+    
+            // Edit the competition summary message with formatted information.
+            const msg = await MESSAGES.getByLink(comp.message_link);
+            
+            // Buttons dependent on competition state.
+            const SetupButton = Button('⚙️', "Setup", 'setup_competition', ButtonStyle.Secondary);
+            const RegisterButton = Button('📝', "Register", 'register_competition', ButtonStyle.Success);
+            const EndButton = Button("⏸️", "End", 'end_competition', ButtonStyle.Danger);
+            msg.edit({ content, components: [new ActionRowBuilder().addComponents([
+                SetupButton, ...(comp.active ? [RegisterButton, EndButton] : [])
+            ])] });
+    
+            // Update channel topic.
+            const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
+            await channel.setTopic(comp.active ? `${comp.title} - ${comp.description}` : content);
+
+            resolve(true);
+
+        } catch(e) {
+            console.error(e);
+            console.log('Error syncing competition summary message');
+            reject(false);
+        }
     };
 
     // Attach the entries and votes to the competition.
