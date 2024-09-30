@@ -46,7 +46,7 @@ export default class CompetitionHelper {
             if (!this.isCompChannel(interaction.channelId)) return;
 
             // Whitelist used buttons.
-            if (!['setup_competition', 'end_competition', 'competition_form'].includes(interaction?.customId))
+            if (!['setup_competition', 'end_competition', 'register_competition', 'competition_form'].includes(interaction?.customId))
                 return;
             
             // Guard to member role.
@@ -254,6 +254,8 @@ export default class CompetitionHelper {
     // Handles users registering to the competition via register button.
     static async register(code, interaction) {
         try {
+            console.log('trying to register', code);
+
             // Limit to 100 entrants until it becomes a problem (Discord inherited problem).
             const entrants = await Competition.loadEntrants(code);
             if (entrants.length >= MAX_ENTRANTS)

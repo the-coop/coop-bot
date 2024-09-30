@@ -77,8 +77,21 @@ const shallowBot = async () => {
 
         // CompetitionHelper.end('art_competition');
 
+        const content = 'Competition ready to be setup and launched.';
+        const msg = await CHANNELS._send('ART_COMPETITION', content);
+        await CompetitionModel.setLink('art_competition', MESSAGES.link(msg));
 
-        console.log(await CompetitionModel.getAll());
+        const SetupButton = new ButtonBuilder()
+            .setEmoji('⚙️')
+            .setLabel("Setup")
+            .setCustomId('setup_competition')
+            .setStyle(ButtonStyle.Secondary);
+
+        msg.edit({ content, components: [new ActionRowBuilder().addComponents([
+            SetupButton
+        ])] });
+
+        // console.log(await CompetitionModel.getAll());
 
         // listenInteractions(ev => console.log(ev));
 
