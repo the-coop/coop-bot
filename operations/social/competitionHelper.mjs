@@ -322,12 +322,9 @@ export default class CompetitionHelper {
             const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
             await channel.setTopic(comp.active ? `${comp.title} - ${comp.description}` : content);
 
-            resolve(true);
-
         } catch(e) {
             console.error(e);
             console.log('Error syncing competition summary message');
-            reject(false);
         }
     };
 
