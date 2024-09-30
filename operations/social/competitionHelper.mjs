@@ -15,6 +15,8 @@ export const COMPETITION_ROLES = {
     BUSINESS_COMPETITION: 'MONEY'
 };
 
+const EMPTY_COMPETITION_TEXT = 'Competition ready to be setup and launched.';
+
 const MAX_ENTRANTS = 100;
 
 const SetupButton = new ButtonBuilder()
@@ -154,7 +156,7 @@ export default class CompetitionHelper {
         });
 
         // Declare the competition winner publicly showing prizes.
-        const publicPrizeText = `:trophy: Congratulations! ` +
+        const finalText = `:trophy: Congratulations! ` +
             `Announcing the ${_fmt(code)} winners! :trophy:\n\n` +
 
             '**The winners and their prizes** are thus:\n\n' +
@@ -165,22 +167,20 @@ export default class CompetitionHelper {
             )).join('\n');
 
         // Annouce publicly (with pings).
-        CHANNELS._send('TALK', publicPrizeText);
+        CHANNELS._send('TALK', finalText);
 
         // Build the blog post for the competition.
         this.blog();
 
         // Clear the messages.
         this.clean(code);
-
-        // Remove the message link from the event.
-        await Competition.setLink(code, null);
+        
+        // Update the message link with new one.
+        const msg = await CHANNELS._send(code.toUpperCase(), EMPTY_COMPETITION_TEXT);
+        await Competition.setLink(code, MESSAGES.link(msg));
 
         // Send the next competition's starting message with setup button.
         await this.sync(comp);
-
-        // Update the message link with new one.
-        await Competition.setLink(code, MESSAGES.link(newCompMsg));
 
         // Set competition is not active.
         await EventsHelper.setActive(code, false);
@@ -244,8 +244,6 @@ export default class CompetitionHelper {
             await EventsHelper.setOrganiser(code, interaction.user.id);
         }
 
-        console.log(comp);
-
         // Update the competition summary.
         await this.sync(comp);
 
@@ -297,7 +295,7 @@ export default class CompetitionHelper {
         comp.entries.sort((a, b) => a.votes > b.votes);
 
         // Format the message for the competition summary message.
-        let content = 'Competition ready to be setup and launched.';
+        let content = EMPTY_COMPETITION_TEXT;
 
         // TODO: If no submissions show registration information
         // TODO: If submissions start to show voting information
