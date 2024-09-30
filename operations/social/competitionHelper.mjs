@@ -86,10 +86,10 @@ export default class CompetitionHelper {
             return await interaction.reply({ content: `Only the organisar can end the competition.`, ephemeral: true });
 
         // Calculate the winner by votes.
-        const progress = await this.check(comp);
+        await this.attachSubmissions(comp);
 
         // Calculate the rightful winners.
-        let winners = progress.entries.filter(participant => participant.votes > 0);
+        let winners = comp.entries.filter(participant => participant.votes > 0);
         
         // Sort entries into vote order.
         winners.sort((a, b) => a.votes > b.votes);
@@ -291,10 +291,10 @@ export default class CompetitionHelper {
     // Ensure the competition summary messages stay up to date.
     static async sync(comp) {
         // Check the competition.
-        const progress = await this.attachSubmissions(comp);
+        await this.attachSubmissions(comp);
 
         // Sort the entrants by largest id
-        progress.entries.sort((a, b) => a.votes > b.votes);
+        comp.entries.sort((a, b) => a.votes > b.votes);
 
         // Format the message for the competition summary message.
         let content = 'Competition ready to be setup and launched.';
@@ -306,7 +306,7 @@ export default class CompetitionHelper {
         // TODO: Add number registered after in progress (5 registered example)
         if (comp.active)
             content = `# **🏆 ${comp.title} 🏆**\n## ${comp.description}\n` +
-                progress.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
+                comp.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
 
         // Edit the competition summary message with formatted information.
         const msg = await MESSAGES.getByLink(comp.message_link);
