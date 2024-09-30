@@ -6,6 +6,11 @@ import CompetitionHelper from '../../social/competitionHelper.mjs';
 import MiningMinigame from '../../minigames/small/mining.mjs';
 import ChestPopMinigame from '../../minigames/small/chestpop.mjs';
 
+export const Button = (emoji, label, customId, style) => new ButtonBuilder({ emoji, label, customId, style })
+
+const ConfirmButton = Button('✅', 'Confirm', 'confirm', ButtonStyle.Success);
+const CancelButton = Button('❌', 'Cancel', 'cancel', ButtonStyle.Danger);
+
 export default class InteractionHelper {
 
     static async _onInteraction(interaction) {
@@ -23,29 +28,17 @@ export default class InteractionHelper {
 
     static confirm(interaction, texts) {
         return new Promise((resolve, reject) => {
-            // Show confirmation and prompt.
-            const ConfirmationActions = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId('confirm')
-                        .setLabel('Confirm')
-                        .setStyle(ButtonStyle.Success),
-                    new ButtonBuilder()
-                        .setCustomId('cancel')
-                        .setLabel('Cancel')
-                        .setStyle(ButtonStyle.Danger)
-                );
-
             // Send the confirm/reject prompt.
-            interaction.reply({ content: texts.preconfirmationText, components: [ConfirmationActions], ephemeral: true });
+            const components = [new ActionRowBuilder({ components: [ ConfirmButton, CancelButton ] })];
+            interaction.reply({ content: texts.preconfirmationText, components, ephemeral: true });
 
             // Setup a collector awaiting confirmation/rejection.
             const collector = interaction.channel.createMessageComponentCollector(
                 { filter: i => !!i, time: 15000 }
             );
             collector.on('collect', i => {
-                i.update({ content: i.customId === 'confirm' ? 
-                        texts.confirmText : texts.cancelText, 
+                i.update({ 
+                    content: i.customId === 'confirm' ? texts.confirmText : texts.cancelText, 
                     components: [], 
                     ephemeral: true 
                 });

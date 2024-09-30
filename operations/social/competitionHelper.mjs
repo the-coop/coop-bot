@@ -8,6 +8,7 @@ import EventsHelper from "../eventsHelper.mjs";
 import Competition from './competition/competition.mjs';
 
 import DropTable from '../minigames/medium/economy/items/droptable.mjs';
+import { Button } from '../activity/messages/interactionHelper.mjs';
 
 export const COMPETITION_ROLES = {
     TECHNOLOGY_COMPETITION: 'TECH',
@@ -19,23 +20,9 @@ const EMPTY_COMPETITION_TEXT = 'Competition ready to be setup and launched.';
 
 const MAX_ENTRANTS = 100;
 
-const SetupButton = new ButtonBuilder()
-        .setEmoji('⚙️')
-        .setLabel("Setup")
-        .setCustomId('setup_competition')
-        .setStyle(ButtonStyle.Secondary);
-
-const RegisterButton = new ButtonBuilder()
-        .setEmoji('📝')
-        .setLabel("Register")
-        .setCustomId('register_competition')
-        .setStyle(ButtonStyle.Success);
-
-const EndButton = new ButtonBuilder()
-        .setEmoji('⏸️')
-        .setLabel("End")
-        .setCustomId('end_competition')
-        .setStyle(ButtonStyle.Danger);
+const SetupButton = Button('⚙️', "Setup", 'setup_competition', ButtonStyle.Secondary);
+const RegisterButton = Button('📝', "Register", 'register_competition', ButtonStyle.Success);
+const EndButton = Button("⏸️", "End", 'end_competition', ButtonStyle.Danger);
 
 export default class CompetitionHelper {
 
