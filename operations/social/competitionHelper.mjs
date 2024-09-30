@@ -173,7 +173,7 @@ export default class CompetitionHelper {
         this.blog();
 
         // Clear the messages.
-        this.clean(code);
+        await this.clean(code);
         
         // Update the message link with new one.
         const msg = await CHANNELS._send(code.toUpperCase(), 'New message for next competition summary/buttons.');
