@@ -167,13 +167,17 @@ export default class CompetitionHelper {
     
             // Update so sync can add the button.
             // comp.message_link = newLink;
+
+            console.log(comp.active);
     
+            // Set competition is not active.
+            comp.active = await EventsHelper.setActive(code, false);
+
+            console.log(comp.active);
+            
             // Send the next competition's starting message with setup button.
             await this.sync(comp);
     
-            // Set competition is not active.
-            await EventsHelper.setActive(code, false);
-
             // Provide feedback/end interaction.
             return await interaction.reply({ content: `Ended competition, posted results to talk channel.`, ephemeral: true });
 

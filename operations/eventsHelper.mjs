@@ -16,11 +16,11 @@ export default class EventsHelper {
     };
 
     static async setActive(code, active) {
-        return await db._sq({
+        return (await db._sq({
             name: "set-event-status",
-            text: 'UPDATE events SET active = $2 WHERE event_code = $1',
+            text: 'UPDATE events SET active = $2 WHERE event_code = $1 RETURNING active',
             values: [code, !!active]
-        });
+        }))?.active;
     };
 
     static async setOrganiser(code, organiser) {
