@@ -81,103 +81,108 @@ export default class CompetitionHelper {
     // Also entry point for next competition, adds competition channel message with setup button.
     static async end(code, interaction) {
         try {
+            // Load the competition.
+            const comp = await Competition.get(code);
+    
+            // Ensure only organiser can end it.
+            if (comp.organiser !== interaction.user.id)
+                return await interaction.reply({ content: `Only the organisar can end the competition.`, ephemeral: true });
+    
+            // Calculate the winner by votes.
+            await this.attachSubmissions(comp);
+    
+            // Calculate the rightful winners.
+            let winners = comp.entries.filter(participant => participant.votes > 0);
+            
+            // Sort entries into vote order.
+            winners.sort((a, b) => a.votes > b.votes);
+            
+            // Limit winners to first 3.
+            winners = winners.slice(0, 3);
+            
+            // Handle rewards scaled by number of votes and notifications for each winner
+            const totalVotes = winners.reduce((sum, participant) => sum + participant.votes, 0);
+            winners.map((w, index) => {
+                // Reward amount.
+                const min = 10 / (index + 1);
+                const numRewards = STATE.CHANCE.natural({ min, max: min * totalVotes });
+    
+                // Generate the rewards for the player.
+                const rawRewards = [];
+                const rewards = [];
+                for (let r = 0; r < numRewards; r++) {
+                    // Random roll for rarity.
+                    let accessibleTiers = ['AVERAGE'];
+                    
+                    // First place gets better rewards.
+                    if (index === 0) accessibleTiers.push('RARE', 'LEGENDARY');
+    
+                    // Second place gets rare rewards.
+                    if (index === 1) accessibleTiers.push('RARE');
+    
+                    // Generate and add to the player's rewards.
+                    const tier = STATE.CHANCE.pickone(accessibleTiers);
+                    const randomReward = DropTable.getRandomTieredWithQty(tier);
+                    rawRewards.push(randomReward);
+                }
+    
+                // Clean up the duplicate item awards by merging qtys.
+                rawRewards.map(r => {
+                    const index = rewards.findIndex(rv => rv.item === r.item);
+                    if (index !== -1)
+                        rewards[index].qty += r.qty;
+                    else
+                        rewards.push(r);
+                });
+                
+                // Add the items to the user.
+                winners[index].rewards = rewards;
+                winners[index].rewards.map(r => Items.add(w.entrant_id, r.item, r.qty, 'Competition win'));
+            });
+    
+            // Declare the competition winner publicly showing prizes.
+            const finalText = `:trophy: Congratulations! ` +
+                `Announcing the ${_fmt(code)} winners! :trophy:\n\n` +
+    
+                '**The winners and their prizes** are thus:\n\n' +
+    
+                winners.map((w, i) => (
+                    ':trophy:'.repeat(3 - i) + ` <@${w.entrant_id}>` + '\n' +
+                    w.rewards.map(r => `${r.item}x${r.qty}`).join('\n') + '\n\n'
+                )).join('\n');
+    
+            // Annouce publicly (with pings).
+            CHANNELS._send('TALK', finalText);
+    
+            // Build the blog post for the competition.
+            this.blog();
+    
+            // Clear the messages.
+            await this.clean(code);
+            
+            // Update the message link with new one.
+            // const msg = await CHANNELS._send(code.toUpperCase(), 'New message for next competition summary/buttons.');
+            // const newLink = MESSAGES.link(msg);
+            // await Competition.setLink(code, newLink);
+    
+            // Update so sync can add the button.
+            // comp.message_link = newLink;
+    
+            // Send the next competition's starting message with setup button.
+            await this.sync(comp);
+    
+            // Set competition is not active.
+            await EventsHelper.setActive(code, false);
+
+            // Provide feedback/end interaction.
+            return await interaction.reply({ content: `Ended competition, posted results to talk channel.`, ephemeral: true });
 
         } catch(e) {
             console.error(e);
             console.log('Error ending competition');
         }
-        // Load the competition.
-        const comp = await Competition.get(code);
 
-        // Ensure only organiser can end it.
-        if (comp.organiser !== interaction.user.id)
-            return await interaction.reply({ content: `Only the organisar can end the competition.`, ephemeral: true });
-
-        // Calculate the winner by votes.
-        await this.attachSubmissions(comp);
-
-        // Calculate the rightful winners.
-        let winners = comp.entries.filter(participant => participant.votes > 0);
-        
-        // Sort entries into vote order.
-        winners.sort((a, b) => a.votes > b.votes);
-        
-        // Limit winners to first 3.
-        winners = winners.slice(0, 3);
-        
-        // Handle rewards scaled by number of votes and notifications for each winner
-        const totalVotes = winners.reduce((sum, participant) => sum + participant.votes, 0);
-        winners.map((w, index) => {
-            // Reward amount.
-            const min = 10 / (index + 1);
-            const numRewards = STATE.CHANCE.natural({ min, max: min * totalVotes });
-
-            // Generate the rewards for the player.
-            const rawRewards = [];
-            const rewards = [];
-            for (let r = 0; r < numRewards; r++) {
-                // Random roll for rarity.
-                let accessibleTiers = ['AVERAGE'];
-                
-                // First place gets better rewards.
-                if (index === 0) accessibleTiers.push('RARE', 'LEGENDARY');
-
-                // Second place gets rare rewards.
-                if (index === 1) accessibleTiers.push('RARE');
-
-                // Generate and add to the player's rewards.
-                const tier = STATE.CHANCE.pickone(accessibleTiers);
-                const randomReward = DropTable.getRandomTieredWithQty(tier);
-                rawRewards.push(randomReward);
-            }
-
-            // Clean up the duplicate item awards by merging qtys.
-            rawRewards.map(r => {
-                const index = rewards.findIndex(rv => rv.item === r.item);
-                if (index !== -1)
-                    rewards[index].qty += r.qty;
-                else
-                    rewards.push(r);
-            });
-            
-            // Add the items to the user.
-            winners[index].rewards = rewards;
-            winners[index].rewards.map(r => Items.add(w.entrant_id, r.item, r.qty, 'Competition win'));
-        });
-
-        // Declare the competition winner publicly showing prizes.
-        const finalText = `:trophy: Congratulations! ` +
-            `Announcing the ${_fmt(code)} winners! :trophy:\n\n` +
-
-            '**The winners and their prizes** are thus:\n\n' +
-
-            winners.map((w, i) => (
-                ':trophy:'.repeat(3 - i) + ` <@${w.entrant_id}>` + '\n' +
-                w.rewards.map(r => `${r.item}x${r.qty}`).join('\n') + '\n\n'
-            )).join('\n');
-
-        // Annouce publicly (with pings).
-        CHANNELS._send('TALK', finalText);
-
-        // Build the blog post for the competition.
-        this.blog();
-
-        // Clear the messages.
-        await this.clean(code);
-        
-        // Update the message link with new one.
-        // const msg = await CHANNELS._send(code.toUpperCase(), 'New message for next competition summary/buttons.');
-        // const newLink = MESSAGES.link(msg);
-        // await Competition.setLink(code, newLink);
-
-        // Update so sync can add the button.
-        // comp.message_link = newLink;
-
-        // Send the next competition's starting message with setup button.
-        await this.sync(comp);
-
-        // Set competition is not active.
-        await EventsHelper.setActive(code, false);
+        return await interaction.reply({ content: `Error ending competition.`, ephemeral: true });
     };
     
     // Displays required fields for competition information.
@@ -216,6 +221,8 @@ export default class CompetitionHelper {
             console.error(e);
             console.log('Error showing setup competition modal.');
         }
+
+        return await interaction.reply({ content: `Error modifying/setting up competition.`, ephemeral: true });
     };
 
     // Set the title and description and start competition if needed.
@@ -252,14 +259,14 @@ export default class CompetitionHelper {
             await this.sync(comp);
 
             // Inform organiser the edit is successful.
-            return await interaction.followUp({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
+            return await interaction.reply({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
 
         } catch(e) {
             console.error(e);
             console.log('Error configuring competition');
         }
 
-        return await interaction.followUp({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
+        return await interaction.reply({ content: `Error handling configure competition form.`, ephemeral: true });
     };
 
     // Handles users registering to the competition via register button.
