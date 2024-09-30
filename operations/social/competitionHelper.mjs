@@ -255,27 +255,37 @@ export default class CompetitionHelper {
 
     // Handles users registering to the competition via register button.
     static async register(code, interaction) {
-        // Limit to 100 entrants until it becomes a problem (Discord inherited problem).
-        const entrants = await Competition.loadEntrants(code);
-        if (entrants.length >= MAX_ENTRANTS)
-            return await interaction.reply({ content: `${entrants.length}/${MAX_ENTRANTS} registered, please try again next time.`, ephemeral: true });
+        try {
+            // Limit to 100 entrants until it becomes a problem (Discord inherited problem).
+            const entrants = await Competition.loadEntrants(code);
+            if (entrants.length >= MAX_ENTRANTS)
+                return await interaction.reply({ content: `${entrants.length}/${MAX_ENTRANTS} registered, please try again next time.`, ephemeral: true });
+    
+            // Check not already registered on this competition.
+            const entrant = await Competition.loadEntrant(code, interaction.user.id);
+            if (entrant)
+                return await interaction.reply({ content: `You're already registered to the ${_fmt(code)}.`, ephemeral: true });
+    
+            // Load competition.
+            const comp = await Competition.get(code);
+    
+            // Store in database table for competition.
+            await Competition.saveEntrant(code, interaction.user.id);
+    
+            // Publicly announce to bring attention to competition.
+            await CHANNELS._send('TALK', `📋 <@${interaction.user.id}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`, {});
+    
+            // Update the competition messages
+            await this.sync(comp);
+    
+            // Reply to the interaction with feedback.
+            return await interaction.reply({ content: `Successfully registered for the ${_fmt(code)}!`, ephemeral: true });
 
-        // Check not already registered on this competition.
-        const entrant = await Competition.loadEntrant(code, interaction.user.id);
-        if (entrant)
-            return await interaction.reply({ content: `You're already registered to the ${_fmt(code)}.`, ephemeral: true });
-
-        // Store in database table for competition.
-        await Competition.saveEntrant(code, interaction.user.id);
-
-        // Publicly announce to bring attention to competition.
-        await CHANNELS._send('TALK', `📋 <@${interaction.user.id}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`, {});
-
-        // Update the competition messages
-        await this.sync(comp);
-
-        // Reply to the interaction with feedback.
-        return await interaction.reply({ content: `Successfully registered for the ${_fmt(code)}!`, ephemeral: true });
+        } catch(e) {
+            console.error(e);
+            console.log('Error registering for ' + code);
+            return await interaction.reply({ content: 'Failed to register, please try later.', ephemeral: true });
+        }
     };
 
     // Ensure the competition summary messages stay up to date.
