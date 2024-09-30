@@ -55,10 +55,14 @@ export default class CompetitionHelper {
             // Handle finalising the results.
             if (interaction.customId === 'end_competition')
                 return await this.end(code, interaction);
+
+            // TODO: Remove if unnecessary???
+            return await interaction.reply({ content: `Something weird happening?`, ephemeral: true });
                 
         } catch(e) {
             console.error(e);
             console.log('Error handling competition interaction.');
+            return await interaction.reply({ content: `Error handling competition interaction.`, ephemeral: true });
         }
     };
 
@@ -139,21 +143,16 @@ export default class CompetitionHelper {
             CHANNELS._send('TALK', finalText);
     
             // Build the blog post for the competition.
-            this.blog();
+            this.blog(code);
     
             // Clear the messages.
             await this.clean(comp);
 
-
-            console.log(comp.active);
-    
             // Set competition is not active.
             comp.active = await EventsHelper.setActive(code, false);
-
-            console.log(comp.active);
             
             // Send the next competition's starting message with setup button.
-            await this.sync(comp);
+            this.sync(comp);
     
             // Provide feedback/end interaction.
             return await interaction.reply({ content: `Ended competition, posted results to talk channel.`, ephemeral: true });
@@ -237,7 +236,7 @@ export default class CompetitionHelper {
             }
 
             // Update the competition summary.
-            await this.sync(comp);
+            this.sync(comp);
 
             // Inform organiser the edit is successful.
             return await interaction.reply({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
@@ -275,7 +274,7 @@ export default class CompetitionHelper {
             await CHANNELS._send('TALK', `📋 <@${interaction.user.id}> registered for the ${CHANNELS.textRef(code.toUpperCase())}!`, {});
     
             // Update the competition messages
-            await this.sync(comp);
+            this.sync(comp);
     
             // Reply to the interaction with feedback.
             return await interaction.reply({ content: `Successfully registered for the ${_fmt(code)}!`, ephemeral: true });
@@ -289,38 +288,52 @@ export default class CompetitionHelper {
 
     // Ensure the competition summary messages stay up to date.
     static async sync(comp) {
-        // Check the competition.
-        await this.attachSubmissions(comp);
-
-        // Sort the entrants by largest id
-        comp.entries.sort((a, b) => a.votes > b.votes);
-
-        // Format the message for the competition summary message.
-        let content = EMPTY_COMPETITION_TEXT;
-
-        // TODO: If no submissions show registration information
-        // TODO: If submissions start to show voting information
+        return new Promise((resolve, reject) => {
+            // Give interaction time to finish before deleting its button (seems to cause failure).
+            setTimeout(async () => {
+                try {
+                    // Check the competition.
+                    await this.attachSubmissions(comp);
+            
+                    // Sort the entrants by largest id
+                    comp.entries.sort((a, b) => a.votes > b.votes);
+            
+                    // Format the message for the competition summary message.
+                    let content = EMPTY_COMPETITION_TEXT;
+            
+                    // TODO: If no submissions show registration information
+                    // TODO: If submissions start to show voting information
+                    
+                    // Format message for active competitions.
+                    // TODO: Add number registered after in progress (5 registered example)
+                    if (comp.active)
+                        content = `# **🏆 ${comp.title} 🏆**\n## ${comp.description}\n` +
+                            comp.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
+            
+                    // Edit the competition summary message with formatted information.
+                    const msg = await MESSAGES.getByLink(comp.message_link);
+                    
+                    // Buttons dependent on competition state.
+                    const SetupButton = Button('⚙️', "Setup", 'setup_competition', ButtonStyle.Secondary);
+                    const RegisterButton = Button('📝', "Register", 'register_competition', ButtonStyle.Success);
+                    const EndButton = Button("⏸️", "End", 'end_competition', ButtonStyle.Danger);
+                    msg.edit({ content, components: [new ActionRowBuilder().addComponents([
+                        SetupButton, ...(comp.active ? [RegisterButton, EndButton] : [])
+                    ])] });
+            
+                    // Update channel topic.
+                    const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
+                    await channel.setTopic(comp.active ? `${comp.title} - ${comp.description}` : content);
         
-        // Format message for active competitions.
-        // TODO: Add number registered after in progress (5 registered example)
-        if (comp.active)
-            content = `# **🏆 ${comp.title} 🏆**\n## ${comp.description}\n` +
-                comp.entries.map(e => `<@${e.entrant_id}> (${e.votes} vote(s))`).join('\n');
-
-        // Edit the competition summary message with formatted information.
-        const msg = await MESSAGES.getByLink(comp.message_link);
-        
-        // Buttons dependent on competition state.
-        const SetupButton = Button('⚙️', "Setup", 'setup_competition', ButtonStyle.Secondary);
-        const RegisterButton = Button('📝', "Register", 'register_competition', ButtonStyle.Success);
-        const EndButton = Button("⏸️", "End", 'end_competition', ButtonStyle.Danger);
-        msg.edit({ content, components: [new ActionRowBuilder().addComponents([
-            SetupButton, ...(comp.active ? [RegisterButton, EndButton] : [])
-        ])] });
-
-        // Update channel topic.
-        const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
-        await channel.setTopic(comp.active ? `${comp.title} - ${comp.description}` : content);
+                    resolve(true);
+    
+                } catch(e) {
+                    console.error(e);
+                    console.log('Error syncing competition summary message');
+                    reject(false);
+                }
+            }, 1500);
+        });
     };
 
     // Attach the entries and votes to the competition.
