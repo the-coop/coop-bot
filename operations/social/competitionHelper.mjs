@@ -182,31 +182,40 @@ export default class CompetitionHelper {
     
     // Displays required fields for competition information.
     static async setup(code, interaction) {
-        // Check if competition already active and they are the organiser interaction.user.id
-        const comp = await Competition.get(code);
-        if (comp.active && comp.organiser !== interaction.user.id)
-            return await interaction.reply({ content: `Only the organisar can edit the competition.`, ephemeral: true });
+        try {
+            // Defer the interaction to prevent timeouts/confusion.
+            await interaction.deferUpdate();
 
-        // Format competition info for form display.
-        const fmtCode = _fmt(code);
-        const fmtTitle = fmtCode.charAt(0).toUpperCase() + fmtCode.slice(1);
+            // Check if competition already active and they are the organiser interaction.user.id
+            const comp = await Competition.get(code);
+            if (comp.active && comp.organiser !== interaction.user.id)
+                return await interaction.reply({ content: `Only the organisar can edit the competition.`, ephemeral: true });
+    
+            // Format competition info for form display.
+            const fmtCode = _fmt(code);
+            const fmtTitle = fmtCode.charAt(0).toUpperCase() + fmtCode.slice(1);
+    
+            // Create the text input components form, and show to use.
+            const modal = new ModalBuilder().setCustomId('competition_form').setTitle(`${fmtTitle} details`);
+            return await interaction.showModal(modal.addComponents(
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setCustomId('competition_title')
+                        .setLabel("Competition title:")
+                        .setStyle(TextInputStyle.Short)
+                ),
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setCustomId('competition_description')
+                        .setLabel("Details for the competition:")
+                        .setStyle(TextInputStyle.Paragraph)
+                )
+            ));
 
-        // Create the text input components form, and show to use.
-        const modal = new ModalBuilder().setCustomId('competition_form').setTitle(`${fmtTitle} details`);
-        return await interaction.showModal(modal.addComponents(
-            new ActionRowBuilder().addComponents(
-                new TextInputBuilder()
-                    .setCustomId('competition_title')
-                    .setLabel("Competition title:")
-                    .setStyle(TextInputStyle.Short)
-            ),
-            new ActionRowBuilder().addComponents(
-                new TextInputBuilder()
-                    .setCustomId('competition_description')
-                    .setLabel("Details for the competition:")
-                    .setStyle(TextInputStyle.Paragraph)
-            )
-        ));
+        } catch(e) {
+            console.error(e);
+            console.log('Error showing setup competition modal.');
+        }
     };
 
     // Set the title and description and start competition if needed.
