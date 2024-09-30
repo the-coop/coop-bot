@@ -184,7 +184,7 @@ export default class CompetitionHelper {
     static async setup(code, interaction) {
         try {
             // Defer the interaction to prevent timeouts/confusion.
-            await interaction.deferUpdate();
+            // await interaction.deferUpdate();
 
             // Check if competition already active and they are the organiser interaction.user.id
             const comp = await Competition.get(code);
@@ -224,18 +224,18 @@ export default class CompetitionHelper {
             // Extract values from setup modal form.
             const title = interaction.fields.getTextInputValue('competition_title');
             const description = interaction.fields.getTextInputValue('competition_description');
-    
+
             // Load competition.
             const comp = await Competition.get(code);
-    
+
             // Update the competition data based on inputs
             await Competition.setTitle(code, title);
             await Competition.setDescription(code, description);
-    
+
             // Update information since it's passed to sync method.
             comp.title = title;
             comp.description = description;
-    
+
             // Decide whether to start the competition or edit.
             if (!comp.active) {
                 // Clear the previous competition entrants.
@@ -247,18 +247,19 @@ export default class CompetitionHelper {
                 // Explicitly declare event started.
                 await EventsHelper.setOrganiser(code, interaction.user.id);
             }
-    
+
             // Update the competition summary.
             await this.sync(comp);
-    
+
             // Inform organiser the edit is successful.
-            return await interaction.reply({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
+            return await interaction.followUp({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
 
         } catch(e) {
-
+            console.error(e);
+            console.log('Error configuring competition');
         }
 
-        return await interaction.reply({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
+        return await interaction.followUp({ content: `${comp.active ? 'Edited' : 'Started'} your ${_fmt(code)} (${title})`, ephemeral: true });
     };
 
     // Handles users registering to the competition via register button.
