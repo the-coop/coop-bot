@@ -80,6 +80,12 @@ export default class CompetitionHelper {
 
     // Also entry point for next competition, adds competition channel message with setup button.
     static async end(code, interaction) {
+        try {
+
+        } catch(e) {
+            console.error(e);
+            console.log('Error ending competition');
+        }
         // Load the competition.
         const comp = await Competition.get(code);
 
@@ -137,22 +143,6 @@ export default class CompetitionHelper {
             // Add the items to the user.
             winners[index].rewards = rewards;
             winners[index].rewards.map(r => Items.add(w.entrant_id, r.item, r.qty, 'Competition win'));
-
-            // DM the winners.
-            try {
-                const competitionWinDMText = `:trophy: Congratulations! ` +
-                    // If not first place then not "winning"
-                    `You were rewarded for winning the ${_fmt(code)}! :trophy:\n\n` +
-
-                    'You received the following items as a prize:\n' +
-                    
-                    winners[index].rewards.map(r => `${MESSAGES.emojiCodeText(r.item)} ${r.item}x${r.qty}`).join('\n')
-                    
-                USERS._dm(w.entrant_id, competitionWinDMText);
-            } catch(e) {
-                console.log('Error DMing competition winner!');
-                console.error(e);
-            }
         });
 
         // Declare the competition winner publicly showing prizes.
@@ -176,12 +166,12 @@ export default class CompetitionHelper {
         await this.clean(code);
         
         // Update the message link with new one.
-        const msg = await CHANNELS._send(code.toUpperCase(), 'New message for next competition summary/buttons.');
-        const newLink = MESSAGES.link(msg);
-        await Competition.setLink(code, newLink);
+        // const msg = await CHANNELS._send(code.toUpperCase(), 'New message for next competition summary/buttons.');
+        // const newLink = MESSAGES.link(msg);
+        // await Competition.setLink(code, newLink);
 
         // Update so sync can add the button.
-        comp.message_link = newLink;
+        // comp.message_link = newLink;
 
         // Send the next competition's starting message with setup button.
         await this.sync(comp);
@@ -442,18 +432,20 @@ export default class CompetitionHelper {
     };
 
     // Clean the entry messages from the channel, including the summary.
-    static async clean(code) {
+    static async clean(comp) {
         try {
-            const channel = CHANNELS._getCode(code.toUpperCase());
+            const channel = CHANNELS._getCode(comp.event_code.toUpperCase());
             const msgs = await channel.messages.fetch({ limit: MAX_ENTRANTS });
-            await channel.bulkDelete(msgs);
+
+            const filtered = msgs.filter(m => MESSAGES.link(m) !== comp.message_link);
+            await channel.bulkDelete(filtered);
             return true;
 
         } catch(e) {
             console.log('Error clearing competition ' + code);
             console.error(e);
-            return false;
         }
+        return false;
     };
 
     // Check if ID is a competition channel ID.
