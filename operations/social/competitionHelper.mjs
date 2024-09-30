@@ -77,10 +77,9 @@ export default class CompetitionHelper {
     };
 
     // Also entry point for next competition, adds competition channel message with setup button.
-    static async end(code) {
+    static async end(code, interaction) {
         // Load the competition.
         const comp = await Competition.get(code);
-        const channel = CHANNELS._getCode(code.toUpperCase());
 
         // Ensure only organiser can end it.
         if (comp.organiser !== interaction.user.id)
