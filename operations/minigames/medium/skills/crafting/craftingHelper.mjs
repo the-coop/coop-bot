@@ -47,6 +47,13 @@ export default class CraftingHelper {
                 STEEL_BAR: 3,
                 IRON_BAR: 5
             }
+        },
+        KEY: {
+            levelReq:1,
+            xpReward:1,
+            ingredients: {
+                IRON_BAR:1
+            }
         }
     }
 
