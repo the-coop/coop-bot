@@ -349,6 +349,4 @@ export default class ItemsHelper {
         const noZeroes = rounded.toString();
         return noZeroes;
     };
-
-
 };

@@ -4,7 +4,7 @@ import { RAW_EMOJIS, EMOJIS, CHANNELS as CHANNELS_CONFIG } from 'coop-shared/con
 import Items from 'coop-shared/services/items.mjs';
 import Useable from 'coop-shared/services/useable.mjs';
 
-import COOP, { STATE, CHANNELS, ITEMS, MESSAGES, USERS, ROLES, REACTIONS } from '../../../coop.mjs';
+import COOP, { STATE, CHICKEN, CHANNELS, ITEMS, MESSAGES, USERS, ROLES, REACTIONS } from '../../../coop.mjs';
 
 import EconomyNotifications from '../../activity/information/economyNotifications.mjs';
 import DropTable from '../medium/economy/items/droptable.mjs';
@@ -241,6 +241,13 @@ export default class EggHuntMinigame {
             // Small chance of being stolen by a fox.
             if (STATE.CHANCE.bool({ likelihood: 5 })) {
                 reaction.message.edit(`${user.username}'s ${MESSAGES.emojiText(emoji)} was stolen by a fox 🦊`);
+                // Convert the rarity variable into chicken config key example: "stolen_average_egg"
+                const configKey = `stolen_${rarity.toLowerCase()}`;
+                // Fetch the current amount of stolen eggs of this rarity and increment
+                const currentAmount = await CHICKEN.getConfig(configKey);
+                const newAmount = (parseInt(currentAmount) || 0) + 1;
+                // Update the value in chicken config
+                CHICKEN.setConfig(configKey, newAmount);
                 return ReactionHelper.removeAll(reaction.message);
             }
 
