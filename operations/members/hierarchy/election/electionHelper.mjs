@@ -24,7 +24,7 @@ export default class ElectionHelper {
     static VOTING_DUR_SECS = (3600 * 24) * 7;
 
     // Allow for a week of voting before reset.
-    static TERM_DUR_SECS = ((3600 * 24) * 30) + this.VOTING_DUR_SECS;
+    static TERM_DUR_SECS = ((3600 * 24) * 60) + this.VOTING_DUR_SECS;
 
     static async addVote(userID, candidateID) {
         const query = {
