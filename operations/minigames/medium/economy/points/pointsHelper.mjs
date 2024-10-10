@@ -201,6 +201,10 @@ export default class PointsHelper {
             // Give the winner the reward.
             if (hadAlready) {
                 await Items.add(highestChange.userID, 'COOP_POINT', 30);
+                if (STATE.CHANCE.bool({ likelihood: 5})) {
+                    await Items.add(highestChange.userID, 'LEGENDARY_EGG', 1);
+                    updateText += `_Rare MOTW Reward: 1 x Legendary Egg!_`;
+                }
                 updateText += `_Given 50${cpDisplay} for MOTW reward._`;
             }
 
