@@ -349,37 +349,4 @@ export default class ItemsHelper {
         const noZeroes = rounded.toString();
         return noZeroes;
     };
-
-    // Adds to the stolen egg amount and returns new amount
-    static async addStolenEggs(rarity, amount) {
-        const query = {
-            name: "add-stolen-eggs",
-            text: `INSERT INTO stolen_eggs (rarity, amount)
-                VALUES ($1, $2)
-                ON CONFLICT (rarity) 
-                DO 
-                UPDATE SET amount = stolen_eggs.amount + EXCLUDED.amount
-                RETURNING amount`,
-            values: [rarity, amount]
-        };
-        return DatabaseHelper.single(query);
-    };
-
-    // Gets the stolen eggs amount above 0
-    static async getStolenEggs() {
-        const query = {
-            name: "get-stolen-eggs",
-            text: `SELECT * FROM stolen_eggs WHERE amount > 0`,
-        };
-        return DatabaseHelper.many(query);
-    };
-
-    static async clearStolenEggs() {
-        const query = {
-            name: "clear-stolen-eggs",
-            text: `UPDATE stolen_eggs SET amount = 0 WHERE amount > 0`,
-        };
-        const result = await Database.query(query);
-        return result;
-    };
 };
