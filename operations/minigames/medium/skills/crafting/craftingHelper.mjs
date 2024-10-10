@@ -49,12 +49,12 @@ export default class CraftingHelper {
             }
         },
         KEY: {
-            levelReq:1,
-            xpReward:1,
+            levelReq: 1,
+            xpReward: 1,
             ingredients: {
-                IRON_BAR:1
+                IRON_BAR: 1
             }
-        }
+        },
     }
 
     static isItemCraftable(code) {
