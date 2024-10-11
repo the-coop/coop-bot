@@ -20,7 +20,7 @@ export default class BlogHelper {
 
         // Is this necessary??
         const announcementMsg = await CHANNELS._postToChannelCode('TALK', `Blog draft post created! <#${channel.id}>`);
-    }
+    };
 
     static async publish(title, slug, content, authorID) {
         try {
@@ -51,7 +51,7 @@ export default class BlogHelper {
             console.log('Error publishing channel draft to a blog post.');
             console.error(e);
         }
-    }
+    };
 
     static async loadDraft(draftID) {
         const draft = await DatabaseHelper.singleQuery({
@@ -67,8 +67,7 @@ export default class BlogHelper {
             name: "load-drafts", text: `SELECT * FROM post_drafts`
         });
         return draft;
-    }
-
+    };
 
     static loadPostByID(id) {
         return DatabaseHelper.singleQuery({
@@ -76,9 +75,7 @@ export default class BlogHelper {
             text: `SELECT * FROM blog_posts WHERE id = $1`,
             values: [id]
         });
-    }
-
-
+    };
 
     static async deleteDraft(draftID) {
         return Database.query({
@@ -86,7 +83,7 @@ export default class BlogHelper {
             text: 'DELETE FROM post_drafts WHERE id = $1',
             values: [draftID]
         })
-    }
+    };
 
     static async buildDraft(draftChannel) {
         const messages = await draftChannel.messages.fetch({});
@@ -100,7 +97,7 @@ export default class BlogHelper {
             return subContent;
         }).join('\n\n');
         return content;
-    }
+    };
 
     static async fulfilDraft(draft) {
         try {
@@ -127,7 +124,7 @@ export default class BlogHelper {
             console.log('Error turning blog post channel into a blog post.');
             console.error(e);
         }
-    }
+    };
     
     static async channelDraft(name, owner, deadline) {
         try {
@@ -177,7 +174,7 @@ export default class BlogHelper {
             console.error(e);
             return null;
         }
-    }
+    };
 
     static async onChannelUpdate(chanUpdate) {
         // Ensure it's a project channel.
@@ -197,7 +194,7 @@ export default class BlogHelper {
             await this.setTitle(chanUpdate.id, title);
             await this.setDescription(chanUpdate.id, description);
         }
-    } 
+    };
 
     static async setTitle(channelID, title) {
         const slug = encodeURIComponent(title.replaceAll(' ', '-').toLowerCase());
@@ -206,7 +203,7 @@ export default class BlogHelper {
             text: 'UPDATE posts SET title = $2, slug = $3 WHERE channel_id = $1',
             values: [channelID, title, slug]
         });
-    }
+    };
 
     static async setDescription(channelID, description) {
         return await DatabaseHelper.singleQuery({
@@ -214,5 +211,5 @@ export default class BlogHelper {
             text: 'UPDATE posts SET description = $2 WHERE channel_id = $1',
             values: [channelID, description]
         });
-    }
-}
+    };
+};
