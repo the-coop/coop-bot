@@ -68,6 +68,14 @@ const shallowBot = async () => {
 
         // await EventsHelper.setOrganiser('art_competition', '786671654721683517');
 
+        // MiningMinigame.run();
+        // WoodcuttingMinigame.run();
+
+
+        // const userAxesNum = await Items.getUserItemQty('786671654721683517', 'AXE');
+        // console.log(userAxesNum);
+
+
 
         // ChestPopMinigame.run();
 
@@ -77,19 +85,19 @@ const shallowBot = async () => {
 
         // CompetitionHelper.end('art_competition');
 
-        const content = 'Competition ready to be setup and launched.';
-        const msg = await CHANNELS._send('ART_COMPETITION', content);
-        await CompetitionModel.setLink('art_competition', MESSAGES.link(msg));
+        // const content = 'Competition ready to be setup and launched.';
+        // const msg = await CHANNELS._send('ART_COMPETITION', content);
+        // await CompetitionModel.setLink('art_competition', MESSAGES.link(msg));
 
-        const SetupButton = new ButtonBuilder()
-            .setEmoji('⚙️')
-            .setLabel("Setup")
-            .setCustomId('setup_competition')
-            .setStyle(ButtonStyle.Secondary);
+        // const SetupButton = new ButtonBuilder()
+        //     .setEmoji('⚙️')
+        //     .setLabel("Setup")
+        //     .setCustomId('setup_competition')
+        //     .setStyle(ButtonStyle.Secondary);
 
-        msg.edit({ content, components: [new ActionRowBuilder().addComponents([
-            SetupButton
-        ])] });
+        // msg.edit({ content, components: [new ActionRowBuilder().addComponents([
+        //     SetupButton
+        // ])] });
 
         // console.log(await CompetitionModel.getAll());
 

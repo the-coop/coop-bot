@@ -1,69 +1,53 @@
-import EconomyNotifications from "../../activity/information/economyNotifications.mjs";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
-import SkillsHelper from "../medium/skills/skillsHelper.mjs";
-
-import { STATE, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
-import { EMOJIS } from "coop-shared/config.mjs";
-import Statistics from "../../activity/information/statistics.mjs";
-import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+
+import { STATE, ITEMS, MESSAGES, CHANNELS } from "../../../coop.mjs";
+import { EMOJIS } from "coop-shared/config.mjs";
+
+import EconomyNotifications from "../../activity/information/economyNotifications.mjs";
+import SkillsHelper from "../medium/skills/skillsHelper.mjs";
+import Statistics from "../../activity/information/statistics.mjs";
+import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 
 export default class MiningMinigame {
 
-    // Reaction interceptor to check if user is attempting to interact.
-    static async onInteraction(interaction) {
-        const { message, channel, user } = interaction;
+    // User interaction "chipping" mining rocks.
+    static async onInteraction({ customId, message, channel, user, reply }) {
+        try {
+            // Interaction is not relevant to mining, skip.
+            if (customId !== 'chip') return false;
 
-        // High chance of preventing any mining at all to deal with rate limiting.
-        if (STATE.CHANCE.bool({ likelihood: 50 })) return false;
+            // High chance of preventing any mining at all to deal with rate limiting.
+            if (STATE.CHANCE.bool({ likelihood: 50 })) return await reply({ content: 'You missed...', ephemeral: true });
 
-        const msgContent = message.content;
-        const isOnlyEmojis = MESSAGES.isOnlyEmojis(message.content);
-        const isCooperMsg = USERS.isCooperMsg(message);
-        
-        // Mining minigame guards.
-        if (!isCooperMsg) return false;
-        if (!isOnlyEmojis) return false;
+            // Calculate magnitude from message: more rocks, greater reward.
+            const textMagnitude = Math.floor(message.content.length / 2);
+            const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 2 });
 
-        const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
-        const firstEmojiUni = MESSAGES.emojiToUni(firstEmojiString);
-        const rockEmojiUni = MESSAGES.emojiToUni(EMOJIS.ROCK);
-        const isRocksMsg = firstEmojiUni === rockEmojiUni;
+            // Check if has a pickaxe
+            const userPickaxesNum = await Items.getUserItemQty(user.id, 'PICK_AXE');
+            const noPickText = `<@${user.id}> tried to mine the rocks, but doesn't have a pickaxe.`;
+            if (userPickaxesNum <= 0) 
+                return await reply({ content: noPickText, ephemeral: true });
 
-        if (isRocksMsg)
-            this.chip(message, channel, user, interaction);
-    };
+            // Count the number of people mining to apply a multipler/bonus.
+            const ptsEmoji = MESSAGES.emojiCodeText('COOP_POINT');
 
-    static async chip(msg, channel, user, interaction) {
-        // Calculate magnitude from message: more rocks, greater reward.
-        const textMagnitude = Math.floor(msg.content.length / 2);
-        const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 2 });
+            // Adjust extracted ore by buffs and adjust to clamp above > 0.
+            const extractedOreNum = Math.max(0, Math.ceil(rewardRemaining / 1.5));
 
-        // Check if has a pickaxe
-        const userPickaxesNum = await Items.getUserItemQty(user.id, 'PICK_AXE');
-        const noPickText = `<@${user.id}> tried to mine the rocks, but doesn't have a pickaxe.`;
-        if (userPickaxesNum <= 0) 
-            return await interaction.reply({ content: noPickText, ephemeral: true });
+            // Clamp lower and upper boundary for chance of pickaxe breaking
+            const pickaxeBreakPerc = Math.min(15, Math.max(15, extractedOreNum));
 
-        // Count the number of people mining to apply a multipler/bonus.
-        const ptsEmoji = MESSAGES.emojiCodeText('COOP_POINT');
-
-        // Adjust extracted ore by buffs and adjust to clamp above > 0.
-        const extractedOreNum = Math.max(0, Math.ceil(rewardRemaining / 1.5));
-
-        // Clamp lower and upper boundary for chance of pickaxe breaking
-        const pickaxeBreakPerc = Math.min(15, Math.max(15, extractedOreNum));
-
-        // Attempt to access the mining message.
-        let updateMsg = await MESSAGES.getSimilarExistingMsg(channel, '**MINING IN PROGRESS**');
-            
-        // Test the pickaxe for breaking.
-        const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
-        if (didBreak) {
-            const pickaxeUpdate = await Useable.use(user.id, 'PICK_AXE', 1);
-            if (pickaxeUpdate) {
+            // Attempt to access the mining message.
+            let updateMsg = await MESSAGES.getSimilarExistingMsg(channel, '**MINING IN PROGRESS**');
+                
+            // Test the pickaxe for breaking.
+            const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
+            if (didBreak) {
+                const pickaxeUpdate = await Useable.use(user.id, 'PICK_AXE', 1);
                 const brokenPickDamage = -2;
                 const pointsDamageResult = await Items.subtract(user.id, 'COOP_POINT', Math.abs(brokenPickDamage), 'Broken pickaxe damage');
                 const ptsDmgText = ITEMS.displayQty(pointsDamageResult);
@@ -80,9 +64,9 @@ export default class MiningMinigame {
                 SkillsHelper.addXP(user.id, 'mining', 2);
 
                 const actionText = `${user.username} broke a pickaxe trying to mine, ${userPickaxesNum - 1} remaining! Gained 2xp in mining for trying!.`;
-                return await interaction.reply({ content: actionText, ephemeral: true });
-            }
-        } else {
+                return await reply({ content: actionText, ephemeral: true });
+            } 
+
             // See if updating the item returns the item and quantity.
             const addMetalOre = await Items.add(user.id, 'METAL_ORE', extractedOreNum, 'Mining');
             const addPoints = await Items.add(user.id, 'COOP_POINT', 1, 'Mining');
@@ -91,13 +75,13 @@ export default class MiningMinigame {
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
                 diamondsFound = 1;
                 const addDiamond = await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining rare event');
-                CHANNELS.propagate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
+                CHANNELS.propagate(message, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
             }
-            
+
             if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
                 diamondsFound = STATE.CHANCE.natural({ min: 5, max: 25 });
                 await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining very rare event');
-                CHANNELS.propagate(msg, `${user.username} hit a major diamond vein, ${diamondsFound}xDIAMOND found!`, 'TALK');
+                CHANNELS.propagate(message, `${user.username} hit a major diamond vein, ${diamondsFound}xDIAMOND found!`, 'TALK');
             }
 
             // Add the experience.
@@ -112,9 +96,9 @@ export default class MiningMinigame {
             });
 
             // Reduce the number of rocks in the message.
-            if (textMagnitude > 1) await msg.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));
-            else await msg.delete();
-            
+            if (textMagnitude > 1) await message.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));
+            else await message.delete();
+
             // Provide feedback.
             const actionText = `${user.username} +${extractedOreNum}${EMOJIS.ROCK} +${1}${ptsEmoji}`;
 
@@ -150,7 +134,7 @@ export default class MiningMinigame {
                 else
                     updateMsg.edit(updateMsg.content + '\n' + `${actionText}`);
             }
-            
+
             // Store to track latest mining stats.
             EconomyNotifications.add('MINING', {
                 pointGain: 1,
@@ -163,10 +147,15 @@ export default class MiningMinigame {
             SkillsHelper.addXP(user.id, 'mining', 1);
 
             // Show user success message.
-            return await interaction.reply({ content: actionText, ephemeral: true });
+            return await reply({ content: actionText, ephemeral: true });
+        } catch(e) {
+            console.error(e);
+            console.log('Mining error');
+            return await reply({ content: 'Something went wrong...', ephemeral: true });
         }
     };
 
+    // Event handler for dropping mining rocks.
     static async run() {
         const channel = CHANNELS._randomSpammable();
         
