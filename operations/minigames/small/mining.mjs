@@ -17,7 +17,7 @@ export default class MiningMinigame {
     static async onInteraction(interaction) {
         try {
             // Interaction is not relevant to mining, skip.
-            if (interaction.customId !== 'chip') return false;
+            if (interaction.customId !== 'mine') return false;
 
             // Extract required attributes.
             const { message, channel, user } = interaction;
@@ -31,9 +31,7 @@ export default class MiningMinigame {
 
             // Check if has a pickaxe.
             const userPickaxesNum = await Items.getUserItemQty(user.id, 'PICK_AXE');
-            const noPickText = `<@${user.id}> tried to mine the rocks, but doesn't have a pickaxe.`;
-            if (userPickaxesNum <= 0) 
-                return await interaction.reply({ content: noPickText, ephemeral: true });
+            if (userPickaxesNum <= 0) return await interaction.reply({ content: 'No pickaxe to mine with.', ephemeral: true });
 
             // Count the number of people mining to apply a multipler/bonus.
             const ptsEmoji = MESSAGES.emojiCodeText('COOP_POINT');
@@ -75,12 +73,14 @@ export default class MiningMinigame {
             const addPoints = await Items.add(user.id, 'COOP_POINT', 1, 'Mining');
             let diamondsFound = 0;
 
+            // Small probability reward.
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
                 diamondsFound = 1;
                 const addDiamond = await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining rare event');
                 CHANNELS.propagate(message, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
             }
 
+            // Extremely small probability of high value reward.
             if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
                 diamondsFound = STATE.CHANCE.natural({ min: 5, max: 25 });
                 await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining very rare event');
@@ -90,6 +90,7 @@ export default class MiningMinigame {
             // Add the experience.
             SkillsHelper.addXP(user.id, 'mining', 1);
 
+            // Add to economy stats for display.
             EconomyNotifications.add('MINING', {
                 pointGain: 1,
                 recOre: extractedOreNum,
@@ -151,6 +152,7 @@ export default class MiningMinigame {
 
             // Show user success message.
             return await interaction.reply({ content: actionText, ephemeral: true });
+
         } catch(e) {
             console.error(e);
             console.log('Mining error');
