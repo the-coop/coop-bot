@@ -109,7 +109,7 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => ActivityHelper.track(), baseTickDur / 1.75);
 
   // Track the competitions, start/end if necessary.
-  EventsHelper.runInterval(() => CompetitionHelper.track(), baseTickDur * 8);
+  EventsHelper.runInterval(() => CompetitionHelper.sync(), baseTickDur * 8);
 
   // Track spotlight event until required.
   EventsHelper.runInterval(() => SpotlightHelper.track(), baseTickDur * 20);

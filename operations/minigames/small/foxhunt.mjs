@@ -1,4 +1,4 @@
-import { CHANCE, CHANNELS, USERS } from '../../../coop.mjs';
+import { CHANCE, CHANNELS, CHICKEN, USERS } from '../../../coop.mjs';
 
 const halflifeicon = '💔';
 const liveIcon = '❤️';
@@ -31,6 +31,15 @@ export default class FoxHuntMinigame {
             if (CHANCE.natural({ min: 1, max: 12 }) > 6)
                 await CHANNELS._send('TALK', `Careful the 🦊 bites.`);
 
+            // 10% Chance to reward user with stolen eggs
+            if (CHANCE.bool({ likelihood: 10 })) {
+                const msg = await CHANNELS._send('TALK', `Fox is feeling generous!`);
+                // Ensure message is stored in database for clear up.
+                TemporaryMessages.add(msg, 30 * 60);
+                // await this.reward(user);
+            }
+
+
         } catch(e) {
             console.error(e);
             console.log('Above error related to foxhunt reaction handler')
@@ -43,6 +52,20 @@ export default class FoxHuntMinigame {
         const fullLives = str.match(fullLivesRegex) || 0;
         const halfLives = str.match(halfLivesRegex) || 0;
         return (halfLives * .5) + fullLives;
+    };
+
+    // Get all stolen eggs from database and give them to the user
+    static async reward(user) {
+        await Promise.all(
+            ['AVERAGE_EGG', 'RARE_EGG', 'LEGENDARY_EGG', 'TOXIC_EGG'].map(async (rarity) => {
+                const stolenKey = `stolen_${rarity.toLowerCase()}`;
+                const eggCount = await CHICKEN.getConfigVal(stolenKey);
+                if (eggCount > 0) {
+                    await Items.add(user.id, rarity, eggCount, `FOXHUNT_REWARD_${rarity}`);
+                    await CHICKEN.setConfig(stolenKey, 0);
+                }
+            })
+        );
     };
 
     static async run() {
