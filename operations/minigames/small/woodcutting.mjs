@@ -13,7 +13,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 export default class WoodcuttingMinigame {
 
     // Reaction interceptor to check if user is attempting to interact.
-    static async onInteraction({ message, channel, user, reply }) {
+    static async onInteraction({ customId, message, channel, user, reply }) {
         // Interaction is not relevant to woodcutting, skip.
         if (customId !== 'chop') return false;
 

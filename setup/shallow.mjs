@@ -31,7 +31,7 @@ const listenInteractions = (fn) => STATE.CLIENT.on('interactionCreate', fn);
 
 
 const shallowBot = async () => {
-    console.log('Starting shallow bot');
+    // console.log('Starting shallow bot');
 
     // Instantiate a CommandoJS "client".
     STATE.CLIENT = new Client({ 
