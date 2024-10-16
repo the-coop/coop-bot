@@ -35,8 +35,11 @@ export default class ChestPopMinigame {
             const maxRewardAmount = COOP.STATE.CHANCE.natural({ min: 3, max: 7 });
             const rewardAmount = COOP.STATE.CHANCE.natural({ min: 1, max: maxRewardAmount });
             const drops = DropTable.getRandomWithQtyMany(rewardAmount);
+
+            // Destroy the chestpop message
+            await interaction.message.delete()
             
-            // Declare feedback.
+            // Declare feedback in a new message
             const dropsText = drops.map(drop => COOP.MESSAGES.emojiCodeText(drop.item).repeat(drop.qty)).join(' ');
             const dropsMessage = await interaction.channel.send({
                 content: dropsText,
@@ -53,7 +56,7 @@ export default class ChestPopMinigame {
             
             // Store the new drops message in temp messages
             TemporaryMessages.add(dropsMessage, 30 * 60);
-            
+
             // Track chestpop drops in economy statistics.
             EconomyNotifications.add('CHEST_POP', {
                 loot: drops.length
