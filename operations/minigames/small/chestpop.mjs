@@ -9,8 +9,7 @@ export default class ChestPopMinigame {
     
     // Reaction interceptor to check if user is attempting to interact.
     static async onInteraction(interaction) {
-        // Chest Pop minigame guards.
-        if (!USERS.isCooperMsg(interaction.message)) return false;
+        // Chest Pop minigame guards. 
         if (interaction.customId !== "open_chest" && interaction.customId !== "pickup_item") return false;
 
         // Allow user the open the chest.
@@ -36,22 +35,25 @@ export default class ChestPopMinigame {
             const maxRewardAmount = COOP.STATE.CHANCE.natural({ min: 3, max: 7 });
             const rewardAmount = COOP.STATE.CHANCE.natural({ min: 1, max: maxRewardAmount });
             const drops = DropTable.getRandomWithQtyMany(rewardAmount);
-    
+            
             // Declare feedback.
-            const dropsText = drops.map(drop => COOP.MESSAGES.emojiCodeText(drop.item).repeat(drop.qty));
-            await interaction.message.edit({
+            const dropsText = drops.map(drop => COOP.MESSAGES.emojiCodeText(drop.item).repeat(drop.qty)).join(' ');
+            const dropsMessage = await interaction.channel.send({
                 content: dropsText,
                 components: [
                     new ActionRowBuilder().addComponents([
                         new ButtonBuilder()
-                            .setEmoji('🫳')
+                            .setEmoji('✋')
                             .setLabel("Pick up")
                             .setCustomId('pickup_item')
                             .setStyle(ButtonStyle.Primary)
                     ])
                 ]
             });
-
+            
+            // Store the new drops message in temp messages
+            TemporaryMessages.add(dropsMessage, 30 * 60);
+            
             // Track chestpop drops in economy statistics.
             EconomyNotifications.add('CHEST_POP', {
                 loot: drops.length
@@ -62,6 +64,7 @@ export default class ChestPopMinigame {
         } catch(e) {
             console.error(e);
             console.log('Error opening chestpop');
+            return await interaction.reply({ content: `The chest is stuck!`, ephemeral: true });
         }
     };
 
@@ -86,6 +89,7 @@ export default class ChestPopMinigame {
         } catch(e) {
             console.error(e);
             console.log('Error picking up a chestpop item');
+            return await interaction.reply({ content: `The item slipped out of your hand!`, ephemeral: true });
         }
     };
 
