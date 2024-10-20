@@ -349,4 +349,33 @@ export default class ItemsHelper {
         const noZeroes = rounded.toString();
         return noZeroes;
     };
+
+    // Parses items from interaction messages and gives the first item to user
+    // Modifies the interaction message so that it deletes the picked up item from the message
+    // Returns the first item string or an empty string if there are no items
+    static async pickup(interaction) {
+        let firstItem = "";
+
+        try {
+            const allItems = interaction.message.content.match(/([\p{Emoji}]|:\w+:(\d+)?)/gu);
+            // If allItems variable is null after .match, or there are no items
+            if (!allItems || allItems.length == 0) { return ""; }
+
+            // Remove the item from message content
+            await interaction.message.edit(interaction.message.content.replace(allItems[0], ''));
+            // TODO: Ensure that the interaction message was succesfully modified and that the item is gone from the message
+
+            // Parse emoji to item code and give it to user
+            const emojiID = MESSAGES.getEmojiIdentifier(allItems[0]);
+            const itemCode = this.emojiToItemCode(emojiID);
+            await Items.add(interaction.user.id, itemCode, 1, `User picked up item`);
+            
+            return allItems[0];
+        } catch (e) {
+            console.log(e);
+            console.log("above error occured while picking up item!");
+        }
+
+        return firstItem;
+    };
 };
