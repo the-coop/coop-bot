@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { CHANCE, CHANNELS, CHICKEN, USERS } from '../../../coop.mjs';
 
 const halflifeicon = '💔';
@@ -21,9 +22,10 @@ export default class FoxHuntMinigame {
             if (!isFoxhuntAction) return false;
 
             if (!this.canConsumeHeart(interaction))
-                return await interaction.reply({ content: 'The fox is sleeping now', ephemeral: true });
+                return await this.sendEphemeralReply(interaction, 'The fox is sleeping now');
 
-            if (interaction.user.username === "sunztupid")
+            // If user is sunz
+            if (interaction.user.id === "287062661483724810")
                 await this.love(interaction);
 
             if (CHANCE.natural({ likelihood: 50 }))
@@ -37,18 +39,33 @@ export default class FoxHuntMinigame {
         } catch(e) {
             console.error(e);
             console.log('Above error related to foxhunt reaction handler')
-            return await interaction.reply({ content: 'The fox ran from you!', ephemeral: true });
+            return await this.sendEphemeralReply(interaction, 'The fox ran from you!');
         }
+    };
+
+    // TODO: Move this method to a COOP base class to make it reusable
+    static async sendEphemeralReply(interaction, message) {
+        const reply = await interaction.reply({ content: message, ephemeral: true });
+        setTimeout(async () => {
+            try {
+                const applicationId = CHICKEN.getDiscordID();
+                const token = interaction.token;
+                await axios.delete(`https://discord.com/api/webhooks/${applicationId}/${token}/messages/@original`);
+                console.log('Ephemeral message auto-deleted');
+            } catch (error) {
+                console.error('Failed to auto-delete ephemeral message:', error);
+            }
+        }, 15000); // 15 seconds for auto dismiss
     };
 
     static async bite(interaction) {
         await Items.subtract(interaction.user.id, 'COOP_POINT', 1, 'Fox bite');
-        return await interaction.reply({ content: 'Careful the 🦊 bites.', ephemeral: true });
-    }
+        return await this.sendEphemeralReply(interaction, 'Careful the 🦊 bites.');
+    };
 
     static async love(interaction) {
-        return await interaction.reply({ content: 'The fox loves you ❤️', ephemeral: true });
-    }
+        return await this.sendEphemeralReply(interaction, 'The fox loves you ❤️');
+    };
 
     static async canConsumeHeart(interaction) {
         const { fullLives, halfLives } = this.countLives(interaction.message.content);
@@ -56,7 +73,7 @@ export default class FoxHuntMinigame {
         fullLives--;
         halfLives++;
         await interaction.message.edit(`🦊${liveIcon.repeat(fullLives)}${halflifeicon.repeat(halfLives)}`);
-    }
+    };
 
     static countLives(str) {
         const halfLivesRegex = new RegExp('💔', "g");
@@ -86,7 +103,7 @@ export default class FoxHuntMinigame {
             ? `The fox brings you gifts...\n${rewardStrings.join('\n')}`
             : 'The fox is feeling generous!';
 
-        return await interaction.reply({ content: rewardMessage, ephemeral: true });
+        return await this.sendEphemeralReply(interaction, rewardMessage);
     };
 
     static async run() {
