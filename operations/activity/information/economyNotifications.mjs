@@ -88,8 +88,7 @@ export default class EconomyNotifications {
                 // Map the eggs with the correct emoji.
                 ['AVERAGE_EGG', 'RARE_EGG', 'LEGENDARY_EGG', 'TOXIC_EGG'].map(eggCode => {
                     if (egghunt[eggCode])
-                        // TODO: Add the egg emoji.
-                        notificationString += `${eggCode}x${egghunt[eggCode]} \n`;
+                        notificationString += `${COOP.MESSAGES.emojiCodeText(eggCode)}x${egghunt[eggCode]} \n`;
                 });
 
                 // Add the number of broken eggs.
