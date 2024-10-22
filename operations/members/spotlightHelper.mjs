@@ -1,6 +1,7 @@
 import _ from 'lodash';
-import { CHANNELS, TIME, USERS, ROLES } from "../../coop.mjs";
+import { CHANNELS, TIME, USERS, ROLES, MESSAGES } from "../../coop.mjs";
 import EventsHelper from "../eventsHelper.mjs";
+import TemporaryMessages from '../activity/maintenance/temporaryMessages.mjs';
 
 export const SPOTLIGHT_DUR = 3600 * 24 * 1;
 
@@ -99,7 +100,7 @@ export default class SpotlightHelper {
             console.log(isBeginner, isIntermediate, isMaster);
 
             // TODO: Start the poll, should save message ID for later results consideration.
-            await CHANNELS._getCode('SPOTLIGHT').send({
+            const poll = await CHANNELS._getCode('SPOTLIGHT').send({
                 poll: {
                     question: { text: `Help evaluate ${user.username}'s rank:` },
                     answers: [
@@ -112,11 +113,74 @@ export default class SpotlightHelper {
                 }
             });
 
+            // Add to temporary messages to store message and user reference
+            // The duration needs to be extended so that poll does not get deleted before end
+            const duration = SPOTLIGHT_DUR * 1.1;
+            TemporaryMessages.add(poll, duration, 'spotlight_poll');
+            // Need to store the user id too
+            const userIdMsg = await CHANNELS._getCode('SPOTLIGHT').send(`${user.discord_id}`)
+            TemporaryMessages.add(userIdMsg, duration, 'spotlight_user')
+
         } catch(e) {
             console.log('Error starting spotlight event');
             console.error(e);
         }
     };
+
+    static async rankChange() {
+        try {
+            // Access the poll results from message object
+            const tempMessage = await TemporaryMessages.getType('spotlight_poll');
+            const msg = await MESSAGES.getByLink(tempMessage[0].message_link);
+            const results = msg.poll.answers.map((answer) => ({
+                answer_id: answer.answer_id,
+                votes: answer.votes // This might be wrong property, if it fails try voteCount instead
+            }));
+
+            const highestVotedAnswer = results.reduce((max, answer) => 
+                answer.votes > max.votes ? answer : max, { votes: 0 }
+            );
+            
+            const chosenActionId = highestVotedAnswer.answer_id;
+        
+            // Fetch the spotlight user from temporary storage
+            const spotlightUserId = await TemporaryMessages.getType('spotlight_user');
+            const userIdMsg = await MESSAGES.getByLink(spotlightUserId[0].message_link);
+            const spotlightUser = await USERS._getById(userIdMsg.content);
+
+            if (!spotlightUser) {
+                throw new Error('No spotlight user found for this event');
+            }
+
+            // Fetch user's current rank
+            const isBeginner = await ROLES._idHasCode(spotlightUser.discord_id, 'BEGINNER');
+            const isIntermediate = await ROLES._idHasCode(spotlightUser.discord_id, 'INTERMEDIATE');
+            const isMaster = await ROLES._idHasCode(spotlightUser.discord_id, 'MASTER');
+
+            let currentRank = 'BEGINNER';
+            if (isIntermediate) currentRank = 'INTERMEDIATE';
+            if (isMaster) currentRank = 'MASTER';
+
+            if (chosenActionId === 1 && currentRank !== 'MASTER') {  // Promote
+                let newRank = currentRank === 'BEGINNER' ? 'INTERMEDIATE' : 'MASTER';
+                // TODO: Give user the new rank and remove old one
+                CHANNELS._send('SPOTLIGHT', `${spotlightUser.username} has been promoted to ${newRank}.`);
+    
+            } else if (chosenActionId === 2 && currentRank !== 'BEGINNER') {  // Demote
+                let newRank = currentRank === 'MASTER' ? 'INTERMEDIATE' : 'BEGINNER';
+                // TODO: Give user the new rank and remove old one
+                CHANNELS._send('SPOTLIGHT', `${spotlightUser.username} has been demoted to ${newRank}.`);
+    
+            } else {  // Stay at current rank
+                CHANNELS._send('SPOTLIGHT', `${spotlightUser.username} stays at their current rank of ${currentRank}.`);
+            }
+
+
+        } catch(e) {
+            console.log('Error changing user rank in spotlight event');
+            console.error(e);
+        }
+    }
 
     static async end() {
         try {
