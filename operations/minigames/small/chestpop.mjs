@@ -74,21 +74,10 @@ export default class ChestPopMinigame {
     
     static async pickup(interaction) {
         try {
-            // Parse first emoji back to item
-            const firstItem = interaction.message.content.match(/([\p{Emoji}]|:\w+:(\d+)?)/gu)[0];
-            // TODO: end minigame if no more items can be picked up
-            if (firstItem === null) return await interaction.reply({ content: 'There are no items to be picked up', ephemeral: true });
-
-            // Parse emoji to item code and give it to user
-            // const emojiID = MESSAGES.getEmojiIdentifier(firstItem);
-            // const itemCode = ITEMS.emojiToItemCode(emojiID);
-            // await Items.add(interaction.user.id, itemCode, 1, `ChestPop Reward`);
-
-            // Remove the item from message content
-            await interaction.message.edit(interaction.message.content.replace(firstItem, ''));
-
+            const pickedItem = ITEMS.pickup(interaction);
+            if (pickedItem.trim() === "") { return await interaction.reply({ content: 'There are no items to be picked up', ephemeral: true }); }
             // Show user success message.
-            return await interaction.reply({ content: `You successfully picked up ${firstItem}`, ephemeral: true });
+            return await interaction.reply({ content: `You successfully picked up ${pickedItem}`, ephemeral: true });
         } catch(e) {
             console.error(e);
             console.log('Error picking up a chestpop item');
