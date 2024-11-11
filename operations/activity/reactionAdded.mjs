@@ -37,7 +37,6 @@ export default async function reactAddedHandler(reaction, user) {
 
         // Reaction based minigame react processors.
         EggHuntMinigame.onReaction(reaction, user);
-        FoxHuntMinigame.onReaction(reaction, user);
         CratedropMinigame.onReaction(reaction, user);
 
         InstantFurnaceMinigame.onReaction(reaction, user);
