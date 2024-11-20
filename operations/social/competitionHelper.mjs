@@ -330,6 +330,8 @@ export default class CompetitionHelper {
 
     // Attach the entries and votes to the competition.
     static async attachSubmissions(comp) {
+        console.log(comp);
+
         // Get entries for competition.
         let entrants = await Competition.loadEntrants(comp.event_code);
 

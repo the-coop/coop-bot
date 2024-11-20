@@ -108,9 +108,6 @@ export default function eventsManifest() {
   // Try to determine peak hours by sampling around 3 times an hour.
   EventsHelper.runInterval(() => ActivityHelper.track(), baseTickDur / 1.75);
 
-  // Track the competitions, start/end if necessary.
-  EventsHelper.runInterval(() => CompetitionHelper.sync(), baseTickDur * 8);
-
   // Track spotlight event until required.
   EventsHelper.runInterval(() => SpotlightHelper.track(), baseTickDur * 20);
 
