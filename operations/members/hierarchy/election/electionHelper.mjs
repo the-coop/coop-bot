@@ -237,7 +237,7 @@ export default class ElectionHelper {
 
         const hierarchy = this.calcHierarchy(votes);
         const maxNumLeaders = this.getMaxNumLeaders();
-        const numLeaders = hierarchy.leaders.size;
+        const numLeaders = hierarchy.leaders.length;
 
         const electionProgressText = `**Election is still running for ${readableElecLeft}, latest vote results:**` +
             `\n\n` +
