@@ -1,21 +1,7 @@
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { MESSAGES, CHANNELS, STATE } from "../../../coop.mjs";
+import { EGG_DATA } from '../../minigames/small/egghunt.mjs';
 
-// EGGS FOUND
-
-// WOOD CUT
-
-// ORE MINED
-// DIAMONDS MINED
-
-// CRATE REWARDS
-// CRATE HIT
-// CRATE OPEN`
-
-// ITEMS USED (Intercept items helper)
-    // Diamonds and broken pickaxes
-    // Update total data
-    // Diamonds and broken pickaxes
 
 export default class EconomyNotifications {
 
@@ -78,18 +64,16 @@ export default class EconomyNotifications {
                     `\n\n`;
             }
 
-            if (STATE.EVENTS_HISTORY['EGG_HUNT']) {
-                const egghunt = STATE.EVENTS_HISTORY['EGG_HUNT'];
+            const egghunt = STATE?.EVENTS_HISTORY?.['EGG_HUNT'];
+            if (egghunt) {
 
                 notificationString += '**Latest Egg Hunt Totals:**\n';
 
-                // console.log(egghunt);
-
                 // Map the eggs with the correct emoji.
-                ['AVERAGE_EGG', 'RARE_EGG', 'LEGENDARY_EGG', 'TOXIC_EGG'].map(eggCode => {
-                    if (egghunt[eggCode])
-                        notificationString += `${COOP.MESSAGES.emojiCodeText(eggCode)}x${egghunt[eggCode]} \n`;
-                });
+                Object.keys(EGG_DATA).map(code => {
+                    if (egghunt[code]) notificationString += 
+                        `${MESSAGES.emojiCodeText(code)}x${egghunt[code]} \n`;
+                })
 
                 // Add the number of broken eggs.
                 if (egghunt.broken)
@@ -143,19 +127,17 @@ export default class EconomyNotifications {
                 ] });
             }
             
-
             this.clear('WOODCUTTING');
             this.clear('MINING');
             this.clear('EGG_HUNT');
             this.clear('CRATE_DROP');
         }
-    }
+    };
     
     static clear(type) {
         if (typeof STATE.EVENTS_HISTORY[type] !== 'undefined');
             delete STATE.EVENTS_HISTORY[type];
-    }
-
+    };
 
     static updateMining(miningEvent) {
         const userID = miningEvent.playerID;
@@ -216,7 +198,7 @@ export default class EconomyNotifications {
 
         // Updated every hit, so track hits.
         STATE.EVENTS_HISTORY['MINING'].totals.hits++;
-    }
+    };
 
     static updateWoodcutting(woodcuttingEvent) {
         const userID = woodcuttingEvent.playerID;
@@ -271,7 +253,7 @@ export default class EconomyNotifications {
 
         // Updated every hit, so track hits.
         STATE.EVENTS_HISTORY['WOODCUTTING'].totals.hits++;
-    }
+    };
 
     static updateCrateDrop(crateDropEvent) {
         // console.log(crateDropEvent);
@@ -290,7 +272,7 @@ export default class EconomyNotifications {
                 }
             }
         }
-    }
+    };
 
     static updateEgghunt(egghuntEvent) {
         // const userID = egghuntEvent.playerID;
@@ -336,5 +318,5 @@ export default class EconomyNotifications {
         // });
 
 
-    }
-}
+    };
+};
