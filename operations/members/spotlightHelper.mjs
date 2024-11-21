@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { CHANNELS, TIME, USERS, ROLES, MESSAGES } from "../../coop.mjs";
 import EventsHelper from "../eventsHelper.mjs";
-import TemporaryMessages from '../activity/maintenance/temporaryMessages.mjs';
 
 export const SPOTLIGHT_DUR = 3600 * 24 * 1;
 
@@ -113,13 +112,10 @@ export default class SpotlightHelper {
                 }
             });
 
-            // Add to temporary messages to store message and user reference
-            // The duration needs to be extended so that poll does not get deleted before end
-            const duration = SPOTLIGHT_DUR * 1.1;
-            TemporaryMessages.add(poll, duration, 'spotlight_poll');
-            // Need to store the user id too
-            const userIdMsg = await CHANNELS._getCode('SPOTLIGHT').send(`${user.discord_id}`)
-            TemporaryMessages.add(userIdMsg, duration, 'spotlight_user')
+            // Save the poll message link
+            EventsHelper.setLink('spotlight', poll)
+            // Save the spotlight user as organizer
+            EventsHelper.setOrganiser('spotlight', user.discord_id)
 
         } catch(e) {
             console.log('Error starting spotlight event');
@@ -129,12 +125,14 @@ export default class SpotlightHelper {
 
     static async rankChange() {
         try {
-            // Access the poll results from message object
-            const tempMessage = await TemporaryMessages.getType('spotlight_poll');
-            const msg = await MESSAGES.getByLink(tempMessage[0].message_link);
+            // Fetch spotlight event
+            const spotlightEvent = await EventsHelper.read('spotlight');
+
+            // Access the poll results
+            const msg = await MESSAGES.getByLink(spotlightEvent.message_link);
             const results = msg.poll.answers.map((answer) => ({
                 answer_id: answer.answer_id,
-                votes: answer.votes // This might be wrong property, if it fails try voteCount instead
+                votes: answer.votes
             }));
 
             const highestVotedAnswer = results.reduce((max, answer) => 
@@ -144,9 +142,7 @@ export default class SpotlightHelper {
             const chosenActionId = highestVotedAnswer.answer_id;
         
             // Fetch the spotlight user from temporary storage
-            const spotlightUserId = await TemporaryMessages.getType('spotlight_user');
-            const userIdMsg = await MESSAGES.getByLink(spotlightUserId[0].message_link);
-            const spotlightUser = await USERS._getById(userIdMsg.content);
+            const spotlightUser = await USERS._getById(spotlightEvent.organiser);
 
             if (!spotlightUser) {
                 throw new Error('No spotlight user found for this event');
