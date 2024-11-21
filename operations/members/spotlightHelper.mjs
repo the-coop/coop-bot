@@ -163,16 +163,22 @@ export default class SpotlightHelper {
 
             if (chosenActionId === 1 && currentRank !== 'MASTER') {  // Promote
                 let newRank = currentRank === 'BEGINNER' ? 'INTERMEDIATE' : 'MASTER';
-                // TODO: Give user the new rank and remove old one
-                CHANNELS._send('SPOTLIGHT', `${spotlightUser.username} has been promoted to ${newRank}.`);
+                // Remove old rank
+                ROLES._remove(spotlightUser.discord_id, currentRank);
+                // Add new rank
+                ROLES._add(spotlightUser.discord_id, newRank);
+                CHANNELS._send('TALK', `${spotlightUser.username} has been promoted to ${newRank}.`);
     
             } else if (chosenActionId === 2 && currentRank !== 'BEGINNER') {  // Demote
                 let newRank = currentRank === 'MASTER' ? 'INTERMEDIATE' : 'BEGINNER';
-                // TODO: Give user the new rank and remove old one
-                CHANNELS._send('SPOTLIGHT', `${spotlightUser.username} has been demoted to ${newRank}.`);
+                // Remove old rank
+                ROLES._remove(spotlightUser.discord_id, currentRank);
+                // Add new rank
+                ROLES._add(spotlightUser.discord_id, newRank);
+                CHANNELS._send('TALK', `${spotlightUser.username} has been demoted to ${newRank}.`);
     
             } else {  // Stay at current rank
-                CHANNELS._send('SPOTLIGHT', `${spotlightUser.username} stays at their current rank of ${currentRank}.`);
+                CHANNELS._send('TALK', `${spotlightUser.username} stays at their current rank of ${currentRank}.`);
             }
 
 
@@ -184,6 +190,9 @@ export default class SpotlightHelper {
 
     static async end() {
         try {
+            // Change Spotlight user rank based on votes
+            await this.rankChange();
+
             // Set event to inactive.
             EventsHelper.setActive('spotlight', false);
 
