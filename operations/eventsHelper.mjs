@@ -15,6 +15,14 @@ export default class EventsHelper {
         return response;
     };
 
+    static async setLink(code, link) {
+        return await db.singleQuery({
+            name: "set-event-message",
+            text: 'UPDATE events SET message_link = $2 WHERE event_code = $1',
+            values: [code, link]
+        });
+    };
+
     static async setActive(code, active) {
         return (await db._sq({
             name: "set-event-status",

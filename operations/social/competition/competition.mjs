@@ -90,13 +90,5 @@ export default class CompetitionModel {
             values: [code, description]
         });
     };
-
-    static async setLink(code, link) {
-        return await db.singleQuery({
-            name: "set-competition-message",
-            text: 'UPDATE events SET message_link = $2 WHERE event_code = $1',
-            values: [code, link]
-        });
-    };
     
 };

@@ -132,12 +132,6 @@ const shallowBot = async () => {
         // await EventsHelper.setActive('business_competition', false);
 
 
-
-
-
-
-
-
         // MiningMinigame.run();
 
         // Items.add('', 'KEY', 5);
