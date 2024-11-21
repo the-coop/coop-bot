@@ -216,11 +216,14 @@ export default class ElectionHelper {
 
         // If election end approaching use quicker interval:
         if (diff < hourSecs * 10)
+
         // (within 10 hourSecss should count every 2 hourSecss)
             bufferSecs = hourSecs * 2;
+
         else if (diff < hourSecs * 8)
             // (within 8 hourSecss should count every 1 hourSecss)
             bufferSecs = hourSecs * 1;
+
         else if (diff < hourSecs * 4)
             // (within 4 hourSecss should count every 0.5 hourSecss)
             bufferSecs = hourSecs * 0.5;
@@ -232,19 +235,23 @@ export default class ElectionHelper {
 
         const votes = await this.fetchAllVotes();
 
+        console.log(votes);
+
         const votingPeriodSecs = await this.votingPeriodLeftSecs();
         const readableElecLeft = TIME.humaniseSecs(votingPeriodSecs);
 
         const hierarchy = this.calcHierarchy(votes);
         const maxNumLeaders = this.getMaxNumLeaders();
-        const numLeaders = hierarchy.leaders.size;
+        const leadersCount = hierarchy.leaders.length;
+
+        console.log(hierarchy);
 
         const electionProgressText = `**Election is still running for ${readableElecLeft}, latest vote results:**` +
             `\n\n` +
             `**Commander:** ${hierarchy.commander ? 
                 `${hierarchy.commander.username}` : ''}` +
             `\n\n` +
-            `**Leaders ${numLeaders}/${maxNumLeaders}:**\n${
+            `**Leaders ${leadersCount}/${maxNumLeaders}:**\n${
                 hierarchy.leaders
                     .map(leader => `${leader.user.username}`)
                     .join('\n')
@@ -583,10 +590,9 @@ export default class ElectionHelper {
 
     static calcHierarchy(votes) {
         const commander = votes[0];
-        const numLeaders = this.getMaxNumLeaders();
-        const leaders = votes.slice(1, numLeaders + 1);
+        const leaders = votes.slice(1, this.getMaxNumLeaders() + 1);
 
-        const hierarchy = { commander, leaders, numLeaders };
+        const hierarchy = { commander, leaders };
 
         return hierarchy;
     };
