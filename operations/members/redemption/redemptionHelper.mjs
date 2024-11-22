@@ -189,13 +189,11 @@ export default class RedemptionHelper {
         // Check if they would want any role 
         const desiredRoles = Object.keys(roleMatches).filter(roleKey => {
             const identified = roleMatches[roleKey].some(roleWord => reaction.message.content.includes(roleWord));
-
-            if (!rolesData[roleKey]?.locked) return false;
-
-            return identified;
+            return !!identified;
         });
 
-        COOP.CHANNELS._send('TALK', 'Could have detected desired roles' + desiredRoles);
+        if (desiredRoles.length > 0) 
+            await COOP.CHANNELS._send('TALK', 'Could have detected desired roles' + desiredRoles);
 
         // Inform community.
         const msg = await COOP.CHANNELS._send('TALK', 
