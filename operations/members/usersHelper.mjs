@@ -434,4 +434,29 @@ export default class UsersHelper {
         return result;
     };
 
+    static async getUserLastClaim(userID) {
+        const query = {
+            name: "get-user-last-claim",
+            text: "SELECT last_claim FROM users WHERE discord_id = $1",
+            values: [userID]
+        };
+        
+        const result = await Database.query(query);
+
+        return DatabaseHelper.single(result);
+    };
+
+    static async setUserLastClaim(userID) {
+        const latest = new Date();
+        const query = {
+            name: "set-user-last-claim",
+            text: "UPDATE users SET last_claim = $2 WHERE discord_id = $1",
+            values: [userID, latest]
+        };
+        
+        const result = await Database.query(query);
+
+        return DatabaseHelper.single(result);
+    };
+
 };
