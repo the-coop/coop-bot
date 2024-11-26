@@ -34,13 +34,18 @@ export default class DropTable {
             'GOLD_COIN',
             'SILVER_BAR',
             'DIAMOND'
+        ],
+        GATHERING: [
+            'AXE',
+            'PICK_AXE'
         ]
     }
 
     static TIER_QTYS = {
         AVERAGE: { min: 2, max: 10 },
         RARE: { min: 2, max: 5 },
-        LEGENDARY: { min: 1, max: 2 }
+        LEGENDARY: { min: 1, max: 2 },
+        GATHERING: { min: 1, max: 2 },
     }
 
     static getRandomTierQty(level) {

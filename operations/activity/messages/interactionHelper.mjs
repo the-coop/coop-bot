@@ -1,5 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
+import Chicken from "../../chicken.mjs";
 import WoodcuttingMinigame from '../../minigames/small/woodcutting.mjs';
 import TradingHelper from '../../minigames/medium/economy/items/tradingHelper.mjs';
 import CompetitionHelper from '../../social/competitionHelper.mjs';
@@ -26,6 +27,9 @@ export default class InteractionHelper {
         MiningMinigame.onInteraction(interaction);
         ChestPopMinigame.onInteraction(interaction);
         FoxHuntMinigame.onInteraction(interaction);
+
+        // Daily Reward Interaction
+        Chicken.onInteraction(interaction);
     };
 
     static confirm(interaction, texts) {
