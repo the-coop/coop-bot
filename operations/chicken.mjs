@@ -2,16 +2,17 @@ import moment from 'moment';
 
 import ElectionHelper from './members/hierarchy/election/electionHelper.mjs';
 import CooperMorality from './minigames/small/cooperMorality.mjs';
+import DropTable from './minigames/medium/economy/items/droptable.mjs';
 
 import { STATE, CHANNELS, TIME, ITEMS, ROLES, MESSAGES, USERS } from "../coop.mjs";
-import Items from "coop-shared/services/items.mjs";
-import DropTable from './minigames/medium/economy/items/droptable.mjs';
+
 import TemporaryMessages from './activity/maintenance/temporaryMessages.mjs';
 
+import ItemsShared from "coop-shared/services/items.mjs";
+import Trading from "coop-shared/services/trading.mjs";
 import Database from 'coop-shared/setup/database.mjs';
 // import VisualisationHelper from './minigames/medium/conquest/visualisationHelper.mjs';
 
-import ActivityHelper from './activity/activityHelper.mjs';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 const OAUTH_LOGIN_URL = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify';
@@ -166,11 +167,8 @@ export default class Chicken {
         if (interaction.customId !== "claim_daily_reward") return false;
 
         try {
-            // Fetch the last claim date for user
-            const lastClaim = await USERS.getUserLastClaim(interaction.user.id)
-
-            // Check if user can claim daily reward
-            const allowClaim = (lastClaim) => {
+            // Define safeguard for allowing one claim in 24h window
+            const allowClaimDate = (lastClaim) => {
                 // If the date is NULL (default in database) then can claim
                 if (!lastClaim) return true;
                 // If the date is atleast 24 hours ago then can claim
@@ -178,14 +176,34 @@ export default class Chicken {
                 return new Date(lastClaim).getTime() <= twentyFourHoursAgo;
             };
 
-            // Call the allowClaim function with lastClaim date (safeguard)
-            if(!allowClaim(lastClaim.last_claim)) return false; 
+            // Define safeguard for not passing over 15 item qty
+            const allowItemQty = async (item) => {
+                // Fetch user item quantity 
+                return await ItemsShared.hasQty(interaction.user.id, item, 15);
+            };
+
+            // Define safeguard for preventing reward
+            // if user has active trade with the same item
+            const hasOpenTradeForItem = async (userId, item) => {
+                const openTrades = await Trading.getByTrader(userId);
+                return openTrades.some(trade => trade.offer_item === item);
+            };
+
+            // Fetch the last claim date for user
+            const lastClaim = await USERS.getUserLastClaim(interaction.user.id)
+            // Safeguard claim date
+            if(!allowClaimDate(lastClaim.last_claim)) return false; 
+
 
             // Update the userLastClaim date
             await USERS.setUserLastClaim(interaction.user.id)
 
             // Get one reward from droptable for Gathering drops
             const { item, qty } = DropTable.getRandomTieredWithQty('GATHERING');
+            // Safeguard item quantity
+            if (!allowItemQty(item)) return false;
+            // Safeguard trading bypass
+            if (hasOpenTradeForItem(interaction.user.id, item)) return false;
 
             // Announce the rewards in TALK
             const dailyRewardText = `<@${interaction.user.id}> collected the daily reward: ${MESSAGES.emojiCodeText(item)}x${qty}`;
