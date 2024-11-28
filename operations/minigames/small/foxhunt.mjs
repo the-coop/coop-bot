@@ -16,6 +16,7 @@ export default class FoxHuntMinigame {
 
     // Add sparkles sometimes after the fox is slapped and delay reactions while it's in the message.
     // :sparkles: 
+    static stunned = false;
 
     static async onInteraction(interaction) {
         try {
@@ -23,6 +24,11 @@ export default class FoxHuntMinigame {
             const isFoxhuntAction = (interaction.customId === 'slap_fox' || interaction.customId === 'pet_fox');
             if (!isFoxhuntAction) return false;
 
+            // If fox is currently stunned
+            if (this.stunned)
+                return await this.sendEphemeralReply(interaction, '✨🦊💫');
+
+            // Consumes hearts for each interaction
             if (!this.canConsumeHeart(interaction))
                 return await this.sendEphemeralReply(interaction, 'The fox is sleeping now');
 
@@ -30,13 +36,17 @@ export default class FoxHuntMinigame {
             if (interaction.user.id === "287062661483724810")
                 await this.love(interaction);
 
+            // If user Slaps the fox and triggers 70% chance, stun the fox
+            if (interaction.customId === 'slap_fox' && CHANCE.natural({ likelihood: 70 }))
+                return await this.stunFox(interaction);
+
+            // 50% chance to bite user and substract points
             if (CHANCE.natural({ likelihood: 50 }))
-                await this.bite(interaction);
+                return await this.bite(interaction);
 
             // 10% Chance to reward user with stolen eggs
             if (CHANCE.bool({ likelihood: 10 })) {
-                await this.reward(interaction);
-
+                return await this.reward(interaction);
             }
         } catch(e) {
             console.error(e);
@@ -57,7 +67,7 @@ export default class FoxHuntMinigame {
             } catch (error) {
                 console.error('Failed to auto-delete ephemeral message:', error);
             }
-        }, 15000); // 15 seconds for auto dismiss
+        }, 15000); 
     };
 
     static async bite(interaction) {
@@ -69,12 +79,31 @@ export default class FoxHuntMinigame {
         return await this.sendEphemeralReply(interaction, 'The fox loves you ❤️');
     };
 
+    // Adds sparkles to the fox message and stuns the fox, preventing actions for 8 seconds
+    static async stunFox(interaction) {
+        // Respond to interaction
+        await this.sendEphemeralReply(interaction, 'You stunned the fox! ✨🦊💫');
+
+        const messageContent = interaction.message.content;
+        // Edit the original message to show sparkles
+        await interaction.message.edit(`✨💫${messageContent}`);
+
+        // Set fox stunned for 8 seconds
+        this.stunned = true;
+        setTimeout(async () => {
+            this.stunned = false;
+            // Edit the message back to its original state
+            await interaction.message.edit(`${messageContent}`);
+        }, 8000);
+    };
+
     static async canConsumeHeart(interaction) {
         const { fullLives, halfLives } = this.countLives(interaction.message.content);
         if (fullLives == 0) return false;
         fullLives--;
         halfLives++;
         await interaction.message.edit(`🦊${liveIcon.repeat(fullLives)}${halflifeicon.repeat(halfLives)}`);
+        return true;
     };
 
     static countLives(str) {
@@ -113,21 +142,19 @@ export default class FoxHuntMinigame {
 
         const lives = CHANCE.natural({ min: 3, max: 12 });
         const msg = await CHANNELS._send('TALK', `🦊${liveIcon.repeat(lives)}`);
-        msg.edit({ 
-            components: [
-                new ActionRowBuilder().addComponents([
-                    new ButtonBuilder()
-                      .setEmoji('🖐️')
-                      .setLabel("Pet")
-                      .setCustomId('pet_fox')
-                      .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                      .setEmoji('🫱')
-                      .setLabel("Slap")
-                      .setCustomId('slap_fox')
-                      .setStyle(ButtonStyle.Danger),
-                ])
-            ]
+        msg.edit({ components: [
+            new ActionRowBuilder().addComponents([
+                new ButtonBuilder()
+                    .setEmoji(petIcon)
+                    .setLabel("Pet")
+                    .setCustomId('pet_fox')
+                    .setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
+                    .setEmoji(slapIcon)
+                    .setLabel("Slap")
+                    .setCustomId('slap_fox')
+                    .setStyle(ButtonStyle.Danger),
+            ])]
         });
 
         // Ensure message is stored in database for clear up.
