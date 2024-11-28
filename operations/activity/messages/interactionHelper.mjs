@@ -1,12 +1,12 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
-import Chicken from "../../chicken.mjs";
 import WoodcuttingMinigame from '../../minigames/small/woodcutting.mjs';
 import TradingHelper from '../../minigames/medium/economy/items/tradingHelper.mjs';
 import CompetitionHelper from '../../social/competitionHelper.mjs';
 import MiningMinigame from '../../minigames/small/mining.mjs';
 import ChestPopMinigame from '../../minigames/small/chestpop.mjs';
 import FoxHuntMinigame from "../../minigames/small/foxhunt.mjs";
+import DailyRewardMinigame from "../../minigames/small/dailyreward.mjs";
 
 export const Button = (emoji, label, customId, style) => new ButtonBuilder({ emoji, label, customId, style })
 
@@ -29,7 +29,7 @@ export default class InteractionHelper {
         FoxHuntMinigame.onInteraction(interaction);
 
         // Daily Reward Interaction
-        Chicken.onInteraction(interaction);
+        DailyRewardMinigame.onInteraction(interaction);
     };
 
     static confirm(interaction, texts) {
