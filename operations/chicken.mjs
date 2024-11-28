@@ -2,14 +2,9 @@ import moment from 'moment';
 
 import ElectionHelper from './members/hierarchy/election/electionHelper.mjs';
 import CooperMorality from './minigames/small/cooperMorality.mjs';
-import DropTable from './minigames/medium/economy/items/droptable.mjs';
 
-import { STATE, CHANNELS, TIME, ITEMS, ROLES, MESSAGES, USERS } from "../coop.mjs";
+import { STATE, CHANNELS, TIME, ITEMS, ROLES } from "../coop.mjs";
 
-import TemporaryMessages from './activity/maintenance/temporaryMessages.mjs';
-
-import ItemsShared from "coop-shared/services/items.mjs";
-import Trading from "coop-shared/services/trading.mjs";
 import Database from 'coop-shared/setup/database.mjs';
 // import VisualisationHelper from './minigames/medium/conquest/visualisationHelper.mjs';
 
@@ -133,10 +128,12 @@ export default class Chicken {
                 content: newDayMessage,
                 components: [
                     new ActionRowBuilder().addComponents(
+                        // Daily reward claim button (see operations/minigames/small/dailyreward.mjs)
                         new ButtonBuilder()
                             .setLabel('Daily Reward')
                             .setCustomId('claim_daily_reward')
                             .setStyle(ButtonStyle.Primary),
+                        // Website login link
                         new ButtonBuilder()
                             .setLabel('Login')
                             .setURL(OAUTH_LOGIN_URL)
@@ -158,68 +155,6 @@ export default class Chicken {
         } catch(e) {
             console.log('New day detection failed.')
             console.error(e);
-        }
-    };
-
-    // onInteraction handler for Daily Reward Button
-    static async onInteraction(interaction) {
-        // Only run the button for claim_daily_reward
-        if (interaction.customId !== "claim_daily_reward") return false;
-
-        try {
-            // Define safeguard for allowing one claim in 24h window
-            const allowClaimDate = (lastClaim) => {
-                // If the date is NULL (default in database) then can claim
-                if (!lastClaim) return true;
-                // If the date is atleast 24 hours ago then can claim
-                const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
-                return new Date(lastClaim).getTime() <= twentyFourHoursAgo;
-            };
-
-            // Define safeguard for not passing over 15 item qty
-            const allowItemQty = async (item) => {
-                // Fetch user item quantity 
-                return await ItemsShared.hasQty(interaction.user.id, item, 15);
-            };
-
-            // Define safeguard for preventing reward
-            // if user has active trade with the same item
-            const hasOpenTradeForItem = async (userId, item) => {
-                const openTrades = await Trading.getByTrader(userId);
-                return openTrades.some(trade => trade.offer_item === item);
-            };
-
-            // Fetch the last claim date for user
-            const lastClaim = await USERS.getUserLastClaim(interaction.user.id)
-            // Safeguard claim date
-            if(!allowClaimDate(lastClaim.last_claim)) return false; 
-
-
-            // Update the userLastClaim date
-            await USERS.setUserLastClaim(interaction.user.id)
-
-            // Get one reward from droptable for Gathering drops
-            const { item, qty } = DropTable.getRandomTieredWithQty('GATHERING');
-            // Safeguard item quantity
-            if (!allowItemQty(item)) return false;
-            // Safeguard trading bypass
-            if (hasOpenTradeForItem(interaction.user.id, item)) return false;
-
-            // Announce the rewards in TALK
-            const dailyRewardText = `<@${interaction.user.id}> collected the daily reward: ${MESSAGES.emojiCodeText(item)}x${qty}`;
-            const dailyRewardMessage = CHANNELS._send('TALK', dailyRewardText);
-            TemporaryMessages.add(dailyRewardMessage, 30 * 60);
-
-            // Reward user with the item
-            // Items.add(interaction.user.id, item, qty, `Daily reward`);
-
-        } catch (e) {
-            console.error(e);
-            console.log('Error while giving Daily Rewards');
-
-        } finally {
-            // Return interaction reply for Each interaction regardless of outcome
-            return await interaction.reply({ content: `Daily Rewards! :chicken~1: `, ephemeral: true });
         }
     };
 
