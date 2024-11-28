@@ -42,16 +42,16 @@ export default class DailyRewardMinigame {
             // Fetch the last claim date for user
             const lastClaim = await USERS.getUserLastClaim(userId);
             // Safeguard claim date
-            if(!(await allowClaimDate(lastClaim.last_claim))) return false; 
+            if(!(await this.allowClaimDate(lastClaim.last_claim))) return false; 
             // Update the userLastClaim date
             await USERS.setUserLastClaim(userId)
 
             // Get one reward from droptable for Gathering drops
             const { item, qty } = DropTable.getRandomTieredWithQty('GATHERING');
             // Safeguard item quantity (if user has equal or over 15, dont reward)
-            if (await hasUserOverItemLimit(userId, item)) return false;
+            if (await this.hasUserOverItemLimit(userId, item)) return false;
             // Safeguard trading bypass (if user has outstanding trade with the itemtype, dont reward)
-            if (await hasOpenTradeForItem(userId, item)) return false;
+            if (await this.hasOpenTradeForItem(userId, item)) return false;
 
             // Announce the rewards in TALK
             const dailyRewardText = `<@${userId}> collected the daily reward: ${MESSAGES.emojiCodeText(item)}x${qty}`;
