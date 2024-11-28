@@ -6,46 +6,43 @@ import Trading from "coop-shared/services/trading.mjs";
 
 export default class DailyRewardMinigame {
     
+
+    // Safeguard: Check if the user can claim rewards (24h cooldown)
+    static async allowClaimDate(lastClaim) {
+        // If the date is NULL (default in database), then can claim
+        if (!lastClaim) return true;
+
+        // Invalid date format safeguard
+        if (isNaN(Date.parse(lastClaim))) return false;
+
+        // Check if 24 hours have passed since the last claim
+        const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
+        return new Date(lastClaim).getTime() <= twentyFourHoursAgo;
+    }
+
+    // Safeguard: Check if the user has too many of the item
+    static async hasUserOverItemLimit(userId, item) {
+        // Check if user has 15 or more of the specified item
+        return await ItemsShared.hasQty(userId, item, 15);
+    }
+
+    // Safeguard: Check if the user has an open trade for the same item
+    static async hasOpenTradeForItem(userId, item) {
+        const openTrades = await Trading.getByTrader(userId);
+        return openTrades.some(trade => trade.offer_item === item);
+    }
+
     // onInteraction handler for Daily Reward Button (created in chicken.mjs)
     static async onInteraction(interaction) {
-        
         // Only run the button for claim_daily_reward
         if (interaction.customId !== "claim_daily_reward") return false;
 
         try {
-            // Define safeguard for allowing one claim in 24h window
-            const allowClaimDate = async (lastClaim) => {
-                // If the date is NULL (default in database) then can claim
-                if (!lastClaim) return true;
-
-                // Invalid date format safeguard
-                if (isNaN(Date.parse(lastClaim))) return false;
-
-                // If the date is atleast 24 hours ago then can claim
-                const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000
-                return new Date(lastClaim).getTime() <= twentyFourHoursAgo;
-            };
-
-            // Define safeguard for not passing over 15 item qty
-            const hasUserOverItemLimit = async (userId, item) => {
-                // Return result of user item amount >= 15
-                return await ItemsShared.hasQty(userId, item, 15);
-            };
-
-            // Define safeguard for preventing reward
-            // if user has active trade with the same item
-            const hasOpenTradeForItem = async (userId, item) => {
-                const openTrades = await Trading.getByTrader(userId);
-                return openTrades.some(trade => trade.offer_item === item);
-            };
-
             const userId = interaction.user.id;
             // Fetch the last claim date for user
             const lastClaim = await USERS.getUserLastClaim(userId);
             // Safeguard claim date
             if(!(await allowClaimDate(lastClaim.last_claim))) return false; 
-
-
             // Update the userLastClaim date
             await USERS.setUserLastClaim(userId)
 
@@ -73,5 +70,4 @@ export default class DailyRewardMinigame {
             return await interaction.reply({ content: `Daily Rewards! :chicken~1: `, ephemeral: true });
         }
     };
-
-}
+};
