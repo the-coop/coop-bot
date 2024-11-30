@@ -55,7 +55,7 @@ export default class DailyRewardMinigame {
 
             // Announce the rewards in TALK
             const dailyRewardText = `<@${userId}> collected the daily reward: ${MESSAGES.emojiCodeText(item)}x${qty}`;
-            const dailyRewardMessage = CHANNELS._send('TALK', dailyRewardText);
+            const dailyRewardMessage = await CHANNELS._send('TALK', dailyRewardText);
             TemporaryMessages.add(dailyRewardMessage, 30 * 60);
 
             // Reward user with the item
