@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import COOP from '../../coop.mjs';
 import { EMOJIS } from 'coop-shared/config.mjs';
 
+import TemporaryMessages from "../../operations/activity/maintenance/temporaryMessages.mjs";
 import SkillsHelper from '../../operations/minigames/medium/skills/skillsHelper.mjs';
 import CraftingHelper from "../../operations/minigames/medium/skills/crafting/craftingHelper.mjs";
 
@@ -85,7 +86,9 @@ export const execute = async interaction => {
 		const craftResult = await CraftingHelper.craft(userID, itemCode, qty);
 		if (craftResult) {
 			const addText = `<@${userID}> crafted ${itemCode}x${qty}.`;
-			COOP.CHANNELS._send('ACTIONS', addText);
+			const tempMessage = await COOP.CHANNELS._send('ACTIONS', addText);
+            TemporaryMessages.add(tempMessage, 30 * 60);
+
 			return await interaction.reply({ content: addText, ephemeral: false });
 
 		} else {
