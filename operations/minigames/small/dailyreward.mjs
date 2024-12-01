@@ -42,7 +42,10 @@ export default class DailyRewardMinigame {
             // Fetch the last claim date for user
             const lastClaim = await USERS.getUserLastClaim(userId);
             // Safeguard claim date
-            if(!(await this.allowClaimDate(lastClaim.last_claim))) return false; 
+            if(!(await this.allowClaimDate(lastClaim.last_claim))) 
+                // TODO: Reply could contain hours/mins until next claim
+                return await interaction.reply({ content: `Daily reward is on cooldown, try again later!`, ephemeral: true });;
+
             // Update the userLastClaim date
             await USERS.setUserLastClaim(userId)
 
@@ -59,15 +62,12 @@ export default class DailyRewardMinigame {
             TemporaryMessages.add(dailyRewardMessage, 30 * 60);
 
             // Reward user with the item
-            // Items.add(interaction.user.id, item, qty, `Daily reward`);
+            ItemsShared.add(interaction.user.id, item, qty, `Daily reward`);
+            return await interaction.reply({ content: `You claimed your daily reward! 🐔`, ephemeral: true });
 
         } catch (e) {
             console.error(e);
             console.log('Error while giving Daily Rewards');
-
-        } finally {
-            // Return interaction reply for Each interaction regardless of outcome
-            return await interaction.reply({ content: `Daily Rewards! :chicken~1: `, ephemeral: true });
         }
     };
 };
