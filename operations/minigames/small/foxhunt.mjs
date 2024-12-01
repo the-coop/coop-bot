@@ -2,6 +2,7 @@ import axios from 'axios';
 import { CHANCE, CHANNELS, CHICKEN, USERS } from '../../../coop.mjs';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
+import Items from "coop-shared/services/items.mjs";
 
 const halflifeicon = '💔';
 const liveIcon = '❤️';
@@ -44,10 +45,17 @@ export default class FoxHuntMinigame {
             if (CHANCE.natural({ likelihood: 50 }))
                 return await this.bite(interaction);
 
-            // 10% Chance to reward user with stolen eggs
-            if (CHANCE.bool({ likelihood: 10 })) {
+            // If user pets the fox and triggers 10% Chance, reward user with stolen eggs
+            if (interaction.customId === 'pet_fox' && CHANCE.bool({ likelihood: 10 })) 
                 return await this.reward(interaction);
-            }
+
+            // If no chance was triggered, have default replies for actions
+            if (interaction.customId === 'slap_fox')
+                return await this.sendEphemeralReply(interaction, 'The fox dodges your slap!');
+
+            if (interaction.customId === 'pet_fox')
+                return await this.sendEphemeralReply(interaction, 'The fox sits next to you!');
+
         } catch(e) {
             console.error(e);
             console.log('Above error related to foxhunt reaction handler')
@@ -98,7 +106,7 @@ export default class FoxHuntMinigame {
     };
 
     static async canConsumeHeart(interaction) {
-        const { fullLives, halfLives } = this.countLives(interaction.message.content);
+        let { fullLives, halfLives } = this.countLives(interaction.message.content);
         if (fullLives == 0) return false;
         fullLives--;
         halfLives++;
@@ -123,7 +131,7 @@ export default class FoxHuntMinigame {
                 const stolenKey = `stolen_${rarity.toLowerCase()}`;
                 const eggCount = await CHICKEN.getConfigVal(stolenKey);
                 if (eggCount > 0) {
-                    // await Items.add(interaction.user.id, rarity, eggCount, `FOXHUNT_REWARD_${rarity}`);
+                    await Items.add(interaction.user.id, rarity, eggCount, `FOXHUNT_REWARD_${rarity}`);
                     await CHICKEN.setConfig(stolenKey, 0);
                     rewardStrings.push(`${rarity}: ${eggCount}`);
                 }
