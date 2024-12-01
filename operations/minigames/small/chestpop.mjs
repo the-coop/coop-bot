@@ -40,7 +40,7 @@ export default class ChestPopMinigame {
             await interaction.message.delete()
             
             // Declare feedback in a new message
-            const dropsText = drops.map(drop => COOP.MESSAGES.emojiCodeText(drop.item).repeat(drop.qty)).join(' ');
+            const dropsText = drops.map(drop => MESSAGES.emojiCodeText(drop.item).repeat(drop.qty)).join(' ');
             const dropsMessage = await interaction.channel.send({
                 content: dropsText,
                 components: [
