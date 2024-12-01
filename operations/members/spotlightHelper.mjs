@@ -15,6 +15,8 @@ export default class SpotlightHelper {
             const lastOccurred = parseInt(spotlightEvent.last_occurred);
             const isDue = now - lastOccurred > (SPOTLIGHT_DUR * 7);
             const hasExpired = now - lastOccurred > SPOTLIGHT_DUR;
+            const MAX_ACTIVE_DURATION = 3600 * 24 * 30;
+            const hasExceededMaxDuration = now - lastOccurred > MAX_ACTIVE_DURATION;
 
             // Defining a voting period allows channel to stay open for a while after concluding.
             const isVotingPeriod = lastOccurred + 3600 * 24 <= now;
@@ -24,6 +26,10 @@ export default class SpotlightHelper {
             console.log(spotlightEvent);
             console.log(lastOccurred);
             console.log(isVotingPeriod);
+
+            // Safeguard to prevent infinite spotlight events
+            if (spotlightEvent.active && hasExceededMaxDuration)
+                await this.end();
 
             // Start the event if necessary.
             if (!spotlightEvent.active && isDue)
