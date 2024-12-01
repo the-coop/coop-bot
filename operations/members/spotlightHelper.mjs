@@ -12,14 +12,16 @@ export default class SpotlightHelper {
         try {
             const spotlightEvent = await EventsHelper.read('spotlight');
             const now = TIME._secs();
-            const lastOccurred = parseInt(spotlightEvent.last_occurred);
+
+            if (!spotlightEvent) throw new Error('Spotlight event not found in database!');
+
+            const lastOccurred = parseInt(spotlightEvent.last_occurred) || 0;
+            const isActive = spotlightEvent.active || false;
             const isDue = now - lastOccurred > (SPOTLIGHT_DUR * 7);
             const hasExpired = now - lastOccurred > SPOTLIGHT_DUR;
-            const MAX_ACTIVE_DURATION = 3600 * 24 * 30;
-            const hasExceededMaxDuration = now - lastOccurred > MAX_ACTIVE_DURATION;
 
             // Defining a voting period allows channel to stay open for a while after concluding.
-            const isVotingPeriod = lastOccurred + 3600 * 24 <= now;
+            const isVotingPeriod = lastOccurred + SPOTLIGHT_DUR <= now;
 
             console.log('Tracking spotlight event...');
             console.log(now);
@@ -28,15 +30,15 @@ export default class SpotlightHelper {
             console.log(isVotingPeriod);
 
             // Start the event if necessary.
-            if (!spotlightEvent.active && isDue)
+            if (!isActive && isDue)
                 await this.start();
 
             // Process an ongoing event within
-            else if (spotlightEvent.active && isVotingPeriod && !hasExceededMaxDuration)
+            else if (isActive && isVotingPeriod && !hasExpired)
                 await this.run();
 
             // End the event if necessary.
-            else if (spotlightEvent.active && hasExpired)
+            else if (isActive && hasExpired)
                 await this.end();
 
             else {
@@ -202,7 +204,10 @@ export default class SpotlightHelper {
             await this.rankChange();
 
             // Set event to inactive.
-            EventsHelper.setActive('spotlight', false);
+            await EventsHelper.setActive('spotlight', false);
+            // Reset properties
+            await EventsHelper.setLink('spotlight', null);
+            await EventsHelper.setOrganiser('spotlight', null);
 
             // Delete messages.
             const channel = CHANNELS._getCode('SPOTLIGHT');
