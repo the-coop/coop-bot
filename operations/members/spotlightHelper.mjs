@@ -27,16 +27,12 @@ export default class SpotlightHelper {
             console.log(lastOccurred);
             console.log(isVotingPeriod);
 
-            // Safeguard to prevent infinite spotlight events
-            if (spotlightEvent.active && hasExceededMaxDuration)
-                await this.end();
-
             // Start the event if necessary.
             if (!spotlightEvent.active && isDue)
                 await this.start();
 
             // Process an ongoing event within
-            else if (spotlightEvent.active && isVotingPeriod)
+            else if (spotlightEvent.active && isVotingPeriod && !hasExceededMaxDuration)
                 await this.run();
 
             // End the event if necessary.
@@ -133,9 +129,17 @@ export default class SpotlightHelper {
         try {
             // Fetch spotlight event
             const spotlightEvent = await EventsHelper.read('spotlight');
+            if (!spotlightEvent)
+                throw new Error('Spotlight event could not be fetched!')
 
-            // Access the poll results
+            // Access the poll results if available
+            if (!spotlightEvent.message_link)
+                throw new Error('Spotlight event does not have a valid message link!');
+
             const msg = await MESSAGES.getByLink(spotlightEvent.message_link);
+            if (!msg)
+                throw new Error('Spotlight message could not be fetched with the message link!')
+
             const results = msg.poll.answers.map((answer) => ({
                 answer_id: answer.answer_id,
                 votes: answer.votes
@@ -148,6 +152,8 @@ export default class SpotlightHelper {
             const chosenActionId = highestVotedAnswer.answer_id;
         
             // Fetch the spotlight user from temporary storage
+            if (!spotlightEvent.organiser)
+                throw new Error('Spotlight event does not have a valid organiser!');
             const spotlightUser = await USERS._getById(spotlightEvent.organiser);
 
             if (!spotlightUser) {
