@@ -86,8 +86,6 @@ export const execute = async interaction => {
 		const craftResult = await CraftingHelper.craft(userID, itemCode, qty);
 		if (craftResult) {
 			const addText = `<@${userID}> crafted ${itemCode}x${qty}.`;
-			const tempMessage = await COOP.CHANNELS._send('ACTIONS', addText);
-			TemporaryMessages.add(tempMessage, 30 * 60);
 
 			return await interaction.reply({ content: addText, ephemeral: false });
 
