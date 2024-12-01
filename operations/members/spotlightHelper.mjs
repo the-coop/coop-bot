@@ -12,12 +12,16 @@ export default class SpotlightHelper {
         try {
             const spotlightEvent = await EventsHelper.read('spotlight');
             const now = TIME._secs();
-            const lastOccurred = parseInt(spotlightEvent.last_occurred);
+
+            if (!spotlightEvent) throw new Error('Spotlight event not found in database!');
+
+            const lastOccurred = parseInt(spotlightEvent.last_occurred) || 0;
+            const isActive = spotlightEvent.active || false;
             const isDue = now - lastOccurred > (SPOTLIGHT_DUR * 7);
             const hasExpired = now - lastOccurred > SPOTLIGHT_DUR;
 
             // Defining a voting period allows channel to stay open for a while after concluding.
-            const isVotingPeriod = lastOccurred + 3600 * 24 <= now;
+            const isVotingPeriod = lastOccurred + SPOTLIGHT_DUR <= now;
 
             console.log('Tracking spotlight event...');
             console.log(now);
@@ -26,15 +30,15 @@ export default class SpotlightHelper {
             console.log(isVotingPeriod);
 
             // Start the event if necessary.
-            if (!spotlightEvent.active && isDue)
+            if (!isActive && isDue)
                 await this.start();
 
             // Process an ongoing event within
-            else if (spotlightEvent.active && isVotingPeriod)
+            else if (isActive && isVotingPeriod && !hasExpired)
                 await this.run();
 
             // End the event if necessary.
-            else if (spotlightEvent.active && hasExpired)
+            else if (isActive && hasExpired)
                 await this.end();
 
             else {
@@ -127,9 +131,17 @@ export default class SpotlightHelper {
         try {
             // Fetch spotlight event
             const spotlightEvent = await EventsHelper.read('spotlight');
+            if (!spotlightEvent)
+                throw new Error('Spotlight event could not be fetched!')
 
-            // Access the poll results
+            // Access the poll results if available
+            if (!spotlightEvent.message_link)
+                throw new Error('Spotlight event does not have a valid message link!');
+
             const msg = await MESSAGES.getByLink(spotlightEvent.message_link);
+            if (!msg)
+                throw new Error('Spotlight message could not be fetched with the message link!')
+
             const results = msg.poll.answers.map((answer) => ({
                 answer_id: answer.answer_id,
                 votes: answer.votes
@@ -142,6 +154,8 @@ export default class SpotlightHelper {
             const chosenActionId = highestVotedAnswer.answer_id;
         
             // Fetch the spotlight user from temporary storage
+            if (!spotlightEvent.organiser)
+                throw new Error('Spotlight event does not have a valid organiser!');
             const spotlightUser = await USERS._getById(spotlightEvent.organiser);
 
             if (!spotlightUser) {
@@ -190,7 +204,10 @@ export default class SpotlightHelper {
             await this.rankChange();
 
             // Set event to inactive.
-            EventsHelper.setActive('spotlight', false);
+            await EventsHelper.setActive('spotlight', false);
+            // Reset properties
+            await EventsHelper.setLink('spotlight', null);
+            await EventsHelper.setOrganiser('spotlight', null);
 
             // Delete messages.
             const channel = CHANNELS._getCode('SPOTLIGHT');
