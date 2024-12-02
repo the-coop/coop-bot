@@ -15,7 +15,7 @@ const CRATE_DATA = {
         emoji: EMOJIS.AVERAGE_CRATE,
         maxReward: 4,
         openingPoints: 2,
-        percHitsReq: .0125,
+        percHitsReq: .0084,
         rewards: DropTable.TIERS.AVERAGE
     },
     RARE_CRATE: {
