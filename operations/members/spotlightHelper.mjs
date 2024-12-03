@@ -68,7 +68,7 @@ export default class SpotlightHelper {
 
             // Post spotlight member message.
             console.log('Starting spotlight event.');
-            CHANNELS._send('SPOTLIGHT', `Need to create Spotlight Post Permission for one message - Starting spotlight for <@${interaction.user.id}>`);
+            CHANNELS._send('SPOTLIGHT', `Need to create Spotlight Post Permission for one message - Starting spotlight for <@${user.discord_id}>`);
 
             // TODO: Calculate current role, above, and below.
 
