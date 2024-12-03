@@ -115,10 +115,9 @@ export default class SpotlightHelper {
                     allow_multiselect: false
                 }
             });
-
+            
             // Save the poll message link
-            const msgLink = MESSAGES.link(poll);
-            EventsHelper.setLink('spotlight', msgLink)
+            EventsHelper.setLink('spotlight', poll)
             // Save the spotlight user as organizer
             EventsHelper.setOrganiser('spotlight', user.discord_id)
 
