@@ -68,7 +68,7 @@ export default class SpotlightHelper {
 
             // Post spotlight member message.
             console.log('Starting spotlight event.');
-            CHANNELS._send('SPOTLIGHT', 'Need to create Spotlight Post Permission for one message - Starting spotlight for ' + user.username);
+            CHANNELS._send('SPOTLIGHT', `Need to create Spotlight Post Permission for one message - Starting spotlight for <@${user.discord_id}>`);
 
             // TODO: Calculate current role, above, and below.
 
@@ -117,7 +117,8 @@ export default class SpotlightHelper {
             });
 
             // Save the poll message link
-            EventsHelper.setLink('spotlight', poll)
+            const msgLink = MESSAGES.link(poll);
+            EventsHelper.setLink('spotlight', msgLink);
             // Save the spotlight user as organizer
             EventsHelper.setOrganiser('spotlight', user.discord_id)
 
