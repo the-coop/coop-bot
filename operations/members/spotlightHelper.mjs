@@ -118,7 +118,7 @@ export default class SpotlightHelper {
 
             // Save the poll message link
             const msgLink = MESSAGES.link(poll);
-            EventsHelper.setLink('spotlight', poll);
+            EventsHelper.setLink('spotlight', msgLink);
             // Save the spotlight user as organizer
             EventsHelper.setOrganiser('spotlight', user.discord_id)
 
