@@ -17,23 +17,16 @@ export default async function optin(to, assetID) {
     // before every transaction in this example
     const params = await ALGOD_CLIENT.getTransactionParams().do();
 
-    //comment out the next two lines to use suggested fee
-    // params.fee = 1000;
-    // params.flatFee = true;
+    // We are sending 0 assets
+    const amount = 0;
 
     let sender = to;
     let recipient = sender;
 
-    // We set revocationTarget to undefined as 
-    // This is not a clawback operation
-    let revocationTarget = undefined;
 
-    // CloseReaminerTo is set to undefined as
-    // we are not closing out an asset
+    let revocationTarget = undefined;
     let closeRemainderTo = undefined;
 
-    // We are sending 0 assets
-    const amount = 0;
 
     // signing and sending "txn" allows sender to begin accepting asset specified by creator and index
     let opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(

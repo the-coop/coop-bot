@@ -1,12 +1,7 @@
 import _ from 'lodash';
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-// import COOP from '../../coop.mjs';
-// import { 
-// 	validItemQtyArgFloatGuard, usableItemCodeGuard, 
-// 	validUserArgGuard, useManyGuard
-// } from '../../operations/minigames/medium/economy/itemCmdGuards.mjs';
-// import ElectionHelper from '../../operations/members/hierarchy/election/electionHelper.mjs';
+
 
 export const name = 'export';
 
@@ -30,6 +25,17 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction) => {
 	const itemCodeInput = interaction.options.get('item_code').value;
 	const quantityInput = interaction.options.get('quantity');
+};
+
+
+
+// import COOP from '../../coop.mjs';
+// import { 
+// 	validItemQtyArgFloatGuard, usableItemCodeGuard, 
+// 	validUserArgGuard, useManyGuard
+// } from '../../operations/minigames/medium/economy/itemCmdGuards.mjs';
+// import ElectionHelper from '../../operations/members/hierarchy/election/electionHelper.mjs';
+
 
 	// Default qty to 1.
 	// const qty = _.get(quantityInput, 'value', 1);
@@ -87,4 +93,3 @@ export const execute = async (interaction) => {
 	// 	console.error(e);
 	// 	return await interaction.reply({ content: 'Item(s) failed to be given.', ephemeral: true });
 	// }
-};
