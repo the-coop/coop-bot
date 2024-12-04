@@ -1,6 +1,6 @@
 import EmojiHelper from "./emojiHelper.mjs";
 
-import COOP, { SERVER, TIME, STATE } from "../../../../../coop.mjs";
+import COOP, { SERVER, TIME, STATE, MESSAGES } from "../../../../../coop.mjs";
 import { EMOJIS, RAW_EMOJIS } from 'coop-shared/config.mjs';
 import Useable from 'coop-shared/services/useable.mjs';
 
@@ -360,17 +360,17 @@ export default class ItemsHelper {
             const allItems = interaction.message.content.match(/([\p{Emoji}]|:\w+:(\d+)?)/gu);
             // If allItems variable is null after .match, or there are no items
             if (!allItems || allItems.length == 0) { return ""; }
+            firstItem = allItems[0];
 
             // Remove the item from message content
-            await interaction.message.edit(interaction.message.content.replace(allItems[0], ''));
+            await interaction.message.edit(interaction.message.content.replace(firstItem, ''));
             // TODO: Ensure that the interaction message was succesfully modified and that the item is gone from the message
 
             // Parse emoji to item code and give it to user
-            const emojiID = MESSAGES.getEmojiIdentifier(allItems[0]);
+            const emojiID = MESSAGES.getEmojiIdentifier(firstItem);
             const itemCode = this.emojiToItemCode(emojiID);
-            await Items.add(interaction.user.id, itemCode, 1, `User picked up item`);
+            // await Items.add(interaction.user.id, itemCode, 1, `User picked up item`);
             
-            return allItems[0];
         } catch (e) {
             console.log(e);
             console.log("above error occured while picking up item!");
