@@ -74,8 +74,12 @@ export default class ChestPopMinigame {
     
     static async pickup(interaction) {
         try {
-            const pickedItem = ITEMS.pickup(interaction);
-            if (pickedItem.trim() === "") { return await interaction.reply({ content: 'There are no items to be picked up', ephemeral: true }); }
+            const pickedItem = await ITEMS.pickup(interaction);
+            // If there are no items to be picked up, cleanup
+            if (pickedItem.length == 0) { 
+                await interaction.message.delete()
+                return await interaction.reply({ content: 'There are no items to be picked up', ephemeral: true }); 
+            }
             // Show user success message.
             return await interaction.reply({ content: `You successfully picked up ${pickedItem}`, ephemeral: true });
         } catch(e) {
