@@ -7,7 +7,6 @@ import COOP, { MESSAGES, ROLES, USERS, SERVER } from '../../../coop.mjs';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from 'discord.js';
-import { result } from 'lodash';
 
 export const SACRIFICE_RATIO_PERC = .05;
 export const KEEP_RATIO_PERC = .02;
