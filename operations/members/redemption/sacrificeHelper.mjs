@@ -152,7 +152,7 @@ export default class SacrificeHelper {
         // Start the poll, should save message ID for later results consideration.
         const msg = await COOP.CHANNELS._getCode('TALK').send({
             poll: {
-                question: { text: `${user.username} was ${!reason ? 'randomly ': ''} selected for sacrifice...` },
+                question: { text: `<@${user.id}> was ${!reason ? 'randomly ': ''} selected for sacrifice...` },
                 answers: [
                     { text: `Keep them`, emoji: '🕊️' },
                     { text: `Sacrifice them`, emoji: '🗡️' },
@@ -201,29 +201,53 @@ export default class SacrificeHelper {
 
     // Last sacrifice time, last updated, how it works, current dagger/shield count.
     static async announce() {
+        const reqSacrificeVotes = VotingHelper.getNumRequired(SACRIFICE_RATIO_PERC);
         const sacrificeOffers = await this.loadOffers();
         const sacrifices = await Promise.all(sacrificeOffers.map(async offer => {
             let sacrificee = null;
+            let hasFinalised = null;
+            let shouldSacrifice = null;
             try {
+                // Access the message
                 const message = await MESSAGES.getByLink(offer.message_link);
 
-                // TODO: Need new poll loading, maybe a database table for sacrifices?
-                
-                // const desc = message?.embeds[0].data.description;
-                
-                // const discordID = /<@(\d*)>/.exec(desc)[1];
+                const desc = message.poll.question.text;
+                const discordID = /<@(\d*)>/.exec(desc)[1];
+                sacrificee = USERS._get(discordID);
+
+                hasFinalised = message.poll.resultsFinalized;
+
+                const results = message.poll.answers.map((answer) => ({
+                    answer_id: answer.answer_id,
+                    votes: answer.votes
+                }));
     
-                // sacrificee = USERS._get(discordID);
+                const highestVotedAnswer = results.reduce((max, answer) => 
+                    answer.votes > max.votes ? answer : max, { votes: 0 }
+                );
+
+                // If the highest voted answer is the "sacrifice" option
+                // and if there are enough votes
+                // then should sacrifice user
+                shouldSacrifice = (highestVotedAnswer.answer_id == 2 && highestVotedAnswer.votes >= reqSacrificeVotes) ? true : false;
+
 
             } catch(e) {
-                // TODO: May need to remove the temporary message.
+                // Clean up message on errors
+                TemporaryMessages.unregisterTempMsgByLink(offer.message_link)
+                MESSAGES.deleteByLink(offer.message_link)
             }
 
             return {
-                // sacrificee
+                sacrificee: sacrificee,
+                hasFinalised: hasFinalised,
+                shouldSacrifice: shouldSacrifice,
+                messageLink: offer.message_link
             };
         }));
-        const validSacrifices = sacrifices.filter(v => v.sacrificee !== null);
+
+        // Valid sacrifices should contain the ongoing sacrifices?
+        const validSacrifices = sacrifices.filter(v => v.sacrificee !== null && v.hasFinalised && v.shouldSacrifice && v.messageLink);
 
         // If there are sacrifices update the server about it.
         if (validSacrifices.length > 0) {
