@@ -7,7 +7,7 @@ import Database from 'coop-shared/setup/database.mjs';
 import { STATE, USERS } from '../coop.mjs';
 
 import AlgoHelper from '../operations/minigames/medium/economy/blockchain/AlgoHelper.mjs';
-
+import algosdk from 'algosdk';
 
 
 // Commonly useful.
@@ -52,19 +52,15 @@ const shallowBot = async () => {
         STATE.CLIENT.on('ready', async () => {
             console.log('Shallow bot is ready');
     
-            // process.env.ALGORAND_KEY
 
-            // Define the Algorand node connection parameters
-            // const algodToken = ''; // free service does not require tokens
-            // const algodServer = 'https://testnet-api.4160.nodely.dev';
-            // const algodPort = 443;
 
-            // Create an instance of the algod client
-            // const algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort);
+            
+            // const publicKey = AlgoHelper.account().addr.publicKey;
+            // const address = algosdk.encodeAddress(publicKey);
+            // console.log('Address:', address);
+
             AlgoHelper.login();
-            const status = await AlgoHelper.client.status().do();
-            console.log('Node status:', status);
-
+            await AlgoHelper.mint("Eli M", 'TEST_ELI_FACE', 'https://thecoop.group/items/metadata/TEST_ELI_FACE', 1000, 0);
 
 
         });

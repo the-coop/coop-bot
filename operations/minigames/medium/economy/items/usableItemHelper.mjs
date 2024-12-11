@@ -98,7 +98,7 @@ export default class UsableItemHelper {
 
     static isDroppedItemMsg(msg) {
         return ReactionHelper.didUserReactWith(
-            msg, CHICKEN.getDiscordID(), RAW_EMOJIS.DROPPED
+            msg, STATE.CLIENT.user.id, RAW_EMOJIS.DROPPED
         );
     }
 

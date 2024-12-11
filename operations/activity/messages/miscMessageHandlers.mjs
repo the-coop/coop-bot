@@ -1,5 +1,3 @@
-import Axios from "axios";
-
 import COOP, { MESSAGES, STATE } from "../../../coop.mjs";
 import { CHANNELS } from "coop-shared/config.mjs";
 

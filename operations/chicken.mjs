@@ -6,17 +6,13 @@ import CooperMorality from './minigames/small/cooperMorality.mjs';
 import { STATE, CHANNELS, TIME, ITEMS, ROLES } from "../coop.mjs";
 
 import Database from 'coop-shared/setup/database.mjs';
-// import VisualisationHelper from './minigames/medium/conquest/visualisationHelper.mjs';
+
 
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 const OAUTH_LOGIN_URL = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify';
 
 export default class Chicken {
-
-    static getDiscordID() {
-        return STATE.CLIENT.user.id;
-    };
 
     static async getConfig(key) {
         let value = null;

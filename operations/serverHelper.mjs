@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { ROLES } from 'coop-shared/config.mjs';
 
 import { CHANNELS, TIME, STATE } from '../coop.mjs';

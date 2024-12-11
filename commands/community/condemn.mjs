@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "discord.js";
 import { CHANNELS } from "../../coop.mjs";
 
 export const name = 'condemn';

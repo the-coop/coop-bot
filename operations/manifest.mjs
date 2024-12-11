@@ -15,8 +15,6 @@ import InstantFurnace from "./minigames/small/instantfurnace.mjs";
 
 import ChestPop from "./minigames/small/chestpop.mjs";
 
-// import NewsHelper from "./social/newsHelper.mjs";
-
 import BuffsHelper from "./minigames/medium/conquest/buffsHelper.mjs";
 import CooperMorality from "./minigames/small/cooperMorality.mjs";
 import TradingHelper from "./minigames/medium/economy/items/tradingHelper.mjs";

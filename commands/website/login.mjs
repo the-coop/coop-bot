@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "discord.js";
 import { USERS } from '../../coop.mjs';
 
 import AccessCodes from "coop-shared/services/access-codes.mjs";

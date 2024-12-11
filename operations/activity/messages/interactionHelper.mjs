@@ -7,6 +7,7 @@ import MiningMinigame from '../../minigames/small/mining.mjs';
 import ChestPopMinigame from '../../minigames/small/chestpop.mjs';
 import FoxHuntMinigame from "../../minigames/small/foxhunt.mjs";
 import DailyRewardMinigame from "../../minigames/small/dailyreward.mjs";
+import AlgoHelper from '../../minigames/medium/economy/blockchain/AlgoHelper.mjs';
 
 export const Button = (emoji, label, customId, style) => new ButtonBuilder({ emoji, label, customId, style })
 
@@ -30,6 +31,8 @@ export default class InteractionHelper {
 
         // Daily Reward Interaction
         DailyRewardMinigame.onInteraction(interaction);
+
+
     };
 
     static confirm(interaction, texts) {

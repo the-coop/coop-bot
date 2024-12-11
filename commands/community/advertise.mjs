@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "discord,js";
 
 import { EMOJIS } from 'coop-shared/config.mjs';
 import { ITEMS, CHANNELS, USABLE, MESSAGES } from "../../coop.mjs";
@@ -34,15 +33,15 @@ export const execute = async interaction => {
 		const advertImageURL = interaction.options.get('advert_image_url').value;
 	
 		// Check the advert target link is statusful.
-		const advertTargetResponse = await axios.get(advertTargetURL);
-		if (advertTargetResponse.status !== 200)
-			return await interaction.reply({ content: 'Advert target URL is invalid, please try again.', ephemeral: true });
+		// const advertTargetResponse = await axios.get(advertTargetURL);
+		// if (advertTargetResponse.status !== 200)
+		// 	return await interaction.reply({ content: 'Advert target URL is invalid, please try again.', ephemeral: true });
 				
 		// Check the image URL is an image and valid (200 status code).
-		const advertImageResponse = await axios.get(advertImageURL);
-		const isImageURL = advertImageResponse.headers['content-type'].match(/(image)+\//g).length !== 0 || false;
-		if (advertImageResponse.status !== 200 || !isImageURL)
-			return await interaction.reply({ content: 'Advert image URL is invalid, please try again.', ephemeral: true });
+		// const advertImageResponse = await axios.get(advertImageURL);
+		// const isImageURL = advertImageResponse.headers['content-type'].match(/(image)+\//g).length !== 0 || false;
+		// if (advertImageResponse.status !== 200 || !isImageURL)
+		// 	return await interaction.reply({ content: 'Advert image URL is invalid, please try again.', ephemeral: true });
 
 		// Calculate price and check they can afford.
 		// const price = await ITEMS.perBeakRelativePrice('GOLD_COIN', 5);

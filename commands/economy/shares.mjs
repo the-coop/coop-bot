@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "discord.js";
 
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
 import { usableItemCodeGuard } from "../../operations/minigames/medium/economy/itemCmdGuards.mjs";

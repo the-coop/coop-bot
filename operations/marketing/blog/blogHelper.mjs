@@ -5,7 +5,6 @@ import { CHANNELS, MESSAGES, TIME, USERS } from "../../../coop.mjs";
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
-import axios from "axios";
 
 export default class BlogHelper {
 

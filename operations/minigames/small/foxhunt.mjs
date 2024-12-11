@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { CHANCE, CHANNELS, CHICKEN, USERS } from '../../../coop.mjs';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
@@ -68,12 +67,12 @@ export default class FoxHuntMinigame {
         const reply = await interaction.reply({ content: message, ephemeral: true });
         setTimeout(async () => {
             try {
-                const applicationId = CHICKEN.getDiscordID();
+                const applicationId = STATE.CLIENT.user.id;
                 const token = interaction.token;
-                await axios.delete(`https://discord.com/api/webhooks/${applicationId}/${token}/messages/@original`);
-                console.log('Ephemeral message auto-deleted');
+                // await dontwantaxios.delete(`https://discord.com/api/webhooks/${applicationId}/${token}/messages/@original`);
+                // console.log('Ephemeral message auto-deleted');
             } catch (error) {
-                console.error('Failed to auto-delete ephemeral message:', error);
+                // console.error('Failed to auto-delete ephemeral message:', error);
             }
         }, 15000); 
     };

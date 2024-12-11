@@ -1,5 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder } from "discord.js";
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from "discord.js";
 
 import { EMOJIS, RAW_EMOJIS } from 'coop-shared/config.mjs';
 import Database from "coop-shared/setup/database.mjs";

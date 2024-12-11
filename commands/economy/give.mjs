@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "discord.js";
 
 import COOP from '../../coop.mjs';
 import { 
@@ -46,6 +46,7 @@ export const execute = async (interaction) => {
 	const quantityInput = interaction.options.get('quantity');
 
 	// Default qty to 1.
+	// quantityInput.value;
 	const qty = _.get(quantityInput, 'value', 1);
 
 	// TODO: Allow them to run this even if arguments aren't in the right order!

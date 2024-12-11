@@ -16,7 +16,7 @@ export default class TradingHelper {
         if (!USERS.isCooperMsg(reaction.message)) return false;
 
         // Check if it is a trade actionable message.
-        const isTrade = REACTIONS.didUserReactWith(reaction.message, CHICKEN.getDiscordID(), RAW_EMOJIS.TRADE);
+        const isTrade = REACTIONS.didUserReactWith(reaction.message, STATE.CLIENT.user.id, RAW_EMOJIS.TRADE);
         if (!isTrade) return false;
         
         const isAcceptEmoji = reaction.emoji.name === RAW_EMOJIS.HANDSHAKE;

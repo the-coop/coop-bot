@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "discord.js";
 
 import { RAW_EMOJIS, EMOJIS } from 'coop-shared/config.mjs';
 import { MESSAGES, ITEMS, TIME, USERS, CHANNELS } from '../../coop.mjs';

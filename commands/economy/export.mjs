@@ -1,7 +1,4 @@
-import _ from 'lodash';
-import { SlashCommandBuilder } from "@discordjs/builders";
-
-
+import { TextInputStyle, SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder } from "discord.js";
 
 export const name = 'export';
 
@@ -22,9 +19,39 @@ export const data = new SlashCommandBuilder()
 			.setDescription('Quantity of item to export?')
 	);
 
-export const execute = async (interaction) => {
+export const execute = async interaction => {
 	const itemCodeInput = interaction.options.get('item_code').value;
 	const quantityInput = interaction.options.get('quantity');
+
+	console.log(itemCodeInput, quantityInput);
+
+	// TODO: Check if they have an address
+	// TODO: If not, follow up to set it up.
+
+	// Create the modal
+	const modal = new ModalBuilder()
+		.setCustomId('exporting')
+		.setTitle('Where should we export to?');
+
+	// Add components to modal
+
+	// Create the text input components
+	const walletInput = new TextInputBuilder()
+		.setCustomId('wallet')
+		
+		// The label is the prompt the user sees for this input
+		.setLabel("Wallet address to send to (check carefully)?")
+
+		// Short means only a single line of text
+		.setStyle(TextInputStyle.Short);
+
+
+	modal.addComponents(
+		new ActionRowBuilder().addComponents(walletInput)
+	);
+
+	// Show the modal to the user
+	await interaction.showModal(modal);
 };
 
 

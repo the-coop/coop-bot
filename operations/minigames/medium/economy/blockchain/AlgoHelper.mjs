@@ -1,107 +1,105 @@
-import algosdk from "algosdk";
+import { 
+    Algodv2, mnemonicToSecretKey,waitForConfirmation,
+    makeAssetCreateTxnWithSuggestedParamsFromObject as makeAssetTxn,
+    makeAssetTransferTxnWithSuggestedParamsFromObject as makeTransferTxn
+} from 'algosdk';
 
 export default class AlgoHelper {
 
-    static API_URL = 'https://testnet-api.4160.nodely.dev';
+    static API_URL = 'https://testnet-api.algonode.cloud';
     
     static client = null;
     
     static login() {
-        this.client = new algosdk.Algodv2(process.env.ALGORAND_KEY, this.API_URL, 443);
-        return this.client;
-    };
-
-    static createAccount() {
-        const account = algosdk.generateAccount();
-        const passphrase = algosdk.secretKeyToMnemonic(account.sk);
-        return { account, passphrase };
+        try {
+            // Initialize without token for Nodely API
+            this.client = new Algodv2('', this.API_URL, 443);
+            console.log('Algod client initialized:', this.client);
+            return this.client;
+        } catch (error) {
+            console.error('Failed to initialize Algod client:', error);
+            throw error;
+        }
     };
     
-    static getAccount() {
-        const account = algosdk.mnemonicToSecretKey(process.env.ALGORAND_KEY);
+    static async onInteraction(interaction) {
+        console.log(interaction);
+        console.log('interaction intercepted in algohelper.');;
+    };
+
+    static account() {
+        const account = mnemonicToSecretKey(process.env.ALGORAND_KEY);
         return account;
     };
 
-    static async mint() {
-        let params = await ALGOD_CLIENT.getTransactionParams().do();
-        let note = undefined;
+    static async mint(name, code, url, total, decimals = 0) {
+        const account = this.account();
 
-        // Whether user accounts will need to be unfrozen before transacting    
-        let defaultFrozen = false;
-
-        // integer number of decimals for asset unit calculation
-        let decimals = 0;
-
-        // total number of this asset available for circulation   
-        let totalIssuance = 1000;
-
-        // Used to display asset units to user    
-        let unitName = "Magic Egg";
-
-        // Friendly name of the asset    
-        let assetName = "MAGIC_EGG";
-
-        // Optional string pointing to a URL relating to the asset
-        let assetURL = "http://someurl";
-        //     const assetURL = "https://thecoop.group/items/metadata/MAGIC_EGG.json";
-
+        let unitName = name;
+        let assetName = code;
+        let assetURL = url;
+        
         // Optional hash commitment of some sort relating to the asset. 32 character length.
+        let note = undefined;
+        let defaultFrozen = false;
         let assetMetadataHash = undefined;
+        let manager = account.addr;
+        let reserve = account.addr;
+        let freeze = account.addr;
+        let clawback = account.addr;
 
+        try {
+            // Get the suggested transaction parameters
+            const suggestedParams = await this.client.getTransactionParams().do();
+            console.log("Suggested Params:", suggestedParams);
 
-        let manager = getAccount().addr;
-        let reserve = getAccount().addr;
-        let freeze = getAccount().addr;
-        let clawback = getAccount().addr;
+            // Create the asset creation transaction
+            const txn = makeAssetTxn({
+                sender: account.addr,
+                total, decimals,
+                defaultFrozen,
+                manager, reserve, freeze, clawback,
+                assetMetadataHash, suggestedParams,
+                unitName, assetName, assetURL, note
+            });
 
-        // signing and sending "txn" allows "addr" to create an asset
-        let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
-            getAccount().addr, note,
-            totalIssuance, decimals, 
-            defaultFrozen, manager, reserve, freeze, clawback, 
-            unitName, assetName, assetURL, 
-            assetMetadataHash, params
-        );
+            // Send the transaction
+            const { txid } = await this.client.sendRawTransaction(txn.signTxn(account.sk)).do();
+            const confirmation = await waitForConfirmation(this.client, txid, 4);
+            console.log(confirmation);
 
-        let rawSignedTxn = txn.signTxn(getAccount().sk)
-        let tx = (await ALGOD_CLIENT.sendRawTransaction(rawSignedTxn).do());
+            // TODO: Get AssetIndex, it needs saving to the database.
+            // TODO: Return AssetIndex.
+            return true;
 
-        // wait for transaction to be confirmed
-        const ptx = await algosdk.waitForConfirmation(ALGOD_CLIENT, tx.txId, 4);
-
-        // Get the new asset's information from the creator account
-        const assetID = ptx["asset-index"];
-
-        //Get the completed Transaction
-        console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
-        console.log(assetID);
+        } catch (error) {
+            console.error("Failed to mint asset:", error);
+        }
     };
 
-    static async transfer() {
-        // Transfer New Asset:
-        // Now that account3 can recieve the new tokens 
-        // we can tranfer tokens in from the creator
-        // to account3
-        sender = recoveredAccount1.addr;
-        recipient = recoveredAccount3.addr;
-        revocationTarget = undefined;
-        closeRemainderTo = undefined;
-        //Amount of the asset to transfer
-        amount = 10;
 
-        // signing and sending "txn" will send "amount" assets from "sender" to "recipient"
-        let xtxn = algosdk.makeAssetTransferTxnWithSuggestedParams(sender, recipient, closeRemainderTo, revocationTarget,
-                amount,  note, assetID, params);
-        // Must be signed by the account sending the asset  
-        rawSignedTxn = xtxn.signTxn(recoveredAccount1.sk)
-        let xtx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-        console.log("Transaction : " + xtx.txId);
-        // wait for transaction to be confirmed
-        await waitForConfirmation(algodclient, xtx.txId);
+    static async release(to, assetIndex, amount) {
+        try {
+            const from = this.account().addr;
+            const closeRemainderTo = undefined; 
+            const revocationTarget = undefined;
+            const suggestedParams = await this.client.getTransactionParams().do();
+            console.log("Suggested Params:", suggestedParams);
+            const txn = makeTransferTxn({
+                from, to, amount, assetIndex,
+                suggestedParams, closeRemainderTo, revocationTarget,
+                note: undefined
+            });
 
-        // You should now see the 10 assets listed in the account information
-        console.log("Account 3 = " + recoveredAccount3.addr);
-        await printAssetHolding(algodclient, recoveredAccount3.addr, assetID);
-    }
+            const { txid } = await this.client.sendRawTransaction(txn.signTxn(account.sk)).do();
+            const confirmation = await waitForConfirmation(this.client, txid, 4);
+            console.log(confirmation);
+
+            return true;
+
+        } catch (error) {
+            console.error("Failed to transfer asset:", error);
+        }
+    };
 
 };

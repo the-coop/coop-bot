@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "discord.js";
 import Trading from 'coop-shared/services/trading.mjs';
 
 import { 
