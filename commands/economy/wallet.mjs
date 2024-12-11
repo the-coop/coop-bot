@@ -1,8 +1,8 @@
 import { TextInputStyle, SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder } from "discord.js";
 
-export const name = 'export';
+export const name = 'wallet';
 
-export const description = 'Export items to blockchain';
+export const description = 'Add/modify your wallet used for export and import.';
 
 export const data = new SlashCommandBuilder()
     .setName(name)
