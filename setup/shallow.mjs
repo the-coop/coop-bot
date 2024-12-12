@@ -59,9 +59,9 @@ const shallowBot = async () => {
             // const address = algosdk.encodeAddress(publicKey);
             // console.log('Address:', address);
 
-            AlgoHelper.login();
-            await AlgoHelper.mint("Eli M", 'TEST_ELI_FACE', 'https://thecoop.group/items/metadata/TEST_ELI_FACE', 1000, 0);
-
+            // AlgoHelper.login();
+            // await AlgoHelper.mint("Eli M", 'TEST_ELI_FACE', 'https://thecoop.group/items/metadata/TEST_ELI_FACE', 1000, 0);
+            
 
         });
     } catch(e) {

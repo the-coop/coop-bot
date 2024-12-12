@@ -77,7 +77,6 @@ export default class AlgoHelper {
         }
     };
 
-
     static async release(to, assetIndex, amount) {
         try {
             const from = this.account().addr;

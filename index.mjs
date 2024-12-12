@@ -9,6 +9,7 @@ import registerLogging from './setup/logging.mjs';
 
 import eventsManifest from './operations/manifest.mjs';
 
+import AlgoHelper from './operations/minigames/medium/economy/blockchain/AlgoHelper.mjs';
 
 export default async function bot() {
     console.log('Trying to start bot');
@@ -33,6 +34,9 @@ export default async function bot() {
 
     // Set activity.
     botClient.user.setActivity(`We need /help`, { type: 'WATCHING' });
+
+    // Setup Algorand.
+    AlgoHelper.login();
 };
 
 bot();
