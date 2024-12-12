@@ -83,12 +83,12 @@ export default class AlgoHelper {
             const from = this.account().addr;
             const closeRemainderTo = undefined; 
             const revocationTarget = undefined;
+            const note = undefined;
             const suggestedParams = await this.client.getTransactionParams().do();
             console.log("Suggested Params:", suggestedParams);
             const txn = makeTransferTxn({
-                from, to, amount, assetIndex,
-                suggestedParams, closeRemainderTo, revocationTarget,
-                note: undefined
+                from, to, amount, assetIndex, suggestedParams, 
+                closeRemainderTo, revocationTarget, note
             });
 
             const { txid } = await this.client.sendRawTransaction(txn.signTxn(account.sk)).do();
@@ -99,6 +99,7 @@ export default class AlgoHelper {
 
         } catch (error) {
             console.error("Failed to transfer asset:", error);
+            return false;
         }
     };
 
