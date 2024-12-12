@@ -60,6 +60,7 @@ export const execute = async interaction => {
 		await Items.subtract(id, item, quantity);
 
 		console.log(user);
+		console.log(config);
 		
 		const result = await AlgoHelper.release(user.wallet, config.assetID, quantity);
 		console.log(result);
