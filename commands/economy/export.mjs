@@ -62,7 +62,7 @@ export const execute = async interaction => {
 		console.log(user);
 		console.log(config);
 		
-		const result = await AlgoHelper.release(user.wallet, config.assetID, quantity);
+		const result = await AlgoHelper.release(user.wallet, parseInt(config.assetID), quantity);
 		console.log(result);
 
 		// TODO: Ideally return transaction id/link so they can check it.
