@@ -58,6 +58,8 @@ export const execute = async interaction => {
 		// Subtract gold coin and items from user.
 		await Items.subtract(id, 'GOLD_COIN', 1);
 		await Items.subtract(id, item, quantity);
+
+		console.log(user);
 		
 		const result = await AlgoHelper.release(user.wallet, config.assetID, quantity);
 		console.log(result);

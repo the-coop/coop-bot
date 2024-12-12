@@ -9,6 +9,7 @@ import { STATE, USERS } from '../coop.mjs';
 import AlgoHelper from '../operations/minigames/medium/economy/blockchain/AlgoHelper.mjs';
 import algosdk from 'algosdk';
 
+import Items from 'coop-shared/services/items.mjs';
 
 // Commonly useful.
 // const listenReactions = (fn) => STATE.CLIENT.on('messageReactionAdd', fn);
@@ -62,6 +63,7 @@ const shallowBot = async () => {
             // AlgoHelper.login();
             // await AlgoHelper.mint("Eli M", 'TEST_ELI_FACE', 'https://thecoop.group/items/metadata/TEST_ELI_FACE', 1000, 0);
             
+            // Items.add('786671654721683517', 'GOLD_COIN', 2, 'testing export');
 
         });
     } catch(e) {

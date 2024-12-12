@@ -77,16 +77,16 @@ export default class AlgoHelper {
         }
     };
 
-    static async release(to, assetIndex, amount) {
+    static async release(receiver, assetIndex, amount) {
         try {
-            const from = this.account().addr;
+            const sender = this.account().addr;
             const closeRemainderTo = undefined; 
             const revocationTarget = undefined;
             const note = undefined;
             const suggestedParams = await this.client.getTransactionParams().do();
             console.log("Suggested Params:", suggestedParams);
             const txn = makeTransferTxn({
-                from, to, amount, assetIndex, suggestedParams, 
+                sender, receiver, amount, assetIndex, suggestedParams, 
                 closeRemainderTo, revocationTarget, note
             });
 
