@@ -26,6 +26,9 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async interaction => {
 	try {
+		// Blockchain confirmation will take longer than 3 seconds.
+		await interaction.deferReply({ ephemeral: true });
+
 		const item = interaction.options.get('item_code').value;
 		const quantity = parseInt(interaction.options.get('quantity').value);
 
@@ -33,27 +36,27 @@ export const execute = async interaction => {
 
 		// Check valid item.
 		if (!config)
-			return interaction.reply({ content: 'Invalid item.', ephemeral: true });
+			return interaction.editReply({ content: 'Invalid item.', ephemeral: true });
 
 		// Check valid quantity.
 		if (!isNaN(quantity) && quantity < 1)
-			return interaction.reply({ content: 'Invalid quantity', ephemeral: true });
+			return interaction.editReply({ content: 'Invalid quantity', ephemeral: true });
 
 		// Load user and check that they have a wallet.
 		const id = interaction.user.id;
 		const user = await USERS.loadSingle(id);
 		if (!user?.wallet)
-			return interaction.reply({ content: 'Please try /wallet (add address first).', ephemeral: true });
+			return interaction.editReply({ content: 'Please try /wallet (add address first).', ephemeral: true });
 
 		// Check if the item is minted.
 		if (!config?.assetID)
-			return interaction.reply({ content: 'Item not minted yet, remind leaders', ephemeral: true });
+			return interaction.editReply({ content: 'Item not minted yet, remind leaders', ephemeral: true });
 
 		// Check they have gold coin and item.
 		const hasGold = await Items.hasQty(id, 'GOLD_COIN', 1);
 		const hasItemQty = await Items.hasQty(id, item, quantity);
 		if (!hasGold || !hasItemQty)
-			return interaction.reply({ content: `Transfer requires 1xGOLD_COIN and ${quantity}x${item}`, ephemeral: true });
+			return interaction.editReply({ content: `Transfer requires 1xGOLD_COIN and ${quantity}x${item}`, ephemeral: true });
 
 		// Subtract gold coin and items from user.
 		await Items.subtract(id, 'GOLD_COIN', 1);
@@ -67,11 +70,11 @@ export const execute = async interaction => {
 
 		// TODO: Ideally return transaction id/link so they can check it.
 
-		return interaction.reply({ content: 'Export work in progress..', ephemeral: true });
+		return interaction.editReply({ content: 'Export work in progress..', ephemeral: true });
 
 	} catch(e) {
 		console.error(e);
 		console.log('Error exporting item');
-		return interaction.reply({ content: 'Error exporting item.', ephemeral: true });
+		return interaction.editReply({ content: 'Error exporting item.', ephemeral: true });
 	}
 };
