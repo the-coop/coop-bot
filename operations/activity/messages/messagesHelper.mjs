@@ -148,6 +148,10 @@ export default class MessagesHelper {
         return `<${emoji}>`;
     }
 
+    static removeEmojiCodeFromText(text, code) {
+        // TODO:
+    };
+
     static delayReactionRemove(reaction, delay) {
         if (reaction) setTimeout(() => reaction.remove(), delay);
     }

@@ -25,6 +25,8 @@ export const data = new SlashCommandBuilder()
 	);
 
 export const execute = async interaction => {
+	let paid = false;
+
 	try {
 		// Blockchain confirmation will take longer than 3 seconds.
 		await interaction.deferReply({ ephemeral: true });
@@ -61,6 +63,7 @@ export const execute = async interaction => {
 		// Subtract gold coin and items from user.
 		await Items.subtract(id, 'GOLD_COIN', 1);
 		await Items.subtract(id, item, quantity);
+		paid = true;
 
 		console.log(user);
 		console.log(config);
@@ -75,6 +78,12 @@ export const execute = async interaction => {
 	} catch(e) {
 		console.error(e);
 		console.log('Error exporting item');
-		return interaction.editReply({ content: 'Error exporting item.', ephemeral: true });
+
+		// If paid and error, refund for not being opted in yet.
+		// https://testnet.explorer.perawallet.app/asset/45993970/
+		// let paid = false;
+		// if (paid)
+
+		return interaction.editReply({ content: 'Error exporting item, have you opted in?', ephemeral: true });
 	}
 };
