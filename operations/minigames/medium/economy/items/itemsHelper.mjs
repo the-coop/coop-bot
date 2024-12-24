@@ -362,6 +362,7 @@ export default class ItemsHelper {
         try {
             // Extract items from the string by unicode and custom emojis.
             const items = this.extractTextItems(interaction.message.content);
+            console.log(items);
             if (!items) return await interaction.reply({ content: `Nothing to pickup.`, ephemeral: true });
 
             // Remove the item from message content
