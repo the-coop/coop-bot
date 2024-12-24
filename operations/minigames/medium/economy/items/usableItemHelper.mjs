@@ -44,8 +44,8 @@ export default class UsableItemHelper {
             DefuseKitHandler.onReaction(reaction, user);
 
             // Check if message is dropped item message being picked up.
-            if (this.isPickupable(reaction, user))
-                this.pickup(reaction, user);
+            if (this.isReactionPickupable(reaction, user))
+                this.reactionPickup(reaction, user);
 
             const isDroppedEmoji = reaction.emoji.name === RAW_EMOJIS.DROPPED;
             if (isDroppedEmoji) this.redrop(reaction, user);
@@ -103,7 +103,7 @@ export default class UsableItemHelper {
     }
 
     // Check if a message has an emoji and is pickupable.
-    static isPickupable(reaction) {
+    static isReactionPickupable(reaction) {
         // Check if message has dropped emoji and by Cooper (official/valid drop).
         if (!this.isDroppedItemMsg(reaction.message)) return false;
 
@@ -118,7 +118,7 @@ export default class UsableItemHelper {
     }
 
     // The event handler for when someone wants to pickup a dropped item message.
-    static async pickup(reaction, user) {
+    static async reactionPickup(reaction, user) {
         try {
             // TODO: ADD TO STATISTICS!
 

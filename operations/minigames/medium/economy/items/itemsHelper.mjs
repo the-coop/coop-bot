@@ -350,32 +350,37 @@ export default class ItemsHelper {
         return noZeroes;
     };
 
+    static extractTextItems(text) {
+        const regex = /(<([\p{Emoji}]|:\w+:(\d+)?)>|\b([\p{Emoji}]|:\w+:(\d+)?)\b)/gu;
+        return text.match(regex);
+    };
+
     // Parses items from interaction messages and gives the first item to user
     // Modifies the interaction message so that it deletes the picked up item from the message
     // Returns the first item string or an empty string if there are no items
-    static async pickup(interaction) {
-        let firstItem = "";
-
+    static async collectFromTable(interaction) {
         try {
-            const allItems = interaction.message.content.match(/([\p{Emoji}]|:\w+:(\d+)?)/gu);
-            // If allItems variable is null after .match, or there are no items
-            if (!allItems || allItems.length == 0) { return ""; }
+            // Extract items from the string by unicode and custom emojis.
+            const items = this.extractTextItems(interaction.message.content);
+            if (!items) return await interaction.reply({ content: `Nothing to pickup.`, ephemeral: true });
 
             // Remove the item from message content
-            await interaction.message.edit(interaction.message.content.replace(allItems[0], ''));
+            await interaction.message.edit(interaction.message.content.replace(items[0], ''));
             // TODO: Ensure that the interaction message was succesfully modified and that the item is gone from the message
 
             // Parse emoji to item code and give it to user
-            const emojiID = MESSAGES.getEmojiIdentifier(allItems[0]);
-            const itemCode = this.emojiToItemCode(emojiID);
-            await Items.add(interaction.user.id, itemCode, 1, `User picked up item`);
+            // const emojiID = MESSAGES.getEmojiIdentifier(items[0]);
+            // const itemCode = this.emojiToItemCode(emojiID);
+
+
+            await Items.add(interaction.user.id, code, 1, `User picked up item`);
             
-            return allItems[0];
+            return await interaction.reply({ content: `Testing.`, ephemeral: true });
+
         } catch (e) {
             console.log(e);
             console.log("above error occured while picking up item!");
+            return await interaction.reply({ content: `Failed.`, ephemeral: true });
         }
-
-        return firstItem;
     };
 };

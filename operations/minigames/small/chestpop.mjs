@@ -18,7 +18,7 @@ export default class ChestPopMinigame {
 
         // Allow user to pick up the first item
         if (interaction.customId === 'pickup_item')
-            this.pickup(interaction);
+            ITEMS.collectFromTable(interaction);
     };
 
     static async open(interaction) {
@@ -68,20 +68,6 @@ export default class ChestPopMinigame {
             console.error(e);
             console.log('Error opening chestpop');
             return await interaction.reply({ content: `The chest is stuck!`, ephemeral: true });
-        }
-    };
-
-    
-    static async pickup(interaction) {
-        try {
-            const pickedItem = ITEMS.pickup(interaction);
-            if (pickedItem.trim() === "") { return await interaction.reply({ content: 'There are no items to be picked up', ephemeral: true }); }
-            // Show user success message.
-            return await interaction.reply({ content: `You successfully picked up ${pickedItem}`, ephemeral: true });
-        } catch(e) {
-            console.error(e);
-            console.log('Error picking up a chestpop item');
-            return await interaction.reply({ content: `The item slipped out of your hand!`, ephemeral: true });
         }
     };
 
