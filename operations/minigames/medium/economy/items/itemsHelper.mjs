@@ -367,14 +367,9 @@ export default class ItemsHelper {
 
             // Remove the item from message content
             await interaction.message.edit(interaction.message.content.replace(items[0], ''));
-            // TODO: Ensure that the interaction message was succesfully modified and that the item is gone from the message
-
-            // Parse emoji to item code and give it to user
-            // const emojiID = MESSAGES.getEmojiIdentifier(items[0]);
-            // const itemCode = this.emojiToItemCode(emojiID);
-
-
-            await Items.add(interaction.user.id, code, 1, `User picked up item`);
+            // Attempt to parse the first item to itemcode and give to user
+            const code = this.interpretItemCodeArg(items[0])
+            if (code) await Items.add(interaction.user.id, code, 1, `User picked up item`);
             
             return await interaction.reply({ content: `Testing.`, ephemeral: true });
 
