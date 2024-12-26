@@ -210,9 +210,8 @@ export default class SacrificeHelper {
             try {
                 // Access the message
                 const message = await MESSAGES.getByLink(offer.message_link);
-
-                const desc = message.poll.question.text;
-                const discordID = /<@(\d*)>/.exec(desc)[1];
+                // Extract user id from the message content
+                const discordID = message.content.match(/<@(\d+)>/)[1];
                 sacrificee = USERS._get(discordID);
 
                 hasFinalised = message.poll.resultsFinalized;
