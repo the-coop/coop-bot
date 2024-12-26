@@ -7,6 +7,7 @@ import COOP, { MESSAGES, ROLES, USERS, SERVER } from '../../../coop.mjs';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
 import Items from 'coop-shared/services/items.mjs';
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from 'discord.js';
+import EventsHelper from '../../eventsHelper.mjs';
 
 export const SACRIFICE_RATIO_PERC = .05;
 export const KEEP_RATIO_PERC = .02;
@@ -164,12 +165,14 @@ export default class SacrificeHelper {
 
         TemporaryMessages.add(msg, sacrificeMsgLifetime, 'SACRIFICE');
 
+        // Save the poll message link
+        const msgLink = MESSAGES.link(msg);
+        EventsHelper.setLink('sacrifice', msgLink);
+        // Save the sacrifice user as organizer
+        EventsHelper.setOrganiser('sacrifice', user.discord_id)
+        
         // Update the user's latest recorded sacrifice time.
         await COOP.USERS.updateField(user.id, 'last_sacrificed_secs', COOP.TIME._secs());
-
-        // Add reactions for voting
-        // COOP.MESSAGES.delayReact(msg, EMOJIS.DAGGER, 1500);
-        // COOP.MESSAGES.delayReact(msg, EMOJIS.SACRIFICE_SHIELD, 2000);
 
         return true;
     };
