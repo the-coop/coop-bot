@@ -151,6 +151,7 @@ export default class SacrificeHelper {
 
         // Start the poll, should save message ID for later results consideration.
         const msg = await COOP.CHANNELS._getCode('TALK').send({
+            content: `<@${user.id}>`,
             poll: {
                 question: { text: `${user.username} was ${!reason ? 'randomly ': ''} selected for sacrifice...` },
                 answers: [
