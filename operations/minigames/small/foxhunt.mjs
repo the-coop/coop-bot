@@ -69,12 +69,12 @@ export default class FoxHuntMinigame {
             try {
                 const applicationId = STATE.CLIENT.user.id;
                 const token = interaction.token;
-                // await dontwantaxios.delete(`https://discord.com/api/webhooks/${applicationId}/${token}/messages/@original`);
+                fetch(`https://discord.com/api/webhooks/${applicationId}/${token}/messages/@original`, {method: 'DELETE'});
                 // console.log('Ephemeral message auto-deleted');
             } catch (error) {
                 // console.error('Failed to auto-delete ephemeral message:', error);
             }
-        }, 15000); 
+        }, 10000); 
     };
 
     static async bite(interaction) {
