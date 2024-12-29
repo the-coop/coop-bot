@@ -151,8 +151,9 @@ export default class SacrificeHelper {
 
         // Start the poll, should save message ID for later results consideration.
         const msg = await COOP.CHANNELS._getCode('TALK').send({
+            content: `<@${user.id}>`,
             poll: {
-                question: { text: `<@${user.id}> was ${!reason ? 'randomly ': ''} selected for sacrifice...` },
+                question: { text: `${user.username} was ${!reason ? 'randomly ': ''} selected for sacrifice...` },
                 answers: [
                     { text: `Keep them`, emoji: '🕊️' },
                     { text: `Sacrifice them`, emoji: '🗡️' },
@@ -164,12 +165,11 @@ export default class SacrificeHelper {
 
         TemporaryMessages.add(msg, sacrificeMsgLifetime, 'SACRIFICE');
 
+        // Save the poll message link
+        const msgLink = MESSAGES.link(msg);
+        
         // Update the user's latest recorded sacrifice time.
         await COOP.USERS.updateField(user.id, 'last_sacrificed_secs', COOP.TIME._secs());
-
-        // Add reactions for voting
-        // COOP.MESSAGES.delayReact(msg, EMOJIS.DAGGER, 1500);
-        // COOP.MESSAGES.delayReact(msg, EMOJIS.SACRIFICE_SHIELD, 2000);
 
         return true;
     };
@@ -210,9 +210,8 @@ export default class SacrificeHelper {
             try {
                 // Access the message
                 const message = await MESSAGES.getByLink(offer.message_link);
-
-                const desc = message.poll.question.text;
-                const discordID = /<@(\d*)>/.exec(desc)[1];
+                // Extract user id from the message content
+                const discordID = message.content.match(/<@(\d+)>/)[1];
                 sacrificee = USERS._get(discordID);
 
                 hasFinalised = message.poll.resultsFinalized;
