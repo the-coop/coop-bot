@@ -80,30 +80,17 @@ export default class PointsHelper {
     }
 
 
-    static async getPercChange(userID) {
+    static async getAbsoluteChange(userID) {
         // Force 0s to 1s to avoid Infinity increases.
         const oldPoints = Math.max(1, (await COOP.USERS.getField(userID, 'historical_points')) || 1);
         const qty = Math.max(1, await Items.getUserItemQty(userID, 'COOP_POINT'));
-        const diff = qty - oldPoints;
-        let percChange = (diff / oldPoints) * 100;
-
-        // Logarithmic gain that scales up based on user total points
-        const logGain = Math.floor(Math.max(1, Math.min(Math.log10(qty), 100)));
-
-        // Increment change by the amount of extra points gained from difference
-        // based on the total amount of points user has,
-        percChange + Math.floor(diff * (logGain / 10));
-        
-        // Prevent the weird unnecessary result that occurs without it.
-        // Defies mathematical/js sense...? Maybe string/int type collision.
-        if (isNaN(percChange)) percChange = 0;
-
+        const absChange = Math.max(0, qty - oldPoints);
 
         return {
             userID: userID,
             points: qty,
             lastWeekPoints: oldPoints,
-            percChange
+            absChange
         };
     }
 
@@ -133,9 +120,9 @@ export default class PointsHelper {
             COOP.CHANNELS._codes(['ADVERTS'], imgURL);
             COOP.CHANNELS._codes(['ADVERTS'], `Please promote the server, 25 coop point reward for inviting new users!\n\n${inviteLink}`);
 
-            // Calculate the percentage changes.
-            const percChanges = await Promise.all(users.map(async (user) => {
-                const result = await this.getPercChange(user.discord_id);
+            // Calculate the absolute point changes.
+            const absChanges = await Promise.all(users.map(async (user) => {
+                const result = await this.getAbsoluteChange(user.discord_id);
 
                 // Check this logic and data tyypes are valid - should update points in database if changed.
                 if (result.points !== result.lastWeekPoints)
@@ -148,20 +135,20 @@ export default class PointsHelper {
             }));
 
             // Remove the 0s.
-            const filteredPercChanges = percChanges.filter(change => change.percChange > 0);
+            const filteredAbsoluteChanges = absChanges.filter(change => change.absChange > 0);
 
             // Sort the points changes by highest (positive) perc change first.
-            filteredPercChanges.sort((a, b) => {
-                if (a.percChange === Infinity) return 1;
-                if (a.percChange < 0) return 1;
-                if (a.percChange >= b.percChange) return -1;
-                if (a.percChange === b.percChange) return 0;
+            filteredAbsoluteChanges.sort((a, b) => {
+                if (a.absChange === Infinity) return 1;
+                if (a.absChange < 0) return 1;
+                if (a.absChange >= b.absChange) return -1;
+                if (a.absChange === b.absChange) return 0;
             });
 
             const membersOfWeek = COOP.ROLES._allWith('MEMBEROFWEEK');
 
             // Check if that winner has the role already.
-            const highestChange = filteredPercChanges[0];
+            const highestChange = filteredAbsoluteChanges[0];
 
             // Remove other member of the week.
             let hadAlready = false;
@@ -182,21 +169,21 @@ export default class PointsHelper {
 
             // Declare they won again.
             if (hadAlready) {
-                updateText = `**MOTW check ran and <@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) wins again!**\n\n`;
+                updateText = `**MOTW check ran and <@${highestChange.userID}> (${highestChange.absChange}) wins again!**\n\n`;
             } else {
                 // Give the winner the role.
                 COOP.ROLES._add(highestChange.userID, 'MEMBEROFWEEK');
     
                 // Took it from previous winner.
                 if (prevWinner) {
-                    updateText = `**MOTW check ran and <@${highestChange.userID}> ${cpDisplay} (+${highestChange.percChange.toFixed(2)}%) seizes the role from <@${prevWinner.id}>!**\n\n`;
+                    updateText = `**MOTW check ran and <@${highestChange.userID}> ${cpDisplay} (+${highestChange.absChange}) seizes the role from <@${prevWinner.id}>!**\n\n`;
                 } else {
-                    updateText = `**MOTW check ran and <@${highestChange.userID}> ${cpDisplay} (+${highestChange.percChange.toFixed(2)}%) seizes the role!**\n\n`;
+                    updateText = `**MOTW check ran and <@${highestChange.userID}> ${cpDisplay} (+${highestChange.absChange}) seizes the role!**\n\n`;
                 }
             }
 
             // Add reasoning.
-            updateText += `<@${highestChange.userID}> (${highestChange.percChange.toFixed(2)}%) ${highestChange.lastWeekPoints} -> ${highestChange.points} wins MOTW reward and role for highest gain percentage in Coop Points (${cpDisplay}) this week!`;
+            updateText += `<@${highestChange.userID}> (${highestChange.absChange}) ${highestChange.lastWeekPoints} -> ${highestChange.points} wins MOTW reward and role for highest gain in Coop Points (${cpDisplay}) this week!`;
 
             // Give the winner the reward.
             if (hadAlready) {
@@ -210,12 +197,12 @@ export default class PointsHelper {
 
             // Add the runners up.
             updateText += '\n\nRunners up:\n' +
-                [filteredPercChanges[1], filteredPercChanges[2], filteredPercChanges[3]]
+                [filteredAbsoluteChanges[1], filteredAbsoluteChanges[2], filteredAbsoluteChanges[3]]
                     // In case there are less than 3 runners up, filter.
                     .filter(i => typeof i !== 'undefined')
                     
                     .map(runnerUp => (
-                        `- <@${runnerUp.userID}> (+${runnerUp.percChange.toFixed(2)}%) ` +
+                        `- <@${runnerUp.userID}> (+${runnerUp.absChange}) ` +
                         `${runnerUp.lastWeekPoints} ${cpDisplay} -> ${runnerUp.points} ${cpDisplay}`
                     )).join('\n');
 
