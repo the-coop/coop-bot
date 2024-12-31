@@ -38,7 +38,7 @@ export default class SpotlightHelper {
                 await this.run();
 
             // End the event if necessary.
-            else if (isActive && hasExpired)
+            else if (hasExpired)
                 await this.end();
 
             else {
