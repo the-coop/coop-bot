@@ -351,7 +351,7 @@ export default class ItemsHelper {
     };
 
     static extractTextItems(text) {
-        const regex = /(<([\p{Emoji}]|:\w+:(\d+)?)>|\b([\p{Emoji}]|:\w+:(\d+)?)\b)/gu;
+        const regex = /(<([\p{Emoji}]|:\w+:(\d+)?)>|([\p{Emoji}]|:\w+:(\d+)?))/gu;
         return text.match(regex);
     };
 
