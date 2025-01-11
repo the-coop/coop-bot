@@ -232,9 +232,8 @@ export default class SacrificeHelper {
 
 
             } catch(e) {
-                // Clean up message on errors
-                TemporaryMessages.unregisterTempMsgByLink(offer.message_link)
-                MESSAGES.deleteByLink(offer.message_link)
+                console.error(e);
+                console.log('sacrifice announce failed with above errors');
             }
 
             return {
