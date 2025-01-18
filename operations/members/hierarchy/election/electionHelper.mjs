@@ -819,9 +819,9 @@ export default class ElectionHelper {
                         ) 
                         +
                         ( 
-                            hierarchy.leaders.length ?
+                            hierarchy.leaders.size ?
                                 `**${ROLES._textRef('LEADER')}:**\n` +
-                                    `${hierarchy.leaders.map(leader => `${leader.username} :crossed_swords:`).join('\n')}\n\n`
+                                    `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords:`).join('\n')}\n\n`
                                     :
                                     ''
                         )
