@@ -253,7 +253,7 @@ export default class ElectionHelper {
             `\n\n` +
             `**Leaders ${leadersCount}/${maxNumLeaders}:**\n${
                 hierarchy.leaders
-                    .map(leader => `${leader.user.username}`)
+                    .map(leader => `${leader.username}`)
                     .join('\n')
             }` +
             `\n\n`;
@@ -819,9 +819,9 @@ export default class ElectionHelper {
                         ) 
                         +
                         ( 
-                            hierarchy.leaders.size ?
+                            hierarchy.leaders.length ?
                                 `**${ROLES._textRef('LEADER')}:**\n` +
-                                    `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords:`).join('\n')}\n\n`
+                                    `${hierarchy.leaders.map(leader => `${leader.username} :crossed_swords:`).join('\n')}\n\n`
                                     :
                                     ''
                         )
