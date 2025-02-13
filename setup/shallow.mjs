@@ -54,16 +54,17 @@ const shallowBot = async () => {
             console.log('Shallow bot is ready');
     
 
-
+            const test = USERS._get('1328056970111881217');
+            console.log(test);
             
             // const publicKey = AlgoHelper.account().addr.publicKey;
             // const address = algosdk.encodeAddress(publicKey);
             // console.log('Address:', address);
 
-            AlgoHelper.login();
+            // AlgoHelper.login();
             // await AlgoHelper.mint("Eli M", 'TEST_ELI_FACE', 'https://thecoop.group/items/metadata/TEST_ELI_FACE', 1000, 0);
 
-            AlgoHelper.release('ZFKQVABUNUEEGY3WZSHUJL5Q7F3WKYZY4U7HOS7QFPJK6BIQ6OOGRIJ42Q', 730713744, 1);
+            // AlgoHelper.release('ZFKQVABUNUEEGY3WZSHUJL5Q7F3WKYZY4U7HOS7QFPJK6BIQ6OOGRIJ42Q', 730713744, 1);
             
             // Items.add('786671654721683517', 'GOLD_COIN', 2, 'testing export');
 

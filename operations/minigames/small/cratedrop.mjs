@@ -59,7 +59,7 @@ export default class CratedropMinigame {
         } catch(e) {
             console.error(e);
         }
-    }
+    };
 
     // If enough reactions to open reward all 'reactors' with random selection of rewards.
     static async axeHit(reaction, user) {
@@ -86,19 +86,19 @@ export default class CratedropMinigame {
         } catch(e) {
             console.error(e);
         }
-    }
+    };
 
     // Number of hits required based on rarity.
     static calculateHitsRequired(crateType) {
         const crate = CRATE_DATA[crateType];
 
         return VotingHelper.getNumRequired(crate.percHitsReq);
-    }
+    };
 
     static isCrateOpen(msg) {
         const rarity = this.calculateRarityFromMessage(msg);
         return (rarity && msg.content.indexOf('open') > -1);
-    }
+    };
 
     static calculateRarityFromMessage(msg) {
         let crateRarity = null;
@@ -108,7 +108,7 @@ export default class CratedropMinigame {
         if (msg.content.indexOf('legendary_crate') > -1) crateRarity = 'LEGENDARY_CRATE';
 
         return crateRarity;
-    }
+    };
 
     static async open(reaction) {
         // Added fetch to message to ensure proper reaction counting.
@@ -209,7 +209,7 @@ export default class CratedropMinigame {
             // Remove the opened crate.
             // COOP.MESSAGES.delayDelete(msg, 10000);
         }, 666);
-    }
+    };
 
 
     // TODO: Implement explosive/toxic crate from Robyn (steals your items)
@@ -219,7 +219,7 @@ export default class CratedropMinigame {
         if (STATE.CHANCE.bool({ likelihood: likelihood / 2 })) rarity = 'RARE_CRATE';
         if (STATE.CHANCE.bool({ likelihood: likelihood / 6 })) rarity = 'LEGENDARY_CRATE';
         return rarity;
-    }
+    };
     
     // TODO: Implement using bomb on crate.
     // static async explode(reaction, user) {
@@ -238,14 +238,14 @@ export default class CratedropMinigame {
             // Drop the crate!
             const random = COOP.CHANNELS._randomSpammable();
             if (random) {
-                // Drop the crate via emoji.
-                const crateMsg = await COOP.CHANNELS._send('TALK', COOP.MESSAGES.emojifyID(EMOJIS[rarity]));
-                TemporaryMessages.add(crateMsg, 60 * 60 * 125, 'CRATE');
-
                 // Format rarity text and provide a record.
                 const rarityWord = COOP.MESSAGES.titleCase(rarity.split('_')[0]);
                 const crateDropText = `${COOP.ROLES._textRef('MINIGAME_PING')}, ${rarityWord} crate drop in progress.`;
                 const feedMsg = await COOP.CHANNELS._send('TALK', crateDropText, {});
+
+                // Drop the crate via emoji.
+                const crateMsg = await COOP.CHANNELS._send('TALK', COOP.MESSAGES.emojifyID(EMOJIS[rarity]));
+                TemporaryMessages.add(crateMsg, 60 * 60 * 125, 'CRATE');
 
                 // Add user reaction feedback/aesthetic only.
                 COOP.MESSAGES.delayReact(crateMsg, '🪓', 333);
@@ -256,11 +256,12 @@ export default class CratedropMinigame {
             console.log('Error dropping crate');
             console.error(e);
         }
-    }
+    };
     
+    // TODO: Should refactor run method into drop and in events manifest and remove this method.
     static async run() {
         // Stop crate drop being based on a fixed time, could do that with chopper minigame instead.
         this.drop();
-    }
+    };
 
-}
+};

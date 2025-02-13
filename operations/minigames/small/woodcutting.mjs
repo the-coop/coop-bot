@@ -166,7 +166,7 @@ export default class WoodcuttingMinigame {
             const eventChannel = CHANNELS._randomSpammable();
 
             // Send the promotion and notification image first, with the stats table.
-            const announcementMsg = await eventChannel.send('*Woodcutting needs image here');
+            const announcementMsg = await eventChannel.send('https://cdn.discordapp.com/attachments/748649755965522031/1339118172103774268/woodcutting.png');
             const updatesMsg = await eventChannel.send('🪓 **WOODCUTTING IN PROGRESS** 🪓');
 
             // Send the wood to cut with the chop action.
