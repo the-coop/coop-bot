@@ -25,11 +25,11 @@ export default class ChestPopMinigame {
         try {
             // Use a key attempting to open the chest.
             const paid = await Useable.use(interaction.user.id, 'KEY', 1);
-            if (!paid) return await interaction.reply({ content: 'You have no keys.', ephemeral: true });
+            if (!paid) return await INTERACTION.reply(interaction, 'You have no keys.');
     
             // Handle broken key possibility.
             if (STATE.CHANCE.bool({ likelihood: 15 })) 
-                return await interaction.reply({ content: 'You broke a key attemping to open it.', ephemeral: true });
+                return await INTERACTION.reply(interaction, 'You broke a key attemping to open it.');
     
             // Pick rewards from opening with key
             const maxRewardAmount = STATE.CHANCE.natural({ min: 2, max: 5 });
@@ -63,11 +63,11 @@ export default class ChestPopMinigame {
             });
                 
             // Show user success message.
-            return await interaction.reply({ content: `You successfully opened the chest.`, ephemeral: true });
+            return await INTERACTION.reply(interaction, `You successfully opened the chest.`);
         } catch(e) {
             console.error(e);
             console.log('Error opening chestpop');
-            return await interaction.reply({ content: `The chest is stuck!`, ephemeral: true });
+            return await INTERACTION.reply(interaction, `The chest is stuck!`);
         }
     };
 
