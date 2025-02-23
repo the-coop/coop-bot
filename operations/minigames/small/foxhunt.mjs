@@ -67,9 +67,7 @@ export default class FoxHuntMinigame {
         const reply = await interaction.reply({ content: message, ephemeral: true });
         setTimeout(async () => {
             try {
-                const applicationId = STATE.CLIENT.user.id;
-                const token = interaction.token;
-                fetch(`https://discord.com/api/webhooks/${applicationId}/${token}/messages/@original`, {method: 'DELETE'});
+                interaction.deleteReply('@original');
                 // console.log('Ephemeral message auto-deleted');
             } catch (error) {
                 // console.error('Failed to auto-delete ephemeral message:', error);
