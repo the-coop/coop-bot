@@ -10,12 +10,6 @@ const petIcon = '🖐️';
 
 export default class FoxHuntMinigame {
 
-    // Consider a droptable but start with gifts or random drops
-
-    // If someone uses a fox, it could give the person all fox stolen eggs while buff lasts
-
-    // Add sparkles sometimes after the fox is slapped and delay reactions while it's in the message.
-    // :sparkles: 
     static stunned = false;
 
     static async onInteraction(interaction) {
@@ -25,35 +19,55 @@ export default class FoxHuntMinigame {
             if (!isFoxhuntAction) return false;
 
             // If fox is currently stunned
-            if (this.stunned)
-                return await this.sendEphemeralReply(interaction, '✨🦊💫');
+            // 1% chance of giving user 1 point
+            if (this.stunned) {
+                const stunnedOutcomes = [
+                    () => this.rewardStun(interaction),
+                    () => this.sendEphemeralReply(interaction, '✨🦊💫')
+                ];
+                const stunnedWeights = [1, 100];
+
+                // Pick a stunned outcome and immediately return it
+                return await CHANCE.weighted(stunnedOutcomes, stunnedWeights)();
+            }
 
             // Consumes hearts for each interaction
-            if (!this.canConsumeHeart(interaction))
+            const heartStatus = await this.canConsumeHeart(interaction);
+            if (!heartStatus.canConsume)
                 return await this.sendEphemeralReply(interaction, 'The fox is sleeping now');
+
+            // If after consuming a heart, there is 0 left and user has slapped the fox
+            if (interaction.customId === 'slap_fox' && heartStatus.lastHeart)
+                return await this.lastHeartSlap(interaction);
 
             // If user is sunz
             if (interaction.user.id === "287062661483724810")
                 await this.love(interaction);
 
-            // If user Slaps the fox and triggers 70% chance, stun the fox
-            if (interaction.customId === 'slap_fox' && CHANCE.natural({ likelihood: 70 }))
-                return await this.stunFox(interaction);
+            // Define possible outcomes for each interaction
+            let outcomes = [];
+            let weights = [];
 
-            // 50% chance to bite user and substract points
-            if (CHANCE.natural({ likelihood: 50 }))
-                return await this.bite(interaction);
+            if (interaction.customId === 'slap_fox') {
+                outcomes = [
+                    () => this.stunFox(interaction),
+                    () => this.bite(interaction),
+                    () => this.sendEphemeralReply(interaction, 'The fox dodges your slap!')
+                ];
+                weights = [30, 50, 100];
+            }
+            
+            if (interaction.customId === 'pet_fox') {
+                outcomes = [
+                    () => this.reward(interaction),
+                    () => this.sendEphemeralReply(interaction, 'The fox sits next to you!')
+                ];
+                weights = [10, 100];
+            }
 
-            // If user pets the fox and triggers 10% Chance, reward user with stolen eggs
-            if (interaction.customId === 'pet_fox' && CHANCE.bool({ likelihood: 10 })) 
-                return await this.reward(interaction);
-
-            // If no chance was triggered, have default replies for actions
-            if (interaction.customId === 'slap_fox')
-                return await this.sendEphemeralReply(interaction, 'The fox dodges your slap!');
-
-            if (interaction.customId === 'pet_fox')
-                return await this.sendEphemeralReply(interaction, 'The fox sits next to you!');
+            // Select a single outcome
+            const action = CHANCE.weighted(outcomes, weights);
+            return await action();
 
         } catch(e) {
             console.error(e);
@@ -67,9 +81,7 @@ export default class FoxHuntMinigame {
         const reply = await interaction.reply({ content: message, ephemeral: true });
         setTimeout(async () => {
             try {
-                const applicationId = STATE.CLIENT.user.id;
-                const token = interaction.token;
-                fetch(`https://discord.com/api/webhooks/${applicationId}/${token}/messages/@original`, {method: 'DELETE'});
+                interaction.deleteReply('@original');
                 // console.log('Ephemeral message auto-deleted');
             } catch (error) {
                 // console.error('Failed to auto-delete ephemeral message:', error);
@@ -79,11 +91,18 @@ export default class FoxHuntMinigame {
 
     static async bite(interaction) {
         await Items.subtract(interaction.user.id, 'COOP_POINT', 1, 'Fox bite');
-        return await this.sendEphemeralReply(interaction, 'Careful the 🦊 bites.');
+        return await this.sendEphemeralReply(interaction, 'Careful the 🦊 bites. -1 Points!');
     };
 
     static async love(interaction) {
         return await this.sendEphemeralReply(interaction, 'The fox loves you ❤️');
+    };
+
+    // During stun, interactions have very small chance of giving user a point
+    // This aims to negate the bite functions point substraction
+    static async rewardStun(interaction) {
+        await Items.add(interaction.user.id, 'COOP_POINT', 1, 'Fox stunned reward');
+        return await this.sendEphemeralReply(interaction, 'You help the stunned 🦊 +1 Points!');
     };
 
     // Adds sparkles to the fox message and stuns the fox, preventing actions for 8 seconds
@@ -92,8 +111,8 @@ export default class FoxHuntMinigame {
         await this.sendEphemeralReply(interaction, 'You stunned the fox! ✨🦊💫');
 
         const messageContent = interaction.message.content;
-        // Edit the original message to show sparkles
-        await interaction.message.edit(`✨💫${messageContent}`);
+        // Edit the original message to show sparkles and take away the hearts
+        await interaction.message.edit(`✨💫🦊`);
 
         // Set fox stunned for 8 seconds
         this.stunned = true;
@@ -104,13 +123,21 @@ export default class FoxHuntMinigame {
         }, 8000);
     };
 
+    // If the user slaps on last heart, reward 10 points
+    static async lastHeartSlap(interaction) {
+        await Items.add(interaction.user.id, 'COOP_POINT', 10, 'Fox last heart slap');
+        return await this.sendEphemeralReply(interaction, '🦊 dropped a treasure 💎 +10 Points!');
+    };
+
     static async canConsumeHeart(interaction) {
         let { fullLives, halfLives } = this.countLives(interaction.message.content);
-        if (fullLives == 0) return false;
+        if (fullLives == 0) return { canConsume: false, lastHeart: false };
+        // Check if it was the last full heart
+        const lastHeart = (fullLives === 1);
         fullLives--;
         halfLives++;
         await interaction.message.edit(`🦊${liveIcon.repeat(fullLives)}${halflifeicon.repeat(halfLives)}`);
-        return true;
+        return { canConsume: true, lastHeart };
     };
 
     static countLives(str) {
