@@ -36,24 +36,30 @@ export default class FoxHuntMinigame {
             if (interaction.user.id === "287062661483724810")
                 await this.love(interaction);
 
-            // If user Slaps the fox and triggers 70% chance, stun the fox
-            if (interaction.customId === 'slap_fox' && CHANCE.natural({ likelihood: 70 }))
-                return await this.stunFox(interaction);
+            // Define possible outcomes for each interaction
+            let outcomes = [];
+            let weights = [];
 
-            // 50% chance to bite user and substract points
-            if (CHANCE.natural({ likelihood: 50 }))
-                return await this.bite(interaction);
+            if (interaction.customId === 'slap_fox') {
+                outcomes = [
+                    () => this.stunFox(interaction),
+                    () => this.bite(interaction),
+                    () => this.sendEphemeralReply(interaction, 'The fox dodges your slap!')
+                ];
+                weights = [50, 50, 100];
+            } 
+            
+            if (interaction.customId === 'pet_fox') {
+                outcomes = [
+                    () => this.reward(interaction),
+                    () => this.sendEphemeralReply(interaction, 'The fox sits next to you!')
+                ];
+                weights = [10, 100];
+            }
 
-            // If user pets the fox and triggers 10% Chance, reward user with stolen eggs
-            if (interaction.customId === 'pet_fox' && CHANCE.bool({ likelihood: 10 })) 
-                return await this.reward(interaction);
-
-            // If no chance was triggered, have default replies for actions
-            if (interaction.customId === 'slap_fox')
-                return await this.sendEphemeralReply(interaction, 'The fox dodges your slap!');
-
-            if (interaction.customId === 'pet_fox')
-                return await this.sendEphemeralReply(interaction, 'The fox sits next to you!');
+            // Select a single outcome
+            const action = CHANCE.weighted(outcomes, weights);
+            return await action();
 
         } catch(e) {
             console.error(e);
