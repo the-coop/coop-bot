@@ -1,6 +1,6 @@
 import EmojiHelper from "./emojiHelper.mjs";
 
-import COOP, { SERVER, TIME, STATE } from "../../../../../coop.mjs";
+import COOP, { SERVER, TIME, STATE, INTERACTION } from "../../../../../coop.mjs";
 import { EMOJIS, RAW_EMOJIS } from 'coop-shared/config.mjs';
 import Useable from 'coop-shared/services/useable.mjs';
 
@@ -362,8 +362,8 @@ export default class ItemsHelper {
         try {
             // Extract items from the string by unicode and custom emojis.
             const items = this.extractTextItems(interaction.message.content);
-            console.log(items);
-            if (!items) return await interaction.reply({ content: `Nothing to pickup.`, ephemeral: true });
+            // console.log(items);
+            if (!items) return await INTERACTION.reply(interaction, `Nothing to pickup.`);
 
             // Remove the item from message content
             await interaction.message.edit(interaction.message.content.replace(items[0], ''));
@@ -371,12 +371,12 @@ export default class ItemsHelper {
             const code = this.interpretItemCodeArg(items[0])
             if (code) await Items.add(interaction.user.id, code, 1, `User picked up item`);
             
-            return await interaction.reply({ content: `Testing.`, ephemeral: true });
+            return await INTERACTION.reply(interaction, `You picked up ${code}`);
 
         } catch (e) {
             console.log(e);
             console.log("above error occured while picking up item!");
-            return await interaction.reply({ content: `Failed.`, ephemeral: true });
+            return await INTERACTION.reply(interaction, `Failed.`);
         }
     };
 };

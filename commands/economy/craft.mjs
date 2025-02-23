@@ -42,17 +42,11 @@ export const execute = async interaction => {
 
 		// Check if input is a valid item code.
 		if (!itemCode)
-			return await interaction.reply({ 
-				content: `Cannot craft invalid item code (${itemCode}).`,
-				ephemeral: true
-			});
+			return await COOP.INTERACTION.reply(interaction, `Cannot craft invalid item code (${itemCode}).`, 15000);
 
 		// Check if item is craftable
 		if (!CraftingHelper.isItemCraftable(itemCode))
-			return await interaction.reply({ 
-				content: `${itemCode} is a valid item/code but uncraftable.`,
-				ephemeral: true
-			});
+			return await COOP.INTERACTION.reply(interaction, `${itemCode} is a valid item/code but uncraftable.`, 15000);
 
 		// Access required crafting level for item.
 		const craftingItem = CraftingHelper.CRAFTABLES[itemCode];
@@ -65,7 +59,7 @@ export const execute = async interaction => {
 		if (reqLevel > crafterLevel) {
 			// TODO: Add emoji
 			const lackLevelText = `<@${userID}> lacks level ${reqLevel} crafting required to make ${itemCode}`;
-			return await interaction.reply({ content: lackLevelText, ephemeral: true});
+			return await COOP.INTERACTION.reply(interaction, lackLevelText, 15000);
 		}
 
 		// Check for ingredients and multiply quantities.
@@ -78,8 +72,8 @@ export const execute = async interaction => {
 					.filter(c => !c.sufficient)
 					.map(c => `${COOP.MESSAGES.emojifyID(EMOJIS[c.item_code])} ${c.item_code} -${c.missing}`)
 					.join('\n');
-
-			return await interaction.reply({ content: insufficientIngredientsText, ephemeral: true });
+			
+			return await COOP.INTERACTION.reply(interaction, insufficientIngredientsText, 15000);
 		}
 
 		// Attempt to craft the object.
@@ -87,19 +81,16 @@ export const execute = async interaction => {
 		if (craftResult) {
 			const addText = `<@${userID}> crafted ${itemCode}x${qty}.`;
 
-			return await interaction.reply({ content: addText, ephemeral: false });
+			return await COOP.INTERACTION.reply(interaction, addText, 15000);
 
 		} else {
-			return await interaction.reply({ content: `<@${userID}> failed to craft ${qty}x${itemCode}...`, ephemeral: true });
+			return await COOP.INTERACTION.reply(interaction, `<@${userID}> failed to craft ${qty}x${itemCode}...`, 15000);
 		}
 
 	} catch(err) {
 		console.log('Error crafting item.');
 		console.error(err);
-		return await interaction.reply({ 
-			content: `Error crafting item.`, 
-			ephemeral: true 
-		});
+		return await COOP.INTERACTION.reply(interaction, `Error crafting item.`, 15000);
 	}
 
 };
