@@ -1,5 +1,5 @@
 import { usedOwnedUsableGuard } from "../../itemCmdGuards.mjs";
-import COOP, { STATE } from "../../../../../../coop.mjs";
+import COOP, { STATE, INTERACTION } from "../../../../../../coop.mjs";
 import WoodcuttingMinigame from "../../../../small/woodcutting.mjs";
 
 export default class ChestnutHandler {
@@ -22,11 +22,11 @@ export default class ChestnutHandler {
             COOP.CHANNELS._send('TALK', feedbackText);
     
             // Reply to interaction
-            return await interaction.reply({ content: feedbackText, ephemeral: true });
+            return await INTERACTION.reply(interaction, feedbackText, 15000);
 
         } catch(e) {
             // Error using item.
-            return await interaction.reply({ content: 'Failed to use CHESTNUT', ephemeral: true });
+            return await INTERACTION.reply(interaction, 'Failed to use CHESTNUT', 15000);
         }
     }
    
