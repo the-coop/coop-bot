@@ -1,6 +1,7 @@
 import { CHANCE, CHANNELS, CHICKEN, USERS } from '../../../coop.mjs';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
+import InteractionHelper from '../../activity/messages/interactionHelper.mjs';
 import Items from "coop-shared/services/items.mjs";
 
 const halflifeicon = '💔';
@@ -23,18 +24,18 @@ export default class FoxHuntMinigame {
             if (this.stunned) {
                 const stunnedOutcomes = [
                     () => this.rewardStun(interaction),
-                    () => this.sendEphemeralReply(interaction, '✨🦊💫')
+                    () => InteractionHelper.reply(interaction, '✨🦊💫')
                 ];
                 const stunnedWeights = [1, 100];
 
                 // Pick a stunned outcome and immediately return it
                 return await CHANCE.weighted(stunnedOutcomes, stunnedWeights)();
-            }
+            };
 
             // Consumes hearts for each interaction
             const heartStatus = await this.canConsumeHeart(interaction);
             if (!heartStatus.canConsume)
-                return await this.sendEphemeralReply(interaction, 'The fox is sleeping now');
+                return await InteractionHelper.reply(interaction, 'The fox is sleeping now');
 
             // If after consuming a heart, there is 0 left and user has slapped the fox
             if (interaction.customId === 'slap_fox' && heartStatus.lastHeart)
@@ -52,7 +53,7 @@ export default class FoxHuntMinigame {
                 outcomes = [
                     () => this.stunFox(interaction),
                     () => this.bite(interaction),
-                    () => this.sendEphemeralReply(interaction, 'The fox dodges your slap!')
+                    () => InteractionHelper.reply(interaction, 'The fox dodges your slap!')
                 ];
                 weights = [30, 50, 100];
             }
@@ -60,7 +61,7 @@ export default class FoxHuntMinigame {
             if (interaction.customId === 'pet_fox') {
                 outcomes = [
                     () => this.reward(interaction),
-                    () => this.sendEphemeralReply(interaction, 'The fox sits next to you!')
+                    () => InteractionHelper.reply(interaction, 'The fox sits next to you!')
                 ];
                 weights = [10, 100];
             }
@@ -72,43 +73,30 @@ export default class FoxHuntMinigame {
         } catch(e) {
             console.error(e);
             console.log('Above error related to foxhunt reaction handler')
-            return await this.sendEphemeralReply(interaction, 'The fox ran from you!');
+            return await InteractionHelper.reply(interaction, 'The fox ran from you!');
         }
-    };
-
-    // TODO: Move this method to a COOP base class to make it reusable
-    static async sendEphemeralReply(interaction, message) {
-        const reply = await interaction.reply({ content: message, ephemeral: true });
-        setTimeout(async () => {
-            try {
-                interaction.deleteReply('@original');
-                // console.log('Ephemeral message auto-deleted');
-            } catch (error) {
-                // console.error('Failed to auto-delete ephemeral message:', error);
-            }
-        }, 10000); 
     };
 
     static async bite(interaction) {
         await Items.subtract(interaction.user.id, 'COOP_POINT', 1, 'Fox bite');
-        return await this.sendEphemeralReply(interaction, 'Careful the 🦊 bites. -1 Points!');
+        return await InteractionHelper.reply(interaction, 'Careful the 🦊 bites. -1 Points!');
     };
 
     static async love(interaction) {
-        return await this.sendEphemeralReply(interaction, 'The fox loves you ❤️');
+        return await InteractionHelper.reply(interaction, 'The fox loves you ❤️');
     };
 
     // During stun, interactions have very small chance of giving user a point
     // This aims to negate the bite functions point substraction
     static async rewardStun(interaction) {
         await Items.add(interaction.user.id, 'COOP_POINT', 1, 'Fox stunned reward');
-        return await this.sendEphemeralReply(interaction, 'You help the stunned 🦊 +1 Points!');
+        return await InteractionHelper.reply(interaction, 'You help the stunned 🦊 +1 Points!');
     };
 
     // Adds sparkles to the fox message and stuns the fox, preventing actions for 8 seconds
     static async stunFox(interaction) {
         // Respond to interaction
-        await this.sendEphemeralReply(interaction, 'You stunned the fox! ✨🦊💫');
+        await InteractionHelper.reply(interaction, 'You stunned the fox! ✨🦊💫');
 
         const messageContent = interaction.message.content;
         // Edit the original message to show sparkles and take away the hearts
@@ -126,7 +114,7 @@ export default class FoxHuntMinigame {
     // If the user slaps on last heart, reward 10 points
     static async lastHeartSlap(interaction) {
         await Items.add(interaction.user.id, 'COOP_POINT', 10, 'Fox last heart slap');
-        return await this.sendEphemeralReply(interaction, '🦊 dropped a treasure 💎 +10 Points!');
+        return await InteractionHelper.reply(interaction, '🦊 dropped a treasure 💎 +10 Points!');
     };
 
     static async canConsumeHeart(interaction) {
@@ -168,7 +156,7 @@ export default class FoxHuntMinigame {
             ? `The fox brings you gifts...\n${rewardStrings.join('\n')}`
             : 'The fox is feeling generous!';
 
-        return await this.sendEphemeralReply(interaction, rewardMessage);
+        return await InteractionHelper.reply(interaction, rewardMessage);
     };
 
     static async run() {

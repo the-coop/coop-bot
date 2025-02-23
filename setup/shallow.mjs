@@ -11,6 +11,7 @@ import algosdk from 'algosdk';
 
 import Items from 'coop-shared/services/items.mjs';
 import EventsHelper from '../operations/eventsHelper.mjs';
+import FoxHuntMinigame from '../operations/minigames/small/foxhunt.mjs';
 
 // Commonly useful.
 // const listenReactions = (fn) => STATE.CLIENT.on('messageReactionAdd', fn);
@@ -54,6 +55,7 @@ const shallowBot = async () => {
         STATE.CLIENT.on('ready', async () => {
             console.log('Shallow bot is ready');
     
+            // FoxHuntMinigame.run();
 
             // const test = USERS._get('1328056970111881217');
             // console.log(test);

@@ -58,4 +58,18 @@ export default class InteractionHelper {
         });
     };
 
+    static async reply(interaction, message, fuse = 6000) {
+        // Send the reply and keep a reference.
+        await interaction.reply({ content: message, ephemeral: true });
+
+        // Setup the deletion and do not return a reply reference, it cannot be reused.
+        return setTimeout(async () => {
+            try {
+                interaction.deleteReply('@original');
+            } catch (e) {
+                // user already dismissed or original deleted, suppress.
+            }
+        }, fuse); 
+    };
+
 };
