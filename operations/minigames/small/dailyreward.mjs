@@ -22,8 +22,8 @@ export default class DailyRewardMinigame {
 
     // Safeguard: Check if the user has too many of the item
     static async hasUserOverItemLimit(userId, item) {
-        // Check if user has 15 or more of the specified item
-        return await ItemsShared.hasQty(userId, item, 15);
+        // Check if user has 7 or more of the specified item
+        return await ItemsShared.hasQty(userId, item, 7);
     }
 
     // Safeguard: Check if the user has an open trade for the same item
@@ -50,19 +50,19 @@ export default class DailyRewardMinigame {
             await USERS.setUserLastClaim(userId)
 
             // Get one reward from droptable for Gathering drops
-            const { item, qty } = DropTable.getRandomTieredWithQty('GATHERING');
-            // Safeguard item quantity (if user has equal or over 15, dont reward)
+            const item = DropTable.getRandomTiered('GATHERING');
+            // Safeguard item quantity (if user has equal or over 7, dont reward)
             if (await this.hasUserOverItemLimit(userId, item)) return false;
             // Safeguard trading bypass (if user has outstanding trade with the itemtype, dont reward)
             if (await this.hasOpenTradeForItem(userId, item)) return false;
 
             // Announce the rewards in TALK
-            const dailyRewardText = `<@${userId}> collected the daily reward: ${MESSAGES.emojiCodeText(item)}x${qty}`;
+            const dailyRewardText = `<@${userId}> collected the daily reward: ${MESSAGES.emojiCodeText(item)}`;
             const dailyRewardMessage = await CHANNELS._send('TALK', dailyRewardText);
             TemporaryMessages.add(dailyRewardMessage, 30 * 60);
 
             // Reward user with the item
-            ItemsShared.add(interaction.user.id, item, qty, `Daily reward`);
+            ItemsShared.add(interaction.user.id, item, 1, `Daily reward`);
             return await interaction.reply({ content: `You claimed your daily reward! 🐔`, ephemeral: true });
 
         } catch (e) {
