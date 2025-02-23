@@ -1,7 +1,7 @@
 import EggHuntMinigame from "../../../../small/egghunt.mjs";
 
 import { usedOwnedUsableGuard } from "../../itemCmdGuards.mjs";
-import COOP, { STATE } from "../../../../../../coop.mjs";
+import COOP, { STATE, INTERACTION } from "../../../../../../coop.mjs";
 
 
 export default class LaxativeHandler {
@@ -10,7 +10,7 @@ export default class LaxativeHandler {
         // Guard against usage, ensure they pay the price.
         const used = await usedOwnedUsableGuard(user, 'LAXATIVE', 1, interaction.channel);
         if (!used) 
-            return await interaction.reply({ content: 'Failed to use LAXATIVE', ephemeral: true });
+            return await INTERACTION.reply(interaction, 'Failed to use LAXATIVE', 15000);
 
         // Attempt to run egg drop. :D
         const succeeded = STATE.CHANCE.bool({ likelihood: 40 });
@@ -23,7 +23,7 @@ export default class LaxativeHandler {
         COOP.CHANNELS._send('ACTIONS', feedbackText);
 
         // Reply to interaction
-        return await interaction.reply({ content: feedbackText, ephemeral: true });
+        return await INTERACTION.reply(interaction, feedbackText, 15000);
     }
    
 }
