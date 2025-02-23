@@ -1,4 +1,4 @@
-import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
+import { STATE, ITEMS, MESSAGES, CHANNELS, INTERACTION } from "../../../coop.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 import DropTable from "../medium/economy/items/droptable.mjs";
