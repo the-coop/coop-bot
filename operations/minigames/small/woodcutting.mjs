@@ -4,7 +4,7 @@ import { EMOJIS } from "coop-shared/config.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 
-import { STATE, ITEMS, MESSAGES, CHANNELS } from "../../../coop.mjs";
+import { STATE, ITEMS, MESSAGES, CHANNELS, INTERACTION } from "../../../coop.mjs";
 
 import SkillsHelper from "../medium/skills/skillsHelper.mjs";
 import EconomyNotifications from "../../activity/information/economyNotifications.mjs";
@@ -22,7 +22,7 @@ export default class WoodcuttingMinigame {
         const { message, channel, user } = interaction;
 
         // High chance of preventing any Woodcutting at all to deal with rate limiting.
-        if (STATE.CHANCE.bool({ likelihood: 50 })) return await interaction.reply({ content: 'You missed...', ephemeral: true });
+        if (STATE.CHANCE.bool({ likelihood: 50 })) return await INTERACTION.reply(interaction, 'You missed...');
 
         try {
             // Calculate multiplier from message: more rocks, greater reward.
@@ -31,8 +31,8 @@ export default class WoodcuttingMinigame {
     
             // Check if the user has at least one axe to use.
             const userAxesNum = await Items.getUserItemQty(user.id, 'AXE');
-            if (userAxesNum <= 0) return await interaction.reply({ content: 'No axe to cut with.', ephemeral: true });
-    
+            if (userAxesNum <= 0) return await INTERACTION.reply(interaction, 'No axe to cut with.');
+
             // Check for existing update message.
             let updateMsg = await MESSAGES.getSimilarExistingMsg(channel, '**WOODCUTTING IN PROGRESS**');
     
@@ -60,7 +60,7 @@ export default class WoodcuttingMinigame {
                 SkillsHelper.addXP(user.id, 'woodcutting', 2);
                 
                 const actionText = `${user.username} broke an axe and ${ptsDmgText}, ${userAxesNum - 1} axes remaining!`;
-                return await interaction.reply({ content: actionText, ephemeral: true });
+                return await INTERACTION.reply(interaction, actionText);
             }
     
             // See if updating the item returns the item and quantity.
@@ -141,7 +141,7 @@ export default class WoodcuttingMinigame {
             SkillsHelper.addXP(user.id, 'woodcutting', 1);
     
             // Show user success message.
-            return await interaction.reply({ content: `You successfully cut ${extractedWoodNum}x${EMOJIS.WOOD}`, ephemeral: true });
+            return await INTERACTION.reply(interaction, `You successfully cut ${extractedWoodNum}x${EMOJIS.WOOD}`);
 
         } catch(e) {
             console.error(e);

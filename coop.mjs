@@ -9,6 +9,7 @@ import ROLES_HELPER from "./operations/members/hierarchy/roles/rolesHelper.mjs";
 import CHANNELS_HELPER from "./operations/channelHelper.mjs";
 import SERVER_HELPER from "./operations/serverHelper.mjs";
 import TIME_HELPER from "./operations/timeHelper.mjs";
+import INTERACTION_HELPER from "./operations/activity/messages/interactionHelper.mjs";
 
 import CONFIG_HELPER from "coop-shared/config.mjs";
 import STATE_HELPER from "./state.mjs";
@@ -24,6 +25,7 @@ export const ROLES = ROLES_HELPER;
 export const CHANNELS = CHANNELS_HELPER;
 export const SERVER = SERVER_HELPER;
 export const TIME = TIME_HELPER;
+export const INTERACTION = INTERACTION_HELPER;
 
 export const STATE = STATE_HELPER;
 export const CONFIG = CONFIG_HELPER;
@@ -36,6 +38,6 @@ const COOP = {
     USERS, CHICKEN,
     MESSAGES, REACTIONS, ROLES, CHANNELS, SERVER,
     STATE, CONFIG,
-    TIME, CHANCE
+    TIME, INTERACTION, CHANCE
 };
 export default COOP;
