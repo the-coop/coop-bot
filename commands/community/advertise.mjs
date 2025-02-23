@@ -6,6 +6,7 @@ import { ITEMS, CHANNELS, USABLE, MESSAGES } from "../../coop.mjs";
 import InteractionHelper from '../../operations/activity/messages/interactionHelper.mjs';
 import SuggestionsHelper from '../../operations/activity/suggestions/suggestionsHelper.mjs';
 import Useable from 'coop-shared/services/useable.mjs';
+import Items from "coop-shared/services/items.mjs";
 
 export const name = 'advertise';
 
@@ -48,7 +49,7 @@ export const execute = async interaction => {
 		const price = await ITEMS.perBeakRelativePrice('GOLD_COIN', .005);
 
 		// Check user can afford this price.
-		const userCoinQty = await ItemsShared.getUserItemQty(interaction.user.id, 'GOLD_COIN');
+		const userCoinQty = await Items.getUserItemQty(interaction.user.id, 'GOLD_COIN');
 		if (userCoinQty < price)
 			return await interaction.reply({ content: `Can't afford ad ${userCoinQty.toFixed(2)}/${price.toFixed(2)} GOLD_COIN.`, ephemeral: true });
 

@@ -31,8 +31,6 @@ export default class InteractionHelper {
 
         // Daily Reward Interaction
         DailyRewardMinigame.onInteraction(interaction);
-
-
     };
 
     static confirm(interaction, texts) {
