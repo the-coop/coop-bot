@@ -2,7 +2,7 @@ import { EMOJIS } from "coop-shared/config.mjs";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 
-import COOP, { STATE, REACTIONS } from '../../../../../../coop.mjs';
+import COOP, { STATE, REACTIONS, MESSAGES, CHANNELS, USERS } from '../../../../../../coop.mjs';
 import { EGG_DATA } from "../../../../small/egghunt.mjs";
 
 
@@ -14,8 +14,8 @@ export default class LegendaryEggHandler {
                 const didUse = await Useable.use(user.id, 'LEGENDARY_EGG', 1);
                 if (!didUse) {
                     const failureText = `${user.username} tried to use a legendary egg, but has none l-`;
-                    COOP.MESSAGES.selfDestruct(reaction.message, failureText, 0, 5000);
-                    COOP.MESSAGES.delayReactionRemoveUser(reaction, user.id, 333);
+                    MESSAGES.selfDestruct(reaction.message, failureText, 0, 5000);
+                    MESSAGES.delayReactionRemoveUser(reaction, user.id, 333);
 
                 } else {
                     const backFired = STATE.CHANCE.bool({ likelihood: 25 });
@@ -30,11 +30,11 @@ export default class LegendaryEggHandler {
 
                     // Remove egg reaction based on popularity
                     const popularity = REACTIONS.countType(reaction.message, '💜');
-                    if (popularity < 3 && !COOP.USERS.isCooper(user.id)) 
-                        COOP.MESSAGES.delayReactionRemove(reaction, 333);
+                    if (popularity < 3 && !USERS.isCooper(user.id)) 
+                        MESSAGES.delayReactionRemove(reaction, 333);
                     
                     // Add visuals animation
-                    COOP.MESSAGES.delayReact(reaction.message, '💜', 666);
+                    MESSAGES.delayReact(reaction.message, '💜', 666);
 
                     // Build the output message.
                     const damageInfoText = ` ${damage} points (${updatedPoints})`;
@@ -42,10 +42,10 @@ export default class LegendaryEggHandler {
                     if (backFired) actionInfoText = `**${user.username} tried to use a legendary egg on ${author.username}, but it backfired.**`;
 
                     const feedbackMsgText = `${actionInfoText}: ${damageInfoText}.`;
-                    COOP.CHANNELS.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💜', false);
+                    CHANNELS.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💜', false);
 
                     // Also notify feed channel due to the rarity of the egg.
-                    COOP.CHANNELS.send('TALK', feedbackMsgText, 666);
+                    CHANNELS._send('TALK', feedbackMsgText, 666);
                 }
             } catch(e) {
                 console.error(e);
@@ -55,11 +55,11 @@ export default class LegendaryEggHandler {
         // On 3 legendary hearts, allow average egg suggestion.
         if (reaction.emoji.name === '💜' && reaction.count === 3) { 
             // Add legendary_egg emoji reaction.
-            COOP.MESSAGES.delayReact(reaction.message, EMOJIS.LEGENDARY_EGG, 333);
+            MESSAGES.delayReact(reaction.message, EMOJIS.LEGENDARY_EGG, 333);
 
             // TODO: Add animation due to rarity.
-            COOP.MESSAGES.delayReact(reaction.message, '✨', 666);
+            MESSAGES.delayReact(reaction.message, '✨', 666);
         }
-    }
+    };
    
-}
+};

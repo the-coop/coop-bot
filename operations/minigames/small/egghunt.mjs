@@ -397,7 +397,7 @@ export default class EggHuntMinigame {
         if (STATE.CHANCE.bool({ likelihood: 7 }))
             this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
 
-        if (STATE.CHANCE.bool({ likelihood: .5 })) {
+        if (STATE.CHANCE.bool({ likelihood: .15 })) {
             CHANNELS._postToChannelCode('TALK', ROLES._textRef('MINIGAME_PING') + ', a legendary egg was dropped! Grab it before others can!');
             this.drop('LEGENDARY_EGG');
         }

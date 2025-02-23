@@ -79,7 +79,7 @@ export const VELOCITY_EVENTS = {
     since: 0, 
     handler: () => FoxHuntMinigame.run(), 
     interval: baseTickDur * manifestChance.floating({ min: 4, max: 10 })
-  },
+  }
 };
 
 export const onNewMonth = () => {

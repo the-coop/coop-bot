@@ -55,7 +55,7 @@ const shallowBot = async () => {
         STATE.CLIENT.on('ready', async () => {
             console.log('Shallow bot is ready');
     
-            // FoxHuntMinigame.run();
+            FoxHuntMinigame.run();
 
             // const test = USERS._get('1328056970111881217');
             // console.log(test);
