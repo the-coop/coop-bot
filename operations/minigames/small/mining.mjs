@@ -3,7 +3,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import Items from "coop-shared/services/items.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 
-import { STATE, ITEMS, MESSAGES, CHANNELS } from "../../../coop.mjs";
+import { STATE, ITEMS, MESSAGES, CHANNELS, INTERACTION } from "../../../coop.mjs";
 import { EMOJIS } from "coop-shared/config.mjs";
 
 import EconomyNotifications from "../../activity/information/economyNotifications.mjs";
@@ -23,15 +23,15 @@ export default class MiningMinigame {
             const { message, channel, user } = interaction;
 
             // High chance of preventing any mining at all to deal with rate limiting.
-            if (STATE.CHANCE.bool({ likelihood: 50 })) return await interaction.reply({ content: 'You missed...', ephemeral: true });
+            if (STATE.CHANCE.bool({ likelihood: 50 })) return await INTERACTION.reply(interaction, 'You missed...');
 
             // Calculate magnitude from message: more rocks, greater reward.
             const textMagnitude = Math.floor(message.content.length / 2);
             const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 2 });
 
             // Check if has a pickaxe.
-            const userPickaxesNum = await Items.getUserItemQty(user.id, 'PICK_AXE');
-            if (userPickaxesNum <= 0) return await interaction.reply({ content: 'No pickaxe to mine with.', ephemeral: true });
+            const userPickaxesNum = await Items.getUserItemQty(user.id, 'PICK_AXE')
+            if (userPickaxesNum <= 0) return await INTERACTION.reply(interaction, 'No pickaxe to mine with.');
 
             // Count the number of people mining to apply a multipler/bonus.
             const ptsEmoji = MESSAGES.emojiCodeText('COOP_POINT');
@@ -65,7 +65,7 @@ export default class MiningMinigame {
                 SkillsHelper.addXP(user.id, 'mining', 2);
 
                 const actionText = `${user.username} broke a pickaxe trying to mine, ${userPickaxesNum - 1} remaining! Gained 2xp in mining for trying!.`;
-                return await interaction.reply({ content: actionText, ephemeral: true });
+                return await INTERACTION.reply(interaction, actionText);
             } 
 
             // See if updating the item returns the item and quantity.
@@ -151,12 +151,14 @@ export default class MiningMinigame {
             SkillsHelper.addXP(user.id, 'mining', 1);
 
             // Show user success message.
-            return await interaction.reply({ content: actionText, ephemeral: true });
+            return await INTERACTION.reply(interaction, actionText);
+
 
         } catch(e) {
             console.error(e);
             console.log('Mining error');
-            return await interaction.reply({ content: 'Something went wrong...', ephemeral: true });
+            return await INTERACTION.reply(interaction, 'Something went wrong when mining!');
+
         }
     };
 
