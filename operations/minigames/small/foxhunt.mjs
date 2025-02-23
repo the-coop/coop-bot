@@ -37,7 +37,7 @@ export default class FoxHuntMinigame {
                 return await this.sendEphemeralReply(interaction, 'The fox is sleeping now');
 
             // If after consuming a heart, there is 0 left and user has slapped the fox
-            if (interaction.customId == 'slap_fox' && heartStatus.lastHeart)
+            if (interaction.customId === 'slap_fox' && heartStatus.lastHeart)
                 return await this.lastHeartSlap(interaction);
 
             // If user is sunz
