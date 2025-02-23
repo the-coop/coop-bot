@@ -13,7 +13,6 @@ import INTERACTION_HELPER from "./operations/activity/messages/interactionHelper
 
 import CONFIG_HELPER from "coop-shared/config.mjs";
 import STATE_HELPER from "./state.mjs";
-import InteractionHelper from "./operations/activity/messages/interactionHelper.mjs";
 
 export const POINTS = POINTS_HELPER;
 export const USABLE = USABLE_HELPER;
