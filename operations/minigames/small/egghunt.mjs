@@ -239,17 +239,8 @@ export default class EggHuntMinigame {
             const emoji = EGG_DATA[rarity].emoji;
 
             // Small chance of being stolen by a fox.
-            if (STATE.CHANCE.bool({ likelihood: 5 })) {
-                reaction.message.edit(`${user.username}'s ${MESSAGES.emojiText(emoji)} was stolen by a fox 🦊`);
-                // Convert the rarity variable into chicken config key example: "stolen_average_egg"
-                const configKey = `stolen_${rarity.toLowerCase()}`;
-                // Fetch the current amount of stolen eggs of this rarity and increment
-                const currentAmount = await CHICKEN.getConfig(configKey);
-                const newAmount = (parseInt(currentAmount) || 0) + 1;
-                // Update the value in chicken config
-                CHICKEN.setConfig(configKey, newAmount);
-                return ReactionHelper.removeAll(reaction.message);
-            }
+            if (STATE.CHANCE.bool({ likelihood: 5 }))
+                return await this.steal(reaction.message, user, rarity);
 
             // Check the channel type or location of the action.
             let location = null;
@@ -307,15 +298,38 @@ export default class EggHuntMinigame {
         }
     };
 
+    static async steal(msg, user, rarity) {
+        const emoji = EGG_DATA[rarity].emoji;
+        await msg.edit(`${user.username}'s ${MESSAGES.emojiText(emoji)} was stolen by a fox 🦊`);
+
+        // Convert the rarity variable into chicken config key example: "stolen_average_egg"
+        const configKey = `stolen_${rarity.toLowerCase()}`;
+
+        // Fetch the current amount of stolen eggs of this rarity and increment
+        const currentAmount = await CHICKEN.getConfig(configKey);
+        const newAmount = (parseInt(currentAmount) || 0) + 1;
+
+        // Update the value in chicken config
+        CHICKEN.setConfig(configKey, newAmount);
+        return ReactionHelper.removeAll(msg);
+    };
+
     static async break(msg, user, rarity, intentional = false) {
         try {
+            // Small chance of being stolen instead of broken
+            if (STATE.CHANCE.bool({ likelihood: 5 }) && intentional)
+                return await this.steal(msg, user, rarity);
+
             const emoji = MESSAGES.emojiText(EGG_DATA[rarity].emoji);
             const actionText = `${emoji}🔨 ${user.username}`;
-            EconomyNotifications.add('EGG_HUNT', {
-                type: 'BROKEN',
-                eggType: rarity
-            });
+            
+            // Record the break event
+            await this.recordBreak(rarity);
+
+            
             let acknowledgementMsgText = `${actionText} ${intentional ? 'intentionally' : 'clumsily'} broke the egg...`.trim();
+            
+            // Handle intentional breaks
             if (intentional) {
                 const reward = -Math.ceil(EGG_DATA[rarity].points / 2);
                 const rewardPolarity = reward > 0 ? '' : '-';
@@ -326,8 +340,6 @@ export default class EggHuntMinigame {
             }
             
             MESSAGES.delayEdit(msg, acknowledgementMsgText, 0);
-
-            // Remove the emojis
             REACTIONS.removeAll(msg);
 
         } catch(e) {
@@ -335,6 +347,13 @@ export default class EggHuntMinigame {
             console.error(e);
         }
     };
+
+    static async recordBreak(rarity) {
+        return EconomyNotifications.add('EGG_HUNT', {
+            type: 'BROKEN',
+            eggType: rarity
+        });
+    }
 
     static async drop(rarity, dropText = null) {
         const dropChannel = CHANNELS._randomSpammable();
