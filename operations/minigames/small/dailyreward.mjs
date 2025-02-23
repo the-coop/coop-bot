@@ -1,7 +1,7 @@
 import { CHANNELS, MESSAGES, USERS, INTERACTION } from '../../../coop.mjs';
 import DropTable from '../medium/economy/items/droptable.mjs';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
-import ItemsShared from "coop-shared/services/items.mjs";
+import Items from "coop-shared/services/items.mjs";
 import Trading from "coop-shared/services/trading.mjs";
 
 export default class DailyRewardMinigame {
@@ -18,12 +18,6 @@ export default class DailyRewardMinigame {
         // Check if 24 hours have passed since the last claim
         const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
         return new Date(lastClaim).getTime() <= twentyFourHoursAgo;
-    }
-
-    // Safeguard: Check if the user has too many of the item
-    static async hasUserOverItemLimit(userId, item) {
-        // Check if user has 7 or more of the specified item
-        return await ItemsShared.hasQty(userId, item, 7);
     }
 
     // Safeguard: Check if the user has an open trade for the same item
@@ -51,8 +45,9 @@ export default class DailyRewardMinigame {
 
             // Get one reward from droptable for Gathering drops
             const item = DropTable.getRandomTiered('GATHERING');
+          
             // Safeguard item quantity (if user has equal or over 7, dont reward)
-            if (await this.hasUserOverItemLimit(userId, item)) 
+            if (await Items.hasQty(userId, item, 7))
                 return await INTERACTION.reply(interaction, `You already have the maximum amount of daily reward items!`);
 
             // Safeguard trading bypass (if user has outstanding trade with the itemtype, dont reward)
@@ -65,7 +60,7 @@ export default class DailyRewardMinigame {
             TemporaryMessages.add(dailyRewardMessage, 30 * 60);
 
             // Reward user with the item
-            ItemsShared.add(interaction.user.id, item, 1, `Daily reward`);
+            Items.add(interaction.user.id, item, 1, `Daily reward`);
             return await INTERACTION.reply(interaction, `You claimed your daily reward! 🐔`);
 
         } catch (e) {
