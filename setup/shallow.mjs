@@ -10,6 +10,7 @@ import AlgoHelper from '../operations/minigames/medium/economy/blockchain/AlgoHe
 import algosdk from 'algosdk';
 
 import Items from 'coop-shared/services/items.mjs';
+import EventsHelper from '../operations/eventsHelper.mjs';
 
 // Commonly useful.
 // const listenReactions = (fn) => STATE.CLIENT.on('messageReactionAdd', fn);
@@ -54,8 +55,10 @@ const shallowBot = async () => {
             console.log('Shallow bot is ready');
     
 
-            const test = USERS._get('1328056970111881217');
-            console.log(test);
+            // const test = USERS._get('1328056970111881217');
+            // console.log(test);
+
+            // await EventsHelper.create('spotlight');
             
             // const publicKey = AlgoHelper.account().addr.publicKey;
             // const address = algosdk.encodeAddress(publicKey);

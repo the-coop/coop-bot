@@ -37,8 +37,8 @@ export default class SpotlightHelper {
             else if (isActive && isVotingPeriod && !hasExpired)
                 await this.run();
 
-            // End the event if necessary.
-            else if (hasExpired)
+            // Only end the event if it's active and has expired
+            else if (isActive && hasExpired)
                 await this.end();
 
             else {
@@ -133,7 +133,7 @@ export default class SpotlightHelper {
             // Fetch spotlight event
             const spotlightEvent = await EventsHelper.read('spotlight');
             if (!spotlightEvent)
-                throw new Error('Spotlight event could not be fetched!')
+                throw new Error('Spotlight event could not be fetched!');
 
             // Access the poll results if available
             if (!spotlightEvent.message_link)
@@ -141,7 +141,7 @@ export default class SpotlightHelper {
 
             const msg = await MESSAGES.getByLink(spotlightEvent.message_link);
             if (!msg)
-                throw new Error('Spotlight message could not be fetched with the message link!')
+                throw new Error('Spotlight message could not be fetched with the message link!');
 
             const results = msg.poll.answers.map((answer) => ({
                 answer_id: answer.answer_id,
@@ -157,6 +157,7 @@ export default class SpotlightHelper {
             // Fetch the spotlight user from temporary storage
             if (!spotlightEvent.organiser)
                 throw new Error('Spotlight event does not have a valid organiser!');
+
             const spotlightUser = await USERS._getById(spotlightEvent.organiser);
 
             if (!spotlightUser) {
@@ -197,7 +198,7 @@ export default class SpotlightHelper {
             console.log('Error changing user rank in spotlight event');
             console.error(e);
         }
-    }
+    };
 
     static async end() {
         try {
@@ -206,6 +207,7 @@ export default class SpotlightHelper {
 
             // Set event to inactive.
             await EventsHelper.setActive('spotlight', false);
+
             // Reset properties
             await EventsHelper.setLink('spotlight', null);
             await EventsHelper.setOrganiser('spotlight', null);
@@ -213,6 +215,7 @@ export default class SpotlightHelper {
             // Delete messages.
             const channel = CHANNELS._getCode('SPOTLIGHT');
             await channel.bulkDelete(100);
+
             // const msgs = await channel.messages.fetch({ limit: 100 });
 
             // Hide channel when not appropriate
