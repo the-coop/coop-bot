@@ -210,6 +210,17 @@ export default class SacrificeHelper {
             try {
                 // Access the message
                 const message = await MESSAGES.getByLink(offer.message_link);
+                // If the offer no longer exists, clean it up and return default values
+                if (!message && offer.message_link) {
+                    TemporaryMessages.unregisterTempMsgByLink(offer.message_link);
+                    return {
+                        sacrificee: sacrificee,
+                        hasFinalised: false,
+                        shouldSacrifice: false,
+                        messageLink: offer.message_link
+                    };
+                } 
+
                 // Extract user id from the message content
                 const discordID = message.content.match(/<@(\d+)>/)[1];
                 sacrificee = USERS._get(discordID);
@@ -220,7 +231,7 @@ export default class SacrificeHelper {
                     answer_id: answer.answer_id,
                     votes: answer.votes
                 }));
-    
+
                 const highestVotedAnswer = results.reduce((max, answer) => 
                     answer.votes > max.votes ? answer : max, { votes: 0 }
                 );
@@ -229,8 +240,6 @@ export default class SacrificeHelper {
                 // and if there are enough votes
                 // then should sacrifice user
                 shouldSacrifice = (highestVotedAnswer.answer_id == 2 && highestVotedAnswer.votes >= reqSacrificeVotes) ? true : false;
-
-
             } catch(e) {
                 console.error(e);
                 console.log('sacrifice announce failed with above errors');
