@@ -53,8 +53,7 @@ export default class DropTable {
     }
 
     static getRandom() {
-        // TODO: OVERPOWERED - Reduce legendary/rare access, etc.
-        const tier = STATE.CHANCE.pickone(Object.keys(this.TIERS));
+        const tier = this.getRandomTierWeighted()
         const item = this.getRandomTiered(tier);
         return item;
     }
@@ -110,7 +109,7 @@ export default class DropTable {
 
     static getRandomTierWeighted() {
         return STATE.CHANCE.weighted(
-            [this.TIERS.LEGENDARY, this.TIERS.RARE, this.TIERS.AVERAGE],
+            ["LEGENDARY", "RARE", "AVERAGE"],
             [this.TIER_QTYS.LEGENDARY.max, this.TIER_QTYS.RARE.max, this.TIER_QTYS.AVERAGE.max]
         );
     }
