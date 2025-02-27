@@ -20,13 +20,13 @@ export default class FoxHuntMinigame {
             if (!isFoxhuntAction) return false;
 
             // If fox is currently stunned
-            // 1% chance of giving user 1 point
+            // 10% chance of giving user 1 point
             if (this.stunned) {
                 const stunnedOutcomes = [
                     () => this.rewardStun(interaction),
                     () => InteractionHelper.reply(interaction, '✨🦊💫')
                 ];
-                const stunnedWeights = [1, 100];
+                const stunnedWeights = [10, 100];
 
                 // Pick a stunned outcome and immediately return it
                 return await CHANCE.weighted(stunnedOutcomes, stunnedWeights)();
