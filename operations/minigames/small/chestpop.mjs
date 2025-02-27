@@ -1,4 +1,4 @@
-import { STATE, REACTIONS, ITEMS, MESSAGES, USERS, CHANNELS, ROLES } from "../../../coop.mjs";
+import { STATE, ITEMS, MESSAGES, CHANNELS, INTERACTION } from "../../../coop.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
 import Useable from "coop-shared/services/useable.mjs";
 import DropTable from "../medium/economy/items/droptable.mjs";
@@ -25,11 +25,11 @@ export default class ChestPopMinigame {
         try {
             // Use a key attempting to open the chest.
             const paid = await Useable.use(interaction.user.id, 'KEY', 1);
-            if (!paid) return await interaction.reply({ content: 'You have no keys.', ephemeral: true });
+            if (!paid) return await INTERACTION.reply(interaction, 'You have no keys.');
     
             // Handle broken key possibility.
             if (STATE.CHANCE.bool({ likelihood: 15 })) 
-                return await interaction.reply({ content: 'You broke a key attemping to open it.', ephemeral: true });
+                return await INTERACTION.reply(interaction, 'You broke a key attemping to open it.');
     
             // Pick rewards from opening with key
             const maxRewardAmount = STATE.CHANCE.natural({ min: 2, max: 5 });
