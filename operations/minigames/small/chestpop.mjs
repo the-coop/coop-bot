@@ -22,53 +22,47 @@ export default class ChestPopMinigame {
     };
 
     static async open(interaction) {
-        try {
-            // Use a key attempting to open the chest.
-            const paid = await Useable.use(interaction.user.id, 'KEY', 1);
-            if (!paid) return await INTERACTION.reply(interaction, 'You have no keys.');
-    
-            // Handle broken key possibility.
-            if (STATE.CHANCE.bool({ likelihood: 15 })) 
-                return await INTERACTION.reply(interaction, 'You broke a key attemping to open it.');
-    
-            // Pick rewards from opening with key
-            const maxRewardAmount = STATE.CHANCE.natural({ min: 2, max: 5 });
-            const rewardAmount = STATE.CHANCE.natural({ min: 1, max: maxRewardAmount });
-            const drops = DropTable.getRandomWithQtyMany(rewardAmount);
+        // Use a key attempting to open the chest.
+        const paid = await Useable.use(interaction.user.id, 'KEY', 1);
+        if (!paid) return await INTERACTION.reply(interaction, 'You have no keys.');
 
-            // Destroy the chestpop message
-            await interaction.message.delete()
-            
-            // Declare feedback in a new message
-            const dropsText = drops.map(drop => MESSAGES.emojiCodeText(drop.item).repeat(drop.qty)).join(' ');
-            const dropsMessage = await interaction.channel.send({
-                content: dropsText,
-                components: [
-                    new ActionRowBuilder().addComponents([
-                        new ButtonBuilder()
-                            .setEmoji('✋')
-                            .setLabel("Pick up")
-                            .setCustomId('pickup_item')
-                            .setStyle(ButtonStyle.Primary)
-                    ])
-                ]
-            });
-            
-            // Store the new drops message in temp messages
-            TemporaryMessages.add(dropsMessage, 30 * 60);
+        // Handle broken key possibility.
+        if (STATE.CHANCE.bool({ likelihood: 15 })) 
+            return await INTERACTION.reply(interaction, 'You broke a key attemping to open it.');
 
-            // Track chestpop drops in economy statistics.
-            EconomyNotifications.add('CHEST_POP', {
-                loot: drops.length
-            });
-                
-            // Show user success message.
-            return await interaction.reply({ content: `You successfully opened the chest.`, ephemeral: true });
-        } catch(e) {
-            console.error(e);
-            console.log('Error opening chestpop');
-            return await interaction.reply({ content: `The chest is stuck!`, ephemeral: true });
-        }
+        // Pick rewards from opening with key
+        const maxRewardAmount = STATE.CHANCE.natural({ min: 2, max: 5 });
+        const rewardAmount = STATE.CHANCE.natural({ min: 1, max: maxRewardAmount });
+        const drops = DropTable.getRandomWithQtyMany(rewardAmount);
+
+        // Destroy the chestpop message
+        await interaction.message.delete()
+        
+        // Declare feedback in a new message
+        const dropsText = drops.map(drop => MESSAGES.emojiCodeText(drop.item).repeat(drop.qty)).join(' ');
+        const dropsMessage = await interaction.channel.send({
+            content: dropsText,
+            components: [
+                new ActionRowBuilder().addComponents([
+                    new ButtonBuilder()
+                        .setEmoji('✋')
+                        .setLabel("Pick up")
+                        .setCustomId('pickup_item')
+                        .setStyle(ButtonStyle.Primary)
+                ])
+            ]
+        });
+        
+        // Store the new drops message in temp messages
+        TemporaryMessages.add(dropsMessage, 30 * 60);
+
+        // Track chestpop drops in economy statistics.
+        EconomyNotifications.add('CHEST_POP', {
+            loot: drops.length
+        });
+            
+        // Show user success message.
+        return await INTERACTION.reply(interaction, `You successfully opened the chest.`);
     };
 
     static async run() {
