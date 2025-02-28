@@ -56,9 +56,10 @@ export default class FoxHuntMinigame {
             if (interaction.customId === 'pet_fox') {
                 outcomes = [
                     () => this.reward(interaction),
+                    () => INTERACTION.reply(interaction, 'The fox loves you ❤️'),
                     () => INTERACTION.reply(interaction, 'The fox sits next to you!')
                 ];
-                weights = [10, 100];
+                weights = [10, 100, 100];
             }
 
             // Select a single outcome
@@ -75,10 +76,6 @@ export default class FoxHuntMinigame {
     static async bite(interaction) {
         await Items.subtract(interaction.user.id, 'COOP_POINT', 1, 'Fox bite');
         return await INTERACTION.reply(interaction, 'Careful the 🦊 bites. -1 Points!');
-    };
-
-    static async love(interaction) {
-        return await INTERACTION.reply(interaction, 'The fox loves you ❤️');
     };
 
     // During stun, interactions have very small chance of giving user a point
