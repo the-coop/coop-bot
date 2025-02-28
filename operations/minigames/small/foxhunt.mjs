@@ -40,10 +40,6 @@ export default class FoxHuntMinigame {
             if (interaction.customId === 'slap_fox' && heartStatus.lastHeart)
                 return await this.lastHeartSlap(interaction);
 
-            // If user is sunz
-            if (interaction.user.id === "287062661483724810")
-                await this.love(interaction);
-
             // Define possible outcomes for each interaction
             let outcomes = [];
             let weights = [];
