@@ -106,6 +106,10 @@ export default class EconomyNotifications {
                 console.log(STATE.EVENTS_HISTORY['CRATE_DROP']);
             }
 
+            if (STATE.EVENTS_HISTORY['CHESTPOP']) {
+                notificationString += `\nChestpop loot count: ${STATE.EVENTS_HISTORY['CHESTPOP'].loot}`;
+            }
+
             const updateMsg = await MESSAGES.getSimilarExistingMsg(CHANNELS._getCode('TALK'), postTitle);
             if (!updateMsg) {
                 const msg = await CHANNELS._send('TALK', notificationString);
@@ -131,6 +135,7 @@ export default class EconomyNotifications {
             this.clear('MINING');
             this.clear('EGG_HUNT');
             this.clear('CRATE_DROP');
+            this.clear('CHESTPOP');
         }
     };
     
@@ -318,5 +323,16 @@ export default class EconomyNotifications {
         // });
 
 
+    };
+
+    static updateChestpop(chestpopEvent) {
+
+        if (typeof STATE.EVENTS_HISTORY['CHESTPOP'] === 'undefined') {
+            STATE.EVENTS_HISTORY['CHESTPOP'] = {
+                loot: 0
+            }
+        }
+
+        STATE.EVENTS_HISTORY['CHESTPOP'].loot += chestpopEvent.loot;
     };
 };

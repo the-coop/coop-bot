@@ -1,6 +1,6 @@
 import EmojiHelper from "./emojiHelper.mjs";
 
-import COOP, { SERVER, TIME, STATE } from "../../../../../coop.mjs";
+import COOP, { SERVER, TIME, STATE, INTERACTION } from "../../../../../coop.mjs";
 import { EMOJIS, RAW_EMOJIS } from 'coop-shared/config.mjs';
 import Useable from 'coop-shared/services/useable.mjs';
 
@@ -357,26 +357,22 @@ export default class ItemsHelper {
 
     // Parses items from interaction messages and gives the first item to user
     // Modifies the interaction message so that it deletes the picked up item from the message
-    // Returns the first item string or an empty string if there are no items
+    // After all items are picked up, deletes the message.
     static async collectFromTable(interaction) {
-        try {
-            // Extract items from the string by unicode and custom emojis.
-            const items = this.extractTextItems(interaction.message.content);
-            console.log(items);
-            if (!items) return await interaction.reply({ content: `Nothing to pickup.`, ephemeral: true });
+        const items = this.extractTextItems(interaction.message.content);
 
-            // Remove the item from message content
-            await interaction.message.edit(interaction.message.content.replace(items[0], ''));
-            // Attempt to parse the first item to itemcode and give to user
-            const code = this.interpretItemCodeArg(items[0])
-            if (code) await Items.add(interaction.user.id, code, 1, `User picked up item`);
-            
-            return await interaction.reply({ content: `Testing.`, ephemeral: true });
+        // Remove the item from message content
+        await interaction.message.edit(interaction.message.content.replace(items[0], ''));
 
-        } catch (e) {
-            console.log(e);
-            console.log("above error occured while picking up item!");
-            return await interaction.reply({ content: `Failed.`, ephemeral: true });
-        }
+        // Attempt to parse the first item to itemcode and give to user
+        const code = this.interpretItemCodeArg(items[0])
+        if (code) await Items.add(interaction.user.id, code, 1, `User picked up item`);
+        
+        // Respond to interaction
+        await INTERACTION.reply(interaction, `You picked up ${code}`);
+
+        // If the item was last, delete the message.
+        if (items.length == 1) await interaction.message.delete();
+        return;
     };
 };
