@@ -1,7 +1,6 @@
-import { CHANCE, CHANNELS, CHICKEN, USERS } from '../../../coop.mjs';
+import { CHANCE, CHANNELS, CHICKEN, INTERACTION } from '../../../coop.mjs';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
-import InteractionHelper from '../../activity/messages/interactionHelper.mjs';
 import Items from "coop-shared/services/items.mjs";
 
 const halflifeicon = '💔';
@@ -20,13 +19,13 @@ export default class FoxHuntMinigame {
             if (!isFoxhuntAction) return false;
 
             // If fox is currently stunned
-            // 1% chance of giving user 1 point
+            // 10% chance of giving user 1 point
             if (this.stunned) {
                 const stunnedOutcomes = [
                     () => this.rewardStun(interaction),
-                    () => InteractionHelper.reply(interaction, '✨🦊💫')
+                    () => INTERACTION.reply(interaction, '✨🦊💫')
                 ];
-                const stunnedWeights = [1, 100];
+                const stunnedWeights = [10, 100];
 
                 // Pick a stunned outcome and immediately return it
                 return await CHANCE.weighted(stunnedOutcomes, stunnedWeights)();
@@ -35,15 +34,11 @@ export default class FoxHuntMinigame {
             // Consumes hearts for each interaction
             const heartStatus = await this.canConsumeHeart(interaction);
             if (!heartStatus.canConsume)
-                return await InteractionHelper.reply(interaction, 'The fox is sleeping now');
+                return await INTERACTION.reply(interaction, 'The fox is sleeping now');
 
             // If after consuming a heart, there is 0 left and user has slapped the fox
             if (interaction.customId === 'slap_fox' && heartStatus.lastHeart)
                 return await this.lastHeartSlap(interaction);
-
-            // If user is sunz
-            if (interaction.user.id === "287062661483724810")
-                await this.love(interaction);
 
             // Define possible outcomes for each interaction
             let outcomes = [];
@@ -53,7 +48,7 @@ export default class FoxHuntMinigame {
                 outcomes = [
                     () => this.stunFox(interaction),
                     () => this.bite(interaction),
-                    () => InteractionHelper.reply(interaction, 'The fox dodges your slap!')
+                    () => INTERACTION.reply(interaction, 'The fox dodges your slap!')
                 ];
                 weights = [30, 50, 100];
             }
@@ -61,9 +56,10 @@ export default class FoxHuntMinigame {
             if (interaction.customId === 'pet_fox') {
                 outcomes = [
                     () => this.reward(interaction),
-                    () => InteractionHelper.reply(interaction, 'The fox sits next to you!')
+                    () => INTERACTION.reply(interaction, 'The fox loves you ❤️'),
+                    () => INTERACTION.reply(interaction, 'The fox sits next to you!')
                 ];
-                weights = [10, 100];
+                weights = [10, 100, 100];
             }
 
             // Select a single outcome
@@ -73,30 +69,26 @@ export default class FoxHuntMinigame {
         } catch(e) {
             console.error(e);
             console.log('Above error related to foxhunt reaction handler')
-            return await InteractionHelper.reply(interaction, 'The fox ran from you!');
+            return await INTERACTION.reply(interaction, 'The fox ran from you!');
         }
     };
 
     static async bite(interaction) {
         await Items.subtract(interaction.user.id, 'COOP_POINT', 1, 'Fox bite');
-        return await InteractionHelper.reply(interaction, 'Careful the 🦊 bites. -1 Points!');
-    };
-
-    static async love(interaction) {
-        return await InteractionHelper.reply(interaction, 'The fox loves you ❤️');
+        return await INTERACTION.reply(interaction, 'Careful the 🦊 bites. -1 Points!');
     };
 
     // During stun, interactions have very small chance of giving user a point
     // This aims to negate the bite functions point substraction
     static async rewardStun(interaction) {
         await Items.add(interaction.user.id, 'COOP_POINT', 1, 'Fox stunned reward');
-        return await InteractionHelper.reply(interaction, 'You help the stunned 🦊 +1 Points!');
+        return await INTERACTION.reply(interaction, 'You help the stunned 🦊 +1 Points!');
     };
 
     // Adds sparkles to the fox message and stuns the fox, preventing actions for 8 seconds
     static async stunFox(interaction) {
         // Respond to interaction
-        await InteractionHelper.reply(interaction, 'You stunned the fox! ✨🦊💫');
+        await INTERACTION.reply(interaction, 'You stunned the fox! ✨🦊💫');
 
         const messageContent = interaction.message.content;
         // Edit the original message to show sparkles and take away the hearts
@@ -114,7 +106,7 @@ export default class FoxHuntMinigame {
     // If the user slaps on last heart, reward 10 points
     static async lastHeartSlap(interaction) {
         await Items.add(interaction.user.id, 'COOP_POINT', 10, 'Fox last heart slap');
-        return await InteractionHelper.reply(interaction, '🦊 dropped a treasure 💎 +10 Points!');
+        return await INTERACTION.reply(interaction, '🦊 dropped a treasure 💎 +10 Points!');
     };
 
     static async canConsumeHeart(interaction) {
@@ -156,7 +148,7 @@ export default class FoxHuntMinigame {
             ? `The fox brings you gifts...\n${rewardStrings.join('\n')}`
             : 'The fox is feeling generous!';
 
-        return await InteractionHelper.reply(interaction, rewardMessage);
+        return await INTERACTION.reply(interaction, rewardMessage);
     };
 
     static async run() {
