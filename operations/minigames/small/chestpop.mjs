@@ -57,7 +57,7 @@ export default class ChestPopMinigame {
         TemporaryMessages.add(dropsMessage, 30 * 60);
 
         // Track chestpop drops in economy statistics.
-        EconomyNotifications.add('CHEST_POP', {
+        EconomyNotifications.add('CHESTPOP', {
             loot: drops.length
         });
             

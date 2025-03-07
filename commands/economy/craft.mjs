@@ -85,9 +85,16 @@ export const execute = async interaction => {
 		// Attempt to craft the object.
 		const craftResult = await CraftingHelper.craft(userID, itemCode, qty);
 		if (craftResult) {
-			const addText = `<@${userID}> crafted ${itemCode}x${qty}.`;
+			const addText = `<@${userID}> crafted ${itemCode}x${qty}.\n`;
+			// Calculate ingredients based on crafted quantity
+			const ingredText = Object.entries(CraftingHelper.CRAFTABLES[itemCode].ingredients)
+				.map(([ingredient, quantity]) => `${COOP.MESSAGES.emojiCodeText(ingredient)} x ${quantity * craftedQuantity}\n`)
+				.join(", ");
+			// Calculate gained XP
+			const xpRewardText = `XP Gained: ${CraftingHelper.CRAFTABLES[itemCode].xpReward * craftedQuantity}`;
 
-			return await interaction.reply({ content: addText, ephemeral: false });
+			const message = addText + ingredText + xpRewardText;
+			return await interaction.reply({ content: message, ephemeral: true });
 
 		} else {
 			return await interaction.reply({ content: `<@${userID}> failed to craft ${qty}x${itemCode}...`, ephemeral: true });

@@ -2,6 +2,7 @@ import { CHANNELS, USERS } from "../../../../coop.mjs";
 
 import Database from "coop-shared/setup/database.mjs";
 import DatabaseHelper from "coop-shared/helper/databaseHelper.mjs";
+import EconomyNotifications from "../../../activity/information/economyNotifications.mjs";
 
 
 export const SKILLS = {
@@ -136,6 +137,12 @@ export default class SkillsHelper {
             }
         }
 
+        // Update economy notifications
+        EconomyNotifications.add('EXPERIENCE', {
+            skill: skill.toUpperCase(),
+            xpGain: xpNum,
+        });
+        
 
         return result;
     }

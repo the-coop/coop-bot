@@ -1,7 +1,7 @@
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { MESSAGES, CHANNELS, STATE } from "../../../coop.mjs";
 import { EGG_DATA } from '../../minigames/small/egghunt.mjs';
-
+import { SKILLS } from "../../minigames/medium/skills/skillsHelper.mjs";
 
 export default class EconomyNotifications {
 
@@ -10,6 +10,8 @@ export default class EconomyNotifications {
         if (eventType === 'MINING') this.updateMining(eventData);
         if (eventType === 'EGG_HUNT') this.updateEgghunt(eventData);
         if (eventType === 'CRATE_DROP') this.updateCrateDrop(eventData);
+        if (eventType === 'CHESTPOP') this.updateChestpop(eventData);
+        if (eventType === 'EXPERIENCE') this.updateExperience(eventData);
     }
 
     static async post() {
@@ -110,6 +112,18 @@ export default class EconomyNotifications {
                 notificationString += `\nChestpop loot count: ${STATE.EVENTS_HISTORY['CHESTPOP'].loot}`;
             }
 
+            if (STATE.EVENTS_HISTORY['EXPERIENCE']) {
+                notificationString += '\n**Latest XP Totals:**\n';
+                const xpGains = STATE.EVENTS_HISTORY['EXPERIENCE'];
+                notificationString += Object.keys(xpGains)
+                    // Only include skills with XP gain change
+                    .filter(skill => xpGains[skill] > 0)
+                    .map(skill => {
+                        return `${skill}: +${xpGains[skill]} XP`;
+                    })
+                    .join('\n');
+            }
+
             const updateMsg = await MESSAGES.getSimilarExistingMsg(CHANNELS._getCode('TALK'), postTitle);
             if (!updateMsg) {
                 const msg = await CHANNELS._send('TALK', notificationString);
@@ -136,6 +150,7 @@ export default class EconomyNotifications {
             this.clear('EGG_HUNT');
             this.clear('CRATE_DROP');
             this.clear('CHESTPOP');
+            this.clear('EXPERIENCE');
         }
     };
     
@@ -334,5 +349,16 @@ export default class EconomyNotifications {
         }
 
         STATE.EVENTS_HISTORY['CHESTPOP'].loot += chestpopEvent.loot;
+    };
+
+    static updateExperience(xpEvent) {
+
+        if (typeof STATE.EVENTS_HISTORY['EXPERIENCE'] === 'undefined') {
+            STATE.EVENTS_HISTORY['EXPERIENCE'] = Object.fromEntries(
+                Object.keys(SKILLS).map(skill => [skill, 0])
+            );
+        }
+
+        STATE.EVENTS_HISTORY['EXPERIENCE'][xpEvent.skill] += xpEvent.gain;
     };
 };
