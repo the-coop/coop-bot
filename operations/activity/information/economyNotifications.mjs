@@ -112,6 +112,18 @@ export default class EconomyNotifications {
                 notificationString += `\nChestpop loot count: ${STATE.EVENTS_HISTORY['CHESTPOP'].loot}`;
             }
 
+            if (STATE.EVENTS_HISTORY['EXPERIENCE']) {
+                notificationString += '\n**Latest XP Totals:**\n';
+                const xpGains = STATE.EVENTS_HISTORY['EXPERIENCE'];
+                notificationString += Object.keys(xpGains)
+                    // Only include skills with XP gain change
+                    .filter(skill => xpGains[skill] > 0)
+                    .map(skill => {
+                        return `${skill}: +${xpGains[skill]} XP`;
+                    })
+                    .join('\n');
+            }
+
             const updateMsg = await MESSAGES.getSimilarExistingMsg(CHANNELS._getCode('TALK'), postTitle);
             if (!updateMsg) {
                 const msg = await CHANNELS._send('TALK', notificationString);
@@ -138,6 +150,7 @@ export default class EconomyNotifications {
             this.clear('EGG_HUNT');
             this.clear('CRATE_DROP');
             this.clear('CHESTPOP');
+            this.clear('EXPERIENCE');
         }
     };
     
