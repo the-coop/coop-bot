@@ -139,7 +139,7 @@ export default class SkillsHelper {
 
         // Update economy notifications
         EconomyNotifications.add('EXPERIENCE', {
-            skill: skill,
+            skill: skill.toUpperCase(),
             xpGain: xpNum,
         });
         
