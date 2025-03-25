@@ -399,10 +399,10 @@ export default class CompetitionHelper {
         if (!this.isCompChannel(msg.channel.id)) return false;
 
         // Check it's not Cooper.
-        if (USERS.isCooper(msg.author.id))return false;
+        if (USERS.isCooper(msg.author.id)) return false;
 
         // Calculate the intended competition for submission.
-        const code = CHANNELS.formatIDName(msg.channel.id);
+        const code = CHANNELS.formatIDName(msg.channel.id).toLowerCase(); // changed here
 
         // Access the entrant.
         const entrant = await Competition.loadEntrant(code, msg.author.id);
