@@ -405,7 +405,7 @@ export default class CompetitionHelper {
         const code = CHANNELS.formatIDName(msg.channel.id);
 
         // Access the entrant.
-        const entrant = await Competition.loadEntrant(code, msg.author);
+        const entrant = await Competition.loadEntrant(code, msg.author.id);
         if (!entrant) {
             // Make sure their unauthorized submission (message) will be removed.
             MESSAGES.ensureDeletion(msg);
