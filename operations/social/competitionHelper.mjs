@@ -404,7 +404,7 @@ export default class CompetitionHelper {
         if (USERS.isCooper(msg.author.id)) return false;
 
         // Calculate the intended competition for submission.
-        const code = CHANNELS.formatIDName(msg.channel.id).toLowerCase(); // changed here
+        const code = CHANNELS.idToCode(msg.channel.id).toLowerCase();
 
         console.log('comp code', code);
 
