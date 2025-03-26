@@ -398,14 +398,21 @@ export default class CompetitionHelper {
         // Check if it's a competition channel.
         if (!this.isCompChannel(msg.channel.id)) return false;
 
+        console.log('comp msg', msg);
+
         // Check it's not Cooper.
         if (USERS.isCooper(msg.author.id)) return false;
 
         // Calculate the intended competition for submission.
         const code = CHANNELS.formatIDName(msg.channel.id).toLowerCase(); // changed here
 
+        console.log('comp code', code);
+
         // Access the entrant.
         const entrant = await Competition.loadEntrant(code, msg.author.id);
+
+        console.log('comp entrant', entrant);
+
         if (!entrant) {
             // Make sure their unauthorized submission (message) will be removed.
             MESSAGES.ensureDeletion(msg);
