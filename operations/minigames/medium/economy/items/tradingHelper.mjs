@@ -184,7 +184,7 @@ export default class TradingHelper {
     static async findOfferMatches(offerItem) {
         const query = {
             name: "get-trades-by-offer",
-            text: `SELECT * FROM open_trades WHERE offer_item = $1`,
+            text: `SELECT * FROM open_trades WHERE offer_item = ?`,
             values: [offerItem]
         };
 
@@ -195,8 +195,8 @@ export default class TradingHelper {
     static async findEitherMatching(receiveItem) {
         const query = {
             name: "get-trades-by-offer",
-            text: `SELECT * FROM open_trades WHERE receive_item = $1 OR offer_item = $1`,
-            values: [receiveItem]
+            text: `SELECT * FROM open_trades WHERE receive_item = ? OR offer_item = ?`,
+            values: [receiveItem, receiveItem]
         };
 
         const result = await Database.query(query);
@@ -206,7 +206,7 @@ export default class TradingHelper {
     static async findOfferReceiveMatches(offerItem, receiveItem) {
         const query = {
             name: "get-trades-by-offer-receive",
-            text: `SELECT * FROM open_trades WHERE offer_item = $1 AND receive_item = $2`,
+            text: `SELECT * FROM open_trades WHERE offer_item = ? AND receive_item = ?`,
             values: [offerItem, receiveItem]
         };
 
@@ -218,7 +218,7 @@ export default class TradingHelper {
         const query = {
             name: "get-trades-by-offer-receive-qty",
             text: `SELECT * FROM open_trades 
-                WHERE offer_item = $1 AND receive_item = $2 AND offer_qty = $3 AND receive_qty <= $4`,
+                WHERE offer_item = ? AND receive_item = ? AND offer_qty = ? AND receive_qty <= ?`,
             values: [offerItem, receiveItem, offerQty, receiveQty]
         };
 
@@ -229,7 +229,7 @@ export default class TradingHelper {
     static async listMatch(offerItem, receiveItem) {
         const query = {
             name: "get-matches-of-type",
-            text: `SELECT * FROM open_trades WHERE offer_item = $1 and receive_item = $2`,
+            text: `SELECT * FROM open_trades WHERE offer_item = ? and receive_item = ?`,
             values: [offerItem, receiveItem]
         };
         

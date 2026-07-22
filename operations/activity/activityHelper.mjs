@@ -19,8 +19,8 @@ export default class ActivityHelper {
     static update(hour, activeNum) {
         return Database.query({
             name: 'update-hour-activity',
-            text: 'UPDATE activity_hours SET active_num = $2 WHERE hour = $1',
-            values: [hour, activeNum]
+            text: 'UPDATE activity_hours SET active_num = ? WHERE hour = ?',
+            values: [activeNum, hour]
         }); 
     }
 

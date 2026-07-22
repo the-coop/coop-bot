@@ -72,7 +72,7 @@ export const execute = async (interaction) => {
 	// Select all owners and their quantities of this item.
 	const itemOwnershipArr = await DatabaseHelper.manyQuery({
 		name: 'get-item-shares',
-		text: `SELECT quantity, owner_id FROM items WHERE item_code = $1`,
+		text: `SELECT quantity, owner_id FROM items WHERE item_code = ?`,
 		values: [itemCode]
 	});
 

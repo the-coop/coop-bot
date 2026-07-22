@@ -36,7 +36,7 @@ export default class BlogHelper {
                         author_username,
                         date
                     )
-                    VALUES($1, $2, $3, $4, $5, $6)`,
+                    VALUES(?, ?, ?, ?, ?, ?)`,
                 values: [
                     title, slug,
                     content, authorID, author.username,
@@ -55,7 +55,7 @@ export default class BlogHelper {
     static async loadDraft(draftID) {
         const draft = await DatabaseHelper.singleQuery({
             name: "load-draft",
-            text: `SELECT * FROM post_drafts WHERE id = $1`,
+            text: `SELECT * FROM post_drafts WHERE id = ?`,
             values: [draftID]
         });
         return draft;
@@ -71,7 +71,7 @@ export default class BlogHelper {
     static loadPostByID(id) {
         return DatabaseHelper.singleQuery({
             name: "load-post-id", 
-            text: `SELECT * FROM blog_posts WHERE id = $1`,
+            text: `SELECT * FROM blog_posts WHERE id = ?`,
             values: [id]
         });
     };
@@ -79,7 +79,7 @@ export default class BlogHelper {
     static async deleteDraft(draftID) {
         return Database.query({
             name: 'delete-draft',
-            text: 'DELETE FROM post_drafts WHERE id = $1',
+            text: 'DELETE FROM post_drafts WHERE id = ?',
             values: [draftID]
         })
     };
@@ -156,7 +156,7 @@ export default class BlogHelper {
                         channel_id, owner_id,
                         created, deadline
                     )
-                    VALUES($1, $2, $3, $4, $5, $6)`,
+                    VALUES(?, ?, ?, ?, ?, ?)`,
                 values: [
                     name, 'No description yet.',
                     channel.id, owner.id,
@@ -199,16 +199,16 @@ export default class BlogHelper {
         const slug = encodeURIComponent(title.replaceAll(' ', '-').toLowerCase());
         return await DatabaseHelper.singleQuery({
             name: "set-post-title",
-            text: 'UPDATE posts SET title = $2, slug = $3 WHERE channel_id = $1',
-            values: [channelID, title, slug]
+            text: 'UPDATE posts SET title = ?, slug = ? WHERE channel_id = ?',
+            values: [title, slug, channelID]
         });
     };
 
     static async setDescription(channelID, description) {
         return await DatabaseHelper.singleQuery({
             name: "set-post-description",
-            text: 'UPDATE posts SET description = $2 WHERE channel_id = $1',
-            values: [channelID, description]
+            text: 'UPDATE posts SET description = ? WHERE channel_id = ?',
+            values: [description, channelID]
         });
     };
 };

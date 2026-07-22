@@ -60,7 +60,7 @@ export default class ProjectsHelper {
                         channel_id, owner_id,
                         created, deadline
                     )
-                    VALUES($1, $2, $3, $4, $5, $6, $7)`,
+                    VALUES(?, ?, ?, ?, ?, ?, ?)`,
                 values: [
                     name, 'No description yet.', slug,
                     channel.id, owner.id,
@@ -83,16 +83,16 @@ export default class ProjectsHelper {
         const slug = encodeURIComponent(title.replaceAll(' ', '-').toLowerCase());
         return await DatabaseHelper.singleQuery({
             name: "set-project-title",
-            text: 'UPDATE projects SET title = $2, slug = $3 WHERE channel_id = $1',
-            values: [channelID, title, slug]
+            text: 'UPDATE projects SET title = ?, slug = ? WHERE channel_id = ?',
+            values: [title, slug, channelID]
         });
     }
 
     static async setDescription(channelID, description) {
         return await DatabaseHelper.singleQuery({
             name: "set-project-description",
-            text: 'UPDATE projects SET description = $2 WHERE channel_id = $1',
-            values: [channelID, description]
+            text: 'UPDATE projects SET description = ? WHERE channel_id = ?',
+            values: [description, channelID]
         });
     }
 

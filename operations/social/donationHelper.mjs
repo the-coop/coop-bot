@@ -36,7 +36,7 @@ export default class DonationHelper {
 
                 // Set the acknowledgement to true in database so not rewarded duplicate times.
                 await Database.query({
-                    text: 'UPDATE donations SET acknowledged = true WHERE id = $1',
+                    text: 'UPDATE donations SET acknowledged = true WHERE id = ?',
                     values: [d.id]
                 });
             }

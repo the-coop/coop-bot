@@ -8,7 +8,7 @@ export default class EventsHelper {
     static async read(eventCode) {
         const query = {
             name: "get-event",
-            text: "SELECT * FROM events WHERE event_code = $1",
+            text: "SELECT * FROM events WHERE event_code = ?",
             values: [eventCode]
         };
         const response = await db._sq(query);
@@ -18,44 +18,46 @@ export default class EventsHelper {
     static async setLink(code, link) {
         return await db.singleQuery({
             name: "set-event-message",
-            text: 'UPDATE events SET message_link = $2 WHERE event_code = $1',
-            values: [code, link]
+            text: 'UPDATE events SET message_link = ? WHERE event_code = ?',
+            values: [link, code]
         });
     };
 
     static async setActive(code, active) {
-        return (await db._sq({
+        // MySQL has no RETURNING: apply the update, then read the value back.
+        await db._sq({
             name: "set-event-status",
-            text: 'UPDATE events SET active = $2 WHERE event_code = $1 RETURNING active',
-            values: [code, !!active]
-        }))?.active;
+            text: 'UPDATE events SET active = ? WHERE event_code = ?',
+            values: [!!active, code]
+        });
+        return (await this.read(code))?.active;
     };
 
     static async setOrganiser(code, organiser) {
         return await db._sq({
             name: "set-event-organiser",
-            text: 'UPDATE events SET organiser = $2 WHERE event_code = $1',
-            values: [code, organiser]
+            text: 'UPDATE events SET organiser = ? WHERE event_code = ?',
+            values: [organiser, code]
         });
     };
 
     static async create(eventCode) {
         const query = {
             name: "create-recurring-event",
-            text: "INSERT INTO events (event_code, last_occurred) VALUES ($1, $2)",
+            text: "INSERT INTO events (event_code, last_occurred) VALUES (?, ?)",
             values: [eventCode, Date.now()]
         };
         return await db._sq(query);
     };
     
     static async update(eventCode, time) {
-        const query = {
+        // MySQL has no RETURNING: apply the update, then read the row back.
+        await db._sq({
             name: "update-event",
-            text: 'UPDATE events SET last_occurred = $1 WHERE event_code = $2 RETURNING event_code, last_occurred',
+            text: 'UPDATE events SET last_occurred = ? WHERE event_code = ?',
             values: [time, eventCode]
-        };
-        const response = await db._sq(query);
-        return response;
+        });
+        return await this.read(eventCode);
     };
 
     static msToReadableHours(ms) {

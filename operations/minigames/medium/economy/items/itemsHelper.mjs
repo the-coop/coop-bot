@@ -38,7 +38,7 @@ export default class ItemsHelper {
     static async getTransactionsSince(secs) {
         const since = TIME._secs() - secs;
         const query = {
-            text: `SELECT * FROM item_qty_change_history WHERE occurred_secs > $1`,
+            text: `SELECT * FROM item_qty_change_history WHERE occurred_secs > ?`,
             values: [since]
         };  
         const result = await DatabaseHelper.manyQuery(query);
@@ -48,7 +48,7 @@ export default class ItemsHelper {
     static async getTransactions(limit = 100) {
         const query = {
             name: "transactions",
-            text: `SELECT * FROM item_qty_change_history LIMIT $1`,
+            text: `SELECT * FROM item_qty_change_history LIMIT ?`,
             values: [limit]
         };  
 
@@ -59,7 +59,7 @@ export default class ItemsHelper {
     static async getAllItemOwners(itemCode) {
         const query = {
             name: "get-all-user-items",
-            text: `SELECT * FROM "items" WHERE item_code = $1 ORDER BY quantity DESC`,
+            text: `SELECT * FROM items WHERE item_code = ? ORDER BY quantity DESC`,
             values: [itemCode]
         };
 
@@ -69,7 +69,7 @@ export default class ItemsHelper {
     static async getUserItems(userID) {
         const query = {
             name: "get-all-user-items",
-            text: `SELECT * FROM "items" WHERE owner_id = $1 ORDER BY quantity DESC`,
+            text: `SELECT * FROM items WHERE owner_id = ? ORDER BY quantity DESC`,
             values: [userID]
         };
 
@@ -91,7 +91,7 @@ export default class ItemsHelper {
     static async read(userID, itemCode) {
         const query = {
             name: "read-item",
-            text: "SELECT * FROM items WHERE owner_id = $1 AND item_code = $2",
+            text: "SELECT * FROM items WHERE owner_id = ? AND item_code = ?",
             values: [userID, itemCode]
         };
         return await Database.query(query);
@@ -100,9 +100,9 @@ export default class ItemsHelper {
     static async update(userID, itemCode, quantity) {
         const query = {
             name: "update-item",
-            text: `UPDATE items SET quantity = $3 
-                WHERE owner_id = $1 AND item_code = $2`,
-            values: [userID, itemCode, quantity]
+            text: `UPDATE items SET quantity = ?
+                WHERE owner_id = ? AND item_code = ?`,
+            values: [quantity, userID, itemCode]
         };
         return await Database.query(query);
     };
@@ -135,7 +135,7 @@ export default class ItemsHelper {
     static async getUserWithItem(itemCode) {
         const query = {
             name: "get-user-with-item",
-            text: `SELECT * FROM items WHERE quantity > 0 AND item_code = $1`,
+            text: `SELECT * FROM items WHERE quantity > 0 AND item_code = ?`,
             values: [itemCode]
         };
         const result = await Database.query(query);
@@ -145,7 +145,7 @@ export default class ItemsHelper {
     static async getUsersWithItem(itemCode) {
         const query = {
             name: "get-users-with-item",
-            text: `SELECT * FROM items WHERE quantity > 0 AND item_code = $1`,
+            text: `SELECT * FROM items WHERE quantity > 0 AND item_code = ?`,
             values: [itemCode]
         };
         const result = await Database.query(query);
@@ -202,7 +202,7 @@ export default class ItemsHelper {
         const query = {
             name: "get-user-owned-total",
             text: `SELECT owner_id, SUM(quantity) as total FROM items
-                WHERE owner_id = $1
+                WHERE owner_id = ?
                 GROUP BY owner_id ORDER BY total DESC LIMIT 1`,
             values: [id]
         };

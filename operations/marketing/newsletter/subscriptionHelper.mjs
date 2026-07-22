@@ -122,8 +122,8 @@ export default class SubscriptionHelper {
         let result = false;
         const query = {
             name: "upgrade-anon-subscription",
-            text: 'UPDATE propaganda_subscriptions SET owner_id = $2 WHERE id = $1',
-            values: [subscriptionID, userID]
+            text: 'UPDATE propaganda_subscriptions SET owner_id = ? WHERE id = ?',
+            values: [userID, subscriptionID]
         };
         const response = await Database.query(query);
         if (typeof response.rowCount !== 'undefined') {
@@ -136,7 +136,7 @@ export default class SubscriptionHelper {
     static unsubscribeByOwner(userID) {
         return Database.query({
             name: 'unsubscribe-by-owner',
-            text: `DELETE FROM propaganda_subscriptions WHERE owner_id = $1`,
+            text: `DELETE FROM propaganda_subscriptions WHERE owner_id = ?`,
             values: [userID]
         });
     }

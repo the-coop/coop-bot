@@ -30,7 +30,7 @@ export default class ElectionHelper {
         const query = {
             name: "add-vote",
             text: `INSERT INTO election_votes(candidate_id, voter_id, time)
-                VALUES($1, $2, $3)`,
+                VALUES(?, ?, ?)`,
             values: [candidateID, userID, (parseInt(Date.now() / 1000))]
         };
         
@@ -532,7 +532,7 @@ export default class ElectionHelper {
     static async getVoteByVoterID(voterID) {
         const query = {
             name: "get-voter",
-            text: `SELECT * FROM election_votes WHERE voter_id = $1`,
+            text: `SELECT * FROM election_votes WHERE voter_id = ?`,
             values: [voterID]
         };
         
@@ -631,7 +631,7 @@ export default class ElectionHelper {
     static async getCandByMsgLink(msgLink) {
         const query = {
             name: "get-candidate-by-msg",
-            text: `SELECT * FROM candidates WHERE campaign_msg_link = $1`,
+            text: `SELECT * FROM candidates WHERE campaign_msg_link = ?`,
             values: [msgLink]
         };
 
@@ -689,7 +689,7 @@ export default class ElectionHelper {
     static async getCandidate(userID) {
         const query = {
             name: "get-candidate",
-            text: `SELECT * FROM candidates WHERE candidate_id = $1`,
+            text: `SELECT * FROM candidates WHERE candidate_id = ?`,
             values: [userID]
         };
         
@@ -711,7 +711,7 @@ export default class ElectionHelper {
         const query = {
             name: "add-candidate",
             text: `INSERT INTO candidates(campaign_msg_link, candidate_id)
-                VALUES($1, $2)`,
+                VALUES(?, ?)`,
             values: [msgLink, userID]
         };
         
@@ -837,7 +837,7 @@ export default class ElectionHelper {
 
     static removeIDFromTrackedHierarchy(userID) {
         return Database.query({ 
-            text: "DELETE FROM hierarchy WHERE discord_id = $1",
+            text: "DELETE FROM hierarchy WHERE discord_id = ?",
             values: [userID] 
         })
     };
@@ -845,7 +845,7 @@ export default class ElectionHelper {
     static trackHierarchicalEntity(userID, username, avatar, type) {
         const image = USERS.avatar({ id: userID, avatar });
         return Database.query({ 
-            text: "INSERT INTO hierarchy(discord_id, username, image, type) VALUES ($1, $2, $3, $4)",
+            text: "INSERT INTO hierarchy(discord_id, username, image, type) VALUES (?, ?, ?, ?)",
             values: [userID, username, image, type]
         });
     };

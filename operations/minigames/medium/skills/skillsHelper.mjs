@@ -25,7 +25,7 @@ export default class SkillsHelper {
 
         const query = {
             name: `get-user-${skill}-xp`,
-            text: `SELECT ${skill.toLowerCase()} FROM "skills" WHERE player_id = $1`,
+            text: `SELECT ${skill.toLowerCase()} FROM skills WHERE player_id = ?`,
             values: [playerID]
         };
 
@@ -72,7 +72,7 @@ export default class SkillsHelper {
     static async getAllSkills(playerID) {
         const query = {
             name: `get-user-skills`,
-            text: `SELECT * FROM "skills" WHERE player_id = $1`,
+            text: `SELECT * FROM skills WHERE player_id = ?`,
             values: [playerID]
         };
 
@@ -104,16 +104,18 @@ export default class SkillsHelper {
         const query = {
             name: `add-player-${skill}-xp`,
             text: `INSERT INTO skills(player_id, ${skill})
-                VALUES($1, $2)
-                ON CONFLICT (player_id) DO UPDATE SET ${skill} = EXCLUDED.${skill} + COALESCE(skills.${skill}, 0)
-                RETURNING ${skill}`,
+                VALUES(?, ?)
+                ON DUPLICATE KEY UPDATE ${skill} = COALESCE(${skill}, 0) + VALUES(${skill})`,
             values: [userID, xpNum]
         };
-        const result = await DatabaseHelper.singleQuery(query);
+        await Database.query(query);
+
+        // MySQL has no RETURNING: read the resulting xp back.
+        const currXP = await this.getXP(skill, userID);
+        const result = { [skill]: currXP };
 
         // Calculate and intercept level ups here.
-        const prevXP = result[skill] - xpNum;
-        const currXP = result[skill];
+        const prevXP = currXP - xpNum;
 
         const prevLevel = this.calcLvl(prevXP);
         const currLevel = this.calcLvl(currXP);
@@ -149,8 +151,7 @@ export default class SkillsHelper {
             text: `SELECT player_id, (${summingQueryFmt.join(' + ')}) AS total_xp
                 FROM skills 
                 ORDER BY total_xp DESC
-                OFFSET $1
-                LIMIT 15
+                LIMIT 15 OFFSET ?
             `.trim(),
             values: [pos]
         });
@@ -163,8 +164,7 @@ export default class SkillsHelper {
                 SELECT player_id, ${skill}
                 FROM skills 
                 ORDER BY ${skill} DESC
-                OFFSET $1
-                LIMIT 15
+                LIMIT 15 OFFSET ?
             `.trim(),
             values: [pos]
         });

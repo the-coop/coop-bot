@@ -45,7 +45,7 @@ export default class AdvertsHelper {
         try {
             const query = {
                 name: "create-advert",
-                text: `INSERT INTO adverts(owner_id, target_url, image_url) VALUES($1, $2, $3)`,
+                text: `INSERT INTO adverts(owner_id, target_url, image_url) VALUES(?, ?, ?)`,
                 values: [ownerID, targetURL, imageURL]
             };
             

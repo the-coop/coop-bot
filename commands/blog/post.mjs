@@ -161,7 +161,7 @@ const preview = async interaction => {
 
 	await Database.query({
 		name: "update-draft-content",
-		text: `UPDATE post_drafts SET content = $1 WHERE channel_id = $2`,
+		text: `UPDATE post_drafts SET content = ? WHERE channel_id = ?`,
 		values: [content, draft.channel_id]
 	});
 
@@ -183,7 +183,7 @@ const preview = async interaction => {
 
 // 	await Database.query({
 // 		name: "update-draft-content",
-// 		text: `UPDATE post_drafts SET content = $1 WHERE channel_id = $2`,
+// 		text: `UPDATE post_drafts SET content = ? WHERE channel_id = ?`,
 // 		values: [content, draft.channel_id]
 // 	});
 

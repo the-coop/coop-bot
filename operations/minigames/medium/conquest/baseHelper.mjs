@@ -19,7 +19,7 @@ export default class BaseHelper {
     static async get(faceID) {
         const query = {
             name: "get-specific-base",
-            text: `SELECT * FROM bases WHERE face_id = $1
+            text: `SELECT * FROM bases WHERE face_id = ?
                 INNER JOIN users 
                 ON bases.owner_id = discord_id`,
             values: [faceID]
@@ -32,7 +32,7 @@ export default class BaseHelper {
         const query = {
             name: "add-specific-base",
             text: `INSERT INTO bases (face_id, owner_id, created_at)
-                VALUES($1, $2, $3)`,
+                VALUES(?, ?, ?)`,
             values: [faceID, userID, TIME._secs()]
         };
         const result = await Database.query(query);

@@ -6,21 +6,21 @@ export default class CompetitionModel {
 
     static setEntryMsg(entryID, messageID) {
         return db.singleQuery({
-            text: 'UPDATE competition_entries SET entry_msg_id = $2 WHERE id = $1',
-            values: [entryID, messageID]
+            text: 'UPDATE competition_entries SET entry_msg_id = ? WHERE id = ?',
+            values: [messageID, entryID]
         });
     };
 
     static clearEntrants(code) {
         return db.singleQuery({
-            text: 'DELETE FROM competition_entries WHERE competition = $1',
+            text: 'DELETE FROM competition_entries WHERE competition = ?',
             values: [code]
         });
     };
 
     static async unsetEntryByMessageID(messageID) {
         return db.singleQuery({
-            text: 'UPDATE competition_entries SET entry_msg_id = NULL WHERE entry_msg_id = $1',
+            text: 'UPDATE competition_entries SET entry_msg_id = NULL WHERE entry_msg_id = ?',
             values: [messageID]
         });
     };
@@ -28,7 +28,7 @@ export default class CompetitionModel {
     static getAll() {
         return db.manyQuery({
             name: "load-all-competition",
-            text: `SELECT * FROM events WHERE event_code IN ($1, $2, $3)`,
+            text: `SELECT * FROM events WHERE event_code IN (?, ?, ?)`,
             values: Object.keys(COMPETITION_ROLES).map(kc => kc.toLowerCase())
         });
     };
@@ -36,7 +36,7 @@ export default class CompetitionModel {
     static async get(code) {
         const competitions = await db.singleQuery({
             name: "load-competition",
-            text: `SELECT * FROM events WHERE event_code = $1`,
+            text: `SELECT * FROM events WHERE event_code = ?`,
             values: [code]
         });
         return competitions;
@@ -54,7 +54,7 @@ export default class CompetitionModel {
     static saveEntrant(code, userID) {
         return db.singleQuery({
             name: 'add-competition-entrant',
-            text: 'INSERT INTO competition_entries (entrant_id, competition) VALUES ($1, $2)',
+            text: 'INSERT INTO competition_entries (entrant_id, competition) VALUES (?, ?)',
             values: [userID, code]
         });
     };
@@ -62,7 +62,7 @@ export default class CompetitionModel {
     static loadEntrant(code, userID) {
         return db.singleQuery({
             name: 'load-competition-entrant',
-            text: 'SELECT * FROM competition_entries WHERE entrant_id = $1 AND competition = $2',
+            text: 'SELECT * FROM competition_entries WHERE entrant_id = ? AND competition = ?',
             values: [userID, code]
         });
     };
@@ -70,7 +70,7 @@ export default class CompetitionModel {
     static loadEntrants(code) {
         return db.manyQuery({
             name: 'load-competition-entrants',
-            text: 'SELECT * FROM competition_entries WHERE competition = $1',
+            text: 'SELECT * FROM competition_entries WHERE competition = ?',
             values: [code]
         });
     };
@@ -78,16 +78,16 @@ export default class CompetitionModel {
     static async setTitle(code, title) {
         return await db.singleQuery({
             name: "set-competition-title",
-            text: 'UPDATE events SET title = $2 WHERE event_code = $1',
-            values: [code, title]
+            text: 'UPDATE events SET title = ? WHERE event_code = ?',
+            values: [title, code]
         });
     };
 
     static async setDescription(code, description) {
         return await db.singleQuery({
             name: "set-competition-description",
-            text: 'UPDATE events SET description = $2 WHERE event_code = $1',
-            values: [code, description]
+            text: 'UPDATE events SET description = ? WHERE event_code = ?',
+            values: [description, code]
         });
     };
     

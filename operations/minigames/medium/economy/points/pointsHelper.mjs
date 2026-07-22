@@ -23,8 +23,7 @@ export default class PointsHelper {
                     ON items.owner_id = discord_id
                 WHERE item_code = 'COOP_POINT'
                 ORDER BY quantity DESC
-                OFFSET $1
-                LIMIT 15
+                LIMIT 15 OFFSET ?
             `.trim(),
             values: [pos]
         };
@@ -55,10 +54,9 @@ export default class PointsHelper {
             text: `
                 SELECT quantity, owner_id 
                 FROM items
-                WHERE item_code = "COOP_POINT"
+                WHERE item_code = 'COOP_POINT'
                 ORDER BY quantity ASC
-                OFFSET $1
-                LIMIT 15
+                LIMIT 15 OFFSET ?
             `.trim(),
             values: [pos]
         };

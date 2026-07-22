@@ -119,7 +119,7 @@ export default class UsersHelper {
         console.log('Member removed', member.user.username, member.user.id);
         const query = {
             name: "remove-user",
-            text: "DELETE FROM users WHERE discord_id = $1",
+            text: "DELETE FROM users WHERE discord_id = ?",
             values: [member.user.id]
         };
         return await Database.query(query);
@@ -128,7 +128,7 @@ export default class UsersHelper {
     static async addToDatabase(userID, username, joindate, intro_time = null, intro_link = null, intro_content = null) {
         const query = {
             name: "add-user",
-            text: "INSERT INTO users(discord_id, username, join_date, intro_time, intro_link, intro_content) VALUES ($1, $2, $3, $4, $5, $6)",
+            text: "INSERT INTO users(discord_id, username, join_date, intro_time, intro_link, intro_content) VALUES (?, ?, ?, ?, ?, ?)",
             values: [userID, username, joindate, intro_time, intro_link, intro_content]
         };
         return await Database.query(query);
@@ -137,7 +137,7 @@ export default class UsersHelper {
     static async setIntro(userID, introContent, link, time) {
         const query = {
             name: "set-user-intro",
-            text: 'UPDATE users SET intro_time = $1, intro_link = $2, intro_content = $3 WHERE discord_id = $4 RETURNING intro_link, intro_time',
+            text: 'UPDATE users SET intro_time = ?, intro_link = ?, intro_content = ? WHERE discord_id = ?',
             values: [time, link, introContent, userID],
         };
         return await Database.query(query);
@@ -156,12 +156,11 @@ export default class UsersHelper {
         const query = {
             name: 'get-users-sorted-historical-points',
             text: `
-                SELECT * FROM users 
+                SELECT * FROM users
                 ORDER BY historical_points DESC
-                OFFSET $1
-                LIMIT $2
+                LIMIT ? OFFSET ?
             `.trim(),
-            values: [offset, limit]
+            values: [limit, offset]
         };
 
         const result = await Database.query(query);
@@ -172,7 +171,7 @@ export default class UsersHelper {
 
     static async updateField(id, field, value) {
         const query = {
-            text: `UPDATE users SET ${field} = $1 WHERE discord_id = $2`,
+            text: `UPDATE users SET ${field} = ? WHERE discord_id = ?`,
             values: [value, id]
         };
         return await Database.query(query);
@@ -181,7 +180,7 @@ export default class UsersHelper {
     static async getField(id, field) {
         try {
             const query = {
-                text: `SELECT ${field} FROM users WHERE discord_id = $1`,
+                text: `SELECT ${field} FROM users WHERE discord_id = ?`,
                 values: [id]
             };
     
@@ -205,7 +204,7 @@ export default class UsersHelper {
     static async loadSingle(id) {
         const query = {
             name: "get-user",
-            text: "SELECT * FROM users WHERE discord_id = $1",
+            text: "SELECT * FROM users WHERE discord_id = ?",
             values: [id]
         };
 
@@ -227,7 +226,7 @@ export default class UsersHelper {
     static async _random() {
         const query = {
             name: "get-random-user",
-            text: "SELECT * FROM users LIMIT 1 OFFSET floor(random() * (SELECT count(*) from users))"
+            text: "SELECT * FROM users ORDER BY RAND() LIMIT 1"
         };
         const result = DatabaseHelper.single(await Database.query(query));
         return result;
@@ -244,7 +243,7 @@ export default class UsersHelper {
     static async getIntro(member) {
         const query = {
             name: "get-user-intro",
-            text: "SELECT intro_link, intro_time FROM users WHERE discord_id = $1",
+            text: "SELECT intro_link, intro_time FROM users WHERE discord_id = ?",
             values: [member.user.id]
         };
         
@@ -437,7 +436,7 @@ export default class UsersHelper {
     static async getUserLastClaim(userID) {
         const query = {
             name: "get-user-last-claim",
-            text: "SELECT last_claim FROM users WHERE discord_id = $1",
+            text: "SELECT last_claim FROM users WHERE discord_id = ?",
             values: [userID]
         };
         
@@ -450,8 +449,8 @@ export default class UsersHelper {
         const latest = new Date();
         const query = {
             name: "set-user-last-claim",
-            text: "UPDATE users SET last_claim = $2 WHERE discord_id = $1",
-            values: [userID, latest]
+            text: "UPDATE users SET last_claim = ? WHERE discord_id = ?",
+            values: [latest, userID]
         };
         
         const result = await Database.query(query);

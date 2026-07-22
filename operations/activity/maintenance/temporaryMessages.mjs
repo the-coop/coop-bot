@@ -20,11 +20,8 @@ export default class TemporaryMessages {
 
         const query = {
             name: "add-temp-message",
-            text: `INSERT INTO temp_messages(message_link, expiry_time, note) VALUES ($1, $2, $3)
-                ON CONFLICT (message_link)
-                DO 
-                UPDATE SET expiry_time = LEAST(temp_messages.expiry_time, EXCLUDED.expiry_time)
-                RETURNING expiry_time`,
+            text: `INSERT INTO temp_messages(message_link, expiry_time, note) VALUES (?, ?, ?)
+                ON DUPLICATE KEY UPDATE expiry_time = LEAST(expiry_time, VALUES(expiry_time))`,
             values: [messageLink, expiry, note]
         };
 
@@ -35,7 +32,7 @@ export default class TemporaryMessages {
     static async unregisterTempMsgByLink(link) {
         const query = {
             name: "delete-temp-message-link",
-            text: `DELETE FROM temp_messages WHERE message_link = $1`,
+            text: `DELETE FROM temp_messages WHERE message_link = ?`,
             values: [link]
         };
         
@@ -60,7 +57,7 @@ export default class TemporaryMessages {
     static async getType(type) {
         const query = {
             name: "get-temp-messages-by-type",
-            text: `SELECT * FROM temp_messages WHERE note = $1`,
+            text: `SELECT * FROM temp_messages WHERE note = ?`,
             values: [type]
         };
         
@@ -71,8 +68,8 @@ export default class TemporaryMessages {
     static async getExpiredTempMessages() {
         const query = {
             name: "get-temp-messages-expired",
-            text: `SELECT * FROM temp_messages 
-                WHERE expiry_time <= extract(epoch from now())
+            text: `SELECT * FROM temp_messages
+                WHERE expiry_time <= UNIX_TIMESTAMP()
                 ORDER BY expiry_time ASC
                 LIMIT 40`
         };
@@ -85,7 +82,7 @@ export default class TemporaryMessages {
     static async getTempMessageByLink(link) {
         const query = {
             name: "get-temp-message",
-            text: `SELECT * FROM temp_messages WHERE message_link = $1`,
+            text: `SELECT * FROM temp_messages WHERE message_link = ?`,
             values: [link]
         };
         

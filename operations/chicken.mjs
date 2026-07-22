@@ -20,7 +20,7 @@ export default class Chicken {
         try {
             const query = {
                 name: "get-chicken-config",
-                text: `SELECT * FROM chicken WHERE attribute = $1`,
+                text: `SELECT * FROM chicken WHERE attribute = ?`,
                 values: [key]
             };
             const result = await Database.query(query);
@@ -48,11 +48,8 @@ export default class Chicken {
         const query = {
             name: "set-chicken-config",
             text: `INSERT INTO chicken(attribute, value)
-                VALUES($1, $2) 
-                ON CONFLICT (attribute)
-                DO 
-                UPDATE SET value = $2
-                RETURNING value`,
+                VALUES(?, ?)
+                ON DUPLICATE KEY UPDATE value = VALUES(value)`,
             values: [key, value]
         };
         const result = await Database.query(query);
