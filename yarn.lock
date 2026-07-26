@@ -201,9 +201,9 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
-"coop-shared@git+https://github.com/the-coop/coop-shared.git#144d59c70154d1dfa76190205bfe1f125cf5fdf8":
+"coop-shared@git+https://github.com/the-coop/coop-shared.git#0026d587b4422f244eb331ee16f7e6363c130086":
   version "1.0.26"
-  resolved "git+https://github.com/the-coop/coop-shared.git#144d59c70154d1dfa76190205bfe1f125cf5fdf8"
+  resolved "git+https://github.com/the-coop/coop-shared.git#0026d587b4422f244eb331ee16f7e6363c130086"
   dependencies:
     chance "^1.1.8"
     jsonwebtoken "^8.5.1"

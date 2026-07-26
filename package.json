@@ -15,7 +15,7 @@
   "dependencies": {
     "algosdk": "latest",
     "chance": "latest",
-    "coop-shared": "git+https://github.com/the-coop/coop-shared.git#144d59c70154d1dfa76190205bfe1f125cf5fdf8",
+    "coop-shared": "git+https://github.com/the-coop/coop-shared.git#0026d587b4422f244eb331ee16f7e6363c130086",
     "discord.js": "latest",
     "dotenv": "^16.0.3",
     "jsonwebtoken": "^8.5.1",
