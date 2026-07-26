@@ -12,8 +12,7 @@ import { Button } from '../activity/messages/interactionHelper.mjs';
 
 export const COMPETITION_ROLES = {
     TECHNOLOGY_COMPETITION: 'TECH',
-    ART_COMPETITION: 'ART',
-    BUSINESS_COMPETITION: 'MONEY'
+    ART_COMPETITION: 'ART'
 };
 
 const EMPTY_COMPETITION_TEXT = 'Competition ready to be setup and launched.';
@@ -473,8 +472,8 @@ export default class CompetitionHelper {
 
     // Check if ID is a competition channel ID.
     static isCompChannel(id) {
-        const { TECHNOLOGY_COMPETITION, ART_COMPETITION, BUSINESS_COMPETITION } = CHANNELS_CONFIG;
-        return [TECHNOLOGY_COMPETITION, ART_COMPETITION, BUSINESS_COMPETITION]
+        const { TECHNOLOGY_COMPETITION, ART_COMPETITION } = CHANNELS_CONFIG;
+        return [TECHNOLOGY_COMPETITION, ART_COMPETITION]
             .some(c => c.id === id);
     };
 

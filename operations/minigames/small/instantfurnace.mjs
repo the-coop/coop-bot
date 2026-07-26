@@ -74,7 +74,7 @@ export default class InstantFurnaceMinigame {
                 }).join(', ');
 
             // Create record in channel and in actions.
-            CHANNELS._codes(['TALK', 'ACTIONS'], smeltString);
+            CHANNELS._codes(['TALK'], smeltString);
 
         } catch(e) {
             console.log('Failure reacting to instant furnace');
@@ -112,7 +112,7 @@ export default class InstantFurnaceMinigame {
 
                 usersIDsAround.map(userID => Items.subtract(userID, 'COOP_POINT', 10, 'Volcano burn'));
 
-                CHANNELS.silentPropagate(msg, burnText, 'ACTIONS', 333, 10000);
+                // CHANNELS.silentPropagate(msg, burnText, 'ACTIONS', 333, 10000);
             }
 
         } catch(e) {

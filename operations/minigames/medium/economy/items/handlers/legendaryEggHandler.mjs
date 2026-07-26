@@ -42,7 +42,7 @@ export default class LegendaryEggHandler {
                     if (backFired) actionInfoText = `**${user.username} tried to use a legendary egg on ${author.username}, but it backfired.**`;
 
                     const feedbackMsgText = `${actionInfoText}: ${damageInfoText}.`;
-                    CHANNELS.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💜', false);
+                    // CHANNELS.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💜', false);
 
                     // Also notify feed channel due to the rarity of the egg.
                     CHANNELS._send('TALK', feedbackMsgText, 666);

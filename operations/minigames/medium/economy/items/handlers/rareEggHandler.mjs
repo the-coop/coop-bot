@@ -35,16 +35,13 @@ export default class RareEggHandler {
                 const feedbackMsgText = `${actionInfoText}: ${damageInfoText}.`;
 
                 // Send feedback and emojis.
-                COOP.CHANNELS.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💙', false);
+                // COOP.CHANNELS.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💙', false);
 
                 // Check if channel is spammable, if so don't self-destruct the notification.
                 if (COOP.CHANNELS.isChannelIDSpammable(reaction.message.channel.id)) {
                     reaction.message.channel.send(feedbackMsgText);
                 } else
                     COOP.MESSAGES.selfDestruct(reaction.message, feedbackMsgText, 333, 30000);
-
-                // Send the record message separately.
-                COOP.CHANNELS._send('ACTIONS', feedbackMsgText, {});
 
                 // Remove the egg based on popularity.
                 const popularity = REACTIONS.countType(reaction.message, '💙');

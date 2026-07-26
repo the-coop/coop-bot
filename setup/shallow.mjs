@@ -4,7 +4,7 @@ dotenv.config();
 import { GatewayIntentBits, Client } from 'discord.js';
 import Database from 'coop-shared/setup/database.mjs';
 
-import { STATE, USERS } from '../coop.mjs';
+import { STATE, USERS, SERVER } from '../coop.mjs';
 
 import AlgoHelper from '../operations/minigames/medium/economy/blockchain/AlgoHelper.mjs';
 import algosdk from 'algosdk';
@@ -41,7 +41,7 @@ const shallowBot = async () => {
         });
     
         // Connect to Postgres database.
-        await Database.connect();
+        // await Database.connect();
 
         // Login, then wait for the bot to be fully online before testing.
         await STATE.CLIENT.login(process.env.DISCORD_TOKEN);
@@ -57,6 +57,8 @@ const shallowBot = async () => {
             console.log('Shallow bot is ready');
     
             // FoxHuntMinigame.run();
+
+            SERVER.checkMissingChannels();
 
 
             // const test = USERS._get('1328056970111881217');

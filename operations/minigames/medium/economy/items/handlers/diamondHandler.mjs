@@ -29,7 +29,7 @@ export default class DiamondHandler {
                         if (reaction.count > 1) doubledInfo = `(x${reaction.count})`;
                         const subjectsInvolved = `${user.username} used a diamond on ${messageAuthor.username}'s message.`;
                         const changesOccurred = `+${reward}${doubledInfo} points (${updatedPoints}).`;
-                        COOP.CHANNELS.propagate(reaction.message, `${subjectsInvolved}: ${changesOccurred}`, 'ACTIONS');
+                        // COOP.CHANNELS.propagate(reaction.message, `${subjectsInvolved}: ${changesOccurred}`, 'ACTIONS');
 
                         // Send a link to the user DM.
                         const msgLink = COOP.MESSAGES.link(reaction.message);

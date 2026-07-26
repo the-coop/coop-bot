@@ -38,10 +38,6 @@ export default class Statistics {
 
         // If community velocity is higher than record, reward community
         // A rare crate, bonus eggs, etc.
-
-        const roundedVel = await ITEMS.displayQty(await this.calcCommunityVelocity());
-        const velocityText = `Community velocity is ${roundedVel}.`
-        COOP.CHANNELS._tempSend('ACTIONS', velocityText, 0, 60000);
     };
 
 };

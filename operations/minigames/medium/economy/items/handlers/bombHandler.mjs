@@ -48,10 +48,6 @@ export default class BombHandler {
                         const changesOccurred = `${damage}${doubledInfo} points (${ITEMS.displayQty(updatedPoints)}).`;
                         const feedbackText = `${subjectsInvolved}: ${changesOccurred}`;
 
-                        // TODO: After one of these hits... should remove all reactions etc.
-
-                        // Propagate without pinging.   
-                        COOP.CHANNELS.silentPropagate(msg, feedbackText, 'ACTIONS');
                     }, 5000);
                 }
             } catch(e) {

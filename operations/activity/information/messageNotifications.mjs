@@ -122,9 +122,6 @@ export default class MessageNotifications {
                     // All outstanding state accounted for, cleanup.
                     this.clear(channelID);
                 });
-    
-                // Spam leaders with it - their problem.
-                CHANNELS._send('ACTIONS', notificationString);
             }
         } catch(e) {
             console.log('Error posting latest messages.');

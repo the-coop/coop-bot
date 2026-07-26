@@ -77,7 +77,7 @@ export default class MiningMinigame {
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
                 diamondsFound = 1;
                 const addDiamond = await Items.add(user.id, 'DIAMOND', diamondsFound, 'Mining rare event');
-                CHANNELS.propagate(message, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
+                // CHANNELS.propagate(message, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
             }
 
             // Extremely small probability of high value reward.

@@ -21,7 +21,6 @@ export default class ChristmasEggHandler {
         const feedbackText = `**${eggEmoji.repeat(2)} ${user.username} used their Christmas egg${optTarget}!**\n\n` +
             `They gained ${reward}x${coopEmoji} (25% of the average CP per beak (${rewardBase}))!`;
 
-        COOP.CHANNELS.silentPropagate(msgRef, feedbackText, 'ACTIONS');
     }
 
     static async use(msgRef, user) {       

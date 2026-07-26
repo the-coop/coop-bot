@@ -20,7 +20,7 @@ export default class LaxativeHandler {
         const feedbackText = `${user.username} used laxative and ${succeeded ? 'successfully' : 'potentially'} triggered egg drops!`;
 
         // Create record
-        COOP.CHANNELS._send('ACTIONS', feedbackText);
+        // COOP.CHANNELS._send('ACTIONS', feedbackText);
 
         // Reply to interaction
         return await interaction.reply({ content: feedbackText, ephemeral: true });

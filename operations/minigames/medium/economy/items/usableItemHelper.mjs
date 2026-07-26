@@ -166,9 +166,6 @@ export default class UsableItemHelper {
             const emojiText = MESSAGES.emojiText(emojiID);
             const displayItemCode = ITEMS.escCode(itemCode);
 
-            // TODO: Replace this so if the channel is spammable it remains as a message.
-            const actionText = `${user.username} picked up ${displayItemCode} ${emojiText} and now has ${addEvent}.`;
-            CHANNELS.propagate(reaction.message, actionText, 'ACTIONS', false);
         } catch(e) {
 			console.log('Error with pickup handler.');
 			console.error(e);

@@ -266,7 +266,7 @@ export default class ElectionHelper {
         
         // Post an update if chosen.
         if (postUpdate)
-            CHANNELS._codes(['TALK', 'ACTIONS'], electionProgressText);
+            CHANNELS._codes(['TALK'], electionProgressText);
     };
 
     static async endElection() {

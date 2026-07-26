@@ -372,9 +372,7 @@ export default class UsersHelper {
     static async register(id, username, joinedTimestamp) {
         // Insert and respond to successful/failed insertion.
         const dbRes = await this.addToDatabase(id, username, joinedTimestamp);
-        if (dbRes.rowCount === 1)
-            CHANNELS._send('ACTIONS',`${username} is officially recognised by The Coop ${MESSAGES.emojiCodeText('COOP')}!`);
-        else
+        if (dbRes.rowCount !== 1)
             CHANNELS._send('TALK',`<@${id}> failed to be recognised by The Coop ${MESSAGES.emojiCodeText('COOP')}...?`);
     };
 

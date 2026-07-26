@@ -204,7 +204,7 @@ export default class CratedropMinigame {
             msg.edit(msg.content + '\n' + crateLootText);
 
             // Send the update to logs channel.
-            COOP.CHANNELS.propagate(msg, crateLootText, 'ACTIONS', false);
+            // COOP.CHANNELS.propagate(msg, crateLootText, 'ACTIONS', false);
 
             // Remove the opened crate.
             // COOP.MESSAGES.delayDelete(msg, 10000);

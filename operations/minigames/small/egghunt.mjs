@@ -111,7 +111,7 @@ export default class EggHuntMinigame {
         const emojiItemText = MESSAGES.emojiText(EMOJIS[reward.item]);
         const eventText = `${actionText} ${emojiText}\n${emojiItemText} ${reward.item}x${reward.qty}`;
         
-        CHANNELS.silentPropagate(msgRef, eventText, 'ACTIONS', 10000);
+        // CHANNELS.silentPropagate(msgRef, eventText, 'ACTIONS', 10000);
         
         await Items.add(user.id, reward.item, reward.qty, `EGGHUNT_BOMB_REWARD - ${actionTypeText}'d ${rarity} (bomb)`);
     }
@@ -161,7 +161,7 @@ export default class EggHuntMinigame {
             const feedbackMsg = `${usersRewardedText} gained ${reward} points by being splashed by exploding egg ${emojiText}`.trim();
             
             // Add server notification in feed.
-            CHANNELS.propagate(reaction.message, feedbackMsg, 'ACTIONS')
+            // CHANNELS.propagate(reaction.message, feedbackMsg, 'ACTIONS')
 
         } catch(e) {
             console.error(e);
@@ -490,7 +490,7 @@ export default class EggHuntMinigame {
             
             MESSAGES.selfDestruct(msg, 'Thanks for the egg! ;)', 0, 900);
             
-            CHANNELS.propagate(msg, 'Cooper collected (stole) an egg.', 'ACTIONS', true);
+            // CHANNELS.propagate(msg, 'Cooper collected (stole) an egg.', 'ACTIONS', true);
 
             MESSAGES.delayReact(msg, RAW_EMOJIS.BASKET, 333);
 

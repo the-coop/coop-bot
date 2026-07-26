@@ -71,14 +71,14 @@ export default class WoodcuttingMinigame {
             // Rare events from woodcutting.
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
                 const addDiamond = await Items.add(user.id, 'AVERAGE_EGG', 1, 'Woodcutting uncommon event');
-                CHANNELS.propagate(message, `${user.username} catches an average egg as it falls from a tree! (${addDiamond})`, 'ACTIONS');
+                // CHANNELS.propagate(message, `${user.username} catches an average egg as it falls from a tree! (${addDiamond})`, 'ACTIONS');
             }
             
             // Rarer events from woodcutting.
             if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
                 const branchQty = STATE.CHANCE.natural({ min: 5, max: 25 });
                 await Items.add(user.id, 'RARE_EGG', branchQty, 'Woodcutting rare event');
-                CHANNELS.propagate(message, `${user.username} triggered a chain branch reaction, ${branchQty} rare eggs found!`, 'ACTIONS');
+                // CHANNELS.propagate(message, `${user.username} triggered a chain branch reaction, ${branchQty} rare eggs found!`, 'ACTIONS');
             }
     
             // Rarest events from woodcutting.

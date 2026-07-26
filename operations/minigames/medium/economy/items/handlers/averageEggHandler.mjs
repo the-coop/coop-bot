@@ -68,9 +68,6 @@ export default class AverageEggHandler {
                     reaction.message.channel.send(feedbackMsgText);
                 } else
                     COOP.MESSAGES.selfDestruct(reaction.message, feedbackMsgText, 333, 30000);
-
-                // Send the record message separately.
-                COOP.CHANNELS._send('ACTIONS', feedbackMsgText, {});
                 
             } catch(e) {
                 console.error(e);

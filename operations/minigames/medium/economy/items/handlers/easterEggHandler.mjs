@@ -21,7 +21,7 @@ export default class EasterEggHandler {
         const feedbackText = `**${eggEmoji.repeat(2)} ${user.username} used their easter egg${optTarget}!**\n\n` +
             `They gained ${reward}x${coopEmoji} (25% of the average CP per beak (${rewardBase}))!`;
 
-        COOP.CHANNELS.silentPropagate(msgRef, feedbackText, 'ACTIONS');
+        // COOP.CHANNELS.silentPropagate(msgRef, feedbackText, 'ACTIONS');
     }
 
     static async use(msgRef, user) {       

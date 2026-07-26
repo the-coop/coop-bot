@@ -188,7 +188,6 @@ export default class DropTable {
 
         //             setTimeout(async () => {
         //                 const rewardMessageText = `${user.username} took ${reward}x${rewardItemQuantity} from the crate!`;
-        //                 COOP.CHANNELS.propagate(msg, rewardMessageText, 'ACTIONS');
         //             }, rateLimitBypassDelay);
         //         });
         //     }

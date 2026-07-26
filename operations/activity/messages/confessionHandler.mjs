@@ -12,9 +12,6 @@ export default class ConfessionHandler {
         // Ensure an email address is not leaked to leaders etc.
         if (SubscriptionHelper.getEmailFromMessage(msg)) return false;
 
-        const annotatedMsgText = `DM message from ${msg.author.username}: ${msg.content}`;
-        CHANNELS._postToChannelCode('ACTIONS', annotatedMsgText);
-
         // setTimeout(async () => {
         //     const replyableMsg = await CHANNELS._postToChannelCode('COOPERTESTS', annotatedMsgText);
         //     replyableMsg.channel.awaitMessages(

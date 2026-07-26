@@ -127,14 +127,14 @@ export default class SkillsHelper {
             // Level 99 level up, big announce.
             if (prevLevel < 99 && currLevel === 99) {
                 CHANNELS._codes(
-                    ['TALK', 'ACTIONS', 'STREAM_NOMIC'], 
+                    ['TALK', 'STREAM_NOMIC'], 
                     `${user.username} achieved level 99 in ${skill}!!`
                 );
                 
             } else {
                 // Standard level up
-                const levelUpText = `${user.username} reached level ${currLevel} ${skill}!`;
-                CHANNELS._postToChannelCode('ACTIONS', levelUpText);
+                // const levelUpText = `${user.username} reached level ${currLevel} ${skill}!`;
+                // CHANNELS._postToChannelCode('ACTIONS', levelUpText);
             }
         }
 
