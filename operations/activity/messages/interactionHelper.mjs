@@ -6,6 +6,7 @@ import CompetitionHelper from '../../social/competitionHelper.mjs';
 import MiningMinigame from '../../minigames/small/mining.mjs';
 import ChestPopMinigame from '../../minigames/small/chestpop.mjs';
 import FoxHuntMinigame from "../../minigames/small/foxhunt.mjs";
+import CoopdleMinigame from "../../minigames/small/coopdle.mjs";
 import DailyRewardMinigame from "../../minigames/small/dailyreward.mjs";
 import AlgoHelper from '../../minigames/medium/economy/blockchain/AlgoHelper.mjs';
 
@@ -28,6 +29,9 @@ export default class InteractionHelper {
         MiningMinigame.onInteraction(interaction);
         ChestPopMinigame.onInteraction(interaction);
         FoxHuntMinigame.onInteraction(interaction);
+
+        // Coopdle guess button and its guess modal.
+        CoopdleMinigame.onInteraction(interaction);
 
         // Daily Reward Interaction
         DailyRewardMinigame.onInteraction(interaction);

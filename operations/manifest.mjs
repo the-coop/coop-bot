@@ -6,6 +6,7 @@ import EventsHelper from "./eventsHelper.mjs";
 import EconomyNotifications from "./activity/information/economyNotifications.mjs";
 import MessageNotifications from "./activity/information/messageNotifications.mjs";
 
+import Coopdle from "./minigames/small/coopdle.mjs";
 import CrateDrop from "./minigames/small/cratedrop.mjs";
 import EggHunt from "./minigames/small/egghunt.mjs";
 import Mining from "./minigames/small/mining.mjs";
@@ -75,9 +76,9 @@ export const VELOCITY_EVENTS = {
     handler: () => CrateDrop.run(), 
     interval: baseTickDur * manifestChance.floating({ min: 2, max: 8 })
   },
-  FOXHUNT: { 
-    since: 0, 
-    handler: () => FoxHuntMinigame.run(), 
+  FOXHUNT: {
+    since: 0,
+    handler: () => FoxHuntMinigame.run(),
     interval: baseTickDur * manifestChance.floating({ min: 4, max: 10 })
   }
 };
@@ -119,6 +120,10 @@ export default function eventsManifest() {
 
   // Cleanup temporary messages.
   EventsHelper.runInterval(() => TemporaryMessages.flush(), baseTickDur);
+
+  // Schedule/drop the daily Coopdle board and close down unsolved ones.
+  // Checked around the same cadence as the new coop day it follows.
+  EventsHelper.runInterval(() => Coopdle.tick(), baseTickDur / 2);
 
   // Cleanup temporary codes.
   EventsHelper.runInterval(() => AccessCodes.flush(), baseTickDur / 2);

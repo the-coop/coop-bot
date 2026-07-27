@@ -125,12 +125,12 @@ export default class Chicken {
                         new ButtonBuilder()
                             .setLabel('Daily Reward')
                             .setCustomId('claim_daily_reward')
-                            .setStyle(ButtonStyle.Primary),
+                            .setStyle(ButtonStyle.Primary)
                         // Website login link
-                        new ButtonBuilder()
-                            .setLabel('Login')
-                            .setURL(OAUTH_LOGIN_URL)
-                            .setStyle(ButtonStyle.Link)
+                        // new ButtonBuilder()
+                        //     .setLabel('Login')
+                        //     .setURL(OAUTH_LOGIN_URL)
+                        //     .setStyle(ButtonStyle.Link)
 
                     )
                 ]

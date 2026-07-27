@@ -13,15 +13,18 @@
   },
   "author": "the-coop",
   "dependencies": {
+    "@napi-rs/canvas": "^1.0.2",
     "algosdk": "latest",
     "chance": "latest",
     "coop-shared": "git+https://github.com/the-coop/coop-shared.git#0026d587b4422f244eb331ee16f7e6363c130086",
+    "dictionary-en": "^4.0.0",
     "discord.js": "latest",
     "dotenv": "^16.0.3",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.2",
     "moment-timezone": "^0.5.37",
+    "nspell": "^2.1.5",
     "sugar": "^2.0.6"
   },
   "devDependencies": {

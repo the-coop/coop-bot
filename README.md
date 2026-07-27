@@ -46,6 +46,22 @@ Starts script text: node --experimental-json-modules ./patching/deploy-commands.
 yarn db
 Starts script text: heroku pg:psql --app <PRIMARY_APP>
 
+# Coopdle (collaborative Wordle minigame):
+One board a day, dropped a random 20-120 mins after the new coop day rolls over
+(that rollover drifts, so the board does too). Anybody can spend one of its eight
+shared guesses via the Guess button, and when the word falls everyone who guessed
+is rewarded, the solver most of all. Boards nobody finishes are closed after 20hrs.
+
+Needs its tables creating once before deploying:
+yarn db < db/coopdle.sql
+
+Guesses are working state and are deleted when a board ends. What persists is the
+finished game row (total solved) and each player's running totals in coopdle_stats,
+visible through /coopdle.
+
+The answer is a random offset into the five letter dictionary, re-rolled if it lands
+on a word the community has had recently, so boards don't repeat.
+
 # Lint (we hate you):
 yarn lint
 Starts script text: eslint .
