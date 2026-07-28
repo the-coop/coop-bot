@@ -12,6 +12,8 @@ import algosdk from 'algosdk';
 import Items from 'coop-shared/services/items.mjs';
 import EventsHelper from '../operations/eventsHelper.mjs';
 import FoxHuntMinigame from '../operations/minigames/small/foxhunt.mjs';
+import CoopdleMinigame from '../operations/minigames/small/coopdle.mjs';
+import CoopdleStore, { STATUSES } from '../operations/minigames/small/coopdle/coopdleStore.mjs';
 import { ITEMS } from 'coop-shared/config.mjs';
 
 // Commonly useful.
@@ -41,7 +43,7 @@ const shallowBot = async () => {
         });
     
         // Connect to Postgres database.
-        // await Database.connect();
+        await Database.connect();
 
         // Login, then wait for the bot to be fully online before testing.
         await STATE.CLIENT.login(process.env.DISCORD_TOKEN);
@@ -58,8 +60,39 @@ const shallowBot = async () => {
     
             // FoxHuntMinigame.run();
 
-            SERVER.checkMissingChannels();
+            // SERVER.checkMissingChannels();
 
+            // CHANNELS._hide(CHANNELS.config.SPOTLIGHT.id);
+
+            // Drop a Coopdle board by hand, leaving the daily schedule alone.
+            //
+            // run() only posts a board. The schedule lives in the coopdle_day/coopdle_due
+            // chicken config and is read and written by tick() alone, so calling tick()
+            // here instead would burn today's due time and drop the real board early.
+            //
+            // Knock-on to be aware of: only one board is live at a time, so if this one is
+            // still unsolved when today's drop comes due, tick() clears the due time, finds
+            // a board already active and the community silently skips a day. Spawn manually
+            // when today's board has already been played, or expect to lose it.
+
+            // A board that crashed mid-game leaves its row PLAYING, and expire() will not
+            // touch it until it is LIFETIME_SECS old, so run() refuses to drop a new one.
+            // Close the stale board out by hand to clear the field.
+            const live = await CoopdleStore.active();
+            if (live) {
+                await CoopdleStore.finish(live.id, { status: STATUSES.EXPIRED });
+                await CoopdleStore.clearGuesses(live.id);
+                console.log(`Force closed stuck Coopdle #${live.id}, the word was ${live.answer.toUpperCase()}.`);
+            }
+
+            const dropped = await CoopdleMinigame.run();
+            console.log(dropped ? 'Dropped a Coopdle board.' : 'No board dropped.');
+
+            // const chan = await CHANNELS.fetch('1521886323953107116');
+            // console.log(chan);
+
+            //   name: 'pics丨📸',
+            // chan.setName('library丨📚');
 
             // const test = USERS._get('1328056970111881217');
             // console.log(test);

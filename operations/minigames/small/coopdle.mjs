@@ -311,8 +311,7 @@ export default class CoopdleMinigame {
 
         const resultText = `${outcomeText}\n\n${game.share()}\n${rewardsText}`;
 
-        const channel = boardMsg?.channel || CHANNELS._randomSpammable();
-        const resultMsg = await channel.send(resultText);
+        const resultMsg = await boardMsg.channel.send(resultText);
         TemporaryMessages.add(resultMsg, 60 * 60);
 
         return true;
@@ -463,7 +462,7 @@ export default class CoopdleMinigame {
             const game = new Game(answer, this.MAX_GUESSES, []);
 
             try {
-                const channel = CHANNELS._randomSpammable();
+                const channel = CHANNELS._getCode('TALK');
                 const boardMsg = await channel.send(await this.payload(game, gameID));
 
                 await CoopdleStore.setLink(gameID, MESSAGES.link(boardMsg));
