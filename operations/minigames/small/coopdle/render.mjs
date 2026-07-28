@@ -1,5 +1,5 @@
 import { WORD_LENGTH } from './words.mjs';
-import { CORRECT, PRESENT, ABSENT, WON, LOST, SHARE_EMOJIS } from './game.mjs';
+import { CORRECT, PRESENT, ABSENT, WON, LOST } from './game.mjs';
 
 const TILE = 62;
 const TILE_GAP = 5;
@@ -49,22 +49,11 @@ const BOARD_W = WORD_LENGTH * TILE + (WORD_LENGTH - 1) * TILE_GAP;
 // not change size as the board fills up.
 const WIDTH = PAD + BOARD_W + NAME_GAP + NAME_W + PAD;
 
-// Canvas is a native module: if the host has no compatible binary the minigame
-// falls back to a text board rather than dying.
+// Canvas is a native module, loaded on first draw rather than at boot so it
+// can only ever take Coopdle down with it, never the whole bot.
 let canvasLoading = null;
-let canvasBroken = false;
 
-const loadCanvas = async () => {
-    if (canvasBroken) return null;
-    try {
-        if (!canvasLoading) canvasLoading = import('@napi-rs/canvas');
-        return await canvasLoading;
-    } catch (e) {
-        canvasBroken = true;
-        console.log('Coopdle could not load @napi-rs/canvas, falling back to text boards.');
-        return null;
-    }
-};
+const loadCanvas = () => (canvasLoading = canvasLoading || import('@napi-rs/canvas'));
 
 const centeredText = (ctx, text, cx, cy) => {
     ctx.textAlign = 'center';
@@ -95,11 +84,10 @@ export const statusText = game => {
  *
  * @param {import('./game.mjs').Game} game
  * @param {{theme?: 'light'|'dark', message?: string}} options
- * @returns {Promise<Buffer|null>} PNG bytes, or null when canvas is unavailable.
+ * @returns {Promise<Buffer>} PNG bytes.
  */
 export async function renderBoard(game, { theme = 'dark', message = '' } = {}) {
     const canvas = await loadCanvas();
-    if (!canvas) return null;
 
     const t = THEMES[theme] ?? THEMES.dark;
     const stateColors = STATE_COLORS[theme] ?? STATE_COLORS.dark;
@@ -164,17 +152,4 @@ export async function renderBoard(game, { theme = 'dark', message = '' } = {}) {
     centeredText(ctx, status, PAD + BOARD_W / 2, PAD + HEADER_H + boardH + STATUS_H / 2);
 
     return image.toBuffer('image/png');
-}
-
-/** Board as message text, used when the canvas binary is unavailable. */
-export function textBoard(game, message = '') {
-    const rows = game.guesses.map(({ word, score, username }) => {
-        const tiles = score.map(state => SHARE_EMOJIS[state]).join('');
-        return `${tiles} \`${word.toUpperCase()}\`${username ? ` ${username}` : ''}`;
-    });
-
-    const empty = '⬛'.repeat(WORD_LENGTH);
-    for (let row = game.guesses.length; row < game.maxGuesses; row++) rows.push(empty);
-
-    return `${rows.join('\n')}\n${message || statusText(game)}`;
 }

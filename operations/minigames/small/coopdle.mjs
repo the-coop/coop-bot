@@ -12,7 +12,7 @@ import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs"
 
 import CoopdleStore, { STATUSES } from "./coopdle/coopdleStore.mjs";
 import { Game, DEFAULT_MAX_GUESSES, SHARE_EMOJIS, WON } from "./coopdle/game.mjs";
-import { renderBoard, textBoard } from "./coopdle/render.mjs";
+import { renderBoard } from "./coopdle/render.mjs";
 import { WORD_LENGTH, answerCount, wordAt, ready as dictionaryReady } from "./coopdle/words.mjs";
 
 // Interaction ids carry the game they belong to: coopdle_guess_12.
@@ -239,20 +239,14 @@ export default class CoopdleMinigame {
         return lines.join('\n');
     };
 
-    // Build the message payload for a board state, image where possible.
+    // Build the message payload for a board state.
     static async payload(game, gameID, { message = '', closed = false } = {}) {
-        const components = closed ? [] : [this.guessButton(gameID)];
         const buffer = await renderBoard(game, { message });
-
-        if (!buffer) return {
-            content: `${closed ? '' : `${this.header(game)}\n`}${textBoard(game, message)}`,
-            components
-        };
 
         return {
             content: closed ? '' : this.header(game),
             files: [new AttachmentBuilder(buffer, { name: 'coopdle.png' })],
-            components
+            components: closed ? [] : [this.guessButton(gameID)]
         };
     };
 
