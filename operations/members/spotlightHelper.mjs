@@ -2,7 +2,15 @@ import _ from 'lodash';
 import { CHANNELS, TIME, USERS, ROLES, MESSAGES } from "../../coop.mjs";
 import EventsHelper from "../eventsHelper.mjs";
 
+// How long the poll itself is open for (Discord takes poll durations in hours).
+export const SPOTLIGHT_POLL_HOURS = 12;
+export const SPOTLIGHT_POLL_DUR = 3600 * SPOTLIGHT_POLL_HOURS;
+
+// How long the channel stays visible after the poll closes, so the result can be read.
 export const SPOTLIGHT_DUR = 3600 * 24 * 1;
+
+// One spotlight a week, timed from when it started.
+export const SPOTLIGHT_FREQ = 3600 * 24 * 7;
 
 export const RECONGITION_ROLE_CODES = ['BEGINNER', 'INTERMEDIATE', 'MASTER'];
 
@@ -17,29 +25,37 @@ export default class SpotlightHelper {
 
             const lastOccurred = parseInt(spotlightEvent.last_occurred) || 0;
             const isActive = spotlightEvent.active || false;
-            const isDue = now - lastOccurred > (SPOTLIGHT_DUR * 7);
-            const hasExpired = now - lastOccurred > SPOTLIGHT_DUR;
+            const isDue = now - lastOccurred > SPOTLIGHT_FREQ;
 
-            // Defining a voting period allows channel to stay open for a while after concluding.
-            const isVotingPeriod = lastOccurred + SPOTLIGHT_DUR <= now;
+            // An event runs in two stages: the poll, then a day of the result being readable.
+            const pollClosed = now >= lastOccurred + SPOTLIGHT_POLL_DUR;
+            const hasExpired = now >= lastOccurred + SPOTLIGHT_POLL_DUR + SPOTLIGHT_DUR;
+
+            // The poll link is dropped once its result has been counted, so it doubles as
+            // the marker for whether there is still a result waiting to be applied.
+            const resultPending = !!spotlightEvent.message_link;
 
             console.log('Tracking spotlight event...');
             console.log(now);
             console.log(spotlightEvent);
             console.log(lastOccurred);
-            console.log(isVotingPeriod);
 
             // Start the event if necessary.
             if (!isActive && isDue)
                 await this.start();
 
-            // Process an ongoing event within
-            else if (isActive && isVotingPeriod && !hasExpired)
-                await this.run();
-
-            // Only end the event if it's active and has expired
+            // A day has passed since the result, hide the channel away again.
+            // Checked before the result so a missed result can never hold the channel open.
             else if (isActive && hasExpired)
                 await this.end();
+
+            // Poll is over, apply and announce the result but leave the channel up to read.
+            else if (isActive && pollClosed && resultPending)
+                await this.result();
+
+            // Process an ongoing event within
+            else if (isActive)
+                await this.run();
 
             else {
                 console.log('Spotlight was tracked x hours until end/start [wip]...');
@@ -111,7 +127,7 @@ export default class SpotlightHelper {
                         current !== 'BEGINNER' ? { text: `Demote down to ${demotion}`, emoji: '❌' } : null,
                         { text: `Stay at current rank ${current}`, emoji: '⚖️' },
                     ].filter(i => i),
-                    duration: 12,
+                    duration: SPOTLIGHT_POLL_HOURS,
                     allow_multiselect: false
                 }
             });
@@ -193,17 +209,36 @@ export default class SpotlightHelper {
                 CHANNELS._send('TALK', `${spotlightUser.username} stays at their current rank of ${currentRank}.`);
             }
 
+            return true;
 
         } catch(e) {
             console.log('Error changing user rank in spotlight event');
+            console.error(e);
+            return false;
+        }
+    };
+
+    // Poll has closed: count it, then leave the channel up for a day.
+    static async result() {
+        try {
+            const applied = await this.rankChange();
+
+            // Only drop the poll link once counted, an unreadable poll is retried until expiry.
+            if (applied) await EventsHelper.setLink('spotlight', null);
+
+            console.log('Spotlight poll closed, result ' + (applied ? 'applied' : 'could not be applied') + '.');
+
+        } catch(e) {
+            console.log('Error resolving spotlight event result');
             console.error(e);
         }
     };
 
     static async end() {
         try {
-            // Change Spotlight user rank based on votes
-            await this.rankChange();
+            // Catch up on the result if it never got counted (bot down while the poll closed).
+            const spotlightEvent = await EventsHelper.read('spotlight');
+            if (spotlightEvent?.message_link) await this.rankChange();
 
             // Set event to inactive.
             await EventsHelper.setActive('spotlight', false);
@@ -231,7 +266,7 @@ export default class SpotlightHelper {
 
     static async run() {
         try {
-            console.log('Running active spotlight event within voting period.');
+            console.log('Running active spotlight event, poll still open.');
 
         } catch(e) {
             console.log('Error runing spotlight event');

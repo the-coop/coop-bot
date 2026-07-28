@@ -1,4 +1,3 @@
-import { ButtonStyle, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { MESSAGES, CHANNELS, STATE } from "../../../coop.mjs";
 import { EGG_DATA } from '../../minigames/small/egghunt.mjs';
 
@@ -111,26 +110,8 @@ export default class EconomyNotifications {
             }
 
             const updateMsg = await MESSAGES.getSimilarExistingMsg(CHANNELS._getCode('TALK'), postTitle);
-            if (!updateMsg) {
-                const msg = await CHANNELS._send('TALK', notificationString);
-                msg.edit({ components: [
-                    new ActionRowBuilder().addComponents([
-                        new ButtonBuilder()
-                            .setLabel("Minigames")
-                            .setURL("https://www.thecoop.group/guide/minigames")
-                            .setStyle(ButtonStyle.Link),
-                        new ButtonBuilder()
-                            .setLabel("Trades")
-                            .setURL("https://www.thecoop.group/conquest/economy/trade")
-                            .setStyle(ButtonStyle.Link),
-                        new ButtonBuilder()
-                            .setLabel("Coop Coin")
-                            .setURL("https://www.thecoop.group/conquest/economy/items/GOLD_COIN")
-                            .setStyle(ButtonStyle.Link)
-                    ])
-                ] });
-            }
-            
+            if (!updateMsg) await CHANNELS._send('TALK', notificationString);
+
             this.clear('WOODCUTTING');
             this.clear('MINING');
             this.clear('EGG_HUNT');

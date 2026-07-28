@@ -153,7 +153,8 @@ export default class TradingHelper {
         if (lastTrades.length === 0) return null;
 
         const msgTitle = '**Latest active trades**';
-        const msgContent = msgTitle + ':\n' + this.manyTradeItemsStr(lastTrades);
+        const msgContent = msgTitle + ':\n' + this.manyTradeItemsStr(lastTrades) +
+            '\n\nCreate your own with /trade.';
         const talkChannel = CHANNELS._getCode('TALK');
         const updateMsg = await MESSAGES.getSimilarExistingMsg(talkChannel, msgTitle);
         if (!updateMsg) {
@@ -167,14 +168,7 @@ export default class TradingHelper {
                     new ButtonBuilder()
                         .setLabel("Cancel")
                         .setCustomId('cancel_trade')
-                        .setStyle(ButtonStyle.Danger),
-                    new ButtonBuilder()
-                        .setLabel("Create")
-                        // .setCustomId('create_trade')
-                        // .setStyle(ButtonStyle.Primary)
-                        .setURL("https://www.thecoop.group/conquest/economy/trade")
-                        .setStyle(ButtonStyle.Link)
-
+                        .setStyle(ButtonStyle.Danger)
                 ])
             ] });
         } else 

@@ -19,7 +19,7 @@ export const data = new SlashCommandBuilder()
 	.addStringOption(option => 
 		option
 			.setName('campaign_text')
-			.setDescription('Please provide your electoral campaign message')
+			.setDescription('Your electoral campaign message (stand again to rewrite it)')
 			.setRequired(true)
 	);
 
@@ -79,33 +79,41 @@ export const execute = async (interaction) => {
 		}
 		
 		if (isElec) {
+			// COOP.MESSAGES.selfDestruct(interaction.channel, `${interaction.user.username}, you wanna stand for <#${CHANNELS.ELECTION.id}>, eyyy?`);
+
+			const emojiText = COOP.MESSAGES.emojiCodeText('ELECTION_CROWN');
+			const electionEmbed = COOP.MESSAGES.embed({
+				title: `Election Event: ${interaction.user.username} stands for election!`,
+				description: `${campaignText}\n\n` +
+					`To vote for <@${interaction.user.id}> press (react) the crown emoji ${emojiText}.`,
+				thumbnail: COOP.USERS.avatar(interaction.user)
+			});
+
 			// Check if user is not already a candidate.
 			const prevCandidate = await ElectionHelper.getCandidate(interaction.user.id);
-			if (!prevCandidate) {
-				// COOP.MESSAGES.selfDestruct(interaction.channel, `${interaction.user.username}, you wanna stand for <#${CHANNELS.ELECTION.id}>, eyyy?`);
+			if (prevCandidate) {
+				// Standing again rewrites the campaign being voted on, votes cast so far are kept.
+				const editedMsg = await COOP.MESSAGES.editByLink(prevCandidate.campaign_msg_link, electionEmbed);
+				if (editedMsg)
+					return await interaction.reply({ content: 'Campaign message updated!', ephemeral: true });
 
-				const emojiText = COOP.MESSAGES.emojiCodeText('ELECTION_CROWN');
-				const electionEmbed = COOP.MESSAGES.embed({ 
-					title: `Election Event: ${interaction.user.username} stands for election!`,
-					description: `${campaignText}\n\n` +
-						`To vote for <@${interaction.user.id}> press (react) the crown emoji ${emojiText}.`,
-					thumbnail: COOP.USERS.avatar(interaction.user)
-				});
-
-				const electionMsg = await COOP.CHANNELS._postToChannelCode('ELECTION', electionEmbed);
-
-				const msgLink = COOP.MESSAGES.link(electionMsg);
-
-				// Add candidate to election
-				await ElectionHelper.addCandidate(interaction.user.id, msgLink);
-
-				// Post to feed
-				const successfulCandidateText = `${interaction.user.username} was put forward for <#${CHANNELS.ELECTION.id}>`;
-				COOP.CHANNELS._send('TALK', successfulCandidateText);
-				
-				// Add coop emoji to campaign message and crown
-				COOP.MESSAGES.delayReact(electionMsg, '👑', 666);
+				// Their campaign message is gone, stand them again on a fresh one.
+				await ElectionHelper.deleteCandidateByLink(prevCandidate.campaign_msg_link);
 			}
+
+			const electionMsg = await COOP.CHANNELS._postToChannelCode('ELECTION', electionEmbed);
+
+			const msgLink = COOP.MESSAGES.link(electionMsg);
+
+			// Add candidate to election
+			await ElectionHelper.addCandidate(interaction.user.id, msgLink);
+
+			// Post to feed
+			const successfulCandidateText = `${interaction.user.username} was put forward for <#${CHANNELS.ELECTION.id}>`;
+			COOP.CHANNELS._send('TALK', successfulCandidateText);
+
+			// Add coop emoji to campaign message and crown
+			COOP.MESSAGES.delayReact(electionMsg, '👑', 666);
 		}
 
 		// Indicate success.

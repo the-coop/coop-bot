@@ -106,7 +106,7 @@ export default class BlogHelper {
 
             const slug = encodeURIComponent(draft.title.replaceAll(' ', '-').toLowerCase());
 
-            // Save to blog posts database (public on website).
+            // Save to blog posts database.
             this.publish(draft.title, slug, content, draft.owner_id);
 
             // Delete the channel.
@@ -116,8 +116,7 @@ export default class BlogHelper {
             this.deleteDraft(draft.id);
 
             // Inform the owner the draft has been published.
-            USERS._dm(draft.owner_id, `Draft "${draft.title}" was just published!\n\n` + 
-                'It will be live here when processed: https://www.thecoop.group/blog/' + slug);
+            USERS._dm(draft.owner_id, `Draft "${draft.title}" was just published!`);
 
         } catch(e) {
             console.log('Error turning blog post channel into a blog post.');

@@ -58,9 +58,6 @@ export const execute = async (interaction) => {
 				return `${username}'s ${itemQty} (${val.share}%)`;
 			}).join(', ') + '.';
 
-		sharesText += '\n\n\n' + 
-			`See more details via website: <https://www.thecoop.group/conquest/economy/items/${itemCode}>`;
-
 		// Output share of requested item (if valid)
 		MESSAGES.silentSelfDestruct(interaction.channel, sharesText);
 		return await interaction.reply({ content: `Command executed.`, ephemeral: true });
@@ -92,8 +89,7 @@ export const execute = async (interaction) => {
 			`#${index + 1}. ` + 
 			`${ITEMS.displayQty(val.quantity)} ` +
 			`(${perc(val.quantity, itemTotal)}%) <@${val.owner_id}>`
-		).join('\n') + '\n' +
-		`[See advanced details via website](<https://www.thecoop.group/conquest/economy/items>)`
+		).join('\n');
 
 	// Output share of requested item (if valid)
 	MESSAGES.silentSelfDestruct(interaction.channel, ownershipText);

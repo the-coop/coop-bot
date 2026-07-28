@@ -230,11 +230,7 @@ const createTrade = async interaction => {
 						new ButtonBuilder()
 							.setCustomId('create_trade')
 							.setLabel('Create')
-							.setStyle(ButtonStyle.Primary),
-						new ButtonBuilder()
-							.setLabel("Create")
-							.setURL("https://www.thecoop.group/conquest/economy/trade")
-							.setStyle(ButtonStyle.Link)
+							.setStyle(ButtonStyle.Primary)
 					])]
 				});
 

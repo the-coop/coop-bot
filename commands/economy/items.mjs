@@ -30,8 +30,6 @@ export const execute = async (interaction) => {
 	const itemCode = itemCodeInput ? itemCodeInput.value : 'ALL';
 	const target = targetInput ? targetInput.user : interaction.user;
 
-	const websiteLink = `[See advanced details via website](<https://www.thecoop.group/members/${target.id}>)`
-
 	// Try to interpret itemCode/itemEmoji arg
 	const parsedItemCode = COOP.ITEMS.interpretItemCodeArg(itemCode);
 
@@ -58,9 +56,8 @@ export const execute = async (interaction) => {
 			if (items.length > 5)
 				additionalItemsText = `... plus ${items.length - 5} more items ...\n\n`;
 
-			// Provide info and prompt to check website.;
 			const itemDisplayMsg = COOP.ITEMS.formItemDropText(target, slicedItems);
-			return await interaction.reply({ content: itemDisplayMsg + '\n' + additionalItemsText + websiteLink, ephemeral: true });
+			return await interaction.reply({ content: itemDisplayMsg + '\n' + additionalItemsText, ephemeral: true });
 		}
 
 		// Check if itemCode valid to use.
@@ -75,8 +72,8 @@ export const execute = async (interaction) => {
 		const emoji = COOP.MESSAGES.emojiText(EMOJIS[parsedItemCode]);
 		if (itemQty > 0) {
 			await interaction.reply({
-				content: `${name} owns ${displayQty}x${parsedItemCode} ${emoji}.\n\n${websiteLink}`, 
-				ephemeral: true 
+				content: `${name} owns ${displayQty}x${parsedItemCode} ${emoji}.`,
+				ephemeral: true
 			});
 			return true;
 		}

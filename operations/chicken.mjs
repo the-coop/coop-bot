@@ -10,8 +10,6 @@ import Database from 'coop-shared/setup/database.mjs';
 
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
-const OAUTH_LOGIN_URL = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify';
-
 export default class Chicken {
 
     static async getConfig(key) {
@@ -126,12 +124,6 @@ export default class Chicken {
                             .setLabel('Daily Reward')
                             .setCustomId('claim_daily_reward')
                             .setStyle(ButtonStyle.Primary)
-                        // Website login link
-                        // new ButtonBuilder()
-                        //     .setLabel('Login')
-                        //     .setURL(OAUTH_LOGIN_URL)
-                        //     .setStyle(ButtonStyle.Link)
-
                     )
                 ]
             });

@@ -107,8 +107,8 @@ export default function eventsManifest() {
   // Try to determine peak hours by sampling around 3 times an hour.
   EventsHelper.runInterval(() => ActivityHelper.track(), baseTickDur / 1.75);
 
-  // Track spotlight event until required.
-  EventsHelper.runInterval(() => SpotlightHelper.track(), baseTickDur * 20);
+  // Track spotlight event until required, often enough to hit its poll close/hide times.
+  EventsHelper.runInterval(() => SpotlightHelper.track(), baseTickDur * 2);
 
   // Core tick handler for more granularity over timing.
   EventsHelper.runInterval(() => serverTick(), 30000);

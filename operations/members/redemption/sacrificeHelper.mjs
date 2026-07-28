@@ -263,12 +263,7 @@ export default class SacrificeHelper {
                         .setEmoji('🗡')
                         .setLabel("Vote!")
                         .setURL(COOP.CHANNELS.link('TALK'))
-                        .setStyle(ButtonStyle.Link),
-                        new ButtonBuilder()
-                            .setEmoji('📖')
-                            .setLabel("Guide?")
-                            .setURL("https://www.thecoop.group/guide/sacrifice")
-                            .setStyle(ButtonStyle.Link)
+                        .setStyle(ButtonStyle.Link)
                     ])
                 ]
             });

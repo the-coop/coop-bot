@@ -196,29 +196,11 @@ export default class RedemptionHelper {
             await COOP.CHANNELS._send('TALK', 'Could have detected desired roles' + desiredRoles);
 
         // Inform community.
-        const msg = await COOP.CHANNELS._send('TALK', 
+        await COOP.CHANNELS._send('TALK',
             `**<@${targetMember.user.id}> democratically approved into the community!** !\n` +
             `${votes.for ? `\n${RAW_EMOJIS.VOTE_FOR.repeat(votes.for)}` : ''}` +
-            `${votes.against ? `\n${RAW_EMOJIS.VOTE_AGAINST.repeat(votes.against)}` : ''}`
+            `${votes.against ? `\n${RAW_EMOJIS.VOTE_AGAINST.repeat(votes.against)}` : ''}` +
+            `\n\nPick the roles you want with /roles.`
         );
-
-        const rolesLoginLink = 'https://discord.com/api/oauth2/authorize?method=discord_oauth&client_id=799695179623432222' +
-            "&redirect_uri=https%3A%2F%2Fthecoop.group%2Fauth%2Fauthorise&response_type=code&scope=identify&state=roles";
-
-        msg.edit({ components: [
-            new ActionRowBuilder()
-                .addComponents([
-                    new ButtonBuilder()
-                        .setLabel("Profile")
-                        .setEmoji('👤')
-                        .setURL('https://www.thecoop.group/members/' + targetMember.user.id)
-                        .setStyle(ButtonStyle.Link),
-                    new ButtonBuilder()
-                        .setLabel("Edit Roles")
-                        .setEmoji('⚙️')
-                        .setURL(rolesLoginLink)
-                        .setStyle(ButtonStyle.Link)
-                ])
-        ] });
     };
 };

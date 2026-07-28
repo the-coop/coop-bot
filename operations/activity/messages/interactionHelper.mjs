@@ -9,6 +9,7 @@ import FoxHuntMinigame from "../../minigames/small/foxhunt.mjs";
 import CoopdleMinigame from "../../minigames/small/coopdle.mjs";
 import DailyRewardMinigame from "../../minigames/small/dailyreward.mjs";
 import AlgoHelper from '../../minigames/medium/economy/blockchain/AlgoHelper.mjs';
+import SelfRolesHelper from '../../members/hierarchy/roles/selfRolesHelper.mjs';
 
 export const Button = (emoji, label, customId, style) => new ButtonBuilder({ emoji, label, customId, style })
 
@@ -35,6 +36,9 @@ export default class InteractionHelper {
 
         // Daily Reward Interaction
         DailyRewardMinigame.onInteraction(interaction);
+
+        // Self-managed role opt in/out menus (/roles).
+        SelfRolesHelper.onInteraction(interaction);
     };
 
     static confirm(interaction, texts) {

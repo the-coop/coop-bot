@@ -149,7 +149,6 @@ const post = async interaction => {
 
 const preview = async interaction => {
 	const draft = await Blog.loadDraftByChannelID(interaction.channel.id);
-	const previewLink = `https://thecoop.group/blog/preview?channel_id=${interaction.channel.id}`;
 
 	// Only allow usage on a draft channel.
 	if (!draft)
@@ -165,35 +164,16 @@ const preview = async interaction => {
 		values: [content, draft.channel_id]
 	});
 
-	// Send the link
-	return await interaction.reply(`**${draft.title}** preview: \n<${previewLink}>`);
+	// Show the post as it currently reads, cropped to fit a message.
+	const heading = `**${draft.title}** preview:\n\n`;
+	const room = 2000 - heading.length;
+	const body = content.length > room ? content.slice(0, room - 3) + '...' : content;
+
+	return await interaction.reply({ content: heading + body, ephemeral: true });
 }
 
 
-// const preview = interaction => {
-// 	const draft = await Blog.loadDraftByChannelID(interaction.channel.id);
-// 	const previewLink = `https://thecoop.group/blog/preview?channel_id=${interaction.channel.id}`;
-
-// 	if (!draft)
-// 		MESSAGES.selfDestruct(interaction.channel, 'Try preview on a post draft channel!');
-
-// 	// Add content to the table so it shows up to date.
-// 	const chan = CHANNELS._get(draft.channel_id);
-// 	const content = await BlogHelper.buildDraft(chan);
-
-// 	await Database.query({
-// 		name: "update-draft-content",
-// 		text: `UPDATE post_drafts SET content = ? WHERE channel_id = ?`,
-// 		values: [content, draft.channel_id]
-// 	});
-
-// 	// Send the link
-// 	MESSAGES.selfDestruct(interaction.channel, `**${draft.title}** preview: \n<${previewLink}>`);
-
-// 	return interaction.reply('Preview is work in progres.');
-// }
-
-// const publish = interaction => {		
+// const publish = interaction => {
 // 	try {
 // 		// If ID is null... try to see if the current one will work.
 // 		const draft = await Blog.loadDraftByChannelID(interaction.channel.id);

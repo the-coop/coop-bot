@@ -8,7 +8,6 @@ export default function embedHelper(params) {
         author: {
             name: 'The Coop',
             icon_url: cooperImageURL,
-            url: 'https://thecoop.group',
         },
         description: params.description,
         thumbnail: {
