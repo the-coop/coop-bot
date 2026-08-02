@@ -113,6 +113,22 @@ export default class CoopdleMinigame {
         }
     };
 
+    /**
+     * What the board knows, in the guess box itself: the pinned letters, and the
+     * letters a guess is no longer allowed to spend a shared turn on.
+     */
+    static placeholder(game) {
+        const hint = game.hint();
+        const known = hint === '_'.repeat(WORD_LENGTH)
+            ? `Any ${WORD_LENGTH} letter word`
+            : `Known: ${hint.toUpperCase()}`;
+
+        const ruledOut = game.eliminated();
+        if (!ruledOut.length) return known;
+
+        return `${known} · no ${ruledOut.map(letter => letter.toUpperCase()).join('')}`;
+    };
+
     // Open the guess box, prefilled with whatever the board has pinned down.
     static async prompt(interaction, gameID) {
         const gameRow = await CoopdleStore.get(gameID);
@@ -121,7 +137,6 @@ export default class CoopdleMinigame {
             return await INTERACTION.reply(interaction, 'That Coopdle has already finished.');
 
         const game = await this.load(gameRow);
-        const hint = game.hint();
 
         const input = new TextInputBuilder()
             .setCustomId('word')
@@ -129,9 +144,7 @@ export default class CoopdleMinigame {
             .setStyle(TextInputStyle.Short)
             .setMinLength(WORD_LENGTH)
             .setMaxLength(WORD_LENGTH)
-            .setPlaceholder(hint === '_'.repeat(WORD_LENGTH)
-                ? 'Any five letter word'
-                : `Known so far: ${hint.toUpperCase()}`)
+            .setPlaceholder(this.placeholder(game))
             .setRequired(true);
 
         const modal = new ModalBuilder()
@@ -220,7 +233,7 @@ export default class CoopdleMinigame {
     static guessButton(gameID) {
         return new ActionRowBuilder().addComponents([
             new ButtonBuilder()
-                .setEmoji('🟩')
+                .setEmoji('🧩')
                 .setLabel('Guess')
                 .setCustomId(`${GUESS_BUTTON}_${gameID}`)
                 .setStyle(ButtonStyle.Primary)
@@ -229,7 +242,7 @@ export default class CoopdleMinigame {
 
     static header(game) {
         const lines = [
-            `🟩 **COOPDLE IN PROGRESS** 🟩 one shared board, ` +
+            `🧩 **COOPDLE IN PROGRESS** 🧩 one shared board, ` +
             `${game.remaining} guess${game.remaining === 1 ? '' : 'es'} left. Anyone can play.`
         ];
 
@@ -239,12 +252,26 @@ export default class CoopdleMinigame {
         return lines.join('\n');
     };
 
+    /** Avatar URLs for everyone on the board, so rows show faces and not just names. */
+    static async avatars(game) {
+        const playerIDs = [...new Set(game.guesses.map(guess => guess.playerID).filter(Boolean))];
+
+        const entries = await Promise.all(playerIDs.map(async playerID => {
+            // Anyone who has left the server simply falls back to their initial.
+            const member = USERS._get(playerID) || await USERS._fetch(playerID);
+            return [playerID, member?.displayAvatarURL({ extension: 'png', forceStatic: true, size: 64 })];
+        }));
+
+        return Object.fromEntries(entries.filter(([, url]) => url));
+    };
+
     // Build the message payload for a board state.
     static async payload(game, gameID, { message = '', closed = false } = {}) {
-        const buffer = await renderBoard(game, { message });
+        const buffer = await renderBoard(game, { avatars: await this.avatars(game) });
 
         return {
-            content: closed ? '' : this.header(game),
+            // A closed board carries its outcome as text: the image is just the grid.
+            content: closed ? message : this.header(game),
             files: [new AttachmentBuilder(buffer, { name: 'coopdle.png' })],
             components: closed ? [] : [this.guessButton(gameID)]
         };

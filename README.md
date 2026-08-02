@@ -52,6 +52,9 @@ One board a day, dropped a random 20-120 mins after the new coop day rolls over
 shared guesses via the Guess button, and when the word falls everyone who guessed
 is rewarded, the solver most of all. Boards nobody finishes are closed after 20hrs.
 
+Because the guesses are shared, a guess may not reuse a letter the board has already
+ruled out: the guess box lists the pinned letters and the dead ones.
+
 Needs its tables creating once before deploying:
 yarn db < db/coopdle.sql
 

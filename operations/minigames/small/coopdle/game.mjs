@@ -151,6 +151,16 @@ export class Game {
         if (!isValidGuess(word)) return { ok: false, reason: `"${word}" is not in the dictionary.` };
         if (this.has(word)) return { ok: false, reason: `"${word}" has already been guessed.` };
 
+        // The board's guesses are shared, so nobody gets to spend one on letters
+        // the community has already proved aren't in the word.
+        const ruledOut = new Set(this.eliminated());
+        const dead = [...new Set(word)].filter(letter => ruledOut.has(letter));
+        if (dead.length) return {
+            ok: false,
+            reason: `"${word.toUpperCase()}" uses ruled out letter${dead.length > 1 ? 's' : ''} ` +
+                `${dead.map(letter => letter.toUpperCase()).join(' ')}.`
+        };
+
         const score = scoreGuess(word, this.answer);
         const revealed = countRevealed(this.guesses, word, score);
 
@@ -170,7 +180,7 @@ export class Game {
         return letters.join('');
     }
 
-    /** Letters the board has ruled out, for the message under the image. */
+    /** Letters the board has ruled out, and which guesses may no longer use. */
     eliminated() {
         return [...knowledgeFrom(this.guesses).absent].sort();
     }
