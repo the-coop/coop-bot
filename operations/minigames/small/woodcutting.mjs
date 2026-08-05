@@ -65,7 +65,7 @@ export default class WoodcuttingMinigame {
     
             // See if updating the item returns the item and quantity.
             const pointGain = 1;
-            const addedWood = await Items.add(user.id, 'WOOD', extractedWoodNum, 'Woodcutting');
+            await Items.add(user.id, 'WOOD', extractedWoodNum, 'Woodcutting');
             const addPoints = await Items.add(user.id, 'COOP_POINT', pointGain, 'Woodcutting');
     
             // Rare events from woodcutting.
@@ -131,8 +131,8 @@ export default class WoodcuttingMinigame {
             
             // Store to track latest woodcutting stats.
             EconomyNotifications.add('WOODCUTTING', {
-                pointGain: 1,
-                recWood: addedWood,
+                pointGain,
+                recWood: extractedWoodNum,
                 playerID: user.id,
                 username: user.username
             });

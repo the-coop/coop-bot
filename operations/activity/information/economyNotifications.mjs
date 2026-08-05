@@ -9,7 +9,21 @@ export default class EconomyNotifications {
         if (eventType === 'MINING') this.updateMining(eventData);
         if (eventType === 'EGG_HUNT') this.updateEgghunt(eventData);
         if (eventType === 'CRATE_DROP') this.updateCrateDrop(eventData);
+        if (eventType === 'CHEST_POP') this.updateChestpop(eventData);
     }
+
+    /**
+     * Every event type accumulates the same way: add each numeric field of the
+     * event onto whatever the bucket already holds. Keeping it in one place stops
+     * totals and per-user rows drifting apart on a renamed or missing field.
+     */
+    static accumulate(bucket, changes) {
+        Object.keys(changes).forEach(key => {
+            const value = changes[key];
+            if (typeof value !== 'number' || Number.isNaN(value)) return;
+            bucket[key] = (bucket[key] || 0) + value;
+        });
+    };
 
     static async post() {
         let notificationString = '';
@@ -23,7 +37,7 @@ export default class EconomyNotifications {
                 const woodcutting = STATE.EVENTS_HISTORY['WOODCUTTING'];
                 
                 notificationString += `**Latest Woodcutting Totals:**\n` +
-                    // TODO: Count hits too. `Hits: ${mining.totals.hits}\n` +
+                    `Hits: ${woodcutting.totals.hits}\n` +
                     `Logs Cut: ${woodcutting.totals.cut}\n` +
                     `Broken Axes: ${woodcutting.totals.brokenAxes}\n` +
                     `Points Change: ${woodcutting.totals.points}\n` +
@@ -105,24 +119,29 @@ export default class EconomyNotifications {
                 console.log(STATE.EVENTS_HISTORY['CRATE_DROP']);
             }
 
-            if (STATE.EVENTS_HISTORY['CHESTPOP']) {
-                notificationString += `\nChestpop loot count: ${STATE.EVENTS_HISTORY['CHESTPOP'].loot}`;
+            if (STATE.EVENTS_HISTORY['CHEST_POP']) {
+                notificationString += `\nChestpop loot count: ${STATE.EVENTS_HISTORY['CHEST_POP'].loot}`;
             }
 
+            // Nothing but the title means none of the tracked events fired, leave the channel alone.
+            if (notificationString === postTitle) return null;
+
+            // Keep one rolling stats post: update it in place when it is still nearby,
+            // otherwise the accumulated totals would be cleared without ever being shown.
             const updateMsg = await MESSAGES.getSimilarExistingMsg(CHANNELS._getCode('TALK'), postTitle);
-            if (!updateMsg) await CHANNELS._send('TALK', notificationString);
+            if (updateMsg) await updateMsg.edit(notificationString);
+            else await CHANNELS._send('TALK', notificationString);
 
             this.clear('WOODCUTTING');
             this.clear('MINING');
             this.clear('EGG_HUNT');
             this.clear('CRATE_DROP');
-            this.clear('CHESTPOP');
+            this.clear('CHEST_POP');
         }
     };
-    
+
     static clear(type) {
-        if (typeof STATE.EVENTS_HISTORY[type] !== 'undefined');
-            delete STATE.EVENTS_HISTORY[type];
+        delete STATE.EVENTS_HISTORY[type];
     };
 
     static updateMining(miningEvent) {
@@ -143,47 +162,33 @@ export default class EconomyNotifications {
             }
         }
 
-        // Add or update user specific stats
-        if (typeof STATE.EVENTS_HISTORY['MINING'].users[userID] === 'undefined') {
-            STATE.EVENTS_HISTORY['MINING'].users[userID] = {
-                points: miningEvent.pointGain,
+        const mining = STATE.EVENTS_HISTORY['MINING'];
+
+        // One event is one swing, whether it landed ore or broke a pickaxe.
+        const changes = {
+            points: miningEvent.pointGain,
+            mined: miningEvent.recOre,
+            diamonds: miningEvent.diamondsFound,
+            brokenPickaxes: miningEvent.brokenPickaxes,
+            hits: 1
+        };
+
+        this.accumulate(mining.totals, changes);
+
+        // Add or update user specific stats, counting the same fields as the totals.
+        if (typeof mining.users[userID] === 'undefined')
+            mining.users[userID] = {
                 username: miningEvent.username,
-                mined: miningEvent.recOre || 0,
-                brokenPickaxes: miningEvent.brokenPickaxes || 0,
-                diamondsFound: miningEvent.diamondsFound || 0,
-            }
+                points: 0,
+                mined: 0,
+                diamonds: 0,
+                brokenPickaxes: 0,
+                hits: 0
+            };
 
-        } else {
-            // otherwise update
-            if (typeof miningEvent.pointGain !== 'undefined')
-                STATE.EVENTS_HISTORY['MINING'].users[userID].points += miningEvent.pointGain;
+        if (miningEvent.username) mining.users[userID].username = miningEvent.username;
 
-            if (typeof miningEvent.brokenPickaxes !== 'undefined')
-                STATE.EVENTS_HISTORY['MINING'].users[userID].brokenPickaxes += miningEvent.brokenPickaxes;
-
-            if (typeof miningEvent.diamondsFound !== 'undefined')
-                STATE.EVENTS_HISTORY['MINING'].users[userID].diamonds += miningEvent.diamondsFound;
-
-            if (typeof miningEvent.recOre !== 'undefined')
-                STATE.EVENTS_HISTORY['MINING'].users[userID].mined += miningEvent.recOre;
-
-        }
-
-
-        if (typeof miningEvent.pointGain !== 'undefined')
-            STATE.EVENTS_HISTORY['MINING'].totals.points += miningEvent.pointGain;
-
-        if (typeof miningEvent.brokenPickaxes !== 'undefined')
-            STATE.EVENTS_HISTORY['MINING'].totals.brokenPickaxes += miningEvent.brokenPickaxes;
-
-        if (typeof miningEvent.diamondsFound !== 'undefined')
-            STATE.EVENTS_HISTORY['MINING'].totals.diamonds += miningEvent.diamondsFound;
-
-        if (typeof miningEvent.recOre !== 'undefined')
-            STATE.EVENTS_HISTORY['MINING'].totals.mined += miningEvent.recOre;
-
-        // Updated every hit, so track hits.
-        STATE.EVENTS_HISTORY['MINING'].totals.hits++;
+        this.accumulate(mining.users[userID], changes);
     };
 
     static updateWoodcutting(woodcuttingEvent) {
@@ -195,50 +200,39 @@ export default class EconomyNotifications {
 
                 },
                 totals: {
-                    cut: woodcuttingEvent.recWood || 0,
-                    brokenAxes: woodcuttingEvent.brokenAxes || 0,
-                    points: woodcuttingEvent.pointGain || 0,
+                    cut: 0,
+                    brokenAxes: 0,
+                    points: 0,
                     hits: 0
                 }
             }
         }
 
-        // Add or update user specific stats
-        if (typeof STATE.EVENTS_HISTORY['WOODCUTTING'].users[userID] === 'undefined') {
-            STATE.EVENTS_HISTORY['WOODCUTTING'].users[userID] = {
-                points: woodcuttingEvent.pointGain,
+        const woodcutting = STATE.EVENTS_HISTORY['WOODCUTTING'];
+
+        // One event is one swing, whether it landed wood or broke an axe.
+        const changes = {
+            points: woodcuttingEvent.pointGain,
+            cut: woodcuttingEvent.recWood,
+            brokenAxes: woodcuttingEvent.brokenAxes,
+            hits: 1
+        };
+
+        this.accumulate(woodcutting.totals, changes);
+
+        // Add or update user specific stats, counting the same fields as the totals.
+        if (typeof woodcutting.users[userID] === 'undefined')
+            woodcutting.users[userID] = {
                 username: woodcuttingEvent.username,
-                cut: woodcuttingEvent.recWood || 0,
-                brokenAxes: woodcuttingEvent.brokenAxes || 0,
-            }
+                points: 0,
+                cut: 0,
+                brokenAxes: 0,
+                hits: 0
+            };
 
-        } else {
-            if (typeof woodcuttingEvent.pointGain !== 'undefined')
-                STATE.EVENTS_HISTORY['WOODCUTTING'].users[userID].points += woodcuttingEvent.pointGain;
+        if (woodcuttingEvent.username) woodcutting.users[userID].username = woodcuttingEvent.username;
 
-            if (typeof woodcuttingEvent.cut !== 'undefined')
-                STATE.EVENTS_HISTORY['WOODCUTTING'].users[userID].cut += woodcuttingEvent.recWood;
-
-            if (typeof woodcuttingEvent.brokenAxes !== 'undefined')
-                STATE.EVENTS_HISTORY['WOODCUTTING'].users[userID].brokenAxes += woodcuttingEvent.recWood;
-        }
-
-        // Update total data
-
-        if (typeof woodcuttingEvent.pointGain !== 'undefined')
-            STATE.EVENTS_HISTORY['WOODCUTTING'].totals.points += woodcuttingEvent.pointGain;
-
-        if (typeof woodcuttingEvent.cut !== 'undefined')
-            STATE.EVENTS_HISTORY['WOODCUTTING'].users[userID].cut += woodcuttingEvent.recWood;
-
-        if (typeof woodcuttingEvent.brokenAxes !== 'undefined')
-            STATE.EVENTS_HISTORY['WOODCUTTING'].totals.brokenAxes += woodcuttingEvent.brokenAxes;
-
-            
-        // TODO: This shouldn't be updated if adding a broken axe event.
-
-        // Updated every hit, so track hits.
-        STATE.EVENTS_HISTORY['WOODCUTTING'].totals.hits++;
+        this.accumulate(woodcutting.users[userID], changes);
     };
 
     static updateCrateDrop(crateDropEvent) {
@@ -308,12 +302,12 @@ export default class EconomyNotifications {
 
     static updateChestpop(chestpopEvent) {
 
-        if (typeof STATE.EVENTS_HISTORY['CHESTPOP'] === 'undefined') {
-            STATE.EVENTS_HISTORY['CHESTPOP'] = {
+        if (typeof STATE.EVENTS_HISTORY['CHEST_POP'] === 'undefined') {
+            STATE.EVENTS_HISTORY['CHEST_POP'] = {
                 loot: 0
             }
         }
 
-        STATE.EVENTS_HISTORY['CHESTPOP'].loot += chestpopEvent.loot;
+        this.accumulate(STATE.EVENTS_HISTORY['CHEST_POP'], { loot: chestpopEvent.loot });
     };
 };

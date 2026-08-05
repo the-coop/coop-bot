@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 
-import { CHICKEN, TIME } from "../../coop.mjs";
+import { CHANNELS, CHICKEN, TIME } from "../../coop.mjs";
 
 import EventsHelper from "../../operations/eventsHelper.mjs";
 import CoopdleMinigame from "../../operations/minigames/small/coopdle.mjs";
@@ -39,8 +39,9 @@ export const execute = async (interaction) => {
 			`${totals.guesses} guesses from ${totals.players} player${totals.players === 1 ? '' : 's'}.`
 		];
 
+		// Boards only ever drop in talk, so that is where to point people.
 		if (active && active.status === STATUSES.PLAYING)
-			lines.push(`A board is live now: ${active.message_link || 'find it in the spammable channels'}`);
+			lines.push(`A board is live now: ${active.message_link || `find it in ${CHANNELS.textRef('TALK')}`}`);
 
 		else {
 			// Today's board is scheduled a random while after the coop day rolls.

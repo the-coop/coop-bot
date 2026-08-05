@@ -139,17 +139,6 @@ export default class MiningMinigame {
                     updateMsg.edit(updateMsg.content + '\n' + `${actionText}`);
             }
 
-            // Store to track latest mining stats.
-            EconomyNotifications.add('MINING', {
-                pointGain: 1,
-                recRock: extractedOreNum,
-                playerID: user.id,
-                username: user.username
-            });
-
-            // Add the experience.
-            SkillsHelper.addXP(user.id, 'mining', 1);
-
             // Show user success message.
             return await INTERACTION.reply(interaction, actionText);
 
