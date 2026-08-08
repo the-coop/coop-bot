@@ -2,6 +2,13 @@ import { MESSAGES, CHANNELS, STATE } from "../../../coop.mjs";
 import { EGG_DATA } from '../../minigames/small/egghunt.mjs';
 
 
+// Crate rarity event values mapped onto their totals field.
+const CRATE_RARITY_KEYS = {
+    AVERAGE_CRATE: 'average',
+    RARE_CRATE: 'rare',
+    LEGENDARY_CRATE: 'legendary'
+};
+
 export default class EconomyNotifications {
 
     static add(eventType, eventData = {}) {
@@ -113,10 +120,28 @@ export default class EconomyNotifications {
                 // TODO 2: Format and display the egg hunt data.
             }
 
-            // TODO: Add cratedrop stats
             if (STATE.EVENTS_HISTORY['CRATE_DROP']) {
-                notificationString += '\nHad crate drop stats';
-                console.log(STATE.EVENTS_HISTORY['CRATE_DROP']);
+                const crateDrop = STATE.EVENTS_HISTORY['CRATE_DROP'];
+
+                notificationString += `**Latest Crate Drop Totals:**\n` +
+                    `Crates Opened: ${crateDrop.totals.opened}\n` +
+                    `${MESSAGES.emojiCodeText('AVERAGE_CRATE')}x${crateDrop.totals.average} ` +
+                    `${MESSAGES.emojiCodeText('RARE_CRATE')}x${crateDrop.totals.rare} ` +
+                    `${MESSAGES.emojiCodeText('LEGENDARY_CRATE')}x${crateDrop.totals.legendary}\n` +
+                    `Empty Crates: ${crateDrop.totals.empty}\n` +
+                    `Hits: ${crateDrop.totals.hits}\n` +
+                    `Items Looted: ${crateDrop.totals.loot}\n` +
+                    `Points Change: ${crateDrop.totals.points}\n` +
+
+                    // Map crate drop users string into visual feedback.
+                    Object.keys(crateDrop.users)
+                        .map(cdUserID => {
+                            const cdUser = crateDrop.users[cdUserID];
+                            return `${cdUser.username} ${cdUser.points}x${MESSAGES.emojiCodeText('COOP')} ${cdUser.loot}x📦`;
+                        })
+                        .join(', ') +
+
+                    `\n\n`;
             }
 
             if (STATE.EVENTS_HISTORY['CHEST_POP']) {
@@ -236,22 +261,66 @@ export default class EconomyNotifications {
     };
 
     static updateCrateDrop(crateDropEvent) {
-        // console.log(crateDropEvent);
-
         if (typeof STATE.EVENTS_HISTORY['CRATE_DROP'] === 'undefined') {
             STATE.EVENTS_HISTORY['CRATE_DROP'] = {
                 users: {
 
                 },
                 totals: {
-                    average: crateDropEvent.rarity || 0,
-                    rare: crateDropEvent.rarity || 0,
-                    legendary: crateDropEvent.rarity || 0,
+                    opened: 0,
+                    average: 0,
+                    rare: 0,
+                    legendary: 0,
+                    empty: 0,
+                    loot: 0,
                     points: 0,
-                    empty: 0
+                    hits: 0
                 }
             }
         }
+
+        const crateDrop = STATE.EVENTS_HISTORY['CRATE_DROP'];
+
+        // The crate is counted once per opening, separately from the per-user rewards,
+        // otherwise the rarity counts would multiply by the number of hitters.
+        if (crateDropEvent.type === 'OPEN') {
+            const rarityKey = CRATE_RARITY_KEYS[crateDropEvent.rarity];
+
+            const crateChanges = {
+                opened: 1,
+                empty: crateDropEvent.empty ? 1 : 0
+            };
+
+            if (rarityKey) crateChanges[rarityKey] = 1;
+
+            this.accumulate(crateDrop.totals, crateChanges);
+
+            return;
+        }
+
+        const userID = crateDropEvent.playerID;
+
+        // One event is one hitter's share of a single crate.
+        const changes = {
+            points: crateDropEvent.pointGain,
+            loot: crateDropEvent.lootGain,
+            hits: 1
+        };
+
+        this.accumulate(crateDrop.totals, changes);
+
+        // Add or update user specific stats, counting the same fields as the totals.
+        if (typeof crateDrop.users[userID] === 'undefined')
+            crateDrop.users[userID] = {
+                username: crateDropEvent.username,
+                points: 0,
+                loot: 0,
+                hits: 0
+            };
+
+        if (crateDropEvent.username) crateDrop.users[userID].username = crateDropEvent.username;
+
+        this.accumulate(crateDrop.users[userID], changes);
     };
 
     static updateEgghunt(egghuntEvent) {

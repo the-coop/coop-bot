@@ -1,4 +1,4 @@
-import { CHANCE, CHANNELS, CHICKEN, INTERACTION } from '../../../coop.mjs';
+import { CHANCE, CHANNELS, CHICKEN, INTERACTION, MESSAGES } from '../../../coop.mjs';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import TemporaryMessages from '../../activity/maintenance/temporaryMessages.mjs';
 import Items from "coop-shared/services/items.mjs";
@@ -139,7 +139,7 @@ export default class FoxHuntMinigame {
                 if (eggCount > 0) {
                     await Items.add(interaction.user.id, rarity, eggCount, `FOXHUNT_REWARD_${rarity}`);
                     await CHICKEN.setConfig(stolenKey, 0);
-                    rewardStrings.push(`${rarity}: ${eggCount}`);
+                    rewardStrings.push(`${MESSAGES.emojiCodeText(rarity)}x${eggCount}`);
                 }
             })
         );

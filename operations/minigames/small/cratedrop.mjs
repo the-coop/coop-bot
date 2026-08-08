@@ -151,6 +151,7 @@ export default class CratedropMinigame {
 
             // Generate the message text from drop array data.
             let listLootString = '';
+            const lootCounts = {};
             if (rewardedUsersNum > 0) {
                 // Pick the amount of rewarded users.   
                 STATE.CHANCE.pickset(hitters, rewardedUsersNum).forEach(user => {
@@ -170,6 +171,9 @@ export default class CratedropMinigame {
                             // Indicate that at least one reward was given.
                             anyRewardGiven = true;
 
+                            // Track the loot per user so the economy stats can attribute it.
+                            lootCounts[user.id] = (lootCounts[user.id] || 0) + rewardQty;
+
                             // Give the user the item via the database.
                             Items.add(user.id, rewardItem, rewardQty, `${rarity} reward`);
 
@@ -183,10 +187,22 @@ export default class CratedropMinigame {
                 });
             }
 
+            // Record the crate itself once, so rarity counts don't multiply by hitters.
             EconomyNotifications.add('CRATE_DROP', {
-                playerID: '????',
-                username: '???'
+                type: 'OPEN',
+                rarity,
+                empty: !anyRewardGiven
             });
+
+            // Then record each hitter's points and share of the loot.
+            hitters.forEach(hitter => EconomyNotifications.add('CRATE_DROP', {
+                type: 'HIT',
+                playerID: hitter.id,
+                username: hitter.username,
+                rarity,
+                pointGain: crate.openingPoints,
+                lootGain: lootCounts[hitter.id] || 0
+            }));
             
             // Remove the reward message because it was placed in a random channel.
             // if (!anyRewardGiven) 
