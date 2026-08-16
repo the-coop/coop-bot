@@ -200,6 +200,11 @@ algosdk@latest:
     tweetnacl "^1.0.3"
     vlq "^2.0.4"
 
+an-array-of-english-words@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/an-array-of-english-words/-/an-array-of-english-words-2.0.0.tgz#2d9de64929b864f1eff5bd53dead275ff1ac0c32"
+  integrity sha512-FXnNvZSOI27kkKXeLSquhaTGP7z198UOQ4txaYO9fCfrjCh+D5SV7G7XqzEH0229+pAi4cjBEZ4WIQYgjKtO7Q==
+
 anymatch@~3.1.2:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-3.1.3.tgz#790c58b19ba1720a84205b57c618d5ad8524973e"
@@ -292,11 +297,6 @@ denque@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/denque/-/denque-2.1.0.tgz#e93e1a6569fb5e66f16a3c2a2964617d349d6ab1"
   integrity sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==
-
-dictionary-en@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/dictionary-en/-/dictionary-en-4.0.0.tgz#13bcf3ded331d5a2c5bfc5191c98e0aff881405b"
-  integrity sha512-3NHnE1uq33ZE/CIwaZ6gqxa4BnglHnxeAcTM0GJ7cmtRGcvX9InMK/IqLtYcUMFCUpUNgybH+DzkqdgAo3F1zg==
 
 discord-api-types@0.37.100:
   version "0.37.100"
@@ -402,11 +402,6 @@ is-binary-path@~2.1.0:
   integrity sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==
   dependencies:
     binary-extensions "^2.0.0"
-
-is-buffer@^2.0.0:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-2.0.5.tgz#ebc252e400d22ff8d77fa09888821a24a658c191"
-  integrity sha512-i2R6zNFDwgEHJyQUtJEk0XFi1i0dPFn/oqjK3/vPCcDeJvW5NQ83V8QbicfF1SupOaB0h8ntgBC2YiE7dfyctQ==
 
 is-extglob@^2.1.1:
   version "2.1.1"
@@ -610,13 +605,6 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
-
-nspell@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/nspell/-/nspell-2.1.5.tgz#85d51ef71499da72d899f261d7399ea2fc607633"
-  integrity sha512-PSStyugKMiD9mHmqI/CR5xXrSIGejUXPlo88FBRq5Og1kO5QwQ5Ilu8D8O5I/SHpoS+mibpw6uKA8rd3vXd2Sg==
-  dependencies:
-    is-buffer "^2.0.0"
 
 picomatch@^2.0.4, picomatch@^2.2.1:
   version "2.3.1"
