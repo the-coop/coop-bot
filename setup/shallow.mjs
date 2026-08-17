@@ -7,7 +7,6 @@ import Database from 'coop-shared/setup/database.mjs';
 import { STATE, USERS, SERVER } from '../coop.mjs';
 
 import AlgoHelper from '../operations/minigames/medium/economy/blockchain/AlgoHelper.mjs';
-import algosdk from 'algosdk';
 
 import Items from 'coop-shared/services/items.mjs';
 import EventsHelper from '../operations/eventsHelper.mjs';
@@ -99,12 +98,11 @@ const shallowBot = async () => {
 
             // await EventsHelper.create('spotlight');
             
-            // const publicKey = AlgoHelper.account().addr.publicKey;
-            // const address = algosdk.encodeAddress(publicKey);
-            // console.log('Address:', address);
+            // console.log('Address:', AlgoHelper.address());
 
+            // Minting all items is `yarn deploy-assets`, this is just the single item case.
             // AlgoHelper.login();
-            // await AlgoHelper.mint("Eli M", 'TEST_ELI_FACE', 'https://thecoop.group/items/metadata/TEST_ELI_FACE', 1000, 0);
+            // await AlgoHelper.mint('TEST_ELI_FACE', { total: 1000, decimals: 0 });
 
             // AlgoHelper.release('ZFKQVABUNUEEGY3WZSHUJL5Q7F3WKYZY4U7HOS7QFPJK6BIQ6OOGRIJ42Q', 730713744, 1);
             

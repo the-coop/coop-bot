@@ -1,56 +1,47 @@
-import algosdk from "algosdk";
-import { ALGOD_CLIENT } from "./algodclient.mjs";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-export default async function optin(to, assetID) {
-    const note = (new TextEncoder())
-        .encode("Opt-in request.");
+import AlgoHelper from '../../minigames/medium/economy/blockchain/AlgoHelper.mjs';
 
-    // Opting in to transact with the new asset
-    // Allow accounts that want recieve the new asset
-    // Have to opt in. To do this they send an asset transfer
-    // of the new asset to themseleves 
-    // In this example we are setting up the 3rd recovered account to 
-    // receive the new asset
+/**
+ * Opt the Coop treasury in to an asset so it can receive it via /import.
+ *
+ * An opt-in is a zero-amount transfer to self and must be signed by the holder, so this
+ * only ever works for the treasury's own account. Users opt in from their own wallet.
+ * The creator of an asset is opted in automatically, so this is only needed for assets
+ * minted elsewhere and adopted into the registry by hand.
+ *
+ *   node ./operations/patching/blockchain/optin.mjs <assetID>
+ */
+export default async function optin(assetIndex) {
+    if (!AlgoHelper.client) AlgoHelper.login();
 
-    // First update changing transaction parameters
-    // We will account for changing transaction parameters
-    // before every transaction in this example
-    const params = await ALGOD_CLIENT.getTransactionParams().do();
+    const address = AlgoHelper.address();
 
-    // We are sending 0 assets
-    const amount = 0;
+    if (await AlgoHelper.isOptedIn(address, assetIndex)) {
+        console.log(`${address} is already opted in to ${assetIndex}.`);
+        return null;
+    }
 
-    let sender = to;
-    let recipient = sender;
+    const { txID } = await AlgoHelper.optIn(assetIndex);
+    console.log(`Opted ${address} in to ${assetIndex}: ${AlgoHelper.txLink(txID)}`);
 
+    return txID;
+};
 
-    let revocationTarget = undefined;
-    let closeRemainderTo = undefined;
+// Only run when invoked directly, so importing this module has no side effects.
+if (process.argv[1]?.endsWith('optin.mjs')) {
+    const assetIndex = parseInt(process.argv[2], 10);
 
+    if (isNaN(assetIndex)) {
+        console.error('Usage: node ./operations/patching/blockchain/optin.mjs <assetID>');
+        process.exit(1);
+    }
 
-    // signing and sending "txn" allows sender to begin accepting asset specified by creator and index
-    let opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
-        sender, 
-        recipient, 
-        closeRemainderTo, 
-        revocationTarget,
-        amount, 
-        note, 
-        assetID,
-        params
-    );
-
-    // Must be signed by the account wishing to opt in to the asset    
-    rawSignedTxn = opttxn.signTxn(recoveredAccount3.sk);
-    let opttx = (await ALGOD_CLIENT.sendRawTransaction(rawSignedTxn).do());
-
-    // Wait for confirmation
-    confirmedTxn = await algosdk.waitForConfirmation(ALGOD_CLIENT, opttx.txId, 4);
-
-    //Get the completed Transaction
-    console.log("Transaction " + opttx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
-
-    //You should now see the new asset listed in the account information
-    console.log("Account 3 = " + to);
-    await printAssetHolding(ALGOD_CLIENT, to, assetID);
+    optin(assetIndex)
+        .then(() => process.exit(0))
+        .catch(error => {
+            console.error(error);
+            process.exit(1);
+        });
 }

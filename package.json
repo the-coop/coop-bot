@@ -9,6 +9,8 @@
     "shallow": "nodemon ./setup/shallow.mjs",
     "deploy-commands": "node ./operations/patching/deploy-commands.mjs",
     "check-commands": "node ./operations/patching/check-commands.mjs",
+    "deploy-assets": "node ./operations/patching/blockchain/deploy-assets.mjs",
+    "check-assets": "node ./operations/patching/blockchain/check-assets.mjs",
     "db": "heroku pg:psql --app thecoop"
   },
   "author": "the-coop",
