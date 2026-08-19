@@ -32,11 +32,24 @@ export default async function setupCommands(client) {
         const command = client.commands.get(interaction.commandName);
         if (!command) return InteractionHelper._onInteraction(interaction);
 
+        // Autocomplete interactions carry the same command name but cannot be replied to,
+        // they must be answered with respond() and never run the command itself.
+        if (interaction.isAutocomplete()) {
+            try {
+                if (command.autocomplete) await command.autocomplete(interaction);
+                else await interaction.respond([]);
+            } catch (error) {
+                console.error(error);
+            }
+            return;
+        }
+
         try {
             await command.execute(interaction);
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+            if (interaction.isRepliable() && !interaction.replied && !interaction.deferred)
+                await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
     });
 };

@@ -252,6 +252,9 @@ export default class TradingHelper {
             // Get trade by ID.
             const trade = await Trading.get(openTradeID);
 
+            // Nobody can accept their own trade, it would trade with themselves.
+            if (trade && trade.trader_id === accepteeID) return false;
+
             // Trade may have been removed before accept.
             if (await Trading.resolve(trade, accepteeID)) {
                 // Build string for logging/feedback.

@@ -152,8 +152,10 @@ const createTrade = async interaction => {
 		const exchangeString = `<- You lose ${tradeAwayStr}\n-> You gain ${receiveBackStr}`;
 
 		// Check if there is an existing offer matching this specifically.
-		const matchingOffers = await TradingHelper
-			.matches(receiveItemCode, offerItemCode, receiveQty, offerQty);
+		const matchingOffers = (await TradingHelper
+			.matches(receiveItemCode, offerItemCode, receiveQty, offerQty))
+			// Your own offers are not tradeable with yourself.
+			.filter(offer => offer.trader_id !== tradeeID);
 
 		// Build the confirmation message string.
 		let confirmStr = `**<@${tradeeID}>, trade away ` +
@@ -251,6 +253,37 @@ const createTrade = async interaction => {
 // TODO: Make sure 
 // https://discordjs.guide/interactions/autocomplete.html#sending-results
 
+// Suggest trade IDs the user can actually act on, own trades can only be
+// cancelled and other people's trades can only be accepted.
+export const autocomplete = async interaction => {
+	try {
+		const focused = interaction.options.getFocused(true);
+		if (focused.name !== 'trade_id') return await interaction.respond([]);
+
+		const action = interaction.options.getSubcommand();
+		const userID = interaction.user.id;
+
+		const trades = await Trading.all(25);
+		const selectable = trades.filter(t => 
+			action === 'cancel' ? t.trader_id === userID : t.trader_id !== userID);
+
+		// Let them narrow the list by ID, item code or trader name.
+		const search = String(focused.value ?? '').trim().toLowerCase();
+		const matches = selectable.filter(t => !search || 
+			`${t.id} ${t.offer_item} ${t.receive_item} ${t.trader_username}`
+				.toLowerCase().includes(search));
+
+		return await interaction.respond(matches.slice(0, 25).map(t => ({
+			name: `#${t.id} ${t.trader_username}: ${t.offer_item}x${t.offer_qty} for ${t.receive_item}x${t.receive_qty}`.slice(0, 100),
+			value: t.id
+		})));
+
+	} catch(e) {
+		console.log('Failed to autocomplete trade IDs.');
+		console.error(e);
+	}
+};
+
 const tradeAccept = interaction => {
 	// Sanitise + validate input a little before processing.
 	const tradeIDOption = interaction.options.get('trade_id').value;
@@ -270,10 +303,21 @@ export const _tradeAccept = async (interaction, tradeID) => {
 		const tradeeID = interaction.user.id;
 		const tradeeName = interaction.user.username;
 
+		// Guard against unparsable trade IDs before they reach the database.
+		if (!Number.isInteger(tradeID))
+			return interaction.reply({ content: `Invalid trade ID, pick a trade # from the suggestions.`, ephemeral: true });
+
 		// Check if valid trade ID given.
 		const trade = await Trading.get(tradeID);
 		if (!trade)
-			return interaction.reply(`Invalid trade ID - already sold?`);
+			return interaction.reply({ content: `Invalid trade ID - already sold?`, ephemeral: true });
+
+		// You cannot trade with yourself, cancel the trade instead.
+		if (trade.trader_id === tradeeID)
+			return interaction.reply({ 
+				content: `Trade #${trade.id} is your own, you cannot accept it. Use /trade cancel to close it.`, 
+				ephemeral: true 
+			});
 		
 		// Check if user can fulfil the trade.
 		const hasEnough = await Items.hasQty(tradeeID, trade.receive_item, trade.receive_qty);
@@ -302,6 +346,10 @@ export const _tradeCancel = async (interaction, tradeID) => {
 		const tradeeID = interaction.user.id;
 		const tradeeName = interaction.user.username;
 
+		// Guard against unparsable trade IDs before they reach the database.
+		if (!Number.isInteger(tradeID))
+			return interaction.reply({ ephemeral: true, content: `Invalid trade ID, pick a trade # from the suggestions.` });
+
 		// Check if valid trade ID given.
 		const trade = await Trading.get(tradeID);
 		if (!trade) return interaction.reply({ ephemeral: true, content: `Invalid # trade ID - already cancelled?` });
@@ -315,8 +363,7 @@ export const _tradeCancel = async (interaction, tradeID) => {
 		interaction.reply({ ephemeral: true, content: `Trade #${trade.id} cancelled.` });
 		
 	} catch(e) {
-		console.log('Failed to cancel trade. ' + trade.id);
-		interaction.reply({ ephemeral: true, content: `Trade #${trade.id} could not be cancelled.` });
+		console.log('Failed to cancel trade. #' + tradeID);
 		console.error(e);
 	}
 }
