@@ -404,10 +404,10 @@ export default class EggHuntMinigame {
 
     static async run() {        
         if (STATE.CHANCE.bool({ likelihood: 80 }))
-            this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg,');
+            this.drop('AVERAGE_EGG');
 
         if (STATE.CHANCE.bool({ likelihood: 20 }))
-            this.drop('TOXIC_EGG', 'I dropped an egg...');
+            this.drop('TOXIC_EGG');
 
         if (STATE.CHANCE.bool({ likelihood: 7 }))
             this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
