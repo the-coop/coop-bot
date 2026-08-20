@@ -48,16 +48,16 @@ export const execute = async (interaction) => {
 			// Sort owned items by most first.
 			items.sort((a, b) => (a.quantity < b.quantity) ? 1 : -1);
 
-			// Crop items so a text overflow error does not happen.
-			const slicedItems = items.slice(0, 5);
+			// List every item, split across messages so no text overflow error happens.
+			const [firstChunk, ...remainingChunks] = COOP.ITEMS.formItemDropTextChunks(target, items);
 
-			// Format additional items text.
-			let additionalItemsText = '';
-			if (items.length > 5)
-				additionalItemsText = `... plus ${items.length - 5} more items ...\n\n`;
+			await interaction.reply({ content: firstChunk, ephemeral: true });
 
-			const itemDisplayMsg = COOP.ITEMS.formItemDropText(target, slicedItems);
-			return await interaction.reply({ content: itemDisplayMsg + '\n' + additionalItemsText, ephemeral: true });
+			// Send the overflow as ephemeral follow ups, in order.
+			for (const chunk of remainingChunks)
+				await interaction.followUp({ content: chunk, ephemeral: true });
+
+			return true;
 		}
 
 		// Check if itemCode valid to use.
@@ -85,7 +85,10 @@ export const execute = async (interaction) => {
 
 	} catch(err) {
 		console.error(err);
-		return await interaction.reply({ content: `Error getting item ownership info.`, ephemeral: true });
+
+		// A follow up may have failed after the initial reply was already sent.
+		const respond = interaction.replied || interaction.deferred ? 'followUp' : 'reply';
+		return await interaction[respond]({ content: `Error getting item ownership info.`, ephemeral: true });
 	}
 
 };

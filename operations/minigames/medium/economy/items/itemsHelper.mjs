@@ -107,15 +107,38 @@ export default class ItemsHelper {
         return await Database.query(query);
     };
     
+    static formItemText(item) {
+        const emojiIcon = COOP.MESSAGES.emojifyID(EMOJIS[item.item_code]);
+        const displayQty = this.displayQty(item.quantity);
+        return `x${displayQty} ${this.escCode(item.item_code)} ${emojiIcon}`;
+    };
+
     static formItemDropText(user, items) {
         let itemDisplayMsg = `${user.username}'s items:`;
-        items.forEach(item => {
-            const emojiIcon = COOP.MESSAGES.emojifyID(EMOJIS[item.item_code]);
-            const displayQty = this.displayQty(item.quantity);
-            const itemText = `\nx${displayQty} ${this.escCode(item.item_code)} ${emojiIcon}`;
-            itemDisplayMsg += itemText;
-        });
+        items.forEach(item => itemDisplayMsg += `\n${this.formItemText(item)}`);
         return itemDisplayMsg;
+    };
+
+    // Split every item into as many messages as needed to stay under Discord's limit.
+    static formItemDropTextChunks(user, items, limit = 1900) {
+        const header = `${user.username}'s items:`;
+        const chunks = [];
+        let current = header;
+
+        items.forEach(item => {
+            const itemText = `\n${this.formItemText(item)}`;
+
+            // Start a new message when this item would overflow the current one.
+            if (current.length + itemText.length > limit) {
+                chunks.push(current);
+                current = `${header} (continued)`;
+            }
+
+            current += itemText;
+        });
+
+        chunks.push(current);
+        return chunks;
     };
 
     static escCode(itemCode) {
