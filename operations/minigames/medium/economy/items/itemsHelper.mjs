@@ -119,26 +119,30 @@ export default class ItemsHelper {
         return itemDisplayMsg;
     };
 
-    // Split every item into as many messages as needed to stay under Discord's limit.
-    static formItemDropTextChunks(user, items, limit = 1900) {
+    // Split every item into pages, kept under Discord's message limit.
+    static formItemDropTextPages(user, items, { limit = 1900, perPage = 15 } = {}) {
         const header = `${user.username}'s items:`;
-        const chunks = [];
+        const pages = [];
+
         let current = header;
+        let currentCount = 0;
 
         items.forEach(item => {
             const itemText = `\n${this.formItemText(item)}`;
 
-            // Start a new message when this item would overflow the current one.
-            if (current.length + itemText.length > limit) {
-                chunks.push(current);
-                current = `${header} (continued)`;
+            // Start a new page when this item would overflow the current one.
+            if (currentCount >= perPage || current.length + itemText.length > limit) {
+                pages.push(current);
+                current = header;
+                currentCount = 0;
             }
 
             current += itemText;
+            currentCount++;
         });
 
-        chunks.push(current);
-        return chunks;
+        pages.push(current);
+        return pages;
     };
 
     static escCode(itemCode) {
