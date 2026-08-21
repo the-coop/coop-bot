@@ -5,7 +5,7 @@ import {
 
 import Items from "coop-shared/services/items.mjs";
 
-import { CHANNELS, CHICKEN, INTERACTION, MESSAGES, STATE, TIME, USERS } from "../../../coop.mjs";
+import { CHANNELS, CHICKEN, INTERACTION, MESSAGES, ROLES, STATE, TIME, USERS } from "../../../coop.mjs";
 
 import DropTable from "../medium/economy/items/droptable.mjs";
 import TemporaryMessages from "../../activity/maintenance/temporaryMessages.mjs";
@@ -332,13 +332,18 @@ export default class CoopdleMinigame {
 
         const answer = `**${game.answer.toUpperCase()}**`;
         const solver = players.get(solverID)?.username || 'someone';
+        const ping = ROLES._textRef('MINIGAME_PING');
         const outcomeText = solved
-            ? `🟩 **COOPDLE SOLVED** 🟩 ${answer} in ${game.guesses.length}/${game.maxGuesses}, cracked by ${solver}!`
-            : `🟥 **COOPDLE FAILED** 🟥 the word was ${answer}. No rewards this time.`;
+            ? `🟩 **COOPDLE SOLVED** 🟩 ${ping}, ${answer} in ${game.guesses.length}/${game.maxGuesses}, cracked by ${solver}!`
+            : `🟥 **COOPDLE FAILED** 🟥 ${ping}, the word was ${answer}. No rewards this time.`;
 
         const resultText = `${outcomeText}\n\n${game.share()}\n${rewardsText}`;
 
-        const resultMsg = await boardMsg.channel.send(resultText);
+        // The board message can be gone by now, the outcome still belongs in the channel.
+        const resultChannel = boardMsg?.channel || CHANNELS._getCode('TALK');
+        if (!resultChannel) return true;
+
+        const resultMsg = await resultChannel.send(resultText);
         TemporaryMessages.add(resultMsg, 60 * 60);
 
         return true;
@@ -411,11 +416,36 @@ export default class CoopdleMinigame {
                     closed: true
                 });
 
+                await this.announceExpiry(game, gameRow);
+
             } catch (e) {
                 console.error(e);
                 console.log('Above error related to expiring coopdle');
             }
         }
+    };
+
+    /**
+     * A board quietly edited hours later is easy to miss, so the answer also goes
+     * out to the channel where the minigame crowd will actually see it.
+     */
+    static async announceExpiry(game, gameRow) {
+        const channel = CHANNELS._getCode('TALK');
+        if (!channel) return false;
+
+        const lines = [
+            `🟥 **COOPDLE EXPIRED** 🟥 ${ROLES._textRef('MINIGAME_PING')}, nobody solved it - ` +
+            `the word was **${gameRow.answer.toUpperCase()}**.`
+        ];
+
+        // Only worth showing the grid if the community actually got somewhere.
+        if (game.guesses.length) lines.push('', game.share());
+        if (gameRow.message_link) lines.push(gameRow.message_link);
+
+        const expiryMsg = await channel.send(lines.join('\n'));
+        TemporaryMessages.add(expiryMsg, 60 * 60);
+
+        return true;
     };
 
     /**
