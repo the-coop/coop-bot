@@ -50,7 +50,14 @@ Starts script text: heroku pg:psql --app <PRIMARY_APP>
 One board a day, dropped a random 20-120 mins after the new coop day rolls over
 (that rollover drifts, so the board does too). Anybody can spend one of its eight
 shared guesses via the Guess button, and when the word falls everyone who guessed
-is rewarded, the solver most of all. Boards nobody finishes are closed after 20hrs.
+is rewarded. Boards nobody finishes are closed after 20hrs.
+
+Points are paid per tile a player was the first to uncover: a green (a letter
+pinned to its position) is worth more than a yellow (a letter shown to be in the
+word), repeating a clue the board already had is worth nothing, and whoever lands
+the final word takes a small bonus on top. Tiles are counted against what the
+board knew at the time, so the green pot for a word is only ever five - the
+guesses that set the answer up are worth more than the one that finishes it.
 
 Because the guesses are shared, a guess may not reuse a letter the board has already
 ruled out: the guess box lists the pinned letters and the dead ones.

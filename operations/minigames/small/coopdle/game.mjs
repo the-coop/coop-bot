@@ -72,37 +72,42 @@ export function knowledgeFrom(guesses) {
 }
 
 /**
- * How much a guess adds to what the board already knew: a newly pinned
- * position, a letter newly known to be in the word, or a letter newly ruled
- * out. Eliminating letters is real progress in Wordle, so it counts. Zero means
- * the guess told the community nothing it hadn't already been told.
+ * How much a guess adds to what the board already knew, split by the kind of
+ * tile that did it: a newly pinned position (green), a letter newly known to be
+ * in the word (yellow), or a letter newly ruled out. Eliminating letters is real
+ * progress in Wordle, so it counts towards the total. All zeroes means the guess
+ * told the community nothing it hadn't already been told.
+ *
+ * @returns {{greens: number, yellows: number, ruledOut: number, total: number}}
  */
-export function countRevealed(priorGuesses, word, score) {
+export function countDiscoveries(priorGuesses, word, score) {
     const knowledge = knowledgeFrom(priorGuesses);
     const scored = scoringLetters(word, score);
     const counted = new Set();
 
-    let revealed = 0;
+    const discovery = { greens: 0, yellows: 0, ruledOut: 0, total: 0 };
 
     score.forEach((state, i) => {
         const letter = word[i];
 
         if (state === CORRECT) {
-            if (!knowledge.greens.has(i)) revealed++;
+            if (!knowledge.greens.has(i)) discovery.greens++;
 
         } else if (state === PRESENT) {
             if (!knowledge.present.has(letter) && !counted.has(letter)) {
                 counted.add(letter);
-                revealed++;
+                discovery.yellows++;
             }
 
         } else if (!scored.has(letter) && !knowledge.absent.has(letter) && !counted.has(letter)) {
             counted.add(letter);
-            revealed++;
+            discovery.ruledOut++;
         }
     });
 
-    return revealed;
+    discovery.total = discovery.greens + discovery.yellows + discovery.ruledOut;
+
+    return discovery;
 }
 
 export class Game {
@@ -117,7 +122,18 @@ export class Game {
     constructor(answer, maxGuesses = DEFAULT_MAX_GUESSES, guesses = []) {
         this.answer = answer;
         this.maxGuesses = maxGuesses;
-        this.guesses = guesses;
+
+        // Rewards are paid per tile a guess was the first to uncover, so each
+        // guess carries its own breakdown. It is replayed rather than read back
+        // because a board rebuilt from the database only stores words and scores.
+        this.guesses = [];
+        guesses.forEach(guess => this.guesses.push({ ...guess, ...this.discover(guess.word, guess.score) }));
+    }
+
+    /** What a guess adds to the board as it stands right now. */
+    discover(word, score) {
+        const discovery = countDiscoveries(this.guesses, word, score);
+        return { ...discovery, revealed: discovery.total };
     }
 
     get status() {
@@ -139,7 +155,10 @@ export class Game {
         return this.guesses.some(guess => guess.word === word);
     }
 
-    /** @returns {{ok: true, word: string, score: string[], revealed: number} | {ok: false, reason: string}} */
+    /**
+     * @returns {{ok: true, word: string, score: string[], greens: number, yellows: number,
+     *   ruledOut: number, revealed: number} | {ok: false, reason: string}}
+     */
     submit(input, meta = {}) {
         if (this.isOver) return { ok: false, reason: 'That Coopdle is already over.' };
 
@@ -162,11 +181,11 @@ export class Game {
         };
 
         const score = scoreGuess(word, this.answer);
-        const revealed = countRevealed(this.guesses, word, score);
+        const discovery = this.discover(word, score);
 
-        this.guesses.push({ word, score, revealed, ...meta });
+        this.guesses.push({ word, score, ...discovery, ...meta });
 
-        return { ok: true, word, score, revealed };
+        return { ok: true, word, score, ...discovery };
     }
 
     /** Letters pinned to a position, "_ra_e", used to prompt the next guesser. */

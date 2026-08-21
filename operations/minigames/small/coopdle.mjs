@@ -49,11 +49,20 @@ export default class CoopdleMinigame {
     // How many previous answers a fresh board avoids repeating.
     static RECENT_ANSWERS = 50;
 
+    // Paid per tile a player was the first to uncover, so points follow the work
+    // done on the board rather than the number of turns taken: pinning a letter
+    // to its position is worth more than proving it is in the word somewhere.
     static REWARDS = {
-        base: 2,
-        perCorrectGuess: 1,
-        perUnusedGuess: 1,
-        solver: 5,
+        perGreen: 3,
+        perYellow: 1,
+
+        // Landing the final word is a small kicker on top of the tiles it scored,
+        // not the payday - the guesses that set it up are worth more.
+        solver: 3,
+
+        // Spending a shared guess is worth something even when it uncovers nothing.
+        participation: 1,
+
         contributorDropPerc: 33
     };
 
@@ -188,13 +197,20 @@ export default class CoopdleMinigame {
             });
             await CoopdleStore.trackGuess(user.id, user.username, result.revealed > 0);
 
-            // Acknowledge the guesser before the slower board work.
+            // Acknowledge the guesser before the slower board work, naming the
+            // tiles they uncovered because that is what they will be paid on.
             const tiles = result.score.map(state => SHARE_EMOJIS[state]).join('');
+            const found = [
+                result.greens ? `${result.greens}🟩` : null,
+                result.yellows ? `${result.yellows}🟨` : null
+            ].filter(Boolean).join(' ');
             const contribution = game.status === WON
                 ? 'you solved it for the whole community!'
-                : result.revealed > 0
-                    ? `+${result.revealed} new clue${result.revealed > 1 ? 's' : ''} for the community.`
-                    : 'nothing new for the board, but it still counts as a guess.';
+                : found
+                    ? `${found} new for the community.`
+                    : result.revealed > 0
+                        ? 'no new letters, but you ruled some out for the community.'
+                        : 'nothing new for the board, but it still counts as a guess.';
             await INTERACTION.reply(interaction, `${tiles} ${result.word.toUpperCase()} - ${contribution}`);
 
             const boardMsg = await this.boardMessage(interaction, gameRow);
@@ -282,17 +298,23 @@ export default class CoopdleMinigame {
         return await msg.edit(await this.payload(game, gameID, opts));
     };
 
-    /** Who played this board and how much of it they actually cracked open. */
+    /**
+     * Who played this board and how much of it they actually cracked open: the
+     * green and yellow tiles are counted per player because those are what the
+     * rewards are paid on.
+     */
     static contributors(game) {
         const players = new Map();
 
-        game.guesses.forEach(({ playerID, username, revealed }) => {
+        game.guesses.forEach(({ playerID, username, revealed, greens, yellows }) => {
             if (!playerID) return;
 
-            const player = players.get(playerID) || { username, guesses: 0, correct: 0 };
+            const player = players.get(playerID) || { username, guesses: 0, correct: 0, greens: 0, yellows: 0 };
             player.username = username || player.username;
             player.guesses++;
             if (revealed > 0) player.correct++;
+            player.greens += greens;
+            player.yellows += yellows;
 
             players.set(playerID, player);
         });
@@ -349,7 +371,11 @@ export default class CoopdleMinigame {
         return true;
     };
 
-    // Everyone who contributed a guess gets paid, the solver gets paid most.
+    /**
+     * Everyone who contributed a guess gets paid for the tiles they uncovered:
+     * greens are worth the most, yellows still count, and whoever landed the
+     * word takes a small bonus on top.
+     */
     static async reward(game, players, solverID) {
         const unused = game.maxGuesses - game.guesses.length;
         const pointsEmoji = MESSAGES.emojiCodeText('COOP_POINT');
@@ -360,9 +386,9 @@ export default class CoopdleMinigame {
         const lines = await Promise.all([...players].map(async ([playerID, player]) => {
             const isSolver = playerID === solverID;
 
-            const points = this.REWARDS.base
-                + player.correct * this.REWARDS.perCorrectGuess
-                + unused * this.REWARDS.perUnusedGuess
+            const points = this.REWARDS.participation
+                + player.greens * this.REWARDS.perGreen
+                + player.yellows * this.REWARDS.perYellow
                 + (isSolver ? this.REWARDS.solver : 0);
 
             // Solvers always take an item, helpers might.
@@ -382,7 +408,16 @@ export default class CoopdleMinigame {
             }
 
             const dropText = drop ? ` ${MESSAGES.emojiCodeText(drop.item)}x${drop.qty}` : '';
-            return `${player.username} +${points}${pointsEmoji}${dropText}`;
+
+            // Show what the points were paid on, so the scoring isn't a mystery.
+            const tiles = [
+                player.greens ? `${player.greens}🟩` : null,
+                player.yellows ? `${player.yellows}🟨` : null,
+                isSolver ? 'solve' : null
+            ].filter(Boolean).join(' ');
+            const forText = tiles ? ` (${tiles})` : '';
+
+            return `${player.username} +${points}${pointsEmoji}${dropText}${forText}`;
         }));
 
         return lines.join('\n');
