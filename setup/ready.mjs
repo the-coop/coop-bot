@@ -1,6 +1,7 @@
 import TemporaryMessages from "../operations/activity/maintenance/temporaryMessages.mjs";
 import ElectionHelper from "../operations/members/hierarchy/election/electionHelper.mjs";
 import SacrificeHelper from "../operations/members/redemption/sacrificeHelper.mjs";
+import VersionHelper from "../operations/versionHelper.mjs";
 // import StockHelper from "../operations/stock/stockHelper.mjs";
 
 import { SERVER, STATE, USERS, MESSAGES, CHANNELS } from "../coop.mjs";
@@ -8,6 +9,9 @@ import { SERVER, STATE, USERS, MESSAGES, CHANNELS } from "../coop.mjs";
 export default async () => { 
     try {
         console.log(`Logged in as ${STATE.CLIENT.user.username}`); 
+
+        // Let the community know when Cooper is running a new version.
+        VersionHelper.announceIfUpdated();
         
         // Prepare cache (avoid partials)!
         let reqNum = 0;

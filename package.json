@@ -1,6 +1,6 @@
 {
   "name": "bot",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Single server community bot",
   "type": "module",
   "scripts": {
