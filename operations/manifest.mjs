@@ -54,22 +54,22 @@ export const VELOCITY_EVENTS = {
   INSTANT_FURNACE: { 
     since: 0, 
     handler: () => InstantFurnace.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: .8, max: 3.4 })
+    interval: baseTickDur * manifestChance.floating({ min: 3, max: 8 })
   },
   MINING: {
     since: 0, 
     handler: () => Mining.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: .25, max: 2 })
+    interval: baseTickDur * manifestChance.floating({ min: 2, max: 6 })
   },
   WOODCUTTING: { 
     since: 0, 
     handler: () => Woodcutting.run(), 
-    interval: baseTickDur * manifestChance.floating({ min: .25, max: 2 })
+    interval: baseTickDur * manifestChance.floating({ min: 2, max: 6 })
   },
   EGGHUNT: { 
     since: 0, 
     handler: () => EggHunt.run(), 
-    interval: baseTickDur / 7
+    interval: baseTickDur * manifestChance.floating({ min: 2.5, max: 5 })
   },
   CRATEDROP: { 
     since: 0, 

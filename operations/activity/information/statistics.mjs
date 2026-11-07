@@ -16,15 +16,25 @@ export default class Statistics {
         // STATE.REACTION_HISTORY
     };
 
+    // Ratio of top members currently active, clamped to [MIN_VELOCITY, MAX_VELOCITY].
+    // Used to divide event intervals, so a quiet server slows events down (up to 1/MIN_VELOCITY times).
+    static MIN_VELOCITY = 0.1;
+    static MAX_VELOCITY = 1;
+
     static async calcCommunityVelocity() {
         let active = 0;
         const tophun = await USERS.loadTopHundredUsers();
         tophun.map(u => {
             const member = USERS._get(u.discord_id);
-            const connected = member?.presence?.status;
-            if (connected) active++;
+            // Presence status is a string, cached presences keep 'offline' (truthy), so check explicitly.
+            // Idle members are treated as away, not active.
+            const status = member?.presence?.status;
+            if (status === 'online' || status === 'dnd') active++;
         });
-        return active / SERVER._count();
+
+        const velocity = active / Math.max(1, SERVER._count());
+
+        return Math.min(this.MAX_VELOCITY, Math.max(this.MIN_VELOCITY, velocity));
     };
 
     // Use this to calculate and update community velocity.
